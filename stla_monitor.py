@@ -27,7 +27,7 @@ URLS = {
 
 TEAMS_WEBHOOK_URL = "https://default64661b8d1758459ca270b19fe3578e.a7.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/c3181d4e41694cfebd1c7502d219b6a9/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=l0lFm8uGc6kFwT73IzDPQBdNut4ZWgNsaXHosdDEh18"
 
-GITHUB_TOKEN    = "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"   # ← colle ton token ici
+GITHUB_TOKEN    = "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"   # ← colle ton token ici
 GITHUB_REPO     = "dcs-masterclass-ia/stla-monitor"  # ← ex: "maximefoureau/stla-monitor"
 GITHUB_FILE     = "status.json"
 
