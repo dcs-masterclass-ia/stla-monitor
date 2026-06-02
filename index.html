@@ -98,7 +98,7 @@ h1{font-size:32px;font-weight:900;letter-spacing:-0.04em;color:#111827;line-heig
 <script>
 const RAW_URL = "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/status.json";
 
-const hpTimes = [], parcTimes = [], chartLabels = [];
+let hpTimes = [], parcTimes = [], chartLabels = [];
 let chart = null;
 
 function statusIcon(ok) {
@@ -146,12 +146,15 @@ function updateKpi(name, elId, subId, s) {
   sub.textContent = `${s.elapsed}s · HTTP ${s.reason.match(/\d+/) ? s.reason.match(/\d+/)[0] : '—'}`;
 }
 
-function updateChart(statuses) {
-  const now = new Date().toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
-  chartLabels.push(now);
-  if (statuses['Homepage']) hpTimes.push(statuses['Homepage'].elapsed);
-  if (statuses['Parcours']) parcTimes.push(statuses['Parcours'].elapsed);
-  if (chartLabels.length > 30) { chartLabels.shift(); hpTimes.shift(); parcTimes.shift(); }
+function updateChart(chartRawData) {
+  if (!chartRawData) return;
+  const hp = chartRawData['Homepage'] || [];
+  const parc = chartRawData['Parcours'] || [];
+  const maxLen = Math.max(hp.length, parc.length);
+
+  chartLabels = hp.map(p => p.time);
+  hpTimes = hp.map(p => p.elapsed);
+  parcTimes = parc.map(p => p.elapsed);
 
   if (!chart) {
     chart = new Chart(document.getElementById('rc'), {
@@ -173,6 +176,9 @@ function updateChart(statuses) {
       }
     });
   } else {
+    chart.data.labels = chartLabels;
+    chart.data.datasets[0].data = hpTimes;
+    chart.data.datasets[1].data = parcTimes;
     chart.update();
   }
 }
@@ -188,7 +194,7 @@ async function fetchStatus() {
 
     renderScards(data.statuses);
     renderHistory(data.history);
-    updateChart(data.statuses);
+    updateChart(data.chart_data);
 
     const hp = data.statuses['Homepage'];
     const parc = data.statuses['Parcours'];
