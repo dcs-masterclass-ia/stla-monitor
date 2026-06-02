@@ -1,216 +1,236 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>STLA Monitor</title>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;800;900&display=swap" rel="stylesheet">
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:100vh;padding:2rem 1.5rem;position:relative;overflow-x:hidden}
-.blob{position:fixed;border-radius:50%;filter:blur(100px);opacity:0.4;pointer-events:none;z-index:0}
-.blob1{width:400px;height:400px;background:#bfdbfe;top:-100px;left:-100px;animation:orbit1 22s ease-in-out infinite}
-.blob2{width:320px;height:320px;background:#e0e7ff;top:40%;right:-80px;animation:orbit2 18s ease-in-out infinite}
-.blob3{width:260px;height:260px;background:#fef9c3;bottom:60px;left:35%;animation:orbit3 26s ease-in-out infinite}
-@keyframes orbit1{0%,100%{transform:translate(0,0)}50%{transform:translate(40px,-30px)}}
-@keyframes orbit2{0%,100%{transform:translate(0,0)}50%{transform:translate(-30px,40px)}}
-@keyframes orbit3{0%,100%{transform:translate(0,0)}50%{transform:translate(20px,-40px)}}
-.wrap{max-width:780px;margin:0 auto;position:relative;z-index:1}
-.glass{background:rgba(255,255,255,0.8);backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);border-radius:32px;border:none;box-shadow:0 8px 60px rgba(59,90,224,0.07),0 2px 12px rgba(0,0,0,0.04)}
-.header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.75rem}
-h1{font-size:32px;font-weight:900;letter-spacing:-0.04em;color:#111827;line-height:1.1}
-.ts{font-size:12px;color:#4b5563;margin-top:6px;display:flex;align-items:center;gap:6px}
-.pulse{width:8px;height:8px;border-radius:50%;background:#22c55e;display:inline-block;animation:pulse 2s ease-in-out infinite;flex-shrink:0}
-.pulse.dead{background:#ef4444;animation:none}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.4)}}
-.grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;margin-bottom:1.5rem}
-.kpi{padding:1.2rem 1.4rem}
-.kpi-label{font-size:11px;font-weight:500;color:#4b5563;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
-.kpi-val{font-size:28px;font-weight:900;letter-spacing:-0.03em;color:#111827}
-.kpi-val.ok{color:#16a34a}.kpi-val.ko{color:#dc2626}.kpi-val.blue{color:#3b5ae0}
-.kpi-sub{font-size:11px;color:#4b5563;margin-top:4px}
-.scard{padding:1rem 1.4rem;display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
-.scard-left{display:flex;align-items:center;gap:14px}
-.icon{width:42px;height:42px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
-.icon.ok{background:#dcfce7}.icon.ko{background:#fee2e2}
-.scard-name{font-size:14px;font-weight:800;color:#111827;letter-spacing:-0.02em}
-.scard-url{font-size:11px;color:#4b5563;margin-top:2px}
-.badge{display:inline-block;padding:4px 14px;border-radius:100px;font-size:11px;font-weight:800;letter-spacing:.04em}
-.badge.ok{background:#dcfce7;color:#166534}.badge.ko{background:#fee2e2;color:#991b1b}
-.resp-time{font-size:12px;color:#4b5563;margin-top:4px;text-align:right}
-.chart-wrap{padding:1.4rem;margin-bottom:1.5rem}
-.section-title{font-size:13px;font-weight:800;color:#111827;letter-spacing:-0.02em;margin-bottom:1rem}
-.legend{display:flex;gap:16px;margin-top:10px}
-.leg-item{display:flex;align-items:center;gap:6px;font-size:11px;color:#4b5563;font-weight:500}
-.leg-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0}
-.incidents{padding:1.4rem}
-.inc-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(0,0,0,0.05);font-size:12px;gap:8px}
-.inc-row:last-child{border-bottom:none}
-.inc-time{color:#4b5563;font-weight:500;min-width:110px;flex-shrink:0}
-.inc-desc{color:#111827;font-weight:500;flex:1}
-.callout{border-radius:12px;padding:5px 12px;font-size:11px;font-weight:800;white-space:nowrap}
-.callout.ok{background:#f0fdf4;color:#166534}.callout.ko{background:#fff1f2;color:#991b1b}
-.empty{color:#4b5563;font-size:13px;padding:1rem 0}
-</style>
-</head>
-<body>
-<div class="blob blob1"></div>
-<div class="blob blob2"></div>
-<div class="blob blob3"></div>
+"""
+STLA Front V2 - Moniteur de disponibilité
+- Vérifie 2 URLs toutes les 10 secondes
+- Pousse status.json sur GitHub (avec historique des temps de réponse)
+- Alerte Teams en cas de KO
+"""
 
-<div class="wrap">
+import requests
+import time
+import logging
+import urllib3
+import json
+import os
+from datetime import datetime
+from github import Auth, Github
 
-  <div class="header">
-    <div>
-      <h1>STLA Front V2</h1>
-      <div class="ts" id="ts"><span class="pulse" id="pulse"></span><span id="updated">Chargement...</span></div>
-    </div>
-  </div>
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-  <div class="grid4">
-    <div class="glass kpi"><div class="kpi-label">Homepage</div><div class="kpi-val" id="kpi-hp">—</div><div class="kpi-sub" id="kpi-hp-sub">—</div></div>
-    <div class="glass kpi"><div class="kpi-label">Parcours</div><div class="kpi-val" id="kpi-parc">—</div><div class="kpi-sub" id="kpi-parc-sub">—</div></div>
-    <div class="glass kpi"><div class="kpi-label">Incidents</div><div class="kpi-val blue" id="kpi-inc">—</div><div class="kpi-sub">enregistrés</div></div>
-    <div class="glass kpi"><div class="kpi-label">Moy. réponse</div><div class="kpi-val blue" id="kpi-avg">—</div><div class="kpi-sub">sur 20 derniers checks</div></div>
-  </div>
+# ─────────────────────────────────────────────
+# CONFIGURATION
+# ─────────────────────────────────────────────
 
-  <div id="scards"></div>
-
-  <div class="glass chart-wrap">
-    <div class="section-title">Temps de réponse — historique</div>
-    <div style="position:relative;width:100%;height:180px">
-      <canvas id="rc" role="img" aria-label="Courbe du temps de réponse Homepage et Parcours">Chargement...</canvas>
-    </div>
-    <div class="legend">
-      <div class="leg-item"><span class="leg-dot" style="background:#3b5ae0"></span>Homepage</div>
-      <div class="leg-item"><span class="leg-dot" style="background:#0F6E56"></span>Parcours</div>
-    </div>
-  </div>
-
-  <div class="glass incidents">
-    <div class="section-title">Historique des incidents</div>
-    <div id="history"><div class="empty">Chargement...</div></div>
-  </div>
-
-</div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
-<script>
-const RAW_URL = "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/status.json";
-
-const hpTimes = [], parcTimes = [], chartLabels = [];
-let chart = null;
-
-function statusIcon(ok) {
-  return ok
-    ? '<svg width="20" height="20" fill="none" stroke="#16a34a" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>'
-    : '<svg width="20" height="20" fill="none" stroke="#dc2626" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>';
+URLS = {
+    "Homepage": "https://www.retoma.opel.pt",
+    "Parcours":  "https://www.retoma.opel.pt/retoma",
 }
 
-function renderScards(statuses) {
-  const container = document.getElementById('scards');
-  container.innerHTML = Object.entries(statuses).map(([name, s]) => `
-    <div class="glass scard" style="margin-bottom:12px">
-      <div class="scard-left">
-        <div class="icon ${s.ok ? 'ok' : 'ko'}">${statusIcon(s.ok)}</div>
-        <div>
-          <div class="scard-name">${name}</div>
-          <div class="scard-url">${s.url.replace('https://','')}</div>
-        </div>
-      </div>
-      <div style="text-align:right">
-        <span class="badge ${s.ok ? 'ok' : 'ko'}">${s.ok ? 'EN LIGNE' : 'KO'}</span>
-        <div class="resp-time">${s.elapsed}s · ${s.reason}</div>
-      </div>
-    </div>
-  `).join('');
-}
+TEAMS_WEBHOOK_URL = "https://default64661b8d1758459ca270b19fe3578e.a7.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/c3181d4e41694cfebd1c7502d219b6a9/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=l0lFm8uGc6kFwT73IzDPQBdNut4ZWgNsaXHosdDEh18"
 
-function renderHistory(history) {
-  const el = document.getElementById('history');
-  if (!history || history.length === 0) { el.innerHTML = '<div class="empty">Aucun incident enregistré.</div>'; return; }
-  el.innerHTML = [...history].reverse().slice(0, 20).map(h => `
-    <div class="inc-row">
-      <span class="inc-time">${h.time}</span>
-      <span class="inc-desc">${h.name} — ${h.detail}</span>
-      <span class="callout ${h.type === 'recovery' ? 'ok' : 'ko'}">${h.type === 'recovery' ? 'RÉSOLU' : 'KO'}</span>
-    </div>
-  `).join('');
-}
+GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "")
+GITHUB_REPO  = "dcs-masterclass-ia/stla-monitor"
+GITHUB_FILE  = "status.json"
 
-function updateKpi(name, elId, subId, s) {
-  const el = document.getElementById(elId);
-  const sub = document.getElementById(subId);
-  el.textContent = s.ok ? 'OK' : 'KO';
-  el.className = 'kpi-val ' + (s.ok ? 'ok' : 'ko');
-  sub.textContent = `${s.elapsed}s · HTTP ${s.reason.match(/\d+/) ? s.reason.match(/\d+/)[0] : '—'}`;
-}
+CHECK_INTERVAL_SECONDS      = 10
+RESPONSE_TIME_LIMIT_SECONDS = 5
+LOG_FILE    = "stla_monitor.log"
+MAX_HISTORY = 50
+MAX_CHART   = 100  # points de courbe conservés
 
-function updateChart(statuses) {
-  const now = new Date().toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
-  chartLabels.push(now);
-  if (statuses['Homepage']) hpTimes.push(statuses['Homepage'].elapsed);
-  if (statuses['Parcours']) parcTimes.push(statuses['Parcours'].elapsed);
-  if (chartLabels.length > 30) { chartLabels.shift(); hpTimes.shift(); parcTimes.shift(); }
+# ─────────────────────────────────────────────
+# LOGGING
+# ─────────────────────────────────────────────
 
-  if (!chart) {
-    chart = new Chart(document.getElementById('rc'), {
-      type: 'line',
-      data: {
-        labels: chartLabels,
-        datasets: [
-          {label:'Homepage', data:hpTimes, borderColor:'#3b5ae0', backgroundColor:'rgba(59,90,224,0.06)', tension:0.4, pointRadius:2, borderWidth:2, fill:true},
-          {label:'Parcours', data:parcTimes, borderColor:'#0F6E56', backgroundColor:'rgba(15,110,86,0.06)', tension:0.4, pointRadius:2, borderWidth:2, fill:true}
-        ]
-      },
-      options: {
-        responsive:true, maintainAspectRatio:false,
-        plugins:{legend:{display:false}},
-        scales:{
-          x:{grid:{display:false}, ticks:{font:{size:10}, color:'#9ca3af', maxTicksLimit:8}},
-          y:{grid:{color:'rgba(0,0,0,0.04)'}, ticks:{font:{size:10}, color:'#9ca3af', callback:v=>v.toFixed(1)+'s'}}
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[
+        logging.FileHandler(LOG_FILE, encoding="utf-8"),
+        logging.StreamHandler()
+    ]
+)
+log = logging.getLogger(__name__)
+
+# ─────────────────────────────────────────────
+# ÉTAT
+# ─────────────────────────────────────────────
+
+incident_active = {name: False for name in URLS}
+history = []
+chart_data = {name: [] for name in URLS}  # {"time": "...", "elapsed": 0.17}
+
+# ─────────────────────────────────────────────
+# GITHUB
+# ─────────────────────────────────────────────
+
+gh_repo = None
+
+def init_github():
+    global gh_repo
+    try:
+        g = Github(auth=Auth.Token(GITHUB_TOKEN))
+        gh_repo = g.get_repo(GITHUB_REPO)
+        log.info(f"[GitHub] Connecté au repo {GITHUB_REPO}")
+
+        # Récupère les données existantes pour ne pas perdre l'historique
+        try:
+            existing = gh_repo.get_contents(GITHUB_FILE)
+            data = json.loads(existing.decoded_content.decode("utf-8"))
+            if "chart_data" in data:
+                for name in URLS:
+                    if name in data["chart_data"]:
+                        chart_data[name] = data["chart_data"][name][-MAX_CHART:]
+            if "history" in data:
+                history.extend(data["history"][-MAX_HISTORY:])
+            log.info("[GitHub] Historique récupéré depuis status.json")
+        except Exception:
+            log.info("[GitHub] Pas d'historique existant, démarrage à zéro")
+
+    except Exception as e:
+        log.error(f"[GitHub] Connexion impossible : {e}")
+
+def push_status(statuses):
+    if not gh_repo:
+        return
+    now = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+    payload = {
+        "updated_at": now,
+        "statuses": statuses,
+        "history": history[-MAX_HISTORY:],
+        "chart_data": {name: pts[-MAX_CHART:] for name, pts in chart_data.items()},
+        "avg_response": {
+            name: round(sum(p["elapsed"] for p in pts[-20:]) / len(pts[-20:]), 2) if pts else 0
+            for name, pts in chart_data.items()
         }
-      }
-    });
-  } else {
-    chart.update();
-  }
-}
+    }
+    content = json.dumps(payload, ensure_ascii=False, indent=2)
+    try:
+        try:
+            existing = gh_repo.get_contents(GITHUB_FILE)
+            gh_repo.update_file(GITHUB_FILE, f"Monitor update {now}", content, existing.sha)
+        except Exception:
+            gh_repo.create_file(GITHUB_FILE, f"Monitor init {now}", content)
+        log.info("[GitHub] status.json mis à jour")
+    except Exception as e:
+        log.error(f"[GitHub] Erreur push : {e}")
 
-async function fetchStatus() {
-  try {
-    const r = await fetch(RAW_URL + '?t=' + Date.now());
-    if (!r.ok) throw new Error('fetch failed');
-    const data = await r.json();
+# ─────────────────────────────────────────────
+# ALERTE TEAMS
+# ─────────────────────────────────────────────
 
-    document.getElementById('updated').textContent = 'Mis à jour : ' + data.updated_at;
-    document.getElementById('pulse').className = 'pulse';
+def send_teams_alert(name, url, reason, is_recovery=False):
+    if is_recovery:
+        title = f"✅ STLA — {name} est de nouveau accessible"
+        color = "00FF00"
+        status_text = "Retour en ligne"
+    else:
+        title = f"🚨 STLA — {name} est KO !"
+        color = "FF0000"
+        status_text = reason
 
-    renderScards(data.statuses);
-    renderHistory(data.history);
-    updateChart(data.statuses);
+    payload = {
+        "@type": "MessageCard",
+        "@context": "http://schema.org/extensions",
+        "themeColor": color,
+        "summary": title,
+        "sections": [{
+            "activityTitle": title,
+            "facts": [
+                {"name": "URL",    "value": url},
+                {"name": "Statut", "value": status_text},
+                {"name": "Heure",  "value": datetime.now().strftime("%d/%m/%Y %H:%M:%S")},
+            ],
+            "markdown": True
+        }]
+    }
+    try:
+        resp = requests.post(TEAMS_WEBHOOK_URL, json=payload, timeout=10, verify=False)
+        if resp.status_code in (200, 202):
+            log.info(f"[Teams] Alerte envoyée pour {name}")
+        else:
+            log.warning(f"[Teams] Échec — HTTP {resp.status_code}")
+    except Exception as e:
+        log.error(f"[Teams] Erreur : {e}")
 
-    const hp = data.statuses['Homepage'];
-    const parc = data.statuses['Parcours'];
-    if (hp) updateKpi('Homepage', 'kpi-hp', 'kpi-hp-sub', hp);
-    if (parc) updateKpi('Parcours', 'kpi-parc', 'kpi-parc-sub', parc);
+# ─────────────────────────────────────────────
+# CHECK URL
+# ─────────────────────────────────────────────
 
-    const incCount = (data.history || []).filter(h => h.type === 'ko').length;
-    document.getElementById('kpi-inc').textContent = incCount;
+def check_url(name, url):
+    start = time.time()
+    try:
+        response = requests.get(url, timeout=RESPONSE_TIME_LIMIT_SECONDS,
+                                allow_redirects=True, verify=False,
+                                headers={"User-Agent": "STLA-Monitor/1.0"})
+        elapsed = round(time.time() - start, 2)
+        if elapsed > RESPONSE_TIME_LIMIT_SECONDS:
+            return False, f"Temps de réponse trop long : {elapsed}s", elapsed
+        if response.status_code >= 400:
+            return False, f"HTTP {response.status_code}", elapsed
+        return True, f"OK ({response.status_code}) en {elapsed}s", elapsed
+    except requests.exceptions.ConnectionError as e:
+        elapsed = round(time.time() - start, 2)
+        if "NameResolutionError" in str(e) or "getaddrinfo" in str(e):
+            return False, "Erreur DNS", elapsed
+        return False, "Erreur connexion", elapsed
+    except requests.exceptions.Timeout:
+        elapsed = round(time.time() - start, 2)
+        return False, "Timeout", elapsed
+    except Exception as e:
+        elapsed = round(time.time() - start, 2)
+        return False, f"Erreur : {e}", elapsed
 
-    const avgs = data.avg_response || {};
-    const allAvg = Object.values(avgs);
-    const avg = allAvg.length ? (allAvg.reduce((a,b) => a+b, 0) / allAvg.length).toFixed(2) + 's' : '—';
-    document.getElementById('kpi-avg').textContent = avg;
+# ─────────────────────────────────────────────
+# BOUCLE PRINCIPALE
+# ─────────────────────────────────────────────
 
-  } catch(e) {
-    document.getElementById('updated').textContent = 'Erreur de chargement';
-    document.getElementById('pulse').className = 'pulse dead';
-  }
-}
+def run():
+    init_github()
+    log.info("═" * 60)
+    log.info("  STLA Monitor démarré")
+    log.info(f"  URLs : {', '.join(URLS.keys())}")
+    log.info(f"  Intervalle : {CHECK_INTERVAL_SECONDS}s")
+    log.info("═" * 60)
 
-fetchStatus();
-setInterval(fetchStatus, 15000);
-</script>
-</body>
-</html>
+    while True:
+        statuses = {}
+        now = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+        now_short = datetime.now().strftime("%H:%M:%S")
+
+        for name, url in URLS.items():
+            ok, reason, elapsed = check_url(name, url)
+
+            # Ajoute le point à la courbe
+            chart_data[name].append({"time": now_short, "elapsed": elapsed})
+            if len(chart_data[name]) > MAX_CHART:
+                chart_data[name].pop(0)
+
+            statuses[name] = {
+                "ok": ok,
+                "reason": reason,
+                "elapsed": elapsed,
+                "checked_at": now,
+                "url": url
+            }
+
+            if ok:
+                log.info(f"[{name}] ✅ {reason}")
+                if incident_active[name]:
+                    incident_active[name] = False
+                    history.append({"time": now, "name": name, "type": "recovery", "detail": "Retour en ligne"})
+                    send_teams_alert(name, url, reason, is_recovery=True)
+            else:
+                log.warning(f"[{name}] ❌ {reason}")
+                if not incident_active[name]:
+                    incident_active[name] = True
+                    history.append({"time": now, "name": name, "type": "ko", "detail": reason})
+                    send_teams_alert(name, url, reason)
+
+        push_status(statuses)
+        time.sleep(CHECK_INTERVAL_SECONDS)
+
+if __name__ == "__main__":
+    try:
+        run()
+    except KeyboardInterrupt:
+        log.info("Monitoring arrêté.")
