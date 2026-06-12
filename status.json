@@ -1,18 +1,18 @@
 {
-  "updated_at": "12/06/2026 20:04:47",
+  "updated_at": "12/06/2026 20:05:02",
   "statuses": {
     "Homepage": {
       "ok": true,
-      "reason": "OK (200) en 0.13s",
-      "elapsed": 0.13,
-      "checked_at": "12/06/2026 20:04:47",
+      "reason": "OK (200) en 3.55s",
+      "elapsed": 3.55,
+      "checked_at": "12/06/2026 20:04:58",
       "url": "https://www.retoma.opel.pt"
     },
     "Parcours": {
       "ok": true,
-      "reason": "OK (200) en 0.13s",
-      "elapsed": 0.13,
-      "checked_at": "12/06/2026 20:04:47",
+      "reason": "OK (200) en 0.25s",
+      "elapsed": 0.25,
+      "checked_at": "12/06/2026 20:04:58",
       "url": "https://www.retoma.opel.pt/retoma"
     }
   },
@@ -68,10 +68,6 @@
   ],
   "chart_data": {
     "Homepage": [
-      {
-        "time": "19:45:30",
-        "elapsed": 0.14
-      },
       {
         "time": "19:45:41",
         "elapsed": 0.23
@@ -467,13 +463,13 @@
       {
         "time": "20:04:47",
         "elapsed": 0.13
+      },
+      {
+        "time": "20:04:58",
+        "elapsed": 3.55
       }
     ],
     "Parcours": [
-      {
-        "time": "19:45:30",
-        "elapsed": 0.14
-      },
       {
         "time": "19:45:41",
         "elapsed": 0.14
@@ -869,11 +865,15 @@
       {
         "time": "20:04:47",
         "elapsed": 0.13
+      },
+      {
+        "time": "20:04:58",
+        "elapsed": 0.25
       }
     ]
   },
   "avg_response": {
-    "Homepage": 0.15,
-    "Parcours": 0.13
+    "Homepage": 0.32,
+    "Parcours": 0.14
   }
 }
