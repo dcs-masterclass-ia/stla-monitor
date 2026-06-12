@@ -167,6 +167,22 @@ def check_url(name, url):
             return False, f"Temps de réponse trop long : {elapsed}s", elapsed
         if response.status_code >= 400:
             return False, f"HTTP {response.status_code}", elapsed
+
+        # Vérifie que le contenu n'est pas une page d'erreur déguisée en 200
+        body = response.text[:2000]
+        error_signatures = [
+            "<Code>AccessDenied</Code>",
+            "<Message>Access Denied</Message>",
+            "<Error>",
+            "AccessDenied",
+            "503 Service Unavailable",
+            "502 Bad Gateway",
+            "403 Forbidden",
+        ]
+        for sig in error_signatures:
+            if sig in body:
+                return False, f"Contenu KO — '{sig}' détecté (HTTP {response.status_code})", elapsed
+
         return True, f"OK ({response.status_code}) en {elapsed}s", elapsed
     except requests.exceptions.ConnectionError as e:
         elapsed = round(time.time() - start, 2)
