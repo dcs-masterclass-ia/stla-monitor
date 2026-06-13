@@ -1,18 +1,18 @@
 {
-  "updated_at": "13/06/2026 15:08:41",
+  "updated_at": "13/06/2026 15:08:53",
   "statuses": {
     "Homepage": {
-      "ok": false,
-      "reason": "Erreur DNS",
-      "elapsed": 729.06,
-      "checked_at": "13/06/2026 14:56:28",
+      "ok": true,
+      "reason": "OK (200) en 0.2s",
+      "elapsed": 0.2,
+      "checked_at": "13/06/2026 15:08:52",
       "url": "https://www.retoma.opel.pt"
     },
     "Parcours": {
       "ok": true,
-      "reason": "OK (200) en 2.34s",
-      "elapsed": 2.34,
-      "checked_at": "13/06/2026 14:56:28",
+      "reason": "OK (200) en 0.14s",
+      "elapsed": 0.14,
+      "checked_at": "13/06/2026 15:08:52",
       "url": "https://www.retoma.opel.pt/retoma"
     }
   },
@@ -106,14 +106,16 @@
       "name": "Homepage",
       "type": "ko",
       "detail": "Erreur DNS"
+    },
+    {
+      "time": "13/06/2026 15:08:52",
+      "name": "Homepage",
+      "type": "recovery",
+      "detail": "Retour en ligne"
     }
   ],
   "chart_data": {
     "Homepage": [
-      {
-        "time": "13:21:18",
-        "elapsed": 0.15
-      },
       {
         "time": "13:21:30",
         "elapsed": 0.14
@@ -509,13 +511,13 @@
       {
         "time": "14:56:28",
         "elapsed": 729.06
+      },
+      {
+        "time": "15:08:52",
+        "elapsed": 0.2
       }
     ],
     "Parcours": [
-      {
-        "time": "13:21:18",
-        "elapsed": 0.15
-      },
       {
         "time": "13:21:30",
         "elapsed": 0.14
@@ -911,6 +913,10 @@
       {
         "time": "14:56:28",
         "elapsed": 2.34
+      },
+      {
+        "time": "15:08:52",
+        "elapsed": 0.14
       }
     ]
   },
