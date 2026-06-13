@@ -1,49 +1,19 @@
 {
-  "updated_at": "13/06/2026 20:45:41",
+  "updated_at": "13/06/2026 20:45:50",
   "statuses": {
     "Homepage": {
       "ok": true,
-      "reason": "OK (200) en 0.13s",
-      "elapsed": 0.13,
-      "checked_at": "13/06/2026 20:45:41",
-      "url": "https://www.retoma.opel.pt",
-      "details": {
-        "dns_elapsed": 0.002,
-        "ip": "135.125.7.226",
-        "http_status": 200,
-        "elapsed_http": 0.13,
-        "elapsed_total": 0.13,
-        "headers": {
-          "server": "CloudFront",
-          "content-type": "text/html; charset=utf-8",
-          "cache-control": "public, max-age=300, s-maxage=31536000, stale-while-revalidate=86400",
-          "x-cache": "Hit from cloudfront",
-          "cf-ray": "—"
-        },
-        "error_type": null
-      }
+      "reason": "OK (200) en 0.16s",
+      "elapsed": 0.16,
+      "checked_at": "13/06/2026 20:45:49",
+      "url": "https://www.retoma.opel.pt"
     },
     "Parcours": {
       "ok": true,
-      "reason": "OK (200) en 0.12s",
-      "elapsed": 0.12,
-      "checked_at": "13/06/2026 20:45:41",
-      "url": "https://www.retoma.opel.pt/retoma",
-      "details": {
-        "dns_elapsed": 0.002,
-        "ip": "135.125.7.226",
-        "http_status": 200,
-        "elapsed_http": 0.12,
-        "elapsed_total": 0.12,
-        "headers": {
-          "server": "CloudFront",
-          "content-type": "text/html; charset=utf-8",
-          "cache-control": "public, max-age=300, s-maxage=31536000, stale-while-revalidate=86400",
-          "x-cache": "Hit from cloudfront",
-          "cf-ray": "—"
-        },
-        "error_type": null
-      }
+      "reason": "OK (200) en 0.13s",
+      "elapsed": 0.13,
+      "checked_at": "13/06/2026 20:45:49",
+      "url": "https://www.retoma.opel.pt/retoma"
     }
   },
   "history": [
@@ -144,68 +114,25 @@
       "detail": "Retour en ligne"
     },
     {
-      "time": "13/06/2026 17:38:28",
-      "name": "Homepage",
-      "type": "ko",
-      "detail": "Erreur connexion"
-    },
-    {
-      "time": "13/06/2026 17:56:16",
-      "name": "Homepage",
-      "type": "recovery",
-      "detail": "Retour en ligne"
-    },
-    {
-      "time": "13/06/2026 18:54:55",
+      "time": "13/06/2026 18:30:52",
       "name": "Parcours",
       "type": "ko",
-      "detail": "Timeout après 5s",
-      "diagnostics": {
-        "dns_elapsed": 0.002,
-        "ip": "135.125.7.226",
-        "elapsed_http": 98.64,
-        "error_type": "TIMEOUT"
-      }
+      "detail": "Timeout"
     },
     {
-      "time": "13/06/2026 19:04:34",
+      "time": "13/06/2026 18:48:27",
       "name": "Parcours",
       "type": "recovery",
       "detail": "Retour en ligne"
     },
     {
-      "time": "13/06/2026 19:07:41",
-      "name": "Parcours",
-      "type": "ko",
-      "detail": "Timeout après 5s",
-      "diagnostics": {
-        "dns_elapsed": 0.002,
-        "ip": "135.125.7.226",
-        "elapsed_http": 85.12,
-        "error_type": "TIMEOUT"
-      }
-    },
-    {
-      "time": "13/06/2026 19:09:23",
-      "name": "Parcours",
-      "type": "recovery",
-      "detail": "Retour en ligne"
-    },
-    {
-      "time": "13/06/2026 19:58:55",
+      "time": "13/06/2026 19:31:35",
       "name": "Homepage",
       "type": "ko",
-      "detail": "Erreur de connexion",
-      "diagnostics": {
-        "dns_elapsed": 0.002,
-        "ip": "135.125.7.226",
-        "elapsed_http": 393.04,
-        "error_type": "CONNECTION_ERROR",
-        "error_detail": "('Connection aborted.', ConnectionResetError(54, 'Connection reset by peer'))"
-      }
+      "detail": "Temps de réponse trop long : 356.97s"
     },
     {
-      "time": "13/06/2026 20:05:46",
+      "time": "13/06/2026 19:42:02",
       "name": "Homepage",
       "type": "recovery",
       "detail": "Retour en ligne"
@@ -214,811 +141,811 @@
   "chart_data": {
     "Homepage": [
       {
-        "time": "20:26:28",
-        "elapsed": 0.12
-      },
-      {
-        "time": "20:26:40",
-        "elapsed": 0.13
-      },
-      {
-        "time": "20:26:52",
-        "elapsed": 1.5
-      },
-      {
-        "time": "20:27:04",
-        "elapsed": 0.13
-      },
-      {
-        "time": "20:27:16",
-        "elapsed": 0.13
-      },
-      {
-        "time": "20:27:27",
-        "elapsed": 0.14
-      },
-      {
-        "time": "20:27:39",
-        "elapsed": 0.14
-      },
-      {
-        "time": "20:27:50",
-        "elapsed": 0.14
-      },
-      {
-        "time": "20:28:02",
+        "time": "20:26:36",
         "elapsed": 0.15
       },
       {
-        "time": "20:28:14",
+        "time": "20:26:48",
+        "elapsed": 0.14
+      },
+      {
+        "time": "20:26:59",
         "elapsed": 0.13
       },
       {
-        "time": "20:28:25",
+        "time": "20:27:11",
+        "elapsed": 0.14
+      },
+      {
+        "time": "20:27:22",
         "elapsed": 0.16
       },
       {
-        "time": "20:28:37",
-        "elapsed": 0.14
-      },
-      {
-        "time": "20:28:48",
-        "elapsed": 0.11
-      },
-      {
-        "time": "20:29:00",
-        "elapsed": 0.15
-      },
-      {
-        "time": "20:29:11",
-        "elapsed": 0.14
-      },
-      {
-        "time": "20:29:23",
-        "elapsed": 0.14
-      },
-      {
-        "time": "20:29:34",
-        "elapsed": 0.13
-      },
-      {
-        "time": "20:29:46",
-        "elapsed": 0.13
-      },
-      {
-        "time": "20:29:57",
-        "elapsed": 0.14
-      },
-      {
-        "time": "20:30:09",
-        "elapsed": 0.29
-      },
-      {
-        "time": "20:30:21",
-        "elapsed": 0.16
-      },
-      {
-        "time": "20:30:33",
-        "elapsed": 0.44
-      },
-      {
-        "time": "20:30:45",
-        "elapsed": 0.13
-      },
-      {
-        "time": "20:30:56",
-        "elapsed": 0.14
-      },
-      {
-        "time": "20:31:08",
-        "elapsed": 0.15
-      },
-      {
-        "time": "20:31:20",
-        "elapsed": 0.12
-      },
-      {
-        "time": "20:31:31",
-        "elapsed": 0.15
-      },
-      {
-        "time": "20:31:43",
-        "elapsed": 0.13
-      },
-      {
-        "time": "20:31:54",
-        "elapsed": 0.13
-      },
-      {
-        "time": "20:32:06",
-        "elapsed": 0.17
-      },
-      {
-        "time": "20:32:17",
-        "elapsed": 0.14
-      },
-      {
-        "time": "20:32:29",
-        "elapsed": 0.51
-      },
-      {
-        "time": "20:32:41",
-        "elapsed": 0.15
-      },
-      {
-        "time": "20:32:52",
-        "elapsed": 0.14
-      },
-      {
-        "time": "20:33:04",
-        "elapsed": 0.14
-      },
-      {
-        "time": "20:33:15",
-        "elapsed": 0.14
-      },
-      {
-        "time": "20:33:27",
-        "elapsed": 0.14
-      },
-      {
-        "time": "20:33:38",
-        "elapsed": 0.14
-      },
-      {
-        "time": "20:33:50",
-        "elapsed": 0.15
-      },
-      {
-        "time": "20:34:01",
-        "elapsed": 0.14
-      },
-      {
-        "time": "20:34:13",
-        "elapsed": 0.15
-      },
-      {
-        "time": "20:34:25",
-        "elapsed": 0.14
-      },
-      {
-        "time": "20:34:36",
-        "elapsed": 0.14
-      },
-      {
-        "time": "20:34:48",
-        "elapsed": 0.14
-      },
-      {
-        "time": "20:34:59",
-        "elapsed": 0.14
-      },
-      {
-        "time": "20:35:11",
-        "elapsed": 0.15
-      },
-      {
-        "time": "20:35:22",
-        "elapsed": 0.14
-      },
-      {
-        "time": "20:35:34",
-        "elapsed": 0.14
-      },
-      {
-        "time": "20:35:45",
+        "time": "20:27:34",
         "elapsed": 0.19
       },
       {
-        "time": "20:35:57",
+        "time": "20:27:45",
+        "elapsed": 0.13
+      },
+      {
+        "time": "20:27:57",
+        "elapsed": 0.15
+      },
+      {
+        "time": "20:28:09",
+        "elapsed": 0.14
+      },
+      {
+        "time": "20:28:20",
+        "elapsed": 0.15
+      },
+      {
+        "time": "20:28:32",
         "elapsed": 0.12
       },
       {
-        "time": "20:36:09",
-        "elapsed": 0.16
-      },
-      {
-        "time": "20:36:20",
-        "elapsed": 0.13
-      },
-      {
-        "time": "20:36:32",
+        "time": "20:28:44",
         "elapsed": 0.14
       },
       {
-        "time": "20:36:43",
-        "elapsed": 0.13
+        "time": "20:28:55",
+        "elapsed": 0.17
       },
       {
-        "time": "20:36:55",
-        "elapsed": 0.13
+        "time": "20:29:07",
+        "elapsed": 0.16
       },
       {
-        "time": "20:37:06",
-        "elapsed": 0.28
+        "time": "20:29:18",
+        "elapsed": 0.24
       },
       {
-        "time": "20:37:18",
+        "time": "20:29:30",
+        "elapsed": 0.15
+      },
+      {
+        "time": "20:29:42",
+        "elapsed": 0.15
+      },
+      {
+        "time": "20:29:53",
+        "elapsed": 0.14
+      },
+      {
+        "time": "20:30:05",
+        "elapsed": 0.15
+      },
+      {
+        "time": "20:30:17",
+        "elapsed": 0.17
+      },
+      {
+        "time": "20:30:28",
+        "elapsed": 0.14
+      },
+      {
+        "time": "20:30:40",
         "elapsed": 0.12
       },
       {
-        "time": "20:37:30",
+        "time": "20:30:51",
         "elapsed": 0.14
       },
       {
-        "time": "20:37:42",
+        "time": "20:31:03",
         "elapsed": 0.14
       },
       {
-        "time": "20:37:53",
+        "time": "20:31:14",
+        "elapsed": 0.14
+      },
+      {
+        "time": "20:31:26",
         "elapsed": 0.13
       },
       {
-        "time": "20:38:05",
-        "elapsed": 0.15
-      },
-      {
-        "time": "20:38:16",
-        "elapsed": 0.14
-      },
-      {
-        "time": "20:38:28",
-        "elapsed": 0.14
-      },
-      {
-        "time": "20:38:39",
-        "elapsed": 0.15
-      },
-      {
-        "time": "20:38:51",
+        "time": "20:31:37",
         "elapsed": 0.16
       },
       {
-        "time": "20:39:02",
+        "time": "20:31:49",
+        "elapsed": 0.16
+      },
+      {
+        "time": "20:32:01",
+        "elapsed": 0.14
+      },
+      {
+        "time": "20:32:12",
+        "elapsed": 0.16
+      },
+      {
+        "time": "20:32:24",
+        "elapsed": 0.14
+      },
+      {
+        "time": "20:32:35",
+        "elapsed": 0.16
+      },
+      {
+        "time": "20:32:47",
         "elapsed": 0.13
       },
       {
-        "time": "20:39:14",
-        "elapsed": 0.13
+        "time": "20:32:59",
+        "elapsed": 0.17
       },
       {
-        "time": "20:39:26",
+        "time": "20:33:10",
+        "elapsed": 0.16
+      },
+      {
+        "time": "20:33:22",
+        "elapsed": 0.14
+      },
+      {
+        "time": "20:33:33",
         "elapsed": 0.15
       },
       {
-        "time": "20:39:37",
+        "time": "20:33:45",
         "elapsed": 0.14
       },
       {
-        "time": "20:39:49",
+        "time": "20:33:56",
+        "elapsed": 0.16
+      },
+      {
+        "time": "20:34:08",
+        "elapsed": 0.17
+      },
+      {
+        "time": "20:34:20",
+        "elapsed": 0.16
+      },
+      {
+        "time": "20:34:31",
+        "elapsed": 0.14
+      },
+      {
+        "time": "20:34:43",
         "elapsed": 0.15
       },
       {
-        "time": "20:40:00",
+        "time": "20:34:54",
+        "elapsed": 0.16
+      },
+      {
+        "time": "20:35:06",
         "elapsed": 0.14
       },
       {
-        "time": "20:40:12",
-        "elapsed": 0.13
-      },
-      {
-        "time": "20:40:24",
-        "elapsed": 0.13
-      },
-      {
-        "time": "20:40:35",
+        "time": "20:35:17",
         "elapsed": 0.14
       },
       {
-        "time": "20:40:47",
+        "time": "20:35:29",
         "elapsed": 0.14
       },
       {
-        "time": "20:40:58",
-        "elapsed": 0.14
+        "time": "20:35:40",
+        "elapsed": 0.17
       },
       {
-        "time": "20:41:10",
+        "time": "20:35:52",
         "elapsed": 0.15
       },
       {
-        "time": "20:41:22",
+        "time": "20:36:04",
+        "elapsed": 0.15
+      },
+      {
+        "time": "20:36:15",
         "elapsed": 0.14
       },
       {
-        "time": "20:41:33",
+        "time": "20:36:27",
+        "elapsed": 0.35
+      },
+      {
+        "time": "20:36:39",
+        "elapsed": 0.14
+      },
+      {
+        "time": "20:36:50",
+        "elapsed": 0.14
+      },
+      {
+        "time": "20:37:02",
+        "elapsed": 0.63
+      },
+      {
+        "time": "20:37:14",
+        "elapsed": 0.14
+      },
+      {
+        "time": "20:37:25",
+        "elapsed": 0.13
+      },
+      {
+        "time": "20:37:37",
+        "elapsed": 0.14
+      },
+      {
+        "time": "20:37:48",
+        "elapsed": 0.14
+      },
+      {
+        "time": "20:38:00",
+        "elapsed": 0.15
+      },
+      {
+        "time": "20:38:12",
+        "elapsed": 0.19
+      },
+      {
+        "time": "20:38:23",
         "elapsed": 0.2
       },
       {
-        "time": "20:41:45",
+        "time": "20:38:35",
         "elapsed": 0.14
       },
       {
-        "time": "20:41:57",
-        "elapsed": 0.13
+        "time": "20:38:46",
+        "elapsed": 0.14
       },
       {
-        "time": "20:42:08",
-        "elapsed": 0.18
+        "time": "20:38:58",
+        "elapsed": 0.14
       },
       {
-        "time": "20:42:20",
+        "time": "20:39:10",
+        "elapsed": 0.16
+      },
+      {
+        "time": "20:39:21",
+        "elapsed": 0.14
+      },
+      {
+        "time": "20:39:33",
+        "elapsed": 0.12
+      },
+      {
+        "time": "20:39:44",
+        "elapsed": 0.57
+      },
+      {
+        "time": "20:39:56",
+        "elapsed": 0.15
+      },
+      {
+        "time": "20:40:08",
+        "elapsed": 0.15
+      },
+      {
+        "time": "20:40:20",
+        "elapsed": 0.15
+      },
+      {
+        "time": "20:40:31",
+        "elapsed": 0.14
+      },
+      {
+        "time": "20:40:43",
+        "elapsed": 0.14
+      },
+      {
+        "time": "20:40:54",
+        "elapsed": 0.15
+      },
+      {
+        "time": "20:41:06",
+        "elapsed": 0.32
+      },
+      {
+        "time": "20:41:18",
+        "elapsed": 0.14
+      },
+      {
+        "time": "20:41:29",
         "elapsed": 0.2
       },
       {
-        "time": "20:42:32",
+        "time": "20:41:41",
         "elapsed": 0.14
       },
       {
-        "time": "20:42:44",
+        "time": "20:41:53",
+        "elapsed": 0.3
+      },
+      {
+        "time": "20:42:05",
+        "elapsed": 0.15
+      },
+      {
+        "time": "20:42:16",
+        "elapsed": 0.23
+      },
+      {
+        "time": "20:42:28",
+        "elapsed": 0.34
+      },
+      {
+        "time": "20:42:40",
+        "elapsed": 0.16
+      },
+      {
+        "time": "20:42:52",
+        "elapsed": 0.49
+      },
+      {
+        "time": "20:43:05",
+        "elapsed": 0.16
+      },
+      {
+        "time": "20:43:17",
+        "elapsed": 0.41
+      },
+      {
+        "time": "20:43:28",
+        "elapsed": 0.14
+      },
+      {
+        "time": "20:43:40",
+        "elapsed": 0.15
+      },
+      {
+        "time": "20:43:52",
+        "elapsed": 0.36
+      },
+      {
+        "time": "20:44:04",
+        "elapsed": 0.16
+      },
+      {
+        "time": "20:44:15",
+        "elapsed": 0.31
+      },
+      {
+        "time": "20:44:27",
+        "elapsed": 0.14
+      },
+      {
+        "time": "20:44:39",
+        "elapsed": 0.55
+      },
+      {
+        "time": "20:44:51",
+        "elapsed": 0.19
+      },
+      {
+        "time": "20:45:03",
+        "elapsed": 0.24
+      },
+      {
+        "time": "20:45:14",
+        "elapsed": 0.33
+      },
+      {
+        "time": "20:45:26",
         "elapsed": 0.22
       },
       {
-        "time": "20:42:55",
-        "elapsed": 0.25
+        "time": "20:45:38",
+        "elapsed": 0.16
       },
       {
-        "time": "20:43:07",
-        "elapsed": 0.14
-      },
-      {
-        "time": "20:43:20",
-        "elapsed": 0.17
-      },
-      {
-        "time": "20:43:32",
-        "elapsed": 0.14
-      },
-      {
-        "time": "20:43:44",
-        "elapsed": 0.14
-      },
-      {
-        "time": "20:43:55",
-        "elapsed": 0.37
-      },
-      {
-        "time": "20:44:07",
-        "elapsed": 0.14
-      },
-      {
-        "time": "20:44:19",
-        "elapsed": 0.19
-      },
-      {
-        "time": "20:44:31",
-        "elapsed": 0.2
-      },
-      {
-        "time": "20:44:42",
-        "elapsed": 0.13
-      },
-      {
-        "time": "20:44:54",
-        "elapsed": 0.14
-      },
-      {
-        "time": "20:45:06",
-        "elapsed": 0.2
-      },
-      {
-        "time": "20:45:18",
-        "elapsed": 0.14
-      },
-      {
-        "time": "20:45:29",
-        "elapsed": 0.13
-      },
-      {
-        "time": "20:45:41",
-        "elapsed": 0.13
+        "time": "20:45:49",
+        "elapsed": 0.16
       }
     ],
     "Parcours": [
       {
-        "time": "20:26:28",
+        "time": "20:26:36",
+        "elapsed": 0.12
+      },
+      {
+        "time": "20:26:48",
+        "elapsed": 0.12
+      },
+      {
+        "time": "20:26:59",
         "elapsed": 0.13
       },
       {
-        "time": "20:26:40",
+        "time": "20:27:11",
+        "elapsed": 0.14
+      },
+      {
+        "time": "20:27:22",
         "elapsed": 0.13
       },
       {
-        "time": "20:26:52",
+        "time": "20:27:34",
         "elapsed": 0.16
       },
       {
-        "time": "20:27:04",
+        "time": "20:27:45",
         "elapsed": 0.13
       },
       {
-        "time": "20:27:16",
-        "elapsed": 0.13
-      },
-      {
-        "time": "20:27:27",
+        "time": "20:27:57",
         "elapsed": 0.14
       },
       {
-        "time": "20:27:39",
+        "time": "20:28:09",
+        "elapsed": 0.14
+      },
+      {
+        "time": "20:28:20",
         "elapsed": 0.15
       },
       {
-        "time": "20:27:50",
-        "elapsed": 0.13
-      },
-      {
-        "time": "20:28:02",
-        "elapsed": 0.15
-      },
-      {
-        "time": "20:28:14",
-        "elapsed": 0.14
-      },
-      {
-        "time": "20:28:25",
-        "elapsed": 0.13
-      },
-      {
-        "time": "20:28:37",
-        "elapsed": 0.13
-      },
-      {
-        "time": "20:28:48",
-        "elapsed": 0.14
-      },
-      {
-        "time": "20:29:00",
-        "elapsed": 0.14
-      },
-      {
-        "time": "20:29:11",
-        "elapsed": 0.14
-      },
-      {
-        "time": "20:29:23",
-        "elapsed": 0.13
-      },
-      {
-        "time": "20:29:34",
+        "time": "20:28:32",
         "elapsed": 0.12
       },
       {
-        "time": "20:29:46",
-        "elapsed": 0.13
-      },
-      {
-        "time": "20:29:57",
-        "elapsed": 0.13
-      },
-      {
-        "time": "20:30:09",
-        "elapsed": 0.27
-      },
-      {
-        "time": "20:30:21",
-        "elapsed": 0.14
-      },
-      {
-        "time": "20:30:33",
-        "elapsed": 0.35
-      },
-      {
-        "time": "20:30:45",
-        "elapsed": 0.13
-      },
-      {
-        "time": "20:30:56",
-        "elapsed": 0.14
-      },
-      {
-        "time": "20:31:08",
-        "elapsed": 0.13
-      },
-      {
-        "time": "20:31:20",
-        "elapsed": 0.12
-      },
-      {
-        "time": "20:31:31",
-        "elapsed": 0.14
-      },
-      {
-        "time": "20:31:43",
-        "elapsed": 0.19
-      },
-      {
-        "time": "20:31:54",
-        "elapsed": 0.13
-      },
-      {
-        "time": "20:32:06",
-        "elapsed": 0.14
-      },
-      {
-        "time": "20:32:17",
-        "elapsed": 0.14
-      },
-      {
-        "time": "20:32:29",
-        "elapsed": 0.14
-      },
-      {
-        "time": "20:32:41",
-        "elapsed": 0.14
-      },
-      {
-        "time": "20:32:52",
-        "elapsed": 0.13
-      },
-      {
-        "time": "20:33:04",
-        "elapsed": 0.14
-      },
-      {
-        "time": "20:33:15",
-        "elapsed": 0.15
-      },
-      {
-        "time": "20:33:27",
-        "elapsed": 0.14
-      },
-      {
-        "time": "20:33:38",
-        "elapsed": 0.13
-      },
-      {
-        "time": "20:33:50",
-        "elapsed": 0.14
-      },
-      {
-        "time": "20:34:01",
-        "elapsed": 0.13
-      },
-      {
-        "time": "20:34:13",
-        "elapsed": 0.13
-      },
-      {
-        "time": "20:34:25",
-        "elapsed": 0.13
-      },
-      {
-        "time": "20:34:36",
-        "elapsed": 0.13
-      },
-      {
-        "time": "20:34:48",
-        "elapsed": 0.14
-      },
-      {
-        "time": "20:34:59",
-        "elapsed": 0.14
-      },
-      {
-        "time": "20:35:11",
+        "time": "20:28:44",
         "elapsed": 0.16
       },
       {
-        "time": "20:35:22",
-        "elapsed": 0.13
-      },
-      {
-        "time": "20:35:34",
-        "elapsed": 0.13
-      },
-      {
-        "time": "20:35:45",
-        "elapsed": 0.13
-      },
-      {
-        "time": "20:35:57",
-        "elapsed": 0.12
-      },
-      {
-        "time": "20:36:09",
-        "elapsed": 0.14
-      },
-      {
-        "time": "20:36:20",
-        "elapsed": 0.13
-      },
-      {
-        "time": "20:36:32",
-        "elapsed": 0.13
-      },
-      {
-        "time": "20:36:43",
-        "elapsed": 0.12
-      },
-      {
-        "time": "20:36:55",
-        "elapsed": 0.13
-      },
-      {
-        "time": "20:37:06",
-        "elapsed": 0.35
-      },
-      {
-        "time": "20:37:18",
+        "time": "20:28:55",
         "elapsed": 0.15
       },
       {
-        "time": "20:37:30",
+        "time": "20:29:07",
+        "elapsed": 0.16
+      },
+      {
+        "time": "20:29:18",
         "elapsed": 0.14
       },
       {
-        "time": "20:37:42",
-        "elapsed": 0.14
-      },
-      {
-        "time": "20:37:53",
-        "elapsed": 0.12
-      },
-      {
-        "time": "20:38:05",
-        "elapsed": 0.14
-      },
-      {
-        "time": "20:38:16",
-        "elapsed": 0.15
-      },
-      {
-        "time": "20:38:28",
-        "elapsed": 0.14
-      },
-      {
-        "time": "20:38:39",
-        "elapsed": 0.15
-      },
-      {
-        "time": "20:38:51",
-        "elapsed": 0.14
-      },
-      {
-        "time": "20:39:02",
+        "time": "20:29:30",
         "elapsed": 0.13
       },
       {
-        "time": "20:39:14",
-        "elapsed": 0.15
-      },
-      {
-        "time": "20:39:26",
-        "elapsed": 0.14
-      },
-      {
-        "time": "20:39:37",
-        "elapsed": 0.14
-      },
-      {
-        "time": "20:39:49",
-        "elapsed": 0.14
-      },
-      {
-        "time": "20:40:00",
+        "time": "20:29:42",
         "elapsed": 0.13
       },
       {
-        "time": "20:40:12",
-        "elapsed": 0.14
-      },
-      {
-        "time": "20:40:24",
-        "elapsed": 0.12
-      },
-      {
-        "time": "20:40:35",
-        "elapsed": 0.14
-      },
-      {
-        "time": "20:40:47",
-        "elapsed": 0.14
-      },
-      {
-        "time": "20:40:58",
-        "elapsed": 0.14
-      },
-      {
-        "time": "20:41:10",
-        "elapsed": 0.14
-      },
-      {
-        "time": "20:41:22",
-        "elapsed": 0.15
-      },
-      {
-        "time": "20:41:33",
-        "elapsed": 0.24
-      },
-      {
-        "time": "20:41:45",
-        "elapsed": 0.28
-      },
-      {
-        "time": "20:41:57",
+        "time": "20:29:53",
         "elapsed": 0.13
       },
       {
-        "time": "20:42:08",
-        "elapsed": 0.18
+        "time": "20:30:05",
+        "elapsed": 0.21
       },
       {
-        "time": "20:42:20",
+        "time": "20:30:17",
+        "elapsed": 0.14
+      },
+      {
+        "time": "20:30:28",
+        "elapsed": 0.13
+      },
+      {
+        "time": "20:30:40",
+        "elapsed": 0.13
+      },
+      {
+        "time": "20:30:51",
+        "elapsed": 0.14
+      },
+      {
+        "time": "20:31:03",
+        "elapsed": 0.14
+      },
+      {
+        "time": "20:31:14",
+        "elapsed": 0.14
+      },
+      {
+        "time": "20:31:26",
+        "elapsed": 0.21
+      },
+      {
+        "time": "20:31:37",
+        "elapsed": 0.14
+      },
+      {
+        "time": "20:31:49",
+        "elapsed": 0.13
+      },
+      {
+        "time": "20:32:01",
+        "elapsed": 0.14
+      },
+      {
+        "time": "20:32:12",
+        "elapsed": 0.14
+      },
+      {
+        "time": "20:32:24",
+        "elapsed": 0.15
+      },
+      {
+        "time": "20:32:35",
+        "elapsed": 0.15
+      },
+      {
+        "time": "20:32:47",
+        "elapsed": 0.15
+      },
+      {
+        "time": "20:32:59",
+        "elapsed": 0.15
+      },
+      {
+        "time": "20:33:10",
+        "elapsed": 0.16
+      },
+      {
+        "time": "20:33:22",
+        "elapsed": 0.13
+      },
+      {
+        "time": "20:33:33",
+        "elapsed": 0.14
+      },
+      {
+        "time": "20:33:45",
+        "elapsed": 0.14
+      },
+      {
+        "time": "20:33:56",
+        "elapsed": 0.14
+      },
+      {
+        "time": "20:34:08",
+        "elapsed": 0.15
+      },
+      {
+        "time": "20:34:20",
+        "elapsed": 0.13
+      },
+      {
+        "time": "20:34:31",
+        "elapsed": 0.14
+      },
+      {
+        "time": "20:34:43",
+        "elapsed": 0.14
+      },
+      {
+        "time": "20:34:54",
+        "elapsed": 0.14
+      },
+      {
+        "time": "20:35:06",
+        "elapsed": 0.13
+      },
+      {
+        "time": "20:35:17",
+        "elapsed": 0.13
+      },
+      {
+        "time": "20:35:29",
+        "elapsed": 0.14
+      },
+      {
+        "time": "20:35:40",
+        "elapsed": 0.14
+      },
+      {
+        "time": "20:35:52",
+        "elapsed": 0.13
+      },
+      {
+        "time": "20:36:04",
+        "elapsed": 0.13
+      },
+      {
+        "time": "20:36:15",
+        "elapsed": 0.14
+      },
+      {
+        "time": "20:36:27",
+        "elapsed": 0.32
+      },
+      {
+        "time": "20:36:39",
+        "elapsed": 0.14
+      },
+      {
+        "time": "20:36:50",
+        "elapsed": 0.14
+      },
+      {
+        "time": "20:37:02",
+        "elapsed": 0.13
+      },
+      {
+        "time": "20:37:14",
+        "elapsed": 0.14
+      },
+      {
+        "time": "20:37:25",
+        "elapsed": 0.13
+      },
+      {
+        "time": "20:37:37",
+        "elapsed": 0.14
+      },
+      {
+        "time": "20:37:48",
+        "elapsed": 0.15
+      },
+      {
+        "time": "20:38:00",
+        "elapsed": 0.14
+      },
+      {
+        "time": "20:38:12",
+        "elapsed": 0.14
+      },
+      {
+        "time": "20:38:23",
+        "elapsed": 0.13
+      },
+      {
+        "time": "20:38:35",
+        "elapsed": 0.14
+      },
+      {
+        "time": "20:38:46",
+        "elapsed": 0.14
+      },
+      {
+        "time": "20:38:58",
+        "elapsed": 0.14
+      },
+      {
+        "time": "20:39:10",
+        "elapsed": 0.14
+      },
+      {
+        "time": "20:39:21",
+        "elapsed": 0.13
+      },
+      {
+        "time": "20:39:33",
+        "elapsed": 0.13
+      },
+      {
+        "time": "20:39:44",
+        "elapsed": 0.13
+      },
+      {
+        "time": "20:39:56",
+        "elapsed": 0.13
+      },
+      {
+        "time": "20:40:08",
+        "elapsed": 0.13
+      },
+      {
+        "time": "20:40:20",
+        "elapsed": 0.14
+      },
+      {
+        "time": "20:40:31",
+        "elapsed": 0.13
+      },
+      {
+        "time": "20:40:43",
+        "elapsed": 0.13
+      },
+      {
+        "time": "20:40:54",
+        "elapsed": 0.13
+      },
+      {
+        "time": "20:41:06",
+        "elapsed": 0.14
+      },
+      {
+        "time": "20:41:18",
+        "elapsed": 0.13
+      },
+      {
+        "time": "20:41:29",
+        "elapsed": 0.14
+      },
+      {
+        "time": "20:41:41",
+        "elapsed": 0.15
+      },
+      {
+        "time": "20:41:53",
+        "elapsed": 0.16
+      },
+      {
+        "time": "20:42:05",
         "elapsed": 0.17
       },
       {
-        "time": "20:42:32",
-        "elapsed": 0.21
+        "time": "20:42:16",
+        "elapsed": 0.38
       },
       {
-        "time": "20:42:44",
-        "elapsed": 0.15
-      },
-      {
-        "time": "20:42:55",
-        "elapsed": 0.35
-      },
-      {
-        "time": "20:43:07",
-        "elapsed": 0.16
-      },
-      {
-        "time": "20:43:20",
-        "elapsed": 0.15
-      },
-      {
-        "time": "20:43:32",
-        "elapsed": 0.14
-      },
-      {
-        "time": "20:43:44",
+        "time": "20:42:28",
         "elapsed": 0.13
       },
       {
-        "time": "20:43:55",
-        "elapsed": 0.15
+        "time": "20:42:40",
+        "elapsed": 0.32
       },
       {
-        "time": "20:44:07",
-        "elapsed": 0.16
+        "time": "20:42:52",
+        "elapsed": 0.52
       },
       {
-        "time": "20:44:19",
-        "elapsed": 0.31
+        "time": "20:43:05",
+        "elapsed": 0.39
       },
       {
-        "time": "20:44:31",
+        "time": "20:43:17",
+        "elapsed": 0.19
+      },
+      {
+        "time": "20:43:28",
+        "elapsed": 0.13
+      },
+      {
+        "time": "20:43:40",
+        "elapsed": 0.27
+      },
+      {
+        "time": "20:43:52",
         "elapsed": 0.14
       },
       {
-        "time": "20:44:42",
-        "elapsed": 0.21
+        "time": "20:44:04",
+        "elapsed": 0.23
       },
       {
-        "time": "20:44:54",
+        "time": "20:44:15",
+        "elapsed": 0.16
+      },
+      {
+        "time": "20:44:27",
+        "elapsed": 0.15
+      },
+      {
+        "time": "20:44:39",
+        "elapsed": 0.16
+      },
+      {
+        "time": "20:44:51",
         "elapsed": 0.22
       },
       {
-        "time": "20:45:06",
+        "time": "20:45:03",
+        "elapsed": 0.14
+      },
+      {
+        "time": "20:45:14",
+        "elapsed": 0.22
+      },
+      {
+        "time": "20:45:26",
+        "elapsed": 0.14
+      },
+      {
+        "time": "20:45:38",
+        "elapsed": 0.14
+      },
+      {
+        "time": "20:45:49",
         "elapsed": 0.13
-      },
-      {
-        "time": "20:45:18",
-        "elapsed": 0.14
-      },
-      {
-        "time": "20:45:29",
-        "elapsed": 0.14
-      },
-      {
-        "time": "20:45:41",
-        "elapsed": 0.12
       }
     ]
   },
   "avg_response": {
-    "Homepage": 0.17,
-    "Parcours": 0.17
+    "Homepage": 0.25,
+    "Parcours": 0.22
   }
 }
