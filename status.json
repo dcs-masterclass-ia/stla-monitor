@@ -1,17 +1,17 @@
 {
-  "updated_at": "13/06/2026 21:08:02",
+  "updated_at": "13/06/2026 21:08:13",
   "statuses": {
     "Homepage": {
       "ok": true,
-      "reason": "OK (200) en 0.17s",
-      "elapsed": 0.17,
-      "checked_at": "13/06/2026 21:08:01",
+      "reason": "OK (200) en 0.14s",
+      "elapsed": 0.14,
+      "checked_at": "13/06/2026 21:08:13",
       "url": "https://www.retoma.opel.pt",
       "details": {
-        "dns_elapsed": 0.002,
+        "dns_elapsed": 0.028,
         "ip": "135.125.7.226",
         "http_status": 200,
-        "elapsed_http": 0.17,
+        "elapsed_http": 0.14,
         "elapsed_total": 0.17,
         "headers": {
           "server": "CloudFront",
@@ -27,7 +27,7 @@
       "ok": true,
       "reason": "OK (200) en 0.14s",
       "elapsed": 0.14,
-      "checked_at": "13/06/2026 21:08:01",
+      "checked_at": "13/06/2026 21:08:13",
       "url": "https://www.retoma.opel.pt/retoma",
       "details": {
         "dns_elapsed": 0.002,
@@ -213,10 +213,6 @@
   ],
   "chart_data": {
     "Homepage": [
-      {
-        "time": "20:48:38",
-        "elapsed": 0.68
-      },
       {
         "time": "20:48:50",
         "elapsed": 0.12
@@ -612,13 +608,13 @@
       {
         "time": "21:08:01",
         "elapsed": 0.17
+      },
+      {
+        "time": "21:08:13",
+        "elapsed": 0.14
       }
     ],
     "Parcours": [
-      {
-        "time": "20:48:38",
-        "elapsed": 0.13
-      },
       {
         "time": "20:48:50",
         "elapsed": 0.22
@@ -1014,11 +1010,15 @@
       {
         "time": "21:08:01",
         "elapsed": 0.14
+      },
+      {
+        "time": "21:08:13",
+        "elapsed": 0.14
       }
     ]
   },
   "avg_response": {
     "Homepage": 0.16,
-    "Parcours": 0.16
+    "Parcours": 0.15
   }
 }
