@@ -1,31 +1,48 @@
 {
-  "updated_at": "15/06/2026 02:54:54",
+  "updated_at": "15/06/2026 02:56:00",
   "statuses": {
     "Homepage": {
-      "ok": false,
-      "reason": "Timeout après 5s",
-      "elapsed": 919.81,
-      "checked_at": "15/06/2026 02:23:20",
+      "ok": true,
+      "reason": "OK (200) en 2.35s",
+      "elapsed": 2.35,
+      "checked_at": "15/06/2026 02:55:57",
       "url": "https://www.retoma.opel.pt",
       "details": {
-        "dns_elapsed": 0.042,
+        "dns_elapsed": 0.048,
         "ip": "135.125.7.226",
-        "elapsed_http": 919.81,
-        "error_type": "TIMEOUT"
+        "http_status": 200,
+        "elapsed_http": 2.35,
+        "elapsed_total": 2.4,
+        "headers": {
+          "server": "CloudFront",
+          "content-type": "text/html; charset=utf-8",
+          "cache-control": "public, max-age=300, s-maxage=31536000, stale-while-revalidate=86400",
+          "x-cache": "Hit from cloudfront",
+          "cf-ray": "—"
+        },
+        "error_type": null
       }
     },
     "Parcours": {
-      "ok": false,
-      "reason": "Erreur de connexion",
-      "elapsed": 972.61,
-      "checked_at": "15/06/2026 02:23:20",
+      "ok": true,
+      "reason": "OK (200) en 0.18s",
+      "elapsed": 0.18,
+      "checked_at": "15/06/2026 02:55:57",
       "url": "https://www.retoma.opel.pt/retoma",
       "details": {
-        "dns_elapsed": 0.042,
+        "dns_elapsed": 0.002,
         "ip": "135.125.7.226",
-        "elapsed_http": 972.61,
-        "error_type": "CONNECTION_ERROR",
-        "error_detail": "('Connection aborted.', ConnectionResetError(54, 'Connection reset by peer'))"
+        "http_status": 200,
+        "elapsed_http": 0.18,
+        "elapsed_total": 0.18,
+        "headers": {
+          "server": "CloudFront",
+          "content-type": "text/html; charset=utf-8",
+          "cache-control": "public, max-age=300, s-maxage=31536000, stale-while-revalidate=86400",
+          "x-cache": "Hit from cloudfront",
+          "cf-ray": "—"
+        },
+        "error_type": null
       }
     }
   },
@@ -217,14 +234,22 @@
         "error_type": "CONNECTION_ERROR",
         "error_detail": "('Connection aborted.', ConnectionResetError(54, 'Connection reset by peer'))"
       }
+    },
+    {
+      "time": "15/06/2026 02:55:57",
+      "name": "Homepage",
+      "type": "recovery",
+      "detail": "Retour en ligne"
+    },
+    {
+      "time": "15/06/2026 02:55:57",
+      "name": "Parcours",
+      "type": "recovery",
+      "detail": "Retour en ligne"
     }
   ],
   "chart_data": {
     "Homepage": [
-      {
-        "time": "01:09:44",
-        "elapsed": 0.14
-      },
       {
         "time": "01:09:56",
         "elapsed": 0.14
@@ -620,13 +645,13 @@
       {
         "time": "02:23:20",
         "elapsed": 919.81
+      },
+      {
+        "time": "02:55:57",
+        "elapsed": 2.35
       }
     ],
     "Parcours": [
-      {
-        "time": "01:09:44",
-        "elapsed": 0.14
-      },
       {
         "time": "01:09:56",
         "elapsed": 0.13
@@ -1022,11 +1047,15 @@
       {
         "time": "02:23:20",
         "elapsed": 972.61
+      },
+      {
+        "time": "02:55:57",
+        "elapsed": 0.18
       }
     ]
   },
   "avg_response": {
-    "Homepage": 46.25,
+    "Homepage": 46.36,
     "Parcours": 48.78
   }
 }
