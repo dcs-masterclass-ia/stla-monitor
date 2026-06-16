@@ -1,18 +1,18 @@
 {
-  "updated_at": "16/06/2026 20:46:59",
+  "updated_at": "16/06/2026 20:47:42",
   "statuses": {
     "Homepage": {
       "ok": true,
-      "reason": "OK (200) en 0.25s",
-      "elapsed": 0.25,
-      "checked_at": "16/06/2026 20:46:58",
+      "reason": "OK (200) en 0.14s",
+      "elapsed": 0.14,
+      "checked_at": "16/06/2026 20:47:10",
       "url": "https://www.retoma.opel.pt",
       "details": {
-        "dns_elapsed": 0.003,
+        "dns_elapsed": 0.002,
         "ip": "135.125.7.226",
         "http_status": 200,
-        "elapsed_http": 0.25,
-        "elapsed_total": 0.25,
+        "elapsed_http": 0.14,
+        "elapsed_total": 0.14,
         "headers": {
           "server": "CloudFront",
           "content-type": "text/html; charset=utf-8",
@@ -24,17 +24,17 @@
       }
     },
     "Parcours": {
-      "ok": true,
-      "reason": "OK (200) en 0.17s",
-      "elapsed": 0.17,
-      "checked_at": "16/06/2026 20:46:58",
+      "ok": false,
+      "reason": "Temps de réponse trop long : 31.25s",
+      "elapsed": 31.25,
+      "checked_at": "16/06/2026 20:47:10",
       "url": "https://www.retoma.opel.pt/retoma",
       "details": {
         "dns_elapsed": 0.002,
         "ip": "135.125.7.226",
         "http_status": 200,
-        "elapsed_http": 0.17,
-        "elapsed_total": 0.17,
+        "elapsed_http": 31.25,
+        "elapsed_total": 31.25,
         "headers": {
           "server": "CloudFront",
           "content-type": "text/html; charset=utf-8",
@@ -42,7 +42,7 @@
           "x-cache": "Hit from cloudfront",
           "cf-ray": "—"
         },
-        "error_type": null
+        "error_type": "TIMEOUT_SOFT"
       }
     }
   },
@@ -351,14 +351,31 @@
       "name": "Parcours",
       "type": "recovery",
       "detail": "Retour en ligne"
+    },
+    {
+      "time": "16/06/2026 20:47:10",
+      "name": "Parcours",
+      "type": "ko",
+      "detail": "Temps de réponse trop long : 31.25s",
+      "diagnostics": {
+        "dns_elapsed": 0.002,
+        "ip": "135.125.7.226",
+        "http_status": 200,
+        "elapsed_http": 31.25,
+        "elapsed_total": 31.25,
+        "headers": {
+          "server": "CloudFront",
+          "content-type": "text/html; charset=utf-8",
+          "cache-control": "public, max-age=300, s-maxage=31536000, stale-while-revalidate=86400",
+          "x-cache": "Hit from cloudfront",
+          "cf-ray": "—"
+        },
+        "error_type": "TIMEOUT_SOFT"
+      }
     }
   ],
   "chart_data": {
     "Homepage": [
-      {
-        "time": "18:12:23",
-        "elapsed": 0.16
-      },
       {
         "time": "18:12:35",
         "elapsed": 0.21
@@ -754,13 +771,13 @@
       {
         "time": "20:46:58",
         "elapsed": 0.25
+      },
+      {
+        "time": "20:47:10",
+        "elapsed": 0.14
       }
     ],
     "Parcours": [
-      {
-        "time": "18:12:23",
-        "elapsed": 0.18
-      },
       {
         "time": "18:12:35",
         "elapsed": 0.15
@@ -1156,11 +1173,15 @@
       {
         "time": "20:46:58",
         "elapsed": 0.17
+      },
+      {
+        "time": "20:47:10",
+        "elapsed": 31.25
       }
     ]
   },
   "avg_response": {
-    "Homepage": 0.27,
-    "Parcours": 0.14
+    "Homepage": 0.26,
+    "Parcours": 1.69
   }
 }
