@@ -1,18 +1,18 @@
 {
-  "updated_at": "16/06/2026 15:28:29",
+  "updated_at": "16/06/2026 15:28:41",
   "statuses": {
     "Homepage": {
       "ok": true,
-      "reason": "OK (200) en 0.23s",
-      "elapsed": 0.23,
-      "checked_at": "16/06/2026 15:28:28",
+      "reason": "OK (200) en 0.29s",
+      "elapsed": 0.29,
+      "checked_at": "16/06/2026 15:28:40",
       "url": "https://www.retoma.opel.pt",
       "details": {
         "dns_elapsed": 0.002,
         "ip": "135.125.7.226",
         "http_status": 200,
-        "elapsed_http": 0.23,
-        "elapsed_total": 0.23,
+        "elapsed_http": 0.29,
+        "elapsed_total": 0.29,
         "headers": {
           "server": "CloudFront",
           "content-type": "text/html; charset=utf-8",
@@ -25,16 +25,16 @@
     },
     "Parcours": {
       "ok": true,
-      "reason": "OK (200) en 0.15s",
-      "elapsed": 0.15,
-      "checked_at": "16/06/2026 15:28:28",
+      "reason": "OK (200) en 0.16s",
+      "elapsed": 0.16,
+      "checked_at": "16/06/2026 15:28:40",
       "url": "https://www.retoma.opel.pt/retoma",
       "details": {
         "dns_elapsed": 0.002,
         "ip": "135.125.7.226",
         "http_status": 200,
-        "elapsed_http": 0.15,
-        "elapsed_total": 0.15,
+        "elapsed_http": 0.16,
+        "elapsed_total": 0.16,
         "headers": {
           "server": "CloudFront",
           "content-type": "text/html; charset=utf-8",
@@ -287,10 +287,6 @@
   ],
   "chart_data": {
     "Homepage": [
-      {
-        "time": "15:08:34",
-        "elapsed": 0.17
-      },
       {
         "time": "15:08:46",
         "elapsed": 0.27
@@ -686,13 +682,13 @@
       {
         "time": "15:28:28",
         "elapsed": 0.23
+      },
+      {
+        "time": "15:28:40",
+        "elapsed": 0.29
       }
     ],
     "Parcours": [
-      {
-        "time": "15:08:34",
-        "elapsed": 0.32
-      },
       {
         "time": "15:08:46",
         "elapsed": 0.29
@@ -1088,11 +1084,15 @@
       {
         "time": "15:28:28",
         "elapsed": 0.15
+      },
+      {
+        "time": "15:28:40",
+        "elapsed": 0.16
       }
     ]
   },
   "avg_response": {
     "Homepage": 0.25,
-    "Parcours": 0.23
+    "Parcours": 0.22
   }
 }
