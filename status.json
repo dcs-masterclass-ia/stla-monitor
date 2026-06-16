@@ -1,18 +1,18 @@
 {
-  "updated_at": "16/06/2026 20:47:42",
+  "updated_at": "16/06/2026 20:47:56",
   "statuses": {
     "Homepage": {
       "ok": true,
       "reason": "OK (200) en 0.14s",
       "elapsed": 0.14,
-      "checked_at": "16/06/2026 20:47:10",
+      "checked_at": "16/06/2026 20:47:56",
       "url": "https://www.retoma.opel.pt",
       "details": {
-        "dns_elapsed": 0.002,
+        "dns_elapsed": 0.021,
         "ip": "135.125.7.226",
         "http_status": 200,
         "elapsed_http": 0.14,
-        "elapsed_total": 0.14,
+        "elapsed_total": 0.16,
         "headers": {
           "server": "CloudFront",
           "content-type": "text/html; charset=utf-8",
@@ -24,17 +24,17 @@
       }
     },
     "Parcours": {
-      "ok": false,
-      "reason": "Temps de réponse trop long : 31.25s",
-      "elapsed": 31.25,
-      "checked_at": "16/06/2026 20:47:10",
+      "ok": true,
+      "reason": "OK (200) en 0.13s",
+      "elapsed": 0.13,
+      "checked_at": "16/06/2026 20:47:56",
       "url": "https://www.retoma.opel.pt/retoma",
       "details": {
-        "dns_elapsed": 0.002,
+        "dns_elapsed": 0.001,
         "ip": "135.125.7.226",
         "http_status": 200,
-        "elapsed_http": 31.25,
-        "elapsed_total": 31.25,
+        "elapsed_http": 0.13,
+        "elapsed_total": 0.13,
         "headers": {
           "server": "CloudFront",
           "content-type": "text/html; charset=utf-8",
@@ -42,7 +42,7 @@
           "x-cache": "Hit from cloudfront",
           "cf-ray": "—"
         },
-        "error_type": "TIMEOUT_SOFT"
+        "error_type": null
       }
     }
   },
@@ -372,14 +372,16 @@
         },
         "error_type": "TIMEOUT_SOFT"
       }
+    },
+    {
+      "time": "16/06/2026 20:47:56",
+      "name": "Parcours",
+      "type": "recovery",
+      "detail": "Retour en ligne"
     }
   ],
   "chart_data": {
     "Homepage": [
-      {
-        "time": "18:12:35",
-        "elapsed": 0.21
-      },
       {
         "time": "18:12:47",
         "elapsed": 0.19
@@ -775,13 +777,13 @@
       {
         "time": "20:47:10",
         "elapsed": 0.14
+      },
+      {
+        "time": "20:47:56",
+        "elapsed": 0.14
       }
     ],
     "Parcours": [
-      {
-        "time": "18:12:35",
-        "elapsed": 0.15
-      },
       {
         "time": "18:12:47",
         "elapsed": 0.14
@@ -1177,6 +1179,10 @@
       {
         "time": "20:47:10",
         "elapsed": 31.25
+      },
+      {
+        "time": "20:47:56",
+        "elapsed": 0.13
       }
     ]
   },
