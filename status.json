@@ -1,48 +1,28 @@
 {
-  "updated_at": "16/06/2026 16:09:43",
+  "updated_at": "16/06/2026 16:11:11",
   "statuses": {
     "Homepage": {
-      "ok": true,
-      "reason": "OK (200) en 0.21s",
-      "elapsed": 0.21,
-      "checked_at": "16/06/2026 16:09:43",
+      "ok": false,
+      "reason": "Erreur DNS — impossible de résoudre le nom de domaine",
+      "elapsed": 0.002,
+      "checked_at": "16/06/2026 16:11:11",
       "url": "https://www.retoma.opel.pt",
       "details": {
         "dns_elapsed": 0.002,
-        "ip": "135.125.7.226",
-        "http_status": 200,
-        "elapsed_http": 0.21,
-        "elapsed_total": 0.21,
-        "headers": {
-          "server": "CloudFront",
-          "content-type": "text/html; charset=utf-8",
-          "cache-control": "public, max-age=300, s-maxage=31536000, stale-while-revalidate=86400",
-          "x-cache": "Hit from cloudfront",
-          "cf-ray": "—"
-        },
-        "error_type": null
+        "ip": "NON RÉSOLU",
+        "error_type": "DNS"
       }
     },
     "Parcours": {
-      "ok": true,
-      "reason": "OK (200) en 0.18s",
-      "elapsed": 0.18,
-      "checked_at": "16/06/2026 16:09:43",
+      "ok": false,
+      "reason": "Erreur DNS — impossible de résoudre le nom de domaine",
+      "elapsed": 0.001,
+      "checked_at": "16/06/2026 16:11:11",
       "url": "https://www.retoma.opel.pt/retoma",
       "details": {
         "dns_elapsed": 0.001,
-        "ip": "135.125.7.226",
-        "http_status": 200,
-        "elapsed_http": 0.18,
-        "elapsed_total": 0.18,
-        "headers": {
-          "server": "CloudFront",
-          "content-type": "text/html; charset=utf-8",
-          "cache-control": "public, max-age=300, s-maxage=31536000, stale-while-revalidate=86400",
-          "x-cache": "Hit from cloudfront",
-          "cf-ray": "—"
-        },
-        "error_type": null
+        "ip": "NON RÉSOLU",
+        "error_type": "DNS"
       }
     }
   },
@@ -283,14 +263,32 @@
       "name": "Homepage",
       "type": "recovery",
       "detail": "Retour en ligne"
+    },
+    {
+      "time": "16/06/2026 16:11:11",
+      "name": "Homepage",
+      "type": "ko",
+      "detail": "Erreur DNS — impossible de résoudre le nom de domaine",
+      "diagnostics": {
+        "dns_elapsed": 0.002,
+        "ip": "NON RÉSOLU",
+        "error_type": "DNS"
+      }
+    },
+    {
+      "time": "16/06/2026 16:11:11",
+      "name": "Parcours",
+      "type": "ko",
+      "detail": "Erreur DNS — impossible de résoudre le nom de domaine",
+      "diagnostics": {
+        "dns_elapsed": 0.001,
+        "ip": "NON RÉSOLU",
+        "error_type": "DNS"
+      }
     }
   ],
   "chart_data": {
     "Homepage": [
-      {
-        "time": "15:49:46",
-        "elapsed": 0.21
-      },
       {
         "time": "15:49:58",
         "elapsed": 0.17
@@ -686,13 +684,13 @@
       {
         "time": "16:09:43",
         "elapsed": 0.21
+      },
+      {
+        "time": "16:11:11",
+        "elapsed": 0.002
       }
     ],
     "Parcours": [
-      {
-        "time": "15:49:46",
-        "elapsed": 0.14
-      },
       {
         "time": "15:49:58",
         "elapsed": 0.18
@@ -1088,11 +1086,15 @@
       {
         "time": "16:09:43",
         "elapsed": 0.18
+      },
+      {
+        "time": "16:11:11",
+        "elapsed": 0.001
       }
     ]
   },
   "avg_response": {
-    "Homepage": 0.2,
-    "Parcours": 0.2
+    "Homepage": 0.18,
+    "Parcours": 0.18
   }
 }
