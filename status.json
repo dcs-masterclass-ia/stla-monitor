@@ -1,18 +1,18 @@
 {
-  "updated_at": "16/06/2026 15:09:47",
+  "updated_at": "16/06/2026 15:09:59",
   "statuses": {
     "Homepage": {
       "ok": true,
-      "reason": "OK (200) en 0.26s",
-      "elapsed": 0.26,
-      "checked_at": "16/06/2026 15:09:47",
+      "reason": "OK (200) en 0.25s",
+      "elapsed": 0.25,
+      "checked_at": "16/06/2026 15:09:59",
       "url": "https://www.retoma.opel.pt",
       "details": {
-        "dns_elapsed": 0.042,
+        "dns_elapsed": 0.002,
         "ip": "135.125.7.226",
         "http_status": 200,
-        "elapsed_http": 0.26,
-        "elapsed_total": 0.3,
+        "elapsed_http": 0.25,
+        "elapsed_total": 0.25,
         "headers": {
           "server": "CloudFront",
           "content-type": "text/html; charset=utf-8",
@@ -25,16 +25,16 @@
     },
     "Parcours": {
       "ok": true,
-      "reason": "OK (200) en 0.25s",
-      "elapsed": 0.25,
-      "checked_at": "16/06/2026 15:09:47",
+      "reason": "OK (200) en 0.33s",
+      "elapsed": 0.33,
+      "checked_at": "16/06/2026 15:09:59",
       "url": "https://www.retoma.opel.pt/retoma",
       "details": {
-        "dns_elapsed": 0.001,
+        "dns_elapsed": 0.002,
         "ip": "135.125.7.226",
         "http_status": 200,
-        "elapsed_http": 0.25,
-        "elapsed_total": 0.25,
+        "elapsed_http": 0.33,
+        "elapsed_total": 0.33,
         "headers": {
           "server": "CloudFront",
           "content-type": "text/html; charset=utf-8",
@@ -287,10 +287,6 @@
   ],
   "chart_data": {
     "Homepage": [
-      {
-        "time": "14:47:53",
-        "elapsed": 0.36
-      },
       {
         "time": "14:48:06",
         "elapsed": 0.29
@@ -686,13 +682,13 @@
       {
         "time": "15:09:47",
         "elapsed": 0.26
+      },
+      {
+        "time": "15:09:59",
+        "elapsed": 0.25
       }
     ],
     "Parcours": [
-      {
-        "time": "14:47:53",
-        "elapsed": 0.79
-      },
       {
         "time": "14:48:06",
         "elapsed": 0.71
@@ -1088,6 +1084,10 @@
       {
         "time": "15:09:47",
         "elapsed": 0.25
+      },
+      {
+        "time": "15:09:59",
+        "elapsed": 0.33
       }
     ]
   },
