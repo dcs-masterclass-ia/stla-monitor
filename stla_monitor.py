@@ -42,7 +42,9 @@ GITHUB_REPO  = "dcs-masterclass-ia/stla-monitor"
 GITHUB_FILE  = "status.json"
 
 CHECK_INTERVAL_SECONDS      = 10
-RESPONSE_TIME_LIMIT_SECONDS = 5
+RESPONSE_TIME_LIMIT_SECONDS = 8   # Timeout TCP dur — au-delà le serveur est considéré mort
+SLOW_THRESHOLD_SECONDS      = 2   # Au-delà : SLOW (dégradé, alerte)
+VERY_SLOW_THRESHOLD_SECONDS = 4   # Au-delà : VERY_SLOW (KO)
 LOG_FILE    = "stla_monitor.log"
 MAX_HISTORY = 100
 MAX_CHART   = 100
@@ -188,7 +190,7 @@ def check_url(brand, page, url):
     try:
         response = requests.get(
             url,
-            timeout=RESPONSE_TIME_LIMIT_SECONDS,
+            timeout=RESPONSE_TIME_LIMIT_SECONDS,  # TCP timeout dur à 8s
             allow_redirects=True,
             verify=False,
             headers={
@@ -230,10 +232,16 @@ def check_url(brand, page, url):
             details["body_preview"] = response.text[:300].strip()
             return False, f"Erreur serveur HTTP {response.status_code}", elapsed_total, details
 
-        # Timeout soft
-        if elapsed_http > RESPONSE_TIME_LIMIT_SECONDS:
-            details["error_type"] = "SLOW_RESPONSE"
-            return False, f"Réponse trop lente : {elapsed_http}s", elapsed_total, details
+        # Réponse très lente → KO
+        if elapsed_http > VERY_SLOW_THRESHOLD_SECONDS:
+            details["error_type"] = "VERY_SLOW"
+            return False, f"Réponse très lente : {elapsed_http}s (seuil KO : {VERY_SLOW_THRESHOLD_SECONDS}s)", elapsed_total, details
+
+        # Réponse dégradée → warning mais OK
+        if elapsed_http > SLOW_THRESHOLD_SECONDS:
+            details["error_type"] = "SLOW"
+            details["warning"] = True
+            # On continue — pas un KO, juste un warning loggé
 
         # Contenu KO déguisé en 200
         body = response.text[:3000]
@@ -270,7 +278,7 @@ def check_url(brand, page, url):
     except requests.exceptions.Timeout:
         elapsed = round(time.time() - t1, 2)
         details["error_type"] = "TIMEOUT"
-        return False, f"Timeout après {RESPONSE_TIME_LIMIT_SECONDS}s", elapsed, details
+        return False, f"Pas de réponse du serveur après {RESPONSE_TIME_LIMIT_SECONDS}s (TCP timeout)", elapsed, details
 
     except requests.exceptions.TooManyRedirects:
         elapsed = round(time.time() - t1, 2)
