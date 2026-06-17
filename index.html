@@ -9,27 +9,35 @@
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4ff;min-height:100vh;padding:2rem 1.5rem;position:relative;overflow-x:hidden}
 .blob{position:fixed;border-radius:50%;filter:blur(100px);opacity:0.4;pointer-events:none;z-index:0}
-.blob1{width:400px;height:400px;background:#bfdbfe;top:-100px;left:-100px;animation:orbit1 22s ease-in-out infinite}
-.blob2{width:320px;height:320px;background:#e0e7ff;top:40%;right:-80px;animation:orbit2 18s ease-in-out infinite}
-.blob3{width:260px;height:260px;background:#fef9c3;bottom:60px;left:35%;animation:orbit3 26s ease-in-out infinite}
-@keyframes orbit1{0%,100%{transform:translate(0,0)}50%{transform:translate(40px,-30px)}}
-@keyframes orbit2{0%,100%{transform:translate(0,0)}50%{transform:translate(-30px,40px)}}
-@keyframes orbit3{0%,100%{transform:translate(0,0)}50%{transform:translate(20px,-40px)}}
-.wrap{max-width:780px;margin:0 auto;position:relative;z-index:1}
+.blob1{width:400px;height:400px;background:#bfdbfe;top:-100px;left:-100px;animation:o1 22s ease-in-out infinite}
+.blob2{width:320px;height:320px;background:#e0e7ff;top:40%;right:-80px;animation:o2 18s ease-in-out infinite}
+.blob3{width:260px;height:260px;background:#fef9c3;bottom:60px;left:35%;animation:o3 26s ease-in-out infinite}
+@keyframes o1{0%,100%{transform:translate(0,0)}50%{transform:translate(40px,-30px)}}
+@keyframes o2{0%,100%{transform:translate(0,0)}50%{transform:translate(-30px,40px)}}
+@keyframes o3{0%,100%{transform:translate(0,0)}50%{transform:translate(20px,-40px)}}
+.wrap{max-width:820px;margin:0 auto;position:relative;z-index:1}
 .glass{background:rgba(255,255,255,0.8);backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);border-radius:32px;border:none;box-shadow:0 8px 60px rgba(59,90,224,0.07),0 2px 12px rgba(0,0,0,0.04)}
-.header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.75rem}
 h1{font-size:32px;font-weight:900;letter-spacing:-0.04em;color:#111827;line-height:1.1}
 .ts{font-size:12px;color:#4b5563;margin-top:6px;display:flex;align-items:center;gap:6px}
 .pulse{width:8px;height:8px;border-radius:50%;background:#22c55e;display:inline-block;animation:pulse 2s ease-in-out infinite;flex-shrink:0}
 .pulse.dead{background:#ef4444;animation:none}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.4)}}
-.grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;margin-bottom:1.5rem}
+
+/* Sélecteur de marque */
+.brand-tabs{display:flex;gap:10px;margin:1.5rem 0 1.25rem}
+.brand-tab{padding:10px 22px;border-radius:100px;font-size:13px;font-weight:800;cursor:pointer;border:none;font-family:'Plus Jakarta Sans',sans-serif;transition:all .2s;background:rgba(255,255,255,0.7);color:#4b5563;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
+.brand-tab.active{background:#3b5ae0;color:#fff;box-shadow:0 4px 20px rgba(59,90,224,0.3)}
+.brand-tab:hover:not(.active){background:rgba(255,255,255,0.95)}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;margin-bottom:1.5rem}
 .kpi{padding:1.2rem 1.4rem}
 .kpi-label{font-size:11px;font-weight:500;color:#4b5563;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
 .kpi-val{font-size:28px;font-weight:900;letter-spacing:-0.03em;color:#111827}
 .kpi-val.ok{color:#16a34a}.kpi-val.ko{color:#dc2626}.kpi-val.blue{color:#3b5ae0}
 .kpi-sub{font-size:11px;color:#4b5563;margin-top:4px}
-.scard{padding:1rem 1.4rem;display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+
+.scard{padding:1rem 1.4rem;display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;cursor:pointer;transition:box-shadow .2s}
+.scard:hover{box-shadow:0 12px 60px rgba(59,90,224,0.12),0 2px 12px rgba(0,0,0,0.06)}
 .scard-left{display:flex;align-items:center;gap:14px}
 .icon{width:42px;height:42px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
 .icon.ok{background:#dcfce7}.icon.ko{background:#fee2e2}
@@ -38,19 +46,32 @@ h1{font-size:32px;font-weight:900;letter-spacing:-0.04em;color:#111827;line-heig
 .badge{display:inline-block;padding:4px 14px;border-radius:100px;font-size:11px;font-weight:800;letter-spacing:.04em}
 .badge.ok{background:#dcfce7;color:#166534}.badge.ko{background:#fee2e2;color:#991b1b}
 .resp-time{font-size:12px;color:#4b5563;margin-top:4px;text-align:right}
+
+/* Détail d'erreur expandable */
+.error-detail{display:none;padding:1rem 1.4rem;border-top:1px solid rgba(0,0,0,0.05);background:rgba(254,242,242,0.5);border-radius:0 0 24px 24px}
+.error-detail.show{display:block}
+.diag-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px 16px;margin-top:8px}
+.diag-item{font-size:11px;color:#4b5563}
+.diag-item b{color:#111827}
+.diag-body{margin-top:10px;font-size:11px;color:#991b1b;background:#fff1f2;border-radius:12px;padding:8px 12px;font-family:monospace;word-break:break-all}
+
 .chart-wrap{padding:1.4rem;margin-bottom:1.5rem}
 .section-title{font-size:13px;font-weight:800;color:#111827;letter-spacing:-0.02em;margin-bottom:1rem}
-.legend{display:flex;gap:16px;margin-top:10px}
+.legend{display:flex;gap:16px;margin-top:10px;flex-wrap:wrap}
 .leg-item{display:flex;align-items:center;gap:6px;font-size:11px;color:#4b5563;font-weight:500}
 .leg-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+
 .incidents{padding:1.4rem}
-.inc-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(0,0,0,0.05);font-size:12px;gap:8px}
+.inc-row{display:flex;justify-content:space-between;align-items:flex-start;padding:10px 0;border-bottom:1px solid rgba(0,0,0,0.05);font-size:12px;gap:8px}
 .inc-row:last-child{border-bottom:none}
 .inc-time{color:#4b5563;font-weight:500;min-width:110px;flex-shrink:0}
 .inc-desc{color:#111827;font-weight:500;flex:1}
+.inc-brand{font-size:10px;color:#4b5563;margin-top:2px}
 .callout{border-radius:12px;padding:5px 12px;font-size:11px;font-weight:800;white-space:nowrap}
 .callout.ok{background:#f0fdf4;color:#166534}.callout.ko{background:#fff1f2;color:#991b1b}
 .empty{color:#4b5563;font-size:13px;padding:1rem 0}
+
+.header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.5rem}
 </style>
 </head>
 <body>
@@ -59,47 +80,50 @@ h1{font-size:32px;font-weight:900;letter-spacing:-0.04em;color:#111827;line-heig
 <div class="blob blob3"></div>
 
 <div class="wrap">
-
   <div class="header">
     <div>
-      <h1>STLA Front V2</h1>
-      <div class="ts" id="ts"><span class="pulse" id="pulse"></span><span id="updated">Chargement...</span></div>
+      <h1>DCS Monitor</h1>
+      <div class="ts"><span class="pulse" id="pulse"></span><span id="updated">Chargement...</span></div>
     </div>
   </div>
 
-  <div class="grid4">
-    <div class="glass kpi"><div class="kpi-label">Homepage</div><div class="kpi-val" id="kpi-hp">—</div><div class="kpi-sub" id="kpi-hp-sub">—</div></div>
-    <div class="glass kpi"><div class="kpi-label">Parcours</div><div class="kpi-val" id="kpi-parc">—</div><div class="kpi-sub" id="kpi-parc-sub">—</div></div>
-    <div class="glass kpi"><div class="kpi-label">Incidents</div><div class="kpi-val blue" id="kpi-inc">—</div><div class="kpi-sub">enregistrés</div></div>
-    <div class="glass kpi"><div class="kpi-label">Moy. réponse</div><div class="kpi-val blue" id="kpi-avg">—</div><div class="kpi-sub">sur 20 derniers checks</div></div>
-  </div>
+  <!-- Sélecteur de marque -->
+  <div class="brand-tabs" id="brand-tabs"></div>
 
+  <!-- KPIs -->
+  <div class="grid" id="kpis"></div>
+
+  <!-- Status cards -->
   <div id="scards"></div>
 
+  <!-- Courbe -->
   <div class="glass chart-wrap">
     <div class="section-title">Temps de réponse — historique</div>
     <div style="position:relative;width:100%;height:180px">
-      <canvas id="rc" role="img" aria-label="Courbe du temps de réponse Homepage et Parcours">Chargement...</canvas>
+      <canvas id="rc"></canvas>
     </div>
-    <div class="legend">
-      <div class="leg-item"><span class="leg-dot" style="background:#3b5ae0"></span>Homepage</div>
-      <div class="leg-item"><span class="leg-dot" style="background:#0F6E56"></span>Parcours</div>
-    </div>
+    <div class="legend" id="legend"></div>
   </div>
 
+  <!-- Incidents -->
   <div class="glass incidents">
     <div class="section-title">Historique des incidents</div>
     <div id="history"><div class="empty">Chargement...</div></div>
   </div>
-
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
 const RAW_URL = "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/status.json";
 
-let hpTimes = [], parcTimes = [], chartLabels = [];
+const BRAND_COLORS = {
+  "Opel PT": ["#3b5ae0","#0F6E56","#7c3aed"],
+  "Ford FR": ["#0066cc","#1a9e6e","#e05c3b"],
+};
+
 let chart = null;
+let currentBrand = null;
+let allData = null;
 
 function statusIcon(ok) {
   return ok
@@ -107,80 +131,176 @@ function statusIcon(ok) {
     : '<svg width="20" height="20" fill="none" stroke="#dc2626" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>';
 }
 
+function renderBrandTabs(brands) {
+  const tabs = document.getElementById('brand-tabs');
+  if (!currentBrand) currentBrand = brands[0];
+  tabs.innerHTML = brands.map(b => `
+    <button class="brand-tab ${b === currentBrand ? 'active' : ''}" onclick="selectBrand('${b}')">${b}</button>
+  `).join('');
+}
+
+function selectBrand(brand) {
+  currentBrand = brand;
+  if (allData) renderAll(allData);
+}
+
+function renderKPIs(statuses, avgResponse) {
+  const pages = Object.entries(statuses[currentBrand] || {});
+  const allOk = pages.every(([,s]) => s.ok);
+  const incCount = (allData.history || []).filter(h => h.brand === currentBrand && h.type === 'ko').length;
+  const avgs = pages.map(([page]) => avgResponse[`${currentBrand}:${page}`] || 0);
+  const avg = avgs.length ? (avgs.reduce((a,b)=>a+b,0)/avgs.length).toFixed(2)+'s' : '—';
+
+  let kpiHTML = `
+    <div class="glass kpi">
+      <div class="kpi-label">Statut global</div>
+      <div class="kpi-val ${allOk?'ok':'ko'}">${allOk?'OK':'KO'}</div>
+      <div class="kpi-sub">${currentBrand}</div>
+    </div>
+    <div class="glass kpi">
+      <div class="kpi-label">Incidents</div>
+      <div class="kpi-val blue">${incCount}</div>
+      <div class="kpi-sub">enregistrés</div>
+    </div>
+    <div class="glass kpi">
+      <div class="kpi-label">Moy. réponse</div>
+      <div class="kpi-val blue">${avg}</div>
+      <div class="kpi-sub">20 derniers checks</div>
+    </div>
+  `;
+  pages.forEach(([page, s]) => {
+    kpiHTML += `
+      <div class="glass kpi">
+        <div class="kpi-label">${page}</div>
+        <div class="kpi-val ${s.ok?'ok':'ko'}">${s.ok?'OK':'KO'}</div>
+        <div class="kpi-sub">${s.elapsed}s · HTTP ${s.details?.http_status||'—'}</div>
+      </div>
+    `;
+  });
+  document.getElementById('kpis').innerHTML = kpiHTML;
+}
+
 function renderScards(statuses) {
-  const container = document.getElementById('scards');
-  container.innerHTML = Object.entries(statuses).map(([name, s]) => `
-    <div class="glass scard" style="margin-bottom:12px">
-      <div class="scard-left">
-        <div class="icon ${s.ok ? 'ok' : 'ko'}">${statusIcon(s.ok)}</div>
-        <div>
-          <div class="scard-name">${name}</div>
-          <div class="scard-url">${s.url.replace('https://','')}</div>
+  const pages = Object.entries(statuses[currentBrand] || {});
+  document.getElementById('scards').innerHTML = pages.map(([page, s]) => {
+    const d = s.details || {};
+    const hasError = !s.ok;
+    const diagHTML = hasError ? `
+      <div class="error-detail" id="diag-${page.replace(/\s/g,'_')}">
+        <div class="diag-grid">
+          ${d.error_type ? `<div class="diag-item"><b>Type</b> : ${d.error_type}</div>` : ''}
+          ${d.ip ? `<div class="diag-item"><b>IP</b> : ${d.ip}</div>` : ''}
+          ${d.dns_elapsed!=null ? `<div class="diag-item"><b>DNS</b> : ${d.dns_elapsed}s</div>` : ''}
+          ${d.elapsed_http!=null ? `<div class="diag-item"><b>HTTP</b> : ${d.elapsed_http}s</div>` : ''}
+          ${d.http_status ? `<div class="diag-item"><b>Status</b> : ${d.http_status}</div>` : ''}
+          ${d.redirect_count ? `<div class="diag-item"><b>Redirections</b> : ${d.redirect_count}</div>` : ''}
+          ${d.headers?.server && d.headers.server !== '—' ? `<div class="diag-item"><b>Serveur</b> : ${d.headers.server}</div>` : ''}
+          ${d.headers?.['x-cache'] && d.headers['x-cache'] !== '—' ? `<div class="diag-item"><b>X-Cache</b> : ${d.headers['x-cache']}</div>` : ''}
+          ${d.headers?.['cf-ray'] && d.headers['cf-ray'] !== '—' ? `<div class="diag-item"><b>CF-Ray</b> : ${d.headers['cf-ray']}</div>` : ''}
+          ${d.triggered_signature ? `<div class="diag-item"><b>Signature</b> : ${d.triggered_signature}</div>` : ''}
+          ${d.error_detail ? `<div class="diag-item" style="grid-column:1/-1"><b>Technique</b> : ${d.error_detail.substring(0,150)}</div>` : ''}
         </div>
+        ${d.body_preview ? `<div class="diag-body">${d.body_preview.substring(0,300)}</div>` : ''}
       </div>
-      <div style="text-align:right">
-        <span class="badge ${s.ok ? 'ok' : 'ko'}">${s.ok ? 'EN LIGNE' : 'KO'}</span>
-        <div class="resp-time">${s.elapsed}s · ${s.reason}</div>
+    ` : '';
+
+    return `
+      <div class="glass" style="margin-bottom:12px;border-radius:24px;">
+        <div class="scard" onclick="${hasError ? `toggleDiag('${page.replace(/\s/g,'_')}')` : ''}">
+          <div class="scard-left">
+            <div class="icon ${s.ok?'ok':'ko'}">${statusIcon(s.ok)}</div>
+            <div>
+              <div class="scard-name">${page}</div>
+              <div class="scard-url">${s.url.replace('https://','')}</div>
+            </div>
+          </div>
+          <div style="text-align:right">
+            <span class="badge ${s.ok?'ok':'ko'}">${s.ok?'EN LIGNE':'KO'}</span>
+            <div class="resp-time">${s.elapsed}s · ${s.reason}</div>
+            ${hasError ? '<div style="font-size:10px;color:#4b5563;margin-top:4px;">Cliquer pour le diagnostic ↓</div>' : ''}
+          </div>
+        </div>
+        ${diagHTML}
       </div>
+    `;
+  }).join('');
+}
+
+function toggleDiag(pageKey) {
+  const el = document.getElementById(`diag-${pageKey}`);
+  if (el) el.classList.toggle('show');
+}
+
+function renderChart(chartRawData, avgResponse) {
+  const pages = Object.keys(allData.statuses[currentBrand] || {});
+  const colors = BRAND_COLORS[currentBrand] || ["#3b5ae0","#0F6E56"];
+
+  const datasets = pages.map((page, i) => {
+    const key = `${currentBrand}:${page}`;
+    const pts = (chartRawData[key] || []);
+    return {
+      label: page,
+      data: pts.map(p => p.elapsed),
+      borderColor: colors[i] || '#888',
+      backgroundColor: (colors[i] || '#888') + '10',
+      tension: 0.4, pointRadius: 2, borderWidth: 2, fill: true,
+      _labels: pts.map(p => p.time)
+    };
+  });
+
+  const labels = datasets[0]?._labels || [];
+
+  // Legend
+  document.getElementById('legend').innerHTML = datasets.map((ds, i) => `
+    <div class="leg-item">
+      <span class="leg-dot" style="background:${colors[i]}"></span>${ds.label}
     </div>
   `).join('');
-}
-
-function renderHistory(history) {
-  const el = document.getElementById('history');
-  if (!history || history.length === 0) { el.innerHTML = '<div class="empty">Aucun incident enregistré.</div>'; return; }
-  el.innerHTML = [...history].reverse().slice(0, 20).map(h => `
-    <div class="inc-row">
-      <span class="inc-time">${h.time}</span>
-      <span class="inc-desc">${h.name} — ${h.detail}</span>
-      <span class="callout ${h.type === 'recovery' ? 'ok' : 'ko'}">${h.type === 'recovery' ? 'RÉSOLU' : 'KO'}</span>
-    </div>
-  `).join('');
-}
-
-function updateKpi(name, elId, subId, s) {
-  const el = document.getElementById(elId);
-  const sub = document.getElementById(subId);
-  el.textContent = s.ok ? 'OK' : 'KO';
-  el.className = 'kpi-val ' + (s.ok ? 'ok' : 'ko');
-  sub.textContent = `${s.elapsed}s · HTTP ${s.reason.match(/\d+/) ? s.reason.match(/\d+/)[0] : '—'}`;
-}
-
-function updateChart(chartRawData) {
-  if (!chartRawData) return;
-  const hp = chartRawData['Homepage'] || [];
-  const parc = chartRawData['Parcours'] || [];
-  const maxLen = Math.max(hp.length, parc.length);
-
-  chartLabels = hp.map(p => p.time);
-  hpTimes = hp.map(p => p.elapsed);
-  parcTimes = parc.map(p => p.elapsed);
 
   if (!chart) {
     chart = new Chart(document.getElementById('rc'), {
       type: 'line',
-      data: {
-        labels: chartLabels,
-        datasets: [
-          {label:'Homepage', data:hpTimes, borderColor:'#3b5ae0', backgroundColor:'rgba(59,90,224,0.06)', tension:0.4, pointRadius:2, borderWidth:2, fill:true},
-          {label:'Parcours', data:parcTimes, borderColor:'#0F6E56', backgroundColor:'rgba(15,110,86,0.06)', tension:0.4, pointRadius:2, borderWidth:2, fill:true}
-        ]
-      },
+      data: { labels, datasets },
       options: {
-        responsive:true, maintainAspectRatio:false,
-        plugins:{legend:{display:false}},
-        scales:{
-          x:{grid:{display:false}, ticks:{font:{size:10}, color:'#9ca3af', maxTicksLimit:8}},
-          y:{grid:{color:'rgba(0,0,0,0.04)'}, ticks:{font:{size:10}, color:'#9ca3af', callback:v=>v.toFixed(1)+'s'}}
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { grid: { display: false }, ticks: { font: { size: 10 }, color: '#9ca3af', maxTicksLimit: 8 } },
+          y: { grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: { size: 10 }, color: '#9ca3af', callback: v => v.toFixed(1) + 's' } }
         }
       }
     });
   } else {
-    chart.data.labels = chartLabels;
-    chart.data.datasets[0].data = hpTimes;
-    chart.data.datasets[1].data = parcTimes;
+    chart.data.labels = labels;
+    chart.data.datasets = datasets;
     chart.update();
   }
+}
+
+function renderHistory(history) {
+  const el = document.getElementById('history');
+  const filtered = (history || []).filter(h => h.brand === currentBrand);
+  if (!filtered.length) { el.innerHTML = '<div class="empty">Aucun incident enregistré.</div>'; return; }
+  el.innerHTML = [...filtered].reverse().slice(0, 30).map(h => `
+    <div class="inc-row">
+      <span class="inc-time">${h.time}</span>
+      <div class="inc-desc">
+        <div>${h.page} — ${h.detail}</div>
+        ${h.diagnostics?.error_type ? `<div class="inc-brand">Type : ${h.diagnostics.error_type}</div>` : ''}
+      </div>
+      <span class="callout ${h.type==='recovery'?'ok':'ko'}">${h.type==='recovery'?'RÉSOLU':'KO'}</span>
+    </div>
+  `).join('');
+}
+
+function renderAll(data) {
+  allData = data;
+  const brands = Object.keys(data.statuses || {});
+  renderBrandTabs(brands);
+  renderKPIs(data.statuses, data.avg_response || {});
+  renderScards(data.statuses);
+  renderChart(data.chart_data || {}, data.avg_response || {});
+  renderHistory(data.history || []);
 }
 
 async function fetchStatus() {
@@ -188,27 +308,9 @@ async function fetchStatus() {
     const r = await fetch(RAW_URL + '?t=' + Date.now());
     if (!r.ok) throw new Error('fetch failed');
     const data = await r.json();
-
     document.getElementById('updated').textContent = 'Mis à jour : ' + data.updated_at;
     document.getElementById('pulse').className = 'pulse';
-
-    renderScards(data.statuses);
-    renderHistory(data.history);
-    updateChart(data.chart_data);
-
-    const hp = data.statuses['Homepage'];
-    const parc = data.statuses['Parcours'];
-    if (hp) updateKpi('Homepage', 'kpi-hp', 'kpi-hp-sub', hp);
-    if (parc) updateKpi('Parcours', 'kpi-parc', 'kpi-parc-sub', parc);
-
-    const incCount = (data.history || []).filter(h => h.type === 'ko').length;
-    document.getElementById('kpi-inc').textContent = incCount;
-
-    const avgs = data.avg_response || {};
-    const allAvg = Object.values(avgs);
-    const avg = allAvg.length ? (allAvg.reduce((a,b) => a+b, 0) / allAvg.length).toFixed(2) + 's' : '—';
-    document.getElementById('kpi-avg').textContent = avg;
-
+    renderAll(data);
   } catch(e) {
     document.getElementById('updated').textContent = 'Erreur de chargement';
     document.getElementById('pulse').className = 'pulse dead';
