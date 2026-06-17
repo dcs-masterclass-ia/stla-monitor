@@ -1,18 +1,18 @@
 {
-  "updated_at": "17/06/2026 10:18:50",
+  "updated_at": "17/06/2026 10:19:02",
   "statuses": {
     "Homepage": {
       "ok": true,
-      "reason": "OK (200) en 0.16s",
-      "elapsed": 0.16,
-      "checked_at": "17/06/2026 10:18:50",
+      "reason": "OK (200) en 0.17s",
+      "elapsed": 0.17,
+      "checked_at": "17/06/2026 10:19:01",
       "url": "https://www.retoma.opel.pt",
       "details": {
-        "dns_elapsed": 0.002,
+        "dns_elapsed": 0.001,
         "ip": "135.125.7.226",
         "http_status": 200,
-        "elapsed_http": 0.16,
-        "elapsed_total": 0.16,
+        "elapsed_http": 0.17,
+        "elapsed_total": 0.17,
         "headers": {
           "server": "CloudFront",
           "content-type": "text/html; charset=utf-8",
@@ -25,16 +25,16 @@
     },
     "Parcours": {
       "ok": true,
-      "reason": "OK (200) en 0.14s",
-      "elapsed": 0.14,
-      "checked_at": "17/06/2026 10:18:50",
+      "reason": "OK (200) en 0.18s",
+      "elapsed": 0.18,
+      "checked_at": "17/06/2026 10:19:01",
       "url": "https://www.retoma.opel.pt/retoma",
       "details": {
         "dns_elapsed": 0.002,
         "ip": "135.125.7.226",
         "http_status": 200,
-        "elapsed_http": 0.14,
-        "elapsed_total": 0.14,
+        "elapsed_http": 0.18,
+        "elapsed_total": 0.18,
         "headers": {
           "server": "CloudFront",
           "content-type": "text/html; charset=utf-8",
@@ -400,10 +400,6 @@
   ],
   "chart_data": {
     "Homepage": [
-      {
-        "time": "09:59:13",
-        "elapsed": 0.18
-      },
       {
         "time": "09:59:25",
         "elapsed": 0.18
@@ -799,13 +795,13 @@
       {
         "time": "10:18:50",
         "elapsed": 0.16
+      },
+      {
+        "time": "10:19:01",
+        "elapsed": 0.17
       }
     ],
     "Parcours": [
-      {
-        "time": "09:59:13",
-        "elapsed": 0.14
-      },
       {
         "time": "09:59:25",
         "elapsed": 0.14
@@ -1201,11 +1197,15 @@
       {
         "time": "10:18:50",
         "elapsed": 0.14
+      },
+      {
+        "time": "10:19:01",
+        "elapsed": 0.18
       }
     ]
   },
   "avg_response": {
     "Homepage": 0.18,
-    "Parcours": 0.19
+    "Parcours": 0.18
   }
 }
