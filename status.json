@@ -1,17 +1,17 @@
 {
-  "updated_at": "17/06/2026 18:58:55",
+  "updated_at": "17/06/2026 18:59:10",
   "statuses": {
     "Opel PT": {
       "Homepage": {
         "ok": true,
         "reason": "OK (200) en 0.18s",
         "elapsed": 0.18,
-        "checked_at": "17/06/2026 18:58:52",
+        "checked_at": "17/06/2026 18:59:06",
         "url": "https://www.retoma.opel.pt",
         "details": {
           "brand": "Opel PT",
           "page": "Homepage",
-          "dns_elapsed": 0.003,
+          "dns_elapsed": 0.002,
           "ip": "135.125.7.226",
           "http_status": 200,
           "elapsed_http": 0.18,
@@ -31,18 +31,18 @@
       },
       "Parcours": {
         "ok": true,
-        "reason": "OK (200) en 0.13s",
-        "elapsed": 0.13,
-        "checked_at": "17/06/2026 18:58:52",
+        "reason": "OK (200) en 0.18s",
+        "elapsed": 0.19,
+        "checked_at": "17/06/2026 18:59:06",
         "url": "https://www.retoma.opel.pt/retoma",
         "details": {
           "brand": "Opel PT",
           "page": "Parcours",
-          "dns_elapsed": 0.001,
+          "dns_elapsed": 0.002,
           "ip": "135.125.7.226",
           "http_status": 200,
-          "elapsed_http": 0.13,
-          "elapsed_total": 0.13,
+          "elapsed_http": 0.18,
+          "elapsed_total": 0.19,
           "final_url": "https://www.retoma.opel.pt/retoma",
           "redirect_count": 0,
           "headers": {
@@ -60,18 +60,18 @@
     "Ford FR": {
       "Homepage": {
         "ok": true,
-        "reason": "OK (200) en 1.61s",
-        "elapsed": 1.61,
-        "checked_at": "17/06/2026 18:58:52",
+        "reason": "OK (200) en 1.87s",
+        "elapsed": 1.87,
+        "checked_at": "17/06/2026 18:59:06",
         "url": "https://www.ford-reprise.fr/",
         "details": {
           "brand": "Ford FR",
           "page": "Homepage",
-          "dns_elapsed": 0.001,
-          "ip": "63.180.121.144",
+          "dns_elapsed": 0.002,
+          "ip": "51.102.168.47",
           "http_status": 200,
-          "elapsed_http": 1.61,
-          "elapsed_total": 1.61,
+          "elapsed_http": 1.87,
+          "elapsed_total": 1.87,
           "final_url": "https://www.ford-reprise.fr/",
           "redirect_count": 0,
           "headers": {
@@ -87,18 +87,18 @@
       },
       "Formulaire": {
         "ok": true,
-        "reason": "OK (200) en 1.18s",
-        "elapsed": 1.18,
-        "checked_at": "17/06/2026 18:58:52",
+        "reason": "OK (200) en 1.13s",
+        "elapsed": 1.14,
+        "checked_at": "17/06/2026 18:59:06",
         "url": "https://www.ford-reprise.fr/form",
         "details": {
           "brand": "Ford FR",
           "page": "Formulaire",
-          "dns_elapsed": 0.002,
+          "dns_elapsed": 0.001,
           "ip": "51.102.168.47",
           "http_status": 200,
-          "elapsed_http": 1.18,
-          "elapsed_total": 1.18,
+          "elapsed_http": 1.13,
+          "elapsed_total": 1.14,
           "final_url": "https://www.ford-reprise.fr/form",
           "redirect_count": 0,
           "headers": {
@@ -607,6 +607,10 @@
       {
         "time": "18:58:52",
         "elapsed": 0.18
+      },
+      {
+        "time": "18:59:06",
+        "elapsed": 0.18
       }
     ],
     "Opel PT:Parcours": [
@@ -749,6 +753,10 @@
       {
         "time": "18:58:52",
         "elapsed": 0.13
+      },
+      {
+        "time": "18:59:06",
+        "elapsed": 0.19
       }
     ],
     "Ford FR:Homepage": [
@@ -891,6 +899,10 @@
       {
         "time": "18:58:52",
         "elapsed": 1.61
+      },
+      {
+        "time": "18:59:06",
+        "elapsed": 1.87
       }
     ],
     "Ford FR:Formulaire": [
@@ -1033,13 +1045,17 @@
       {
         "time": "18:58:52",
         "elapsed": 1.18
+      },
+      {
+        "time": "18:59:06",
+        "elapsed": 1.14
       }
     ]
   },
   "avg_response": {
-    "Opel PT:Homepage": 0.19,
+    "Opel PT:Homepage": 0.2,
     "Opel PT:Parcours": 0.17,
-    "Ford FR:Homepage": 2.05,
+    "Ford FR:Homepage": 2.03,
     "Ford FR:Formulaire": 1.25
   }
 }
