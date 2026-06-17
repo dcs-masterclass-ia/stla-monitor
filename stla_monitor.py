@@ -17,6 +17,7 @@ import ssl
 from datetime import datetime
 from urllib.parse import urlparse
 from github import Auth, Github
+from playwright.sync_api import sync_playwright
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -123,6 +124,49 @@ def init_github():
             log.info("[GitHub] Pas d'historique existant")
     except Exception as e:
         log.error(f"[GitHub] Connexion impossible : {e}")
+
+def take_screenshot(brand, page, url):
+    """Prend un screenshot de l'URL en erreur et le pousse sur GitHub."""
+    if not gh_repo:
+        return None
+    try:
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        safe_brand = brand.replace(" ", "_").replace("/", "_")
+        safe_page = page.replace(" ", "_").replace("/", "_")
+        filename = f"screenshots/{safe_brand}_{safe_page}_{timestamp}.png"
+
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)
+            ctx = browser.new_context(
+                viewport={"width": 1280, "height": 800},
+                user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"
+            )
+            pg = ctx.new_page()
+            try:
+                pg.goto(url, timeout=15000, wait_until="domcontentloaded")
+                pg.wait_for_timeout(2000)
+            except Exception:
+                pass  # On screenshot même si ça timeout
+            screenshot_bytes = pg.screenshot(full_page=False)
+            browser.close()
+
+        # Push sur GitHub
+        import base64
+        content_b64 = base64.b64encode(screenshot_bytes).decode()
+        try:
+            existing = gh_repo.get_contents(filename)
+            gh_repo.update_file(filename, f"screenshot {brand} {page}", screenshot_bytes, existing.sha)
+        except Exception:
+            gh_repo.create_file(filename, f"screenshot {brand} {page}", screenshot_bytes)
+
+        raw_url = f"https://raw.githubusercontent.com/{GITHUB_REPO}/main/{filename}"
+        log.info(f"[Screenshot] Poussé : {filename}")
+        return raw_url
+
+    except Exception as e:
+        log.error(f"[Screenshot] Erreur : {e}")
+        return None
+
 
 def push_status(statuses):
     if not gh_repo:
@@ -295,7 +339,7 @@ def check_url(brand, page, url):
 # ALERTE TEAMS
 # ─────────────────────────────────────────────
 
-def send_teams_alert(brand, page, url, reason, is_recovery=False, details=None):
+def send_teams_alert(brand, page, url, reason, is_recovery=False, details=None, screenshot_url=None):
     now_str = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
     emoji = "✅" if is_recovery else "🚨"
     title = f"{emoji} {brand} — {page} {'est de nouveau en ligne' if is_recovery else 'est KO'}"
@@ -337,6 +381,29 @@ def send_teams_alert(brand, page, url, reason, is_recovery=False, details=None):
     body_text = "\n".join(lines)
     color = "Good" if is_recovery else "Attention"
 
+    card_body = [
+        {"type": "TextBlock", "text": title, "weight": "Bolder", "size": "Medium", "color": color, "wrap": True},
+        {"type": "TextBlock", "text": body_text, "wrap": True, "spacing": "Medium"}
+    ]
+
+    if screenshot_url and not is_recovery:
+        card_body.append({
+            "type": "Image",
+            "url": screenshot_url,
+            "size": "Large",
+            "style": "default",
+            "spacing": "Medium",
+            "altText": f"Screenshot de {page} en erreur"
+        })
+        card_body.append({
+            "type": "ActionSet",
+            "actions": [{
+                "type": "Action.OpenUrl",
+                "title": "Voir le screenshot complet",
+                "url": screenshot_url
+            }]
+        })
+
     payload = {
         "type": "message",
         "attachments": [{
@@ -345,10 +412,7 @@ def send_teams_alert(brand, page, url, reason, is_recovery=False, details=None):
                 "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
                 "type": "AdaptiveCard",
                 "version": "1.4",
-                "body": [
-                    {"type": "TextBlock", "text": title, "weight": "Bolder", "size": "Medium", "color": color, "wrap": True},
-                    {"type": "TextBlock", "text": body_text, "wrap": True, "spacing": "Medium"}
-                ]
+                "body": card_body
             }
         }]
     }
@@ -406,8 +470,9 @@ def run():
                 else:
                     if not incident_active.get(key):
                         incident_active[key] = True
-                        history.append({"time": now, "brand": brand, "page": page, "type": "ko", "detail": reason, "diagnostics": details})
-                        send_teams_alert(brand, page, url, reason, is_recovery=False, details=details)
+                        screenshot_url = take_screenshot(brand, page, url)
+                        history.append({"time": now, "brand": brand, "page": page, "type": "ko", "detail": reason, "diagnostics": details, "screenshot": screenshot_url})
+                        send_teams_alert(brand, page, url, reason, is_recovery=False, details=details, screenshot_url=screenshot_url)
 
         push_status(statuses)
         time.sleep(CHECK_INTERVAL_SECONDS)
