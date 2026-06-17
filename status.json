@@ -1,12 +1,12 @@
 {
-  "updated_at": "17/06/2026 19:11:19",
+  "updated_at": "17/06/2026 19:11:31",
   "statuses": {
     "Opel PT": {
       "Homepage": {
         "ok": true,
-        "reason": "OK (200) en 0.14s",
-        "elapsed": 0.14,
-        "checked_at": "17/06/2026 19:11:18",
+        "reason": "OK (200) en 0.16s",
+        "elapsed": 0.16,
+        "checked_at": "17/06/2026 19:11:30",
         "url": "https://www.retoma.opel.pt",
         "details": {
           "brand": "Opel PT",
@@ -14,8 +14,8 @@
           "dns_elapsed": 0.002,
           "ip": "135.125.7.226",
           "http_status": 200,
-          "elapsed_http": 0.14,
-          "elapsed_total": 0.14,
+          "elapsed_http": 0.16,
+          "elapsed_total": 0.16,
           "final_url": "https://www.retoma.opel.pt/",
           "redirect_count": 0,
           "headers": {
@@ -31,18 +31,18 @@
       },
       "Parcours": {
         "ok": true,
-        "reason": "OK (200) en 0.14s",
-        "elapsed": 0.14,
-        "checked_at": "17/06/2026 19:11:18",
+        "reason": "OK (200) en 0.13s",
+        "elapsed": 0.13,
+        "checked_at": "17/06/2026 19:11:30",
         "url": "https://www.retoma.opel.pt/retoma",
         "details": {
           "brand": "Opel PT",
           "page": "Parcours",
-          "dns_elapsed": 0.001,
+          "dns_elapsed": 0.002,
           "ip": "135.125.7.226",
           "http_status": 200,
-          "elapsed_http": 0.14,
-          "elapsed_total": 0.14,
+          "elapsed_http": 0.13,
+          "elapsed_total": 0.13,
           "final_url": "https://www.retoma.opel.pt/retoma",
           "redirect_count": 0,
           "headers": {
@@ -61,8 +61,8 @@
       "Homepage": {
         "ok": false,
         "reason": "Erreur serveur HTTP 500",
-        "elapsed": 0.3,
-        "checked_at": "17/06/2026 19:11:18",
+        "elapsed": 0.35,
+        "checked_at": "17/06/2026 19:11:30",
         "url": "https://www.ford-reprise.fr/",
         "details": {
           "brand": "Ford FR",
@@ -70,8 +70,8 @@
           "dns_elapsed": 0.002,
           "ip": "51.102.168.47",
           "http_status": 500,
-          "elapsed_http": 0.3,
-          "elapsed_total": 0.3,
+          "elapsed_http": 0.34,
+          "elapsed_total": 0.35,
           "final_url": "https://www.ford-reprise.fr/",
           "redirect_count": 0,
           "headers": {
@@ -89,8 +89,8 @@
       "Formulaire": {
         "ok": false,
         "reason": "Erreur serveur HTTP 500",
-        "elapsed": 0.28,
-        "checked_at": "17/06/2026 19:11:18",
+        "elapsed": 0.33,
+        "checked_at": "17/06/2026 19:11:30",
         "url": "https://www.ford-reprise.fr/form",
         "details": {
           "brand": "Ford FR",
@@ -98,8 +98,8 @@
           "dns_elapsed": 0.002,
           "ip": "51.102.168.47",
           "http_status": 500,
-          "elapsed_http": 0.27,
-          "elapsed_total": 0.28,
+          "elapsed_http": 0.32,
+          "elapsed_total": 0.33,
           "final_url": "https://www.ford-reprise.fr/form",
           "redirect_count": 0,
           "headers": {
@@ -916,6 +916,10 @@
       {
         "time": "19:11:18",
         "elapsed": 0.14
+      },
+      {
+        "time": "19:11:30",
+        "elapsed": 0.16
       }
     ],
     "Opel PT:Parcours": [
@@ -1246,6 +1250,10 @@
       {
         "time": "19:11:18",
         "elapsed": 0.14
+      },
+      {
+        "time": "19:11:30",
+        "elapsed": 0.13
       }
     ],
     "Ford FR:Homepage": [
@@ -1576,6 +1584,10 @@
       {
         "time": "19:11:18",
         "elapsed": 0.3
+      },
+      {
+        "time": "19:11:30",
+        "elapsed": 0.35
       }
     ],
     "Ford FR:Formulaire": [
@@ -1906,13 +1918,17 @@
       {
         "time": "19:11:18",
         "elapsed": 0.28
+      },
+      {
+        "time": "19:11:30",
+        "elapsed": 0.33
       }
     ]
   },
   "avg_response": {
     "Opel PT:Homepage": 0.2,
     "Opel PT:Parcours": 0.17,
-    "Ford FR:Homepage": 2.24,
-    "Ford FR:Formulaire": 1.59
+    "Ford FR:Homepage": 2.15,
+    "Ford FR:Formulaire": 1.55
   }
 }
