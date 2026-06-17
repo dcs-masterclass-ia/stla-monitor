@@ -1,8 +1,9 @@
 """
-STLA Front V2 - Moniteur de disponibilité
-- Vérifie 2 URLs toutes les 10 secondes
-- Pousse status.json sur GitHub (avec historique des temps de réponse)
-- Alerte Teams en cas de KO
+STLA Monitor V2 - Multi-marques
+- Opel PT + Ford FR
+- Détection exhaustive : DNS, TCP, TLS, 3xx/4xx/5xx, contenu KO, timeout
+- Alerte Teams Adaptive Card avec diagnostic complet
+- Historique persisté sur GitHub
 """
 
 import requests
@@ -12,7 +13,9 @@ import urllib3
 import json
 import os
 import socket
+import ssl
 from datetime import datetime
+from urllib.parse import urlparse
 from github import Auth, Github
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -21,9 +24,15 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 # CONFIGURATION
 # ─────────────────────────────────────────────
 
-URLS = {
-    "Homepage": "https://www.retoma.opel.pt",
-    "Parcours":  "https://www.retoma.opel.pt/retoma",
+BRANDS = {
+    "Opel PT": {
+        "Homepage": "https://www.retoma.opel.pt",
+        "Parcours":  "https://www.retoma.opel.pt/retoma",
+    },
+    "Ford FR": {
+        "Homepage":   "https://www.ford-reprise.fr/",
+        "Formulaire": "https://www.ford-reprise.fr/form",
+    },
 }
 
 TEAMS_WEBHOOK_URL = "https://default64661b8d1758459ca270b19fe3578e.a7.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/c3181d4e41694cfebd1c7502d219b6a9/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=l0lFm8uGc6kFwT73IzDPQBdNut4ZWgNsaXHosdDEh18"
@@ -35,8 +44,28 @@ GITHUB_FILE  = "status.json"
 CHECK_INTERVAL_SECONDS      = 10
 RESPONSE_TIME_LIMIT_SECONDS = 5
 LOG_FILE    = "stla_monitor.log"
-MAX_HISTORY = 50
-MAX_CHART   = 100  # points de courbe conservés
+MAX_HISTORY = 100
+MAX_CHART   = 100
+
+# Signatures de contenu KO déguisé en 200
+ERROR_SIGNATURES = [
+    "<Code>AccessDenied</Code>",
+    "<Message>Access Denied</Message>",
+    "<Error>",
+    "AccessDenied",
+    "403 Forbidden",
+    "503 Service Unavailable",
+    "502 Bad Gateway",
+    "504 Gateway Timeout",
+    "Error 521",
+    "Error 522",
+    "Error 523",
+    "Error 524",
+    "cloudflare",
+    "This site can't be reached",
+    "Application Error",
+    "Heroku | Application Error",
+]
 
 # ─────────────────────────────────────────────
 # LOGGING
@@ -56,9 +85,15 @@ log = logging.getLogger(__name__)
 # ÉTAT
 # ─────────────────────────────────────────────
 
-incident_active = {name: False for name in URLS}
+incident_active = {}
 history = []
-chart_data = {name: [] for name in URLS}  # {"time": "...", "elapsed": 0.17}
+chart_data = {}
+
+for brand, urls in BRANDS.items():
+    for page in urls:
+        key = f"{brand}:{page}"
+        incident_active[key] = False
+        chart_data[key] = []
 
 # ─────────────────────────────────────────────
 # GITHUB
@@ -72,21 +107,18 @@ def init_github():
         g = Github(auth=Auth.Token(GITHUB_TOKEN))
         gh_repo = g.get_repo(GITHUB_REPO)
         log.info(f"[GitHub] Connecté au repo {GITHUB_REPO}")
-
-        # Récupère les données existantes pour ne pas perdre l'historique
         try:
             existing = gh_repo.get_contents(GITHUB_FILE)
             data = json.loads(existing.decoded_content.decode("utf-8"))
             if "chart_data" in data:
-                for name in URLS:
-                    if name in data["chart_data"]:
-                        chart_data[name] = data["chart_data"][name][-MAX_CHART:]
+                for key in chart_data:
+                    if key in data["chart_data"]:
+                        chart_data[key] = data["chart_data"][key][-MAX_CHART:]
             if "history" in data:
                 history.extend(data["history"][-MAX_HISTORY:])
-            log.info("[GitHub] Historique récupéré depuis status.json")
+            log.info("[GitHub] Historique récupéré")
         except Exception:
-            log.info("[GitHub] Pas d'historique existant, démarrage à zéro")
-
+            log.info("[GitHub] Pas d'historique existant")
     except Exception as e:
         log.error(f"[GitHub] Connexion impossible : {e}")
 
@@ -98,82 +130,204 @@ def push_status(statuses):
         "updated_at": now,
         "statuses": statuses,
         "history": history[-MAX_HISTORY:],
-        "chart_data": {name: pts[-MAX_CHART:] for name, pts in chart_data.items()},
+        "chart_data": {k: v[-MAX_CHART:] for k, v in chart_data.items()},
         "avg_response": {
-            name: round(sum(p["elapsed"] for p in pts[-20:]) / len(pts[-20:]), 2) if pts else 0
-            for name, pts in chart_data.items()
+            k: round(sum(p["elapsed"] for p in v[-20:]) / len(v[-20:]), 2) if v else 0
+            for k, v in chart_data.items()
         }
     }
     content = json.dumps(payload, ensure_ascii=False, indent=2)
     try:
         try:
             existing = gh_repo.get_contents(GITHUB_FILE)
-            gh_repo.update_file(GITHUB_FILE, f"Monitor update {now}", content, existing.sha)
+            gh_repo.update_file(GITHUB_FILE, f"Monitor {now}", content, existing.sha)
         except Exception as e:
-            if "422" in str(e) or "sha" in str(e).lower():
-                # Récupère le SHA manquant et réessaie
+            if "sha" in str(e).lower() or "422" in str(e):
                 try:
                     existing = gh_repo.get_contents(GITHUB_FILE)
-                    gh_repo.update_file(GITHUB_FILE, f"Monitor update {now}", content, existing.sha)
+                    gh_repo.update_file(GITHUB_FILE, f"Monitor {now}", content, existing.sha)
                 except Exception:
-                    gh_repo.create_file(GITHUB_FILE, f"Monitor init {now}", content)
+                    gh_repo.create_file(GITHUB_FILE, f"Monitor {now}", content)
             else:
-                gh_repo.create_file(GITHUB_FILE, f"Monitor init {now}", content)
+                gh_repo.create_file(GITHUB_FILE, f"Monitor {now}", content)
         log.info("[GitHub] status.json mis à jour")
     except Exception as e:
         log.error(f"[GitHub] Erreur push : {e}")
 
 # ─────────────────────────────────────────────
+# DIAGNOSTIC COMPLET
+# ─────────────────────────────────────────────
+
+def resolve_dns(hostname):
+    try:
+        t = time.time()
+        ip = socket.gethostbyname(hostname)
+        return ip, round(time.time() - t, 3), None
+    except socket.gaierror as e:
+        return None, round(time.time() - time.time(), 3), str(e)
+
+def check_url(brand, page, url):
+    parsed = urlparse(url)
+    hostname = parsed.hostname
+    details = {"brand": brand, "page": page}
+
+    # 1. Résolution DNS
+    t0 = time.time()
+    ip, dns_elapsed, dns_error = resolve_dns(hostname)
+    details["dns_elapsed"] = dns_elapsed
+    details["ip"] = ip or "NON RÉSOLU"
+
+    if not ip:
+        elapsed = round(time.time() - t0, 2)
+        details["error_type"] = "DNS_FAILURE"
+        details["error_detail"] = dns_error
+        return False, f"Erreur DNS : {dns_error}", elapsed, details
+
+    # 2. Requête HTTP
+    t1 = time.time()
+    try:
+        response = requests.get(
+            url,
+            timeout=RESPONSE_TIME_LIMIT_SECONDS,
+            allow_redirects=True,
+            verify=False,
+            headers={
+                "User-Agent": "Mozilla/5.0 (compatible; STLA-Monitor/2.0)",
+                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            }
+        )
+        elapsed_http = round(time.time() - t1, 2)
+        elapsed_total = round(time.time() - t0, 2)
+
+        details["http_status"]   = response.status_code
+        details["elapsed_http"]  = elapsed_http
+        details["elapsed_total"] = elapsed_total
+        details["final_url"]     = response.url  # après redirections
+        details["redirect_count"] = len(response.history)
+        details["headers"] = {
+            "server":        response.headers.get("Server", "—"),
+            "content-type":  response.headers.get("Content-Type", "—"),
+            "cache-control": response.headers.get("Cache-Control", "—"),
+            "x-cache":       response.headers.get("X-Cache", "—"),
+            "cf-ray":        response.headers.get("CF-Ray", "—"),
+            "x-powered-by":  response.headers.get("X-Powered-By", "—"),
+        }
+
+        # 3xx — redirections excessives ou inattendues
+        if len(response.history) > 5:
+            details["error_type"] = "TOO_MANY_REDIRECTS"
+            return False, f"Trop de redirections ({len(response.history)})", elapsed_total, details
+
+        # 4xx
+        if 400 <= response.status_code < 500:
+            details["error_type"] = f"HTTP_{response.status_code}"
+            details["body_preview"] = response.text[:300].strip()
+            return False, f"Erreur client HTTP {response.status_code}", elapsed_total, details
+
+        # 5xx
+        if response.status_code >= 500:
+            details["error_type"] = f"HTTP_{response.status_code}"
+            details["body_preview"] = response.text[:300].strip()
+            return False, f"Erreur serveur HTTP {response.status_code}", elapsed_total, details
+
+        # Timeout soft
+        if elapsed_http > RESPONSE_TIME_LIMIT_SECONDS:
+            details["error_type"] = "SLOW_RESPONSE"
+            return False, f"Réponse trop lente : {elapsed_http}s", elapsed_total, details
+
+        # Contenu KO déguisé en 200
+        body = response.text[:3000]
+        for sig in ERROR_SIGNATURES:
+            if sig.lower() in body.lower():
+                details["error_type"] = "CONTENT_KO"
+                details["triggered_signature"] = sig
+                details["body_preview"] = body[:300].strip()
+                return False, f"Contenu KO — '{sig}' détecté (HTTP {response.status_code})", elapsed_total, details
+
+        details["error_type"] = None
+        return True, f"OK ({response.status_code}) en {elapsed_http}s", elapsed_total, details
+
+    except requests.exceptions.SSLError as e:
+        elapsed = round(time.time() - t1, 2)
+        details["error_type"] = "SSL_ERROR"
+        details["error_detail"] = str(e)[:300]
+        return False, "Erreur SSL / certificat invalide", elapsed, details
+
+    except requests.exceptions.ConnectionError as e:
+        elapsed = round(time.time() - t1, 2)
+        err = str(e)
+        if "NameResolutionError" in err or "getaddrinfo" in err:
+            details["error_type"] = "DNS_FAILURE"
+        elif "Connection refused" in err:
+            details["error_type"] = "CONNECTION_REFUSED"
+        elif "RemoteDisconnected" in err:
+            details["error_type"] = "REMOTE_DISCONNECTED"
+        else:
+            details["error_type"] = "CONNECTION_ERROR"
+        details["error_detail"] = err[:300]
+        return False, f"Erreur connexion ({details['error_type']})", elapsed, details
+
+    except requests.exceptions.Timeout:
+        elapsed = round(time.time() - t1, 2)
+        details["error_type"] = "TIMEOUT"
+        return False, f"Timeout après {RESPONSE_TIME_LIMIT_SECONDS}s", elapsed, details
+
+    except requests.exceptions.TooManyRedirects:
+        elapsed = round(time.time() - t1, 2)
+        details["error_type"] = "TOO_MANY_REDIRECTS"
+        return False, "Trop de redirections", elapsed, details
+
+    except Exception as e:
+        elapsed = round(time.time() - t1, 2)
+        details["error_type"] = "UNKNOWN"
+        details["error_detail"] = str(e)[:300]
+        return False, f"Erreur inconnue : {type(e).__name__}", elapsed, details
+
+# ─────────────────────────────────────────────
 # ALERTE TEAMS
 # ─────────────────────────────────────────────
 
-def send_teams_alert(name, url, reason, is_recovery=False, details=None):
-    if is_recovery:
-        title = f"✅ STLA — {name} est de nouveau accessible"
-        color = "00FF00"
-        status_text = "Retour en ligne"
-    else:
-        title = f"🚨 STLA — {name} est KO !"
-        color = "FF0000"
-        status_text = reason
-
+def send_teams_alert(brand, page, url, reason, is_recovery=False, details=None):
     now_str = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+    emoji = "✅" if is_recovery else "🚨"
+    title = f"{emoji} {brand} — {page} {'est de nouveau en ligne' if is_recovery else 'est KO'}"
 
-    # Construction du corps texte avec tous les détails
     lines = [
-        f"**{title}**",
-        f"",
         f"🌐 **URL** : {url}",
-        f"⚠️ **Statut** : {status_text}",
+        f"⚠️ **Statut** : {'Retour en ligne' if is_recovery else reason}",
         f"🕐 **Heure** : {now_str}",
     ]
 
-    if details:
+    if details and not is_recovery:
         lines.append("")
         lines.append("**── Diagnostic ──**")
-        if details.get("ip"):
-            lines.append(f"🔍 **IP résolue** : {details['ip']}")
-        if details.get("dns_elapsed") is not None:
-            lines.append(f"⏱ **Résolution DNS** : {details['dns_elapsed']}s")
+        lines.append(f"🔴 **Type** : {details.get('error_type', '—')}")
+        lines.append(f"🔍 **IP résolue** : {details.get('ip', '—')}")
+        lines.append(f"⏱ **DNS** : {details.get('dns_elapsed', '—')}s")
         if details.get("elapsed_http") is not None:
-            lines.append(f"⏱ **Temps HTTP** : {details['elapsed_http']}s")
+            lines.append(f"⏱ **HTTP** : {details.get('elapsed_http')}s")
         if details.get("elapsed_total") is not None:
-            lines.append(f"⏱ **Temps total** : {details['elapsed_total']}s")
+            lines.append(f"⏱ **Total** : {details.get('elapsed_total')}s")
         if details.get("http_status"):
-            lines.append(f"📡 **HTTP Status** : {details['http_status']}")
-        if details.get("error_type"):
-            lines.append(f"🔴 **Type d'erreur** : {details['error_type']}")
+            lines.append(f"📡 **HTTP Status** : {details.get('http_status')}")
+        if details.get("redirect_count"):
+            lines.append(f"↪️ **Redirections** : {details.get('redirect_count')}")
+        if details.get("final_url") and details.get("final_url") != url:
+            lines.append(f"🔗 **URL finale** : {details.get('final_url')}")
         if details.get("headers"):
             h = details["headers"]
             lines.append(f"🖥 **Serveur** : {h.get('server', '—')}")
             lines.append(f"📦 **X-Cache** : {h.get('x-cache', '—')}")
             lines.append(f"☁️ **CF-Ray** : {h.get('cf-ray', '—')}")
+        if details.get("triggered_signature"):
+            lines.append(f"🔎 **Signature KO** : {details.get('triggered_signature')}")
         if details.get("body_preview"):
-            lines.append(f"📄 **Extrait erreur** : {details['body_preview'][:200]}")
+            lines.append(f"📄 **Extrait** : {details['body_preview'][:200]}")
         if details.get("error_detail"):
-            lines.append(f"🔧 **Détail technique** : {details['error_detail'][:200]}")
+            lines.append(f"🔧 **Technique** : {details['error_detail'][:200]}")
 
     body_text = "\n".join(lines)
+    color = "Good" if is_recovery else "Attention"
 
     payload = {
         "type": "message",
@@ -184,131 +338,21 @@ def send_teams_alert(name, url, reason, is_recovery=False, details=None):
                 "type": "AdaptiveCard",
                 "version": "1.4",
                 "body": [
-                    {
-                        "type": "TextBlock",
-                        "text": title,
-                        "weight": "Bolder",
-                        "size": "Medium",
-                        "color": "Good" if is_recovery else "Attention",
-                        "wrap": True
-                    },
-                    {
-                        "type": "TextBlock",
-                        "text": body_text,
-                        "wrap": True,
-                        "spacing": "Medium"
-                    }
+                    {"type": "TextBlock", "text": title, "weight": "Bolder", "size": "Medium", "color": color, "wrap": True},
+                    {"type": "TextBlock", "text": body_text, "wrap": True, "spacing": "Medium"}
                 ]
             }
         }]
     }
+
     try:
         resp = requests.post(TEAMS_WEBHOOK_URL, json=payload, timeout=10, verify=False)
         if resp.status_code in (200, 202):
-            log.info(f"[Teams] Alerte envoyée pour {name}")
+            log.info(f"[Teams] Alerte envoyée — {brand} {page}")
         else:
-            log.warning(f"[Teams] Échec — HTTP {resp.status_code}")
+            log.warning(f"[Teams] Échec — HTTP {resp.status_code} : {resp.text[:200]}")
     except Exception as e:
         log.error(f"[Teams] Erreur : {e}")
-
-# ─────────────────────────────────────────────
-# CHECK URL
-# ─────────────────────────────────────────────
-
-def resolve_ip(hostname):
-    """Tente de résoudre l'IP du hostname."""
-    try:
-        ip = socket.gethostbyname(hostname)
-        return ip
-    except socket.gaierror:
-        return None
-
-def check_url(name, url):
-    from urllib.parse import urlparse
-    hostname = urlparse(url).hostname
-    details = {}
-
-    # Résolution DNS
-    t_dns_start = time.time()
-    ip = resolve_ip(hostname)
-    details["dns_elapsed"] = round(time.time() - t_dns_start, 3)
-    details["ip"] = ip if ip else "NON RÉSOLU"
-
-    if not ip:
-        elapsed = details["dns_elapsed"]
-        details["error_type"] = "DNS"
-        return False, "Erreur DNS — impossible de résoudre le nom de domaine", elapsed, details
-
-    # Requête HTTP
-    start = time.time()
-    try:
-        response = requests.get(url, timeout=RESPONSE_TIME_LIMIT_SECONDS,
-                                allow_redirects=True, verify=False,
-                                headers={"User-Agent": "STLA-Monitor/1.0"})
-        elapsed = round(time.time() - start, 2)
-        total_elapsed = round(details["dns_elapsed"] + elapsed, 2)
-
-        details["http_status"] = response.status_code
-        details["elapsed_http"] = elapsed
-        details["elapsed_total"] = total_elapsed
-        details["headers"] = {
-            "server": response.headers.get("Server", "—"),
-            "content-type": response.headers.get("Content-Type", "—"),
-            "cache-control": response.headers.get("Cache-Control", "—"),
-            "x-cache": response.headers.get("X-Cache", "—"),
-            "cf-ray": response.headers.get("CF-Ray", "—"),
-        }
-
-        # Temps de réponse trop long
-        if elapsed > RESPONSE_TIME_LIMIT_SECONDS:
-            details["error_type"] = "TIMEOUT_SOFT"
-            return False, f"Temps de réponse trop long : {elapsed}s", elapsed, details
-
-        # Erreur HTTP
-        if response.status_code >= 400:
-            details["error_type"] = f"HTTP_{response.status_code}"
-            body_preview = response.text[:300].strip().replace("\n", " ")
-            details["body_preview"] = body_preview
-            return False, f"HTTP {response.status_code}", elapsed, details
-
-        # Contenu KO déguisé en 200
-        body = response.text[:2000]
-        error_signatures = [
-            "<Code>AccessDenied</Code>",
-            "<Message>Access Denied</Message>",
-            "<Error>",
-            "AccessDenied",
-            "503 Service Unavailable",
-            "502 Bad Gateway",
-            "403 Forbidden",
-        ]
-        for sig in error_signatures:
-            if sig in body:
-                details["error_type"] = "CONTENT_KO"
-                details["body_preview"] = body[:300].strip().replace("\n", " ")
-                return False, f"Contenu KO — '{sig}' détecté (HTTP {response.status_code})", elapsed, details
-
-        details["error_type"] = None
-        return True, f"OK ({response.status_code}) en {elapsed}s", elapsed, details
-
-    except requests.exceptions.ConnectionError as e:
-        elapsed = round(time.time() - start, 2)
-        details["elapsed_http"] = elapsed
-        details["error_type"] = "CONNECTION_ERROR"
-        details["error_detail"] = str(e)[:200]
-        return False, "Erreur de connexion", elapsed, details
-
-    except requests.exceptions.Timeout:
-        elapsed = round(time.time() - start, 2)
-        details["elapsed_http"] = elapsed
-        details["error_type"] = "TIMEOUT"
-        return False, f"Timeout après {RESPONSE_TIME_LIMIT_SECONDS}s", elapsed, details
-
-    except Exception as e:
-        elapsed = round(time.time() - start, 2)
-        details["error_type"] = "UNKNOWN"
-        details["error_detail"] = str(e)[:200]
-        return False, f"Erreur inattendue : {e}", elapsed, details
 
 # ─────────────────────────────────────────────
 # BOUCLE PRINCIPALE
@@ -317,8 +361,9 @@ def check_url(name, url):
 def run():
     init_github()
     log.info("═" * 60)
-    log.info("  STLA Monitor démarré")
-    log.info(f"  URLs : {', '.join(URLS.keys())}")
+    log.info("  STLA Monitor V2 démarré")
+    for brand, urls in BRANDS.items():
+        log.info(f"  {brand} : {', '.join(urls.keys())}")
     log.info(f"  Intervalle : {CHECK_INTERVAL_SECONDS}s")
     log.info("═" * 60)
 
@@ -327,35 +372,34 @@ def run():
         now = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
         now_short = datetime.now().strftime("%H:%M:%S")
 
-        for name, url in URLS.items():
-            ok, reason, elapsed, details = check_url(name, url)
+        for brand, urls in BRANDS.items():
+            statuses[brand] = {}
+            for page, url in urls.items():
+                key = f"{brand}:{page}"
+                ok, reason, elapsed, details = check_url(brand, page, url)
 
-            # Ajoute le point à la courbe
-            chart_data[name].append({"time": now_short, "elapsed": elapsed})
-            if len(chart_data[name]) > MAX_CHART:
-                chart_data[name].pop(0)
+                chart_data[key].append({"time": now_short, "elapsed": elapsed})
+                if len(chart_data[key]) > MAX_CHART:
+                    chart_data[key].pop(0)
 
-            statuses[name] = {
-                "ok": ok,
-                "reason": reason,
-                "elapsed": elapsed,
-                "checked_at": now,
-                "url": url,
-                "details": details
-            }
+                statuses[brand][page] = {
+                    "ok": ok, "reason": reason, "elapsed": elapsed,
+                    "checked_at": now, "url": url, "details": details
+                }
 
-            if ok:
-                log.info(f"[{name}] ✅ {reason}")
-                if incident_active[name]:
-                    incident_active[name] = False
-                    history.append({"time": now, "name": name, "type": "recovery", "detail": "Retour en ligne"})
-                    send_teams_alert(name, url, reason, is_recovery=True, details=details)
-            else:
-                log.warning(f"[{name}] ❌ {reason}")
-                if not incident_active[name]:
-                    incident_active[name] = True
-                    history.append({"time": now, "name": name, "type": "ko", "detail": reason, "diagnostics": details})
-                    send_teams_alert(name, url, reason, details=details)
+                icon = "✅" if ok else "❌"
+                log.info(f"[{brand}][{page}] {icon} {reason}")
+
+                if ok:
+                    if incident_active.get(key):
+                        incident_active[key] = False
+                        history.append({"time": now, "brand": brand, "page": page, "type": "recovery", "detail": "Retour en ligne"})
+                        send_teams_alert(brand, page, url, reason, is_recovery=True, details=details)
+                else:
+                    if not incident_active.get(key):
+                        incident_active[key] = True
+                        history.append({"time": now, "brand": brand, "page": page, "type": "ko", "detail": reason, "diagnostics": details})
+                        send_teams_alert(brand, page, url, reason, is_recovery=False, details=details)
 
         push_status(statuses)
         time.sleep(CHECK_INTERVAL_SECONDS)
