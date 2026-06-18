@@ -54,7 +54,7 @@ RESPONSE_TIME_LIMIT_SECONDS = 8   # Timeout TCP dur — au-delà le serveur est 
 SLOW_THRESHOLD_SECONDS      = 2   # Au-delà : SLOW (dégradé, alerte)
 VERY_SLOW_THRESHOLD_SECONDS = 4   # Au-delà : VERY_SLOW (KO)
 LOG_FILE    = "stla_monitor.log"
-MAX_HISTORY = 100
+MAX_CHART   = 10080  # 7 jours de checks toutes les 10s
 MAX_CHART   = 100
 
 # Signatures de contenu KO déguisé en 200
