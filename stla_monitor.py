@@ -241,15 +241,30 @@ def check_url(brand, page, url):
     # 2. Requête HTTP
     t1 = time.time()
     try:
+        # Headers différents pour les sites référence (anti-bot)
+        if brand in REFERENCE_BRANDS:
+            req_headers = {
+                "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+                "Accept-Language": "fr-FR,fr;q=0.9,en;q=0.8",
+                "Accept-Encoding": "gzip, deflate, br",
+                "Connection": "keep-alive",
+                "Upgrade-Insecure-Requests": "1",
+                "Sec-Fetch-Dest": "document",
+                "Sec-Fetch-Mode": "navigate",
+                "Sec-Fetch-Site": "none",
+            }
+        else:
+            req_headers = {
+                "User-Agent": "Mozilla/5.0 (compatible; STLA-Monitor/2.0)",
+                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            }
         response = requests.get(
             url,
             timeout=RESPONSE_TIME_LIMIT_SECONDS,  # TCP timeout dur à 8s
             allow_redirects=True,
             verify=False,
-            headers={
-                "User-Agent": "Mozilla/5.0 (compatible; STLA-Monitor/2.0)",
-                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-            }
+            headers=req_headers
         )
         elapsed_http = round(time.time() - t1, 2)
         elapsed_total = round(time.time() - t0, 2)
