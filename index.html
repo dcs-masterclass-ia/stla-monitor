@@ -232,7 +232,9 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg)}
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
+const WS_URL="wss://stla-monitor.onrender.com/ws";
 const RAW_BASE="https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/status.json";
+let ws=null, wsReconnectTimer=null;
 const BRAND_META={
   "Opel PT":{logo:"https://www.stellantis.com/content/dam/stellantis-corporate/brands/opel/opel-logo.png",colors:["#3b5ae0","#0F6E56"],type:"brand"},
   "Ford FR":{logo:"https://www.logo-voiture.com/wp-content/uploads/2021/01/ford-logo-2017-grand.png",colors:["#0066cc","#1a9e6e"],type:"brand"},
