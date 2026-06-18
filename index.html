@@ -38,6 +38,10 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg)}
 .sidebar-logo-text{font-size:15px;font-weight:900;letter-spacing:-0.04em;color:var(--text-primary)}
 .sidebar-logo-badge{font-size:9px;font-weight:800;background:var(--accent);color:#fff;padding:2px 6px;border-radius:6px;letter-spacing:.04em}
 .nav-section{font-size:9px;font-weight:700;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:.1em;padding:0 8px;margin:10px 0 3px}
+.tab-switcher{display:flex;background:rgba(0,0,0,0.05);border-radius:10px;padding:3px;gap:2px;margin-bottom:10px}
+.tab-btn{flex:1;padding:6px 0;border-radius:7px;font-size:11px;font-weight:700;border:none;background:none;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;color:var(--text-secondary);transition:all .15s}
+.tab-btn.active{background:#fff;color:var(--text-primary);box-shadow:0 1px 4px rgba(0,0,0,0.08)}
+.tab-btn.active[id="tab-ref"]{background:var(--text-primary);color:#fff}
 .nav-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:10px;cursor:pointer;transition:all .15s;font-size:12px;font-weight:600;color:var(--text-secondary);border:none;background:none;width:100%;text-align:left;font-family:'Plus Jakarta Sans',sans-serif}
 .nav-item:hover{background:var(--accent-light);color:var(--accent)}
 .nav-item.active{background:var(--accent);color:#fff}
@@ -161,6 +165,15 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg)}
         <i data-lucide="monitor-dot" style="width:14px;height:14px;flex-shrink:0"></i>Ford FR
         <span class="ndot loading" id="nd-Ford FR"></span>
       </button>
+      <div class="nav-section">Références marché</div>
+      <button class="nav-item" id="nav-Aramisauto" onclick="selectBrand('Aramisauto')">
+        <i data-lucide="shield-check" style="width:14px;height:14px;flex-shrink:0"></i>Aramisauto
+        <span class="ndot loading" id="nd-Aramisauto"></span>
+      </button>
+      <button class="nav-item" id="nav-La Centrale" onclick="selectBrand('La Centrale')">
+        <i data-lucide="shield-check" style="width:14px;height:14px;flex-shrink:0"></i>La Centrale
+        <span class="ndot loading" id="nd-La Centrale"></span>
+      </button>
 
       <div class="sidebar-bottom">
         <div class="sidebar-bottom-title">Monitoring actif</div>
@@ -223,7 +236,13 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg)}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
 const RAW_URL="https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/status.json";
-const BRAND_META={"Opel PT":{logo:"https://www.stellantis.com/content/dam/stellantis-corporate/brands/opel/opel-logo.png",colors:["#3b5ae0","#0F6E56"]},"Ford FR":{logo:"https://www.logo-voiture.com/wp-content/uploads/2021/01/ford-logo-2017-grand.png",colors:["#0066cc","#1a9e6e"]}};
+const BRAND_META={
+  "Opel PT":{logo:"https://www.stellantis.com/content/dam/stellantis-corporate/brands/opel/opel-logo.png",colors:["#3b5ae0","#0F6E56"],type:"brand"},
+  "Ford FR":{logo:"https://www.logo-voiture.com/wp-content/uploads/2021/01/ford-logo-2017-grand.png",colors:["#0066cc","#1a9e6e"],type:"brand"},
+  "Aramisauto":{logo:"https://www.aramisauto.com/favicon.ico",colors:["#e85d04","#f48c06"],type:"reference"},
+  "La Centrale":{logo:"https://www.lacentrale.fr/favicon.ico",colors:["#2d6a4f","#52b788"],type:"reference"}
+};
+const REFERENCE_BRANDS=new Set(["Aramisauto","La Centrale"]);
 let allData=null,currentBrand=null,lineChart=null,donutChart=null,currentPeriod='7j';
 
 function setPeriod(btn,period){
@@ -255,13 +274,29 @@ function updateLandingStatus(data){
 }
 
 
+function switchTab(tab){
+  document.getElementById('panel-vos').style.display = tab==='vos' ? 'block' : 'none';
+  document.getElementById('panel-ref').style.display = tab==='ref' ? 'block' : 'none';
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  // Sélectionner la première marque du panel
+  if(tab==='vos') selectBrand('Opel PT');
+  else selectBrand('Aramisauto');
+}
+
 function selectBrand(brand){
   currentBrand=brand;
   document.querySelectorAll(".nav-item").forEach(n=>n.classList.remove("active"));
   const nb=document.getElementById("nav-"+brand);
   if(nb)nb.classList.add("active");
-  document.getElementById("dash-logo").src=BRAND_META[brand].logo;
-  document.getElementById("dash-title").textContent=brand;
+  const meta=BRAND_META[brand];
+  if(!meta){ console.error("Brand non trouvé:", brand); return; }
+  const isRef=REFERENCE_BRANDS.has(brand);
+  const logoEl=document.getElementById("dash-logo");
+  logoEl.src=meta.logo||"";
+  logoEl.style.display=meta.logo?"block":"none";
+  logoEl.onerror=()=>{ logoEl.style.display="none"; };
+  document.getElementById("dash-title").innerHTML=brand+(isRef?' <span style="font-size:11px;font-weight:700;color:#6b7280;background:#f3f4f6;padding:3px 10px;border-radius:8px;margin-left:8px;vertical-align:middle">Témoin</span>':"");
   if(allData)renderDash(allData);
 }
 
@@ -276,10 +311,17 @@ function buildSummary(brand,data){
   const avg=allElapsed.length?(allElapsed.reduce((a,b)=>a+b,0)/allElapsed.length).toFixed(2):"—";
   const totalChecks=chartPts.reduce((a,[,pts])=>a+pts.length,0);
   const uptimePct=totalChecks>0?((1-koCount/Math.max(totalChecks,1))*100).toFixed(1)+"%":"—";
-  let txt=allOk?`Toutes les pages sont <b>opérationnelles</b>. `:`<b>Anomalie détectée</b> sur ${pages.filter(([,s])=>!s.ok).map(([p])=>p).join(", ")}. `;
-  txt+=`Uptime : <b>${uptimePct}</b>. `;
-  if(avg!=="—")txt+=`Réponse moyenne : <b>${avg}s</b>. `;
-  txt+=koCount===0?"Aucun incident enregistré.":koCount+" incident"+(koCount>1?"s":"")+" sur la période.";
+  const isRef=REFERENCE_BRANDS.has(brand);
+  let txt="";
+  if(isRef){
+    txt=`Site témoin utilisé pour <b>comparer l'état du réseau</b>. Si ce site est OK pendant vos incidents, le problème vient de votre infra. `;
+    txt+=allOk?`Actuellement : <b>opérationnel</b> ✓`:`<b>Attention :</b> ce témoin est aussi KO — peut indiquer un problème réseau global.`;
+  } else {
+    txt=allOk?`Toutes les pages sont <b>opérationnelles</b>. `:`<b>Anomalie détectée</b> sur ${pages.filter(([,s])=>!s.ok).map(([p])=>p).join(", ")}. `;
+    txt+=`Uptime : <b>${uptimePct}</b>. `;
+    if(avg!=="—")txt+=`Réponse moyenne : <b>${avg}s</b>. `;
+    txt+=koCount===0?"Aucun incident enregistré.":koCount+" incident"+(koCount>1?"s":"")+" sur la période.";
+  }
   document.getElementById("summary-text").innerHTML=txt;
 }
 
