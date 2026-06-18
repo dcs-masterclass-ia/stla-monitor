@@ -221,6 +221,79 @@ def resolve_dns(hostname):
     except socket.gaierror as e:
         return None, round(time.time() - time.time(), 3), str(e)
 
+def check_url_playwright(brand, page, url):
+    """Check via Playwright pour les sites avec WAF (références marché)."""
+    details = {"brand": brand, "page": page}
+    t0 = time.time()
+
+    # DNS d'abord
+    from urllib.parse import urlparse
+    hostname = urlparse(url).hostname
+    ip, dns_elapsed, dns_error = resolve_dns(hostname)
+    details["dns_elapsed"] = dns_elapsed
+    details["ip"] = ip or "NON RÉSOLU"
+
+    if not ip:
+        details["error_type"] = "DNS_FAILURE"
+        details["error_detail"] = dns_error
+        return False, f"Erreur DNS : {dns_error}", round(time.time()-t0, 2), details
+
+    try:
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)
+            ctx = browser.new_context(
+                viewport={"width": 1280, "height": 800},
+                user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+            )
+            pg = ctx.new_page()
+
+            # Bloquer tous les scripts analytics/tracking pour ne pas polluer les stats
+            BLOCKED_DOMAINS = [
+                "google-analytics.com", "googletagmanager.com", "analytics.google.com",
+                "doubleclick.net", "googlesyndication.com", "facebook.net", "facebook.com/tr",
+                "hotjar.com", "segment.com", "mixpanel.com", "amplitude.com",
+                "criteo.com", "adform.net", "smartadserver.com", "tagcommander.com",
+                "salesforce.com", "hubspot.com", "intercom.io", "zendesk.com",
+                "quantserve.com", "scorecardresearch.com", "omtrdc.net", "demdex.net",
+            ]
+            def block_tracking(route):
+                url_req = route.request.url
+                if any(d in url_req for d in BLOCKED_DOMAINS):
+                    route.abort()
+                else:
+                    route.continue_()
+            pg.route("**/*", block_tracking)
+
+            t1 = time.time()
+            resp = pg.goto(url, timeout=RESPONSE_TIME_LIMIT_SECONDS*1000, wait_until="domcontentloaded")
+            elapsed = round(time.time()-t1, 2)
+            total = round(time.time()-t0, 2)
+
+            status = resp.status if resp else 0
+            details["http_status"] = status
+            details["elapsed_http"] = elapsed
+            details["elapsed_total"] = total
+            details["error_type"] = None
+
+            browser.close()
+
+            if status >= 400:
+                details["error_type"] = f"HTTP_{status}"
+                return False, f"HTTP {status}", total, details
+
+            if elapsed > VERY_SLOW_THRESHOLD_SECONDS:
+                details["error_type"] = "VERY_SLOW"
+                return False, f"Réponse très lente : {elapsed}s", total, details
+
+            return True, f"OK ({status}) en {elapsed}s", total, details
+
+    except Exception as e:
+        elapsed = round(time.time()-t0, 2)
+        details["error_type"] = "PLAYWRIGHT_ERROR"
+        details["error_detail"] = str(e)[:200]
+        return False, f"Erreur navigateur : {type(e).__name__}", elapsed, details
+
+
 def check_url(brand, page, url):
     parsed = urlparse(url)
     hostname = parsed.hostname
@@ -241,21 +314,7 @@ def check_url(brand, page, url):
     # 2. Requête HTTP
     t1 = time.time()
     try:
-        # Headers différents pour les sites référence (anti-bot)
-        if brand in REFERENCE_BRANDS:
-            req_headers = {
-                "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
-                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
-                "Accept-Language": "fr-FR,fr;q=0.9,en;q=0.8",
-                "Accept-Encoding": "gzip, deflate, br",
-                "Connection": "keep-alive",
-                "Upgrade-Insecure-Requests": "1",
-                "Sec-Fetch-Dest": "document",
-                "Sec-Fetch-Mode": "navigate",
-                "Sec-Fetch-Site": "none",
-            }
-        else:
-            req_headers = {
+        req_headers = {
                 "User-Agent": "Mozilla/5.0 (compatible; STLA-Monitor/2.0)",
                 "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
             }
@@ -472,7 +531,7 @@ def run():
             statuses[brand] = {}
             for page, url in urls.items():
                 key = f"{brand}:{page}"
-                ok, reason, elapsed, details = check_url(brand, page, url)
+                ok, reason, elapsed, details = check_url_playwright(brand, page, url) if brand in REFERENCE_BRANDS else check_url(brand, page, url)
 
                 chart_data[key].append({"time": now_short, "elapsed": elapsed})
                 if len(chart_data[key]) > MAX_CHART:
