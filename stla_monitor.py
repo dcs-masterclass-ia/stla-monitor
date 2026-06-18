@@ -17,6 +17,7 @@ import ssl
 from datetime import datetime
 from urllib.parse import urlparse
 from github import Auth, Github
+import threading
 from playwright.sync_api import sync_playwright
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -49,6 +50,8 @@ GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "")
 GITHUB_REPO  = "dcs-masterclass-ia/stla-monitor"
 GITHUB_FILE  = "status.json"
 
+RENDER_URL = "https://stla-monitor.onrender.com/update"
+
 CHECK_INTERVAL_SECONDS      = 10
 RESPONSE_TIME_LIMIT_SECONDS = 8   # Timeout TCP dur — au-delà le serveur est considéré mort
 SLOW_THRESHOLD_SECONDS      = 2   # Au-delà : SLOW (dégradé, alerte)
@@ -56,6 +59,7 @@ VERY_SLOW_THRESHOLD_SECONDS = 4   # Au-delà : VERY_SLOW (KO)
 LOG_FILE    = "stla_monitor.log"
 MAX_CHART   = 10080  # 7 jours de checks toutes les 10s
 MAX_HISTORY = 500   # incidents conservés
+MAX_CHART   = 100
 
 # Signatures de contenu KO déguisé en 200
 ERROR_SIGNATURES = [
@@ -131,6 +135,27 @@ def init_github():
             log.info("[GitHub] Pas d'historique existant")
     except Exception as e:
         log.error(f"[GitHub] Connexion impossible : {e}")
+
+def push_to_render(statuses):
+    """Envoie les données au serveur WebSocket Render en temps réel."""
+    try:
+        now = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+        payload = {
+            "updated_at": now,
+            "statuses": statuses,
+            "history": history[-MAX_HISTORY:],
+            "chart_data": {k: v[-100:] for k, v in chart_data.items()},
+            "avg_response": {
+                k: round(sum(p["elapsed"] for p in v[-20:]) / len(v[-20:]), 2) if v else 0
+                for k, v in chart_data.items()
+            }
+        }
+        resp = requests.post(RENDER_URL, json=payload, timeout=5, verify=False)
+        if resp.status_code == 200:
+            log.info(f"[Render] Données envoyées — {resp.json().get('clients', 0)} client(s) connecté(s)")
+    except Exception as e:
+        log.warning(f"[Render] Erreur push : {e}")
+
 
 def take_screenshot(brand, page, url):
     """Prend un screenshot de l'URL en erreur et le pousse sur GitHub."""
@@ -559,6 +584,8 @@ def run():
                         history.append({"time": now, "brand": brand, "page": page, "type": "ko", "detail": reason, "diagnostics": details, "screenshot": screenshot_url, "is_reference": brand in REFERENCE_BRANDS})
 
         push_status(statuses)
+        # Push temps réel vers Render (thread pour ne pas bloquer)
+        threading.Thread(target=push_to_render, args=(statuses,), daemon=True).start()
         time.sleep(CHECK_INTERVAL_SECONDS)
 
 if __name__ == "__main__":
