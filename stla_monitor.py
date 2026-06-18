@@ -34,7 +34,16 @@ BRANDS = {
         "Homepage":   "https://www.ford-reprise.fr/",
         "Formulaire": "https://www.ford-reprise.fr/form",
     },
+    "Aramisauto": {
+        "Homepage": "https://www.aramisauto.com/reprise/",
+    },
+    "La Centrale": {
+        "Homepage": "https://www.lacentrale.fr/",
+    },
 }
+
+# Marques "témoins" — pas d'alerte Teams, juste monitoring passif
+REFERENCE_BRANDS = {"Aramisauto", "La Centrale"}
 
 TEAMS_WEBHOOK_URL = "https://default64661b8d1758459ca270b19fe3578e.a7.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/c3181d4e41694cfebd1c7502d219b6a9/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=l0lFm8uGc6kFwT73IzDPQBdNut4ZWgNsaXHosdDEh18"
 
@@ -465,14 +474,17 @@ def run():
                 if ok:
                     if incident_active.get(key):
                         incident_active[key] = False
-                        history.append({"time": now, "brand": brand, "page": page, "type": "recovery", "detail": "Retour en ligne"})
-                        send_teams_alert(brand, page, url, reason, is_recovery=True, details=details)
+                        history.append({"time": now, "brand": brand, "page": page, "type": "recovery", "detail": "Retour en ligne", "is_reference": brand in REFERENCE_BRANDS})
+                        if brand not in REFERENCE_BRANDS:
+                            send_teams_alert(brand, page, url, reason, is_recovery=True, details=details)
                 else:
                     if not incident_active.get(key):
                         incident_active[key] = True
-                        screenshot_url = take_screenshot(brand, page, url)
-                        history.append({"time": now, "brand": brand, "page": page, "type": "ko", "detail": reason, "diagnostics": details, "screenshot": screenshot_url})
-                        send_teams_alert(brand, page, url, reason, is_recovery=False, details=details, screenshot_url=screenshot_url)
+                        screenshot_url = None
+                        if brand not in REFERENCE_BRANDS:
+                            screenshot_url = take_screenshot(brand, page, url)
+                            send_teams_alert(brand, page, url, reason, is_recovery=False, details=details, screenshot_url=screenshot_url)
+                        history.append({"time": now, "brand": brand, "page": page, "type": "ko", "detail": reason, "diagnostics": details, "screenshot": screenshot_url, "is_reference": brand in REFERENCE_BRANDS})
 
         push_status(statuses)
         time.sleep(CHECK_INTERVAL_SECONDS)
