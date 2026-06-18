@@ -421,6 +421,8 @@ def check_url(brand, page, url):
 
 def run():
     init_github()
+    # Démarrer le keepalive Render en arrière-plan
+    threading.Thread(target=_ping_render, daemon=True).start()
     log.info("═" * 60)
     log.info("  STLA Monitor V2 démarré")
     for brand, urls in BRANDS.items():
@@ -477,6 +479,17 @@ def run():
         push_status(statuses)
         threading.Thread(target=push_to_render, args=(statuses,), daemon=True).start()
         time.sleep(CHECK_INTERVAL_SECONDS)
+
+# Ping Render toutes les 10 min pour éviter la mise en veille (plan free)
+_ping_counter = [0]
+def _ping_render():
+    while True:
+        time.sleep(480)  # 8 minutes
+        try:
+            requests.get("https://stla-monitor.onrender.com/status", timeout=10, verify=False)
+            log.info("[Render] Ping keepalive envoyé")
+        except Exception:
+            pass
 
 if __name__ == "__main__":
     try:
