@@ -1,21 +1,21 @@
 {
-  "updated_at": "18/06/2026 12:17:57",
+  "updated_at": "18/06/2026 12:18:18",
   "statuses": {
     "Opel PT": {
       "Homepage": {
         "ok": true,
-        "reason": "OK (200) en 0.16s",
-        "elapsed": 0.21,
-        "checked_at": "18/06/2026 12:17:49",
+        "reason": "OK (200) en 0.21s",
+        "elapsed": 0.22,
+        "checked_at": "18/06/2026 12:18:09",
         "url": "https://www.retoma.opel.pt",
         "details": {
           "brand": "Opel PT",
           "page": "Homepage",
-          "dns_elapsed": 0.048,
+          "dns_elapsed": 0.002,
           "ip": "135.125.7.226",
           "http_status": 200,
-          "elapsed_http": 0.16,
-          "elapsed_total": 0.21,
+          "elapsed_http": 0.21,
+          "elapsed_total": 0.22,
           "final_url": "https://www.retoma.opel.pt/",
           "redirect_count": 0,
           "headers": {
@@ -31,18 +31,18 @@
       },
       "Parcours": {
         "ok": true,
-        "reason": "OK (200) en 0.18s",
-        "elapsed": 0.18,
-        "checked_at": "18/06/2026 12:17:49",
+        "reason": "OK (200) en 0.14s",
+        "elapsed": 0.14,
+        "checked_at": "18/06/2026 12:18:09",
         "url": "https://www.retoma.opel.pt/retoma",
         "details": {
           "brand": "Opel PT",
           "page": "Parcours",
-          "dns_elapsed": 0.002,
+          "dns_elapsed": 0.001,
           "ip": "135.125.7.226",
           "http_status": 200,
-          "elapsed_http": 0.18,
-          "elapsed_total": 0.18,
+          "elapsed_http": 0.14,
+          "elapsed_total": 0.14,
           "final_url": "https://www.retoma.opel.pt/retoma",
           "redirect_count": 0,
           "headers": {
@@ -59,48 +59,20 @@
     },
     "Ford FR": {
       "Homepage": {
-        "ok": true,
-        "reason": "OK (200) en 2.78s",
-        "elapsed": 2.78,
-        "checked_at": "18/06/2026 12:17:49",
+        "ok": false,
+        "reason": "Erreur serveur HTTP 500",
+        "elapsed": 0.31,
+        "checked_at": "18/06/2026 12:18:09",
         "url": "https://www.ford-reprise.fr/",
         "details": {
           "brand": "Ford FR",
           "page": "Homepage",
           "dns_elapsed": 0.002,
           "ip": "51.102.168.47",
-          "http_status": 200,
-          "elapsed_http": 2.78,
-          "elapsed_total": 2.78,
-          "final_url": "https://www.ford-reprise.fr/",
-          "redirect_count": 0,
-          "headers": {
-            "server": "—",
-            "content-type": "text/html; charset=UTF-8",
-            "cache-control": "no-cache, private",
-            "x-cache": "—",
-            "cf-ray": "—",
-            "x-powered-by": "—"
-          },
-          "error_type": null,
-          "warning": true
-        }
-      },
-      "Formulaire": {
-        "ok": false,
-        "reason": "Erreur serveur HTTP 500",
-        "elapsed": 0.31,
-        "checked_at": "18/06/2026 12:17:49",
-        "url": "https://www.ford-reprise.fr/form",
-        "details": {
-          "brand": "Ford FR",
-          "page": "Formulaire",
-          "dns_elapsed": 0.002,
-          "ip": "3.69.153.2",
           "http_status": 500,
           "elapsed_http": 0.31,
           "elapsed_total": 0.31,
-          "final_url": "https://www.ford-reprise.fr/form",
+          "final_url": "https://www.ford-reprise.fr/",
           "redirect_count": 0,
           "headers": {
             "server": "—",
@@ -113,22 +85,37 @@
           "error_type": "HTTP_500",
           "body_preview": "<!DOCTYPE html>\n<html>\n<head>\n    <meta charset=\"utf-8\">\n    <title>500</title>\n</head>\n<body>\n    <h3 style=\"text-align: center;\">\n        We apologize we have an 500 error.\n    </h3>\n</body>\n</html>"
         }
+      },
+      "Formulaire": {
+        "ok": true,
+        "reason": "OK (200) en 1.35s",
+        "elapsed": 1.35,
+        "checked_at": "18/06/2026 12:18:09",
+        "url": "https://www.ford-reprise.fr/form",
+        "details": {
+          "brand": "Ford FR",
+          "page": "Formulaire",
+          "dns_elapsed": 0.002,
+          "ip": "51.102.168.47",
+          "http_status": 200,
+          "elapsed_http": 1.35,
+          "elapsed_total": 1.35,
+          "final_url": "https://www.ford-reprise.fr/form",
+          "redirect_count": 0,
+          "headers": {
+            "server": "—",
+            "content-type": "text/html; charset=UTF-8",
+            "cache-control": "no-cache, private",
+            "x-cache": "—",
+            "cf-ray": "—",
+            "x-powered-by": "—"
+          },
+          "error_type": null
+        }
       }
     }
   },
   "history": [
-    {
-      "time": "12/06/2026 13:41:03",
-      "name": "Homepage",
-      "type": "recovery",
-      "detail": "Retour en ligne"
-    },
-    {
-      "time": "12/06/2026 13:41:03",
-      "name": "Parcours",
-      "type": "recovery",
-      "detail": "Retour en ligne"
-    },
     {
       "time": "12/06/2026 18:36:00",
       "name": "Homepage",
@@ -1313,14 +1300,46 @@
         "body_preview": "<!DOCTYPE html>\n<html>\n<head>\n    <meta charset=\"utf-8\">\n    <title>500</title>\n</head>\n<body>\n    <h3 style=\"text-align: center;\">\n        We apologize we have an 500 error.\n    </h3>\n</body>\n</html>"
       },
       "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Formulaire_20260618_121752.png"
+    },
+    {
+      "time": "18/06/2026 12:18:09",
+      "brand": "Ford FR",
+      "page": "Homepage",
+      "type": "ko",
+      "detail": "Erreur serveur HTTP 500",
+      "diagnostics": {
+        "brand": "Ford FR",
+        "page": "Homepage",
+        "dns_elapsed": 0.002,
+        "ip": "51.102.168.47",
+        "http_status": 500,
+        "elapsed_http": 0.31,
+        "elapsed_total": 0.31,
+        "final_url": "https://www.ford-reprise.fr/",
+        "redirect_count": 0,
+        "headers": {
+          "server": "—",
+          "content-type": "text/html; charset=UTF-8",
+          "cache-control": "no-cache, private",
+          "x-cache": "—",
+          "cf-ray": "—",
+          "x-powered-by": "—"
+        },
+        "error_type": "HTTP_500",
+        "body_preview": "<!DOCTYPE html>\n<html>\n<head>\n    <meta charset=\"utf-8\">\n    <title>500</title>\n</head>\n<body>\n    <h3 style=\"text-align: center;\">\n        We apologize we have an 500 error.\n    </h3>\n</body>\n</html>"
+      },
+      "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260618_121810.png"
+    },
+    {
+      "time": "18/06/2026 12:18:09",
+      "brand": "Ford FR",
+      "page": "Formulaire",
+      "type": "recovery",
+      "detail": "Retour en ligne"
     }
   ],
   "chart_data": {
     "Opel PT:Homepage": [
-      {
-        "time": "11:47:39",
-        "elapsed": 0.17
-      },
       {
         "time": "11:47:54",
         "elapsed": 0.19
@@ -1716,13 +1735,13 @@
       {
         "time": "12:17:49",
         "elapsed": 0.21
+      },
+      {
+        "time": "12:18:09",
+        "elapsed": 0.22
       }
     ],
     "Opel PT:Parcours": [
-      {
-        "time": "11:47:39",
-        "elapsed": 0.16
-      },
       {
         "time": "11:47:54",
         "elapsed": 0.16
@@ -2118,13 +2137,13 @@
       {
         "time": "12:17:49",
         "elapsed": 0.18
+      },
+      {
+        "time": "12:18:09",
+        "elapsed": 0.14
       }
     ],
     "Ford FR:Homepage": [
-      {
-        "time": "11:47:39",
-        "elapsed": 1.95
-      },
       {
         "time": "11:47:54",
         "elapsed": 1.89
@@ -2520,13 +2539,13 @@
       {
         "time": "12:17:49",
         "elapsed": 2.78
+      },
+      {
+        "time": "12:18:09",
+        "elapsed": 0.31
       }
     ],
     "Ford FR:Formulaire": [
-      {
-        "time": "11:47:39",
-        "elapsed": 1.29
-      },
       {
         "time": "11:47:54",
         "elapsed": 1.05
@@ -2922,13 +2941,17 @@
       {
         "time": "12:17:49",
         "elapsed": 0.31
+      },
+      {
+        "time": "12:18:09",
+        "elapsed": 1.35
       }
     ]
   },
   "avg_response": {
     "Opel PT:Homepage": 0.2,
-    "Opel PT:Parcours": 0.17,
-    "Ford FR:Homepage": 2.11,
+    "Opel PT:Parcours": 0.16,
+    "Ford FR:Homepage": 2.03,
     "Ford FR:Formulaire": 1.31
   }
 }
