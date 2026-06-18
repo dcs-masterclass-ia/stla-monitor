@@ -499,7 +499,10 @@ function renderHistory(brand, data) {
         (h.diagnostics && h.diagnostics.error_type ? '<div class="inc-sub">' + h.diagnostics.error_type + (h.diagnostics.ip ? " · " + h.diagnostics.ip : "") + '</div>' : '') +
         (dur ? '<div class="inc-duration">⏱ Durée : ' + dur + '</div>' : '') +
       '</div>' +
+      '<div style="display:flex;align-items:center;gap:6px;flex-shrink:0">' +
+      (h.screenshot ? '<a href="' + h.screenshot + '" target="_blank" title="Voir screenshot" style="display:flex;align-items:center;color:#dc2626;opacity:0.8"><i data-lucide="image" style="width:14px;height:14px"></i></a>' : '') +
       '<div class="inc-badge ' + (h.type === "recovery" ? "ok" : "ko") + '">' + (h.type === "recovery" ? "RÉSOLU" : "KO") + '</div>' +
+      '</div>' +
       '</div>';
   }).join("");
 }
