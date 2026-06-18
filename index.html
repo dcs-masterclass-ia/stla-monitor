@@ -232,7 +232,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg)}
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
-const RAW_URL="https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/status.json";
+const API_URL="https://api.github.com/repos/dcs-masterclass-ia/stla-monitor/contents/status.json";
 const BRAND_META={
   "Opel PT":{logo:"https://www.stellantis.com/content/dam/stellantis-corporate/brands/opel/opel-logo.png",colors:["#3b5ae0","#0F6E56"],type:"brand"},
   "Ford FR":{logo:"https://www.logo-voiture.com/wp-content/uploads/2021/01/ford-logo-2017-grand.png",colors:["#0066cc","#1a9e6e"],type:"brand"},
@@ -421,7 +421,10 @@ function renderDash(data){
 
 async function fetchStatus(){
   try{
-    const r=await fetch(RAW_URL+"?t="+Date.now());
+    const r=await fetch(API_URL, {
+      headers: {"Accept":"application/vnd.github.v3.raw", "Cache-Control":"no-cache"},
+      cache: "no-store"
+    });
     if(!r.ok)throw new Error();
     allData=await r.json();
     document.getElementById("updated").textContent="Mis à jour : "+allData.updated_at;
@@ -439,7 +442,7 @@ window.addEventListener("load",()=>{
   selectBrand('Opel PT');
   if(window.lucide)lucide.createIcons();
   fetchStatus();
-  setInterval(fetchStatus,15000);
+  setInterval(fetchStatus,5000);
 });
 </script>
 </body>
