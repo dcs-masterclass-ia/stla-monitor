@@ -37,13 +37,13 @@ BRANDS = {
     "Aramisauto": {
         "Homepage": "https://www.aramisauto.com/reprise/",
     },
-    "La Centrale": {
-        "Homepage": "https://www.lacentrale.fr/",
+    "VendezVotreVoiture": {
+        "Homepage": "https://www.vendezvotrevoiture.fr/",
     },
 }
 
 # Marques "témoins" — pas d'alerte Teams, juste monitoring passif
-REFERENCE_BRANDS = {"Aramisauto", "La Centrale"}
+REFERENCE_BRANDS = {"Aramisauto", "VendezVotreVoiture"}
 
 TEAMS_WEBHOOK_URL = "https://default64661b8d1758459ca270b19fe3578e.a7.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/c3181d4e41694cfebd1c7502d219b6a9/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=l0lFm8uGc6kFwT73IzDPQBdNut4ZWgNsaXHosdDEh18"
 
