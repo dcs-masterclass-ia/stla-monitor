@@ -251,14 +251,13 @@ function setPeriod(btn,period){
 
 function filterByPeriod(pts){
   if(!pts||!pts.length)return pts;
-  if(currentPeriod==='all')return pts;
-  const now=new Date();
-  const hoursMap={'7j':168,'24h':24};
-  const hours=hoursMap[currentPeriod]||168;
-  const cutoff=new Date(now.getTime()-hours*60*60*1000);
-  // Les points ont un format HH:MM:SS — on prend les N derniers points proportionnellement
-  const maxPts=currentPeriod==='24h'?Math.min(pts.length,Math.round(pts.length/7)):pts.length;
-  return pts.slice(-maxPts);
+  if(currentPeriod==='all'||currentPeriod==='7j')return pts;
+  // 24h = les 8640 derniers points (24h x 3600s / 10s)
+  if(currentPeriod==='24h'){
+    const max24h = 8640;
+    return pts.slice(-Math.min(pts.length, max24h));
+  }
+  return pts;
 }
 
 function updateLandingStatus(data){
