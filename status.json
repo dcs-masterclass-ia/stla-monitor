@@ -1,28 +1,30 @@
 {
-  "updated_at": "18/06/2026 19:19:45",
+  "updated_at": "18/06/2026 19:19:46",
   "statuses": {
     "Opel PT": {
       "Homepage": {
         "ok": true,
         "reason": "OK (200) en 0.14s",
         "elapsed": 0.14,
-        "checked_at": "18/06/2026 19:19:40",
+        "checked_at": "18/06/2026 19:19:42",
         "url": "https://www.retoma.opel.pt",
         "details": {
           "brand": "Opel PT",
           "page": "Homepage",
-          "dns_elapsed": 0.003,
+          "dns_elapsed": 0.002,
           "ip": "135.125.7.226",
           "http_status": 200,
           "elapsed_http": 0.14,
           "elapsed_total": 0.14,
-          "redirect_count": 0,
           "final_url": "https://www.retoma.opel.pt/",
+          "redirect_count": 0,
           "headers": {
             "server": "CloudFront",
             "content-type": "text/html; charset=utf-8",
+            "cache-control": "public, max-age=300, s-maxage=31536000, stale-while-revalidate=86400",
             "x-cache": "Hit from cloudfront",
-            "cf-ray": "—"
+            "cf-ray": "—",
+            "x-powered-by": "—"
           },
           "error_type": null
         }
@@ -31,23 +33,25 @@
         "ok": true,
         "reason": "OK (200) en 0.14s",
         "elapsed": 0.14,
-        "checked_at": "18/06/2026 19:19:40",
+        "checked_at": "18/06/2026 19:19:42",
         "url": "https://www.retoma.opel.pt/retoma",
         "details": {
           "brand": "Opel PT",
           "page": "Parcours",
-          "dns_elapsed": 0.003,
+          "dns_elapsed": 0.002,
           "ip": "135.125.7.226",
           "http_status": 200,
           "elapsed_http": 0.14,
           "elapsed_total": 0.14,
-          "redirect_count": 0,
           "final_url": "https://www.retoma.opel.pt/retoma",
+          "redirect_count": 0,
           "headers": {
             "server": "CloudFront",
             "content-type": "text/html; charset=utf-8",
+            "cache-control": "public, max-age=300, s-maxage=31536000, stale-while-revalidate=86400",
             "x-cache": "Hit from cloudfront",
-            "cf-ray": "—"
+            "cf-ray": "—",
+            "x-powered-by": "—"
           },
           "error_type": null
         }
@@ -56,9 +60,9 @@
     "Ford FR": {
       "Homepage": {
         "ok": true,
-        "reason": "OK (200) en 2.42s",
-        "elapsed": 2.42,
-        "checked_at": "18/06/2026 19:19:40",
+        "reason": "OK (200) en 1.97s",
+        "elapsed": 1.98,
+        "checked_at": "18/06/2026 19:19:42",
         "url": "https://www.ford-reprise.fr/",
         "details": {
           "brand": "Ford FR",
@@ -66,40 +70,44 @@
           "dns_elapsed": 0.002,
           "ip": "63.180.121.144",
           "http_status": 200,
-          "elapsed_http": 2.42,
-          "elapsed_total": 2.42,
-          "redirect_count": 0,
+          "elapsed_http": 1.97,
+          "elapsed_total": 1.98,
           "final_url": "https://www.ford-reprise.fr/",
+          "redirect_count": 0,
           "headers": {
             "server": "—",
             "content-type": "text/html; charset=UTF-8",
+            "cache-control": "no-cache, private",
             "x-cache": "—",
-            "cf-ray": "—"
+            "cf-ray": "—",
+            "x-powered-by": "—"
           },
           "error_type": null
         }
       },
       "Formulaire": {
         "ok": true,
-        "reason": "OK (200) en 1.6s",
-        "elapsed": 1.6,
-        "checked_at": "18/06/2026 19:19:40",
+        "reason": "OK (200) en 1.49s",
+        "elapsed": 1.49,
+        "checked_at": "18/06/2026 19:19:42",
         "url": "https://www.ford-reprise.fr/form",
         "details": {
           "brand": "Ford FR",
           "page": "Formulaire",
-          "dns_elapsed": 0.002,
+          "dns_elapsed": 0.001,
           "ip": "63.180.121.144",
           "http_status": 200,
-          "elapsed_http": 1.6,
-          "elapsed_total": 1.6,
-          "redirect_count": 0,
+          "elapsed_http": 1.49,
+          "elapsed_total": 1.49,
           "final_url": "https://www.ford-reprise.fr/form",
+          "redirect_count": 0,
           "headers": {
             "server": "—",
             "content-type": "text/html; charset=UTF-8",
+            "cache-control": "no-cache, private",
             "x-cache": "—",
-            "cf-ray": "—"
+            "cf-ray": "—",
+            "x-powered-by": "—"
           },
           "error_type": null
         }
@@ -108,9 +116,9 @@
     "Aramisauto": {
       "Homepage": {
         "ok": true,
-        "reason": "OK (200) en 0.3s",
-        "elapsed": 0.57,
-        "checked_at": "18/06/2026 19:19:40",
+        "reason": "OK (200) en 0.27s",
+        "elapsed": 0.53,
+        "checked_at": "18/06/2026 19:19:42",
         "url": "https://www.aramisauto.com/reprise/",
         "details": {
           "brand": "Aramisauto",
@@ -118,8 +126,8 @@
           "dns_elapsed": 0.002,
           "ip": "104.16.128.241",
           "http_status": 200,
-          "elapsed_http": 0.3,
-          "elapsed_total": 0.57,
+          "elapsed_http": 0.27,
+          "elapsed_total": 0.53,
           "error_type": null
         }
       }
@@ -1712,50 +1720,6 @@
   "chart_data": {
     "Opel PT:Homepage": [
       {
-        "time": "18:00:21",
-        "elapsed": 0.22
-      },
-      {
-        "time": "18:00:38",
-        "elapsed": 0.19
-      },
-      {
-        "time": "18:00:55",
-        "elapsed": 0.19
-      },
-      {
-        "time": "18:01:11",
-        "elapsed": 0.14
-      },
-      {
-        "time": "18:01:27",
-        "elapsed": 0.19
-      },
-      {
-        "time": "18:01:44",
-        "elapsed": 0.24
-      },
-      {
-        "time": "18:02:00",
-        "elapsed": 0.19
-      },
-      {
-        "time": "18:02:17",
-        "elapsed": 0.13
-      },
-      {
-        "time": "18:02:33",
-        "elapsed": 0.21
-      },
-      {
-        "time": "18:02:49",
-        "elapsed": 0.15
-      },
-      {
-        "time": "18:32:14",
-        "elapsed": 0.25
-      },
-      {
         "time": "18:32:30",
         "elapsed": 0.18
       },
@@ -2112,95 +2076,51 @@
         "elapsed": 0.16
       },
       {
-        "time": "19:16:54",
-        "elapsed": 0.16
-      },
-      {
-        "time": "19:17:10",
-        "elapsed": 0.22
-      },
-      {
-        "time": "19:17:26",
-        "elapsed": 0.12
-      },
-      {
-        "time": "19:17:43",
-        "elapsed": 0.18
-      },
-      {
-        "time": "19:17:59",
-        "elapsed": 0.19
-      },
-      {
-        "time": "19:18:17",
+        "time": "19:16:55",
         "elapsed": 0.15
       },
       {
-        "time": "19:18:33",
-        "elapsed": 0.21
-      },
-      {
-        "time": "19:18:50",
-        "elapsed": 0.16
-      },
-      {
-        "time": "19:19:06",
-        "elapsed": 0.17
-      },
-      {
-        "time": "19:19:23",
+        "time": "19:17:12",
         "elapsed": 0.13
       },
       {
-        "time": "19:19:40",
+        "time": "19:17:29",
+        "elapsed": 0.13
+      },
+      {
+        "time": "19:17:45",
+        "elapsed": 0.14
+      },
+      {
+        "time": "19:18:01",
+        "elapsed": 0.19
+      },
+      {
+        "time": "19:18:18",
+        "elapsed": 0.14
+      },
+      {
+        "time": "19:18:36",
+        "elapsed": 0.17
+      },
+      {
+        "time": "19:18:53",
+        "elapsed": 0.16
+      },
+      {
+        "time": "19:19:09",
+        "elapsed": 0.15
+      },
+      {
+        "time": "19:19:26",
+        "elapsed": 0.13
+      },
+      {
+        "time": "19:19:42",
         "elapsed": 0.14
       }
     ],
     "Opel PT:Parcours": [
-      {
-        "time": "18:00:21",
-        "elapsed": 0.14
-      },
-      {
-        "time": "18:00:38",
-        "elapsed": 0.18
-      },
-      {
-        "time": "18:00:55",
-        "elapsed": 0.17
-      },
-      {
-        "time": "18:01:11",
-        "elapsed": 0.17
-      },
-      {
-        "time": "18:01:27",
-        "elapsed": 0.18
-      },
-      {
-        "time": "18:01:44",
-        "elapsed": 0.2
-      },
-      {
-        "time": "18:02:00",
-        "elapsed": 0.14
-      },
-      {
-        "time": "18:02:17",
-        "elapsed": 0.18
-      },
-      {
-        "time": "18:02:33",
-        "elapsed": 0.17
-      },
-      {
-        "time": "18:02:49",
-        "elapsed": 0.12
-      },
-      {
-        "time": "18:32:14",
-        "elapsed": 0.19
-      },
       {
         "time": "18:32:30",
         "elapsed": 0.16
@@ -2558,95 +2478,51 @@
         "elapsed": 0.15
       },
       {
-        "time": "19:16:54",
+        "time": "19:16:55",
         "elapsed": 0.14
       },
       {
-        "time": "19:17:10",
-        "elapsed": 0.19
-      },
-      {
-        "time": "19:17:26",
-        "elapsed": 0.12
-      },
-      {
-        "time": "19:17:43",
-        "elapsed": 0.18
-      },
-      {
-        "time": "19:17:59",
-        "elapsed": 0.14
-      },
-      {
-        "time": "19:18:17",
-        "elapsed": 0.18
-      },
-      {
-        "time": "19:18:33",
+        "time": "19:17:12",
         "elapsed": 0.17
       },
       {
-        "time": "19:18:50",
-        "elapsed": 0.15
+        "time": "19:17:29",
+        "elapsed": 0.17
       },
       {
-        "time": "19:19:06",
-        "elapsed": 0.15
+        "time": "19:17:45",
+        "elapsed": 0.16
       },
       {
-        "time": "19:19:23",
-        "elapsed": 0.19
+        "time": "19:18:01",
+        "elapsed": 0.17
       },
       {
-        "time": "19:19:40",
+        "time": "19:18:18",
+        "elapsed": 0.17
+      },
+      {
+        "time": "19:18:36",
+        "elapsed": 0.17
+      },
+      {
+        "time": "19:18:53",
+        "elapsed": 0.18
+      },
+      {
+        "time": "19:19:09",
+        "elapsed": 0.17
+      },
+      {
+        "time": "19:19:26",
+        "elapsed": 0.18
+      },
+      {
+        "time": "19:19:42",
         "elapsed": 0.14
       }
     ],
     "Ford FR:Homepage": [
-      {
-        "time": "18:00:21",
-        "elapsed": 1.68
-      },
-      {
-        "time": "18:00:38",
-        "elapsed": 1.9
-      },
-      {
-        "time": "18:00:55",
-        "elapsed": 1.88
-      },
-      {
-        "time": "18:01:11",
-        "elapsed": 2.09
-      },
-      {
-        "time": "18:01:27",
-        "elapsed": 1.91
-      },
-      {
-        "time": "18:01:44",
-        "elapsed": 1.78
-      },
-      {
-        "time": "18:02:00",
-        "elapsed": 2.25
-      },
-      {
-        "time": "18:02:17",
-        "elapsed": 1.93
-      },
-      {
-        "time": "18:02:33",
-        "elapsed": 1.94
-      },
-      {
-        "time": "18:02:49",
-        "elapsed": 1.9
-      },
-      {
-        "time": "18:32:14",
-        "elapsed": 2.25
-      },
       {
         "time": "18:32:30",
         "elapsed": 2.3
@@ -3004,95 +2880,51 @@
         "elapsed": 2.28
       },
       {
-        "time": "19:16:54",
-        "elapsed": 2.02
+        "time": "19:16:55",
+        "elapsed": 2.37
       },
       {
-        "time": "19:17:10",
-        "elapsed": 1.96
+        "time": "19:17:12",
+        "elapsed": 2.35
       },
       {
-        "time": "19:17:26",
-        "elapsed": 2.15
+        "time": "19:17:29",
+        "elapsed": 1.99
       },
       {
-        "time": "19:17:43",
-        "elapsed": 2.42
+        "time": "19:17:45",
+        "elapsed": 2.46
       },
       {
-        "time": "19:17:59",
-        "elapsed": 2.8
+        "time": "19:18:01",
+        "elapsed": 3.0
       },
       {
-        "time": "19:18:17",
-        "elapsed": 1.94
+        "time": "19:18:18",
+        "elapsed": 2.62
       },
       {
-        "time": "19:18:33",
-        "elapsed": 2.0
+        "time": "19:18:36",
+        "elapsed": 2.99
       },
       {
-        "time": "19:18:50",
-        "elapsed": 2.33
+        "time": "19:18:53",
+        "elapsed": 2.46
       },
       {
-        "time": "19:19:06",
-        "elapsed": 2.5
+        "time": "19:19:09",
+        "elapsed": 2.44
       },
       {
-        "time": "19:19:23",
-        "elapsed": 2.53
+        "time": "19:19:26",
+        "elapsed": 2.35
       },
       {
-        "time": "19:19:40",
-        "elapsed": 2.42
+        "time": "19:19:42",
+        "elapsed": 1.98
       }
     ],
     "Ford FR:Formulaire": [
-      {
-        "time": "18:00:21",
-        "elapsed": 1.49
-      },
-      {
-        "time": "18:00:38",
-        "elapsed": 1.35
-      },
-      {
-        "time": "18:00:55",
-        "elapsed": 1.18
-      },
-      {
-        "time": "18:01:11",
-        "elapsed": 1.23
-      },
-      {
-        "time": "18:01:27",
-        "elapsed": 1.41
-      },
-      {
-        "time": "18:01:44",
-        "elapsed": 1.19
-      },
-      {
-        "time": "18:02:00",
-        "elapsed": 1.35
-      },
-      {
-        "time": "18:02:17",
-        "elapsed": 1.14
-      },
-      {
-        "time": "18:02:33",
-        "elapsed": 1.54
-      },
-      {
-        "time": "18:02:49",
-        "elapsed": 1.2
-      },
-      {
-        "time": "18:32:14",
-        "elapsed": 1.46
-      },
       {
         "time": "18:32:30",
         "elapsed": 1.24
@@ -3450,95 +3282,51 @@
         "elapsed": 1.39
       },
       {
-        "time": "19:16:54",
-        "elapsed": 1.28
+        "time": "19:16:55",
+        "elapsed": 1.53
       },
       {
-        "time": "19:17:10",
-        "elapsed": 1.29
+        "time": "19:17:12",
+        "elapsed": 1.48
       },
       {
-        "time": "19:17:26",
-        "elapsed": 1.55
-      },
-      {
-        "time": "19:17:43",
+        "time": "19:17:29",
         "elapsed": 1.39
       },
       {
-        "time": "19:17:59",
-        "elapsed": 1.72
+        "time": "19:17:45",
+        "elapsed": 1.26
       },
       {
-        "time": "19:18:17",
-        "elapsed": 1.54
+        "time": "19:18:01",
+        "elapsed": 1.39
       },
       {
-        "time": "19:18:33",
-        "elapsed": 1.87
+        "time": "19:18:18",
+        "elapsed": 1.58
       },
       {
-        "time": "19:18:50",
-        "elapsed": 1.25
+        "time": "19:18:36",
+        "elapsed": 1.58
       },
       {
-        "time": "19:19:06",
+        "time": "19:18:53",
         "elapsed": 1.29
       },
       {
-        "time": "19:19:23",
-        "elapsed": 1.44
+        "time": "19:19:09",
+        "elapsed": 1.38
       },
       {
-        "time": "19:19:40",
-        "elapsed": 1.6
+        "time": "19:19:26",
+        "elapsed": 1.26
+      },
+      {
+        "time": "19:19:42",
+        "elapsed": 1.49
       }
     ],
     "Aramisauto:Homepage": [
-      {
-        "time": "18:00:21",
-        "elapsed": 1.0
-      },
-      {
-        "time": "18:00:38",
-        "elapsed": 1.06
-      },
-      {
-        "time": "18:00:55",
-        "elapsed": 0.61
-      },
-      {
-        "time": "18:01:11",
-        "elapsed": 0.7
-      },
-      {
-        "time": "18:01:27",
-        "elapsed": 1.14
-      },
-      {
-        "time": "18:01:44",
-        "elapsed": 0.6
-      },
-      {
-        "time": "18:02:00",
-        "elapsed": 0.59
-      },
-      {
-        "time": "18:02:17",
-        "elapsed": 0.6
-      },
-      {
-        "time": "18:02:33",
-        "elapsed": 0.6
-      },
-      {
-        "time": "18:02:49",
-        "elapsed": 0.6
-      },
-      {
-        "time": "18:32:14",
-        "elapsed": 0.5
-      },
       {
         "time": "18:32:30",
         "elapsed": 0.56
@@ -3896,56 +3684,56 @@
         "elapsed": 0.73
       },
       {
-        "time": "19:16:54",
+        "time": "19:16:55",
+        "elapsed": 0.53
+      },
+      {
+        "time": "19:17:12",
         "elapsed": 0.51
       },
       {
-        "time": "19:17:10",
-        "elapsed": 0.59
+        "time": "19:17:29",
+        "elapsed": 0.57
       },
       {
-        "time": "19:17:26",
+        "time": "19:17:45",
+        "elapsed": 0.51
+      },
+      {
+        "time": "19:18:01",
+        "elapsed": 0.55
+      },
+      {
+        "time": "19:18:18",
+        "elapsed": 0.53
+      },
+      {
+        "time": "19:18:36",
+        "elapsed": 0.53
+      },
+      {
+        "time": "19:18:53",
+        "elapsed": 0.51
+      },
+      {
+        "time": "19:19:09",
+        "elapsed": 0.53
+      },
+      {
+        "time": "19:19:26",
         "elapsed": 0.54
       },
       {
-        "time": "19:17:43",
-        "elapsed": 0.51
-      },
-      {
-        "time": "19:17:59",
-        "elapsed": 0.8
-      },
-      {
-        "time": "19:18:17",
-        "elapsed": 0.86
-      },
-      {
-        "time": "19:18:33",
-        "elapsed": 0.66
-      },
-      {
-        "time": "19:18:50",
-        "elapsed": 0.63
-      },
-      {
-        "time": "19:19:06",
-        "elapsed": 0.52
-      },
-      {
-        "time": "19:19:23",
-        "elapsed": 0.64
-      },
-      {
-        "time": "19:19:40",
-        "elapsed": 0.57
+        "time": "19:19:42",
+        "elapsed": 0.53
       }
     ]
   },
   "avg_response": {
-    "Opel PT:Homepage": 0.23,
+    "Opel PT:Homepage": 0.22,
     "Opel PT:Parcours": 0.15,
-    "Ford FR:Homepage": 2.24,
-    "Ford FR:Formulaire": 1.45,
-    "Aramisauto:Homepage": 0.62
+    "Ford FR:Homepage": 2.34,
+    "Ford FR:Formulaire": 1.42,
+    "Aramisauto:Homepage": 0.57
   }
 }
