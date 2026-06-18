@@ -222,7 +222,9 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg)}
           <div class="scroll-inner" id="pages-list"></div>
         </div>
         <div class="bottom-card">
-          <div class="card-title">Incidents récents</div>
+          <div class="card-title">Incidents récents <span id="inc-count" style="font-size:10px;color:var(--text-tertiary);font-weight:500"></span>
+          <button onclick="downloadReport()" style="margin-left:auto;padding:4px 12px;border-radius:8px;background:var(--accent);color:#fff;border:none;font-size:10px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif">⬇ Rapport</button>
+        </div>
           <div class="scroll-inner" id="history"></div>
         </div>
       </div>
@@ -400,7 +402,8 @@ function renderHistory(brand,data){
   const hist=(data.history||[]).filter(h=>h.brand===brand);
   const el=document.getElementById("history");
   if(!hist.length){el.innerHTML='<div class="empty">Aucun incident 🎉</div>';return;}
-  el.innerHTML=[...hist].reverse().slice(0,20).map(h=>{
+  document.getElementById('inc-count').textContent=hist.length ? `(${hist.length} événements)` : '';
+  el.innerHTML=[...hist].reverse().map(h=>{
     const hasScreen = h.screenshot && h.type==='ko';
     return `<div class="inc-row ${hasScreen?'has-screen':''}">
       <div class="inc-time">${h.time||"—"}</div>
@@ -414,6 +417,29 @@ function renderHistory(brand,data){
     ${hasScreen?`<div class="screen-preview"><a href="${h.screenshot}" target="_blank"><img src="${h.screenshot}" alt="screenshot" loading="lazy"/></a></div>`:""}`;
   }).join("");
   if(window.lucide)lucide.createIcons();
+}
+
+function downloadReport(){
+  if(!allData||!currentBrand) return;
+  const hist=(allData.history||[]).filter(h=>h.brand===currentBrand);
+  const rows=[['Date','Page','Type','Détail','Est référence']];
+  hist.forEach(h=>{
+    rows.push([
+      h.time||'',
+      h.page||'',
+      h.type||'',
+      h.detail||'',
+      h.is_reference?'Oui':'Non'
+    ]);
+  });
+  const csv=rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download=`rapport_${currentBrand.replace(' ','_')}_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
 function toggleDiag(key){const el=document.getElementById("dp-"+key);if(el)el.classList.toggle("show");}
