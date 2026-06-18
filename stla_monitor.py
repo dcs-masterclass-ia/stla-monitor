@@ -56,7 +56,6 @@ VERY_SLOW_THRESHOLD_SECONDS = 4   # Au-delà : VERY_SLOW (KO)
 LOG_FILE    = "stla_monitor.log"
 MAX_CHART   = 10080  # 7 jours de checks toutes les 10s
 MAX_HISTORY = 500   # incidents conservés
-MAX_CHART   = 100
 
 # Signatures de contenu KO déguisé en 200
 ERROR_SIGNATURES = [
