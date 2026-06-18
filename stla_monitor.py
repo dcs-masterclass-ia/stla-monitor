@@ -1,9 +1,10 @@
 """
 STLA Monitor V2 - Multi-marques
-- Opel PT + Ford FR
+- Opel PT + Ford FR + Aramisauto (référence)
 - Détection exhaustive : DNS, TCP, TLS, 3xx/4xx/5xx, contenu KO, timeout
-- Alerte Teams Adaptive Card avec diagnostic complet
+- Alerte Teams Adaptive Card avec diagnostic complet + screenshot Playwright
 - Historique persisté sur GitHub
+- Push temps réel vers Render WebSocket
 """
 
 import requests
@@ -13,11 +14,10 @@ import urllib3
 import json
 import os
 import socket
-import ssl
+import threading
 from datetime import datetime
 from urllib.parse import urlparse
 from github import Auth, Github
-import threading
 from playwright.sync_api import sync_playwright
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -38,10 +38,8 @@ BRANDS = {
     "Aramisauto": {
         "Homepage": "https://www.aramisauto.com/reprise/",
     },
-
 }
 
-# Marques "témoins" — pas d'alerte Teams, juste monitoring passif
 REFERENCE_BRANDS = {"Aramisauto"}
 
 TEAMS_WEBHOOK_URL = "https://default64661b8d1758459ca270b19fe3578e.a7.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/c3181d4e41694cfebd1c7502d219b6a9/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=l0lFm8uGc6kFwT73IzDPQBdNut4ZWgNsaXHosdDEh18"
@@ -53,31 +51,19 @@ GITHUB_FILE  = "status.json"
 RENDER_URL = "https://stla-monitor.onrender.com/update"
 
 CHECK_INTERVAL_SECONDS      = 10
-RESPONSE_TIME_LIMIT_SECONDS = 8   # Timeout TCP dur — au-delà le serveur est considéré mort
-SLOW_THRESHOLD_SECONDS      = 2   # Au-delà : SLOW (dégradé, alerte)
-VERY_SLOW_THRESHOLD_SECONDS = 4   # Au-delà : VERY_SLOW (KO)
+RESPONSE_TIME_LIMIT_SECONDS = 8
+SLOW_THRESHOLD_SECONDS      = 2
+VERY_SLOW_THRESHOLD_SECONDS = 4
 LOG_FILE    = "stla_monitor.log"
+MAX_HISTORY = 1000
 MAX_CHART   = 10080  # 7 jours de checks toutes les 10s
-MAX_HISTORY = 500   # incidents conservés
 
-# Signatures de contenu KO déguisé en 200
 ERROR_SIGNATURES = [
-    "<Code>AccessDenied</Code>",
-    "<Message>Access Denied</Message>",
-    "<Error>",
-    "AccessDenied",
-    "403 Forbidden",
-    "503 Service Unavailable",
-    "502 Bad Gateway",
-    "504 Gateway Timeout",
-    "Error 521",
-    "Error 522",
-    "Error 523",
-    "Error 524",
-    "cloudflare",
-    "This site can't be reached",
-    "Application Error",
-    "Heroku | Application Error",
+    "<Code>AccessDenied</Code>", "<Message>Access Denied</Message>",
+    "<Error>", "AccessDenied", "403 Forbidden",
+    "503 Service Unavailable", "502 Bad Gateway", "504 Gateway Timeout",
+    "Error 521", "Error 522", "Error 523", "Error 524",
+    "Application Error", "Heroku | Application Error",
 ]
 
 # ─────────────────────────────────────────────
@@ -135,84 +121,11 @@ def init_github():
     except Exception as e:
         log.error(f"[GitHub] Connexion impossible : {e}")
 
-def push_to_render(statuses):
-    """Envoie les données au serveur WebSocket Render en temps réel."""
-    try:
-        now = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-        payload = {
-            "updated_at": now,
-            "statuses": statuses,
-            "history": history[-MAX_HISTORY:],
-            "chart_data": {k: v[-100:] for k, v in chart_data.items()},
-            "avg_response": {
-                k: round(sum(p["elapsed"] for p in v[-20:]) / len(v[-20:]), 2) if v else 0
-                for k, v in chart_data.items()
-            }
-        }
-        resp = requests.post(RENDER_URL, json=payload, timeout=5, verify=False)
-        if resp.status_code == 200:
-            log.info(f"[Render] Données envoyées — {resp.json().get('clients', 0)} client(s) connecté(s)")
-    except Exception as e:
-        log.warning(f"[Render] Erreur push : {e}")
-
-
-def take_screenshot(brand, page, url):
-    """Prend un screenshot de l'URL en erreur et le pousse sur GitHub."""
-    if not gh_repo:
-        return None
-    try:
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        safe_brand = brand.replace(" ", "_").replace("/", "_")
-        safe_page = page.replace(" ", "_").replace("/", "_")
-        filename = f"screenshots/{safe_brand}_{safe_page}_{timestamp}.png"
-
-        with sync_playwright() as p:
-            browser = p.chromium.launch(headless=True)
-            ctx = browser.new_context(
-                viewport={"width": 1280, "height": 800},
-                user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"
-            )
-            pg = ctx.new_page()
-            try:
-                pg.goto(url, timeout=15000, wait_until="domcontentloaded")
-                pg.wait_for_timeout(2000)
-            except Exception:
-                pass  # On screenshot même si ça timeout
-            screenshot_bytes = pg.screenshot(full_page=False)
-            browser.close()
-
-        # Push sur GitHub
-        import base64
-        content_b64 = base64.b64encode(screenshot_bytes).decode()
-        try:
-            existing = gh_repo.get_contents(filename)
-            gh_repo.update_file(filename, f"screenshot {brand} {page}", screenshot_bytes, existing.sha)
-        except Exception:
-            gh_repo.create_file(filename, f"screenshot {brand} {page}", screenshot_bytes)
-
-        raw_url = f"https://raw.githubusercontent.com/{GITHUB_REPO}/main/{filename}"
-        log.info(f"[Screenshot] Poussé : {filename}")
-        return raw_url
-
-    except Exception as e:
-        log.error(f"[Screenshot] Erreur : {e}")
-        return None
-
-
 def push_status(statuses):
     if not gh_repo:
         return
     now = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-    payload = {
-        "updated_at": now,
-        "statuses": statuses,
-        "history": history[-MAX_HISTORY:],
-        "chart_data": {k: v[-MAX_CHART:] for k, v in chart_data.items()},
-        "avg_response": {
-            k: round(sum(p["elapsed"] for p in v[-20:]) / len(v[-20:]), 2) if v else 0
-            for k, v in chart_data.items()
-        }
-    }
+    payload = build_payload(statuses, now)
     content = json.dumps(payload, ensure_ascii=False, indent=2)
     try:
         try:
@@ -231,214 +144,66 @@ def push_status(statuses):
     except Exception as e:
         log.error(f"[GitHub] Erreur push : {e}")
 
+def build_payload(statuses, now):
+    return {
+        "updated_at": now,
+        "statuses": statuses,
+        "history": history[-MAX_HISTORY:],
+        "chart_data": {k: v[-MAX_CHART:] for k, v in chart_data.items()},
+        "avg_response": {
+            k: round(sum(p["elapsed"] for p in v[-20:]) / len(v[-20:]), 2) if v else 0
+            for k, v in chart_data.items()
+        }
+    }
+
 # ─────────────────────────────────────────────
-# DIAGNOSTIC COMPLET
+# RENDER PUSH
 # ─────────────────────────────────────────────
 
-def resolve_dns(hostname):
+def push_to_render(statuses):
     try:
-        t = time.time()
-        ip = socket.gethostbyname(hostname)
-        return ip, round(time.time() - t, 3), None
-    except socket.gaierror as e:
-        return None, round(time.time() - time.time(), 3), str(e)
+        now = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+        payload = build_payload(statuses, now)
+        resp = requests.post(RENDER_URL, json=payload, timeout=5, verify=False)
+        if resp.status_code == 200:
+            log.info(f"[Render] Données envoyées — {resp.json().get('clients', 0)} client(s)")
+    except Exception as e:
+        log.warning(f"[Render] Erreur : {e}")
 
-def check_url_playwright(brand, page, url):
-    """Check via Playwright pour les sites avec WAF (références marché)."""
-    details = {"brand": brand, "page": page}
-    t0 = time.time()
+# ─────────────────────────────────────────────
+# SCREENSHOT
+# ─────────────────────────────────────────────
 
-    # DNS d'abord
-    from urllib.parse import urlparse
-    hostname = urlparse(url).hostname
-    ip, dns_elapsed, dns_error = resolve_dns(hostname)
-    details["dns_elapsed"] = dns_elapsed
-    details["ip"] = ip or "NON RÉSOLU"
-
-    if not ip:
-        details["error_type"] = "DNS_FAILURE"
-        details["error_detail"] = dns_error
-        return False, f"Erreur DNS : {dns_error}", round(time.time()-t0, 2), details
-
+def take_screenshot(brand, page, url):
+    if not gh_repo:
+        return None
     try:
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        safe = lambda s: s.replace(" ", "_").replace("/", "_")
+        filename = f"screenshots/{safe(brand)}_{safe(page)}_{timestamp}.png"
         with sync_playwright() as p:
             browser = p.chromium.launch(headless=True)
-            ctx = browser.new_context(
-                viewport={"width": 1280, "height": 800},
-                user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
-            )
+            ctx = browser.new_context(viewport={"width": 1280, "height": 800},
+                user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36")
             pg = ctx.new_page()
-
-            # Bloquer tous les scripts analytics/tracking pour ne pas polluer les stats
-            BLOCKED_DOMAINS = [
-                "google-analytics.com", "googletagmanager.com", "analytics.google.com",
-                "doubleclick.net", "googlesyndication.com", "facebook.net", "facebook.com/tr",
-                "hotjar.com", "segment.com", "mixpanel.com", "amplitude.com",
-                "criteo.com", "adform.net", "smartadserver.com", "tagcommander.com",
-                "salesforce.com", "hubspot.com", "intercom.io", "zendesk.com",
-                "quantserve.com", "scorecardresearch.com", "omtrdc.net", "demdex.net",
-            ]
-            def block_tracking(route):
-                url_req = route.request.url
-                if any(d in url_req for d in BLOCKED_DOMAINS):
-                    route.abort()
-                else:
-                    route.continue_()
-            pg.route("**/*", block_tracking)
-
-            t1 = time.time()
-            resp = pg.goto(url, timeout=RESPONSE_TIME_LIMIT_SECONDS*1000, wait_until="domcontentloaded")
-            elapsed = round(time.time()-t1, 2)
-            total = round(time.time()-t0, 2)
-
-            status = resp.status if resp else 0
-            details["http_status"] = status
-            details["elapsed_http"] = elapsed
-            details["elapsed_total"] = total
-            details["error_type"] = None
-
+            try:
+                pg.goto(url, timeout=15000, wait_until="domcontentloaded")
+                pg.wait_for_timeout(2000)
+            except Exception:
+                pass
+            screenshot_bytes = pg.screenshot(full_page=False)
             browser.close()
-
-            if status >= 400:
-                details["error_type"] = f"HTTP_{status}"
-                return False, f"HTTP {status}", total, details
-
-            if elapsed > VERY_SLOW_THRESHOLD_SECONDS:
-                details["error_type"] = "VERY_SLOW"
-                return False, f"Réponse très lente : {elapsed}s", total, details
-
-            return True, f"OK ({status}) en {elapsed}s", total, details
-
+        try:
+            existing = gh_repo.get_contents(filename)
+            gh_repo.update_file(filename, f"screenshot {brand} {page}", screenshot_bytes, existing.sha)
+        except Exception:
+            gh_repo.create_file(filename, f"screenshot {brand} {page}", screenshot_bytes)
+        raw_url = f"https://raw.githubusercontent.com/{GITHUB_REPO}/main/{filename}"
+        log.info(f"[Screenshot] Poussé : {filename}")
+        return raw_url
     except Exception as e:
-        elapsed = round(time.time()-t0, 2)
-        details["error_type"] = "PLAYWRIGHT_ERROR"
-        details["error_detail"] = str(e)[:200]
-        return False, f"Erreur navigateur : {type(e).__name__}", elapsed, details
-
-
-def check_url(brand, page, url):
-    parsed = urlparse(url)
-    hostname = parsed.hostname
-    details = {"brand": brand, "page": page}
-
-    # 1. Résolution DNS
-    t0 = time.time()
-    ip, dns_elapsed, dns_error = resolve_dns(hostname)
-    details["dns_elapsed"] = dns_elapsed
-    details["ip"] = ip or "NON RÉSOLU"
-
-    if not ip:
-        elapsed = round(time.time() - t0, 2)
-        details["error_type"] = "DNS_FAILURE"
-        details["error_detail"] = dns_error
-        return False, f"Erreur DNS : {dns_error}", elapsed, details
-
-    # 2. Requête HTTP
-    t1 = time.time()
-    try:
-        req_headers = {
-                "User-Agent": "Mozilla/5.0 (compatible; STLA-Monitor/2.0)",
-                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-            }
-        response = requests.get(
-            url,
-            timeout=RESPONSE_TIME_LIMIT_SECONDS,  # TCP timeout dur à 8s
-            allow_redirects=True,
-            verify=False,
-            headers=req_headers
-        )
-        elapsed_http = round(time.time() - t1, 2)
-        elapsed_total = round(time.time() - t0, 2)
-
-        details["http_status"]   = response.status_code
-        details["elapsed_http"]  = elapsed_http
-        details["elapsed_total"] = elapsed_total
-        details["final_url"]     = response.url  # après redirections
-        details["redirect_count"] = len(response.history)
-        details["headers"] = {
-            "server":        response.headers.get("Server", "—"),
-            "content-type":  response.headers.get("Content-Type", "—"),
-            "cache-control": response.headers.get("Cache-Control", "—"),
-            "x-cache":       response.headers.get("X-Cache", "—"),
-            "cf-ray":        response.headers.get("CF-Ray", "—"),
-            "x-powered-by":  response.headers.get("X-Powered-By", "—"),
-        }
-
-        # 3xx — redirections excessives ou inattendues
-        if len(response.history) > 5:
-            details["error_type"] = "TOO_MANY_REDIRECTS"
-            return False, f"Trop de redirections ({len(response.history)})", elapsed_total, details
-
-        # 4xx
-        if 400 <= response.status_code < 500:
-            details["error_type"] = f"HTTP_{response.status_code}"
-            details["body_preview"] = response.text[:300].strip()
-            return False, f"Erreur client HTTP {response.status_code}", elapsed_total, details
-
-        # 5xx
-        if response.status_code >= 500:
-            details["error_type"] = f"HTTP_{response.status_code}"
-            details["body_preview"] = response.text[:300].strip()
-            return False, f"Erreur serveur HTTP {response.status_code}", elapsed_total, details
-
-        # Réponse très lente → KO
-        if elapsed_http > VERY_SLOW_THRESHOLD_SECONDS:
-            details["error_type"] = "VERY_SLOW"
-            return False, f"Réponse très lente : {elapsed_http}s (seuil KO : {VERY_SLOW_THRESHOLD_SECONDS}s)", elapsed_total, details
-
-        # Réponse dégradée → warning mais OK
-        if elapsed_http > SLOW_THRESHOLD_SECONDS:
-            details["error_type"] = "SLOW"
-            details["warning"] = True
-            # On continue — pas un KO, juste un warning loggé
-
-        # Contenu KO déguisé en 200
-        body = response.text[:3000]
-        for sig in ERROR_SIGNATURES:
-            if sig.lower() in body.lower():
-                details["error_type"] = "CONTENT_KO"
-                details["triggered_signature"] = sig
-                details["body_preview"] = body[:300].strip()
-                return False, f"Contenu KO — '{sig}' détecté (HTTP {response.status_code})", elapsed_total, details
-
-        details["error_type"] = None
-        return True, f"OK ({response.status_code}) en {elapsed_http}s", elapsed_total, details
-
-    except requests.exceptions.SSLError as e:
-        elapsed = round(time.time() - t1, 2)
-        details["error_type"] = "SSL_ERROR"
-        details["error_detail"] = str(e)[:300]
-        return False, "Erreur SSL / certificat invalide", elapsed, details
-
-    except requests.exceptions.ConnectionError as e:
-        elapsed = round(time.time() - t1, 2)
-        err = str(e)
-        if "NameResolutionError" in err or "getaddrinfo" in err:
-            details["error_type"] = "DNS_FAILURE"
-        elif "Connection refused" in err:
-            details["error_type"] = "CONNECTION_REFUSED"
-        elif "RemoteDisconnected" in err:
-            details["error_type"] = "REMOTE_DISCONNECTED"
-        else:
-            details["error_type"] = "CONNECTION_ERROR"
-        details["error_detail"] = err[:300]
-        return False, f"Erreur connexion ({details['error_type']})", elapsed, details
-
-    except requests.exceptions.Timeout:
-        elapsed = round(time.time() - t1, 2)
-        details["error_type"] = "TIMEOUT"
-        return False, f"Pas de réponse du serveur après {RESPONSE_TIME_LIMIT_SECONDS}s (TCP timeout)", elapsed, details
-
-    except requests.exceptions.TooManyRedirects:
-        elapsed = round(time.time() - t1, 2)
-        details["error_type"] = "TOO_MANY_REDIRECTS"
-        return False, "Trop de redirections", elapsed, details
-
-    except Exception as e:
-        elapsed = round(time.time() - t1, 2)
-        details["error_type"] = "UNKNOWN"
-        details["error_detail"] = str(e)[:300]
-        return False, f"Erreur inconnue : {type(e).__name__}", elapsed, details
+        log.error(f"[Screenshot] Erreur : {e}")
+        return None
 
 # ─────────────────────────────────────────────
 # ALERTE TEAMS
@@ -459,25 +224,18 @@ def send_teams_alert(brand, page, url, reason, is_recovery=False, details=None, 
         lines.append("")
         lines.append("**── Diagnostic ──**")
         lines.append(f"🔴 **Type** : {details.get('error_type', '—')}")
-        lines.append(f"🔍 **IP résolue** : {details.get('ip', '—')}")
+        lines.append(f"🔍 **IP** : {details.get('ip', '—')}")
         lines.append(f"⏱ **DNS** : {details.get('dns_elapsed', '—')}s")
         if details.get("elapsed_http") is not None:
             lines.append(f"⏱ **HTTP** : {details.get('elapsed_http')}s")
-        if details.get("elapsed_total") is not None:
-            lines.append(f"⏱ **Total** : {details.get('elapsed_total')}s")
         if details.get("http_status"):
-            lines.append(f"📡 **HTTP Status** : {details.get('http_status')}")
-        if details.get("redirect_count"):
-            lines.append(f"↪️ **Redirections** : {details.get('redirect_count')}")
-        if details.get("final_url") and details.get("final_url") != url:
-            lines.append(f"🔗 **URL finale** : {details.get('final_url')}")
+            lines.append(f"📡 **Status** : {details.get('http_status')}")
         if details.get("headers"):
             h = details["headers"]
-            lines.append(f"🖥 **Serveur** : {h.get('server', '—')}")
-            lines.append(f"📦 **X-Cache** : {h.get('x-cache', '—')}")
-            lines.append(f"☁️ **CF-Ray** : {h.get('cf-ray', '—')}")
-        if details.get("triggered_signature"):
-            lines.append(f"🔎 **Signature KO** : {details.get('triggered_signature')}")
+            if h.get("server") and h["server"] != "—":
+                lines.append(f"🖥 **Serveur** : {h['server']}")
+            if h.get("cf-ray") and h["cf-ray"] != "—":
+                lines.append(f"☁️ **CF-Ray** : {h['cf-ray']}")
         if details.get("body_preview"):
             lines.append(f"📄 **Extrait** : {details['body_preview'][:200]}")
         if details.get("error_detail"):
@@ -492,22 +250,8 @@ def send_teams_alert(brand, page, url, reason, is_recovery=False, details=None, 
     ]
 
     if screenshot_url and not is_recovery:
-        card_body.append({
-            "type": "Image",
-            "url": screenshot_url,
-            "size": "Large",
-            "style": "default",
-            "spacing": "Medium",
-            "altText": f"Screenshot de {page} en erreur"
-        })
-        card_body.append({
-            "type": "ActionSet",
-            "actions": [{
-                "type": "Action.OpenUrl",
-                "title": "Voir le screenshot complet",
-                "url": screenshot_url
-            }]
-        })
+        card_body.append({"type": "Image", "url": screenshot_url, "size": "Large", "spacing": "Medium"})
+        card_body.append({"type": "ActionSet", "actions": [{"type": "Action.OpenUrl", "title": "Voir screenshot", "url": screenshot_url}]})
 
     payload = {
         "type": "message",
@@ -515,8 +259,7 @@ def send_teams_alert(brand, page, url, reason, is_recovery=False, details=None, 
             "contentType": "application/vnd.microsoft.card.adaptive",
             "content": {
                 "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
-                "type": "AdaptiveCard",
-                "version": "1.4",
+                "type": "AdaptiveCard", "version": "1.4",
                 "body": card_body
             }
         }]
@@ -527,9 +270,150 @@ def send_teams_alert(brand, page, url, reason, is_recovery=False, details=None, 
         if resp.status_code in (200, 202):
             log.info(f"[Teams] Alerte envoyée — {brand} {page}")
         else:
-            log.warning(f"[Teams] Échec — HTTP {resp.status_code} : {resp.text[:200]}")
+            log.warning(f"[Teams] Échec — HTTP {resp.status_code}")
     except Exception as e:
         log.error(f"[Teams] Erreur : {e}")
+
+# ─────────────────────────────────────────────
+# DNS
+# ─────────────────────────────────────────────
+
+def resolve_dns(hostname):
+    try:
+        t = time.time()
+        ip = socket.gethostbyname(hostname)
+        return ip, round(time.time() - t, 3), None
+    except socket.gaierror as e:
+        return None, 0, str(e)
+
+# ─────────────────────────────────────────────
+# CHECK URL PLAYWRIGHT (références)
+# ─────────────────────────────────────────────
+
+def check_url_playwright(brand, page, url):
+    details = {"brand": brand, "page": page}
+    t0 = time.time()
+    hostname = urlparse(url).hostname
+    ip, dns_elapsed, dns_error = resolve_dns(hostname)
+    details["dns_elapsed"] = dns_elapsed
+    details["ip"] = ip or "NON RÉSOLU"
+    if not ip:
+        details["error_type"] = "DNS_FAILURE"
+        details["error_detail"] = dns_error
+        return False, f"Erreur DNS : {dns_error}", round(time.time()-t0, 2), details
+    try:
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)
+            ctx = browser.new_context(viewport={"width": 1280, "height": 800},
+                user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36")
+            pg = ctx.new_page()
+            BLOCKED = ["google-analytics.com","googletagmanager.com","facebook.net",
+                "hotjar.com","segment.com","mixpanel.com","criteo.com","doubleclick.net"]
+            def block_tracking(route):
+                if any(d in route.request.url for d in BLOCKED): route.abort()
+                else: route.continue_()
+            pg.route("**/*", block_tracking)
+            t1 = time.time()
+            resp = pg.goto(url, timeout=RESPONSE_TIME_LIMIT_SECONDS*1000, wait_until="domcontentloaded")
+            elapsed = round(time.time()-t1, 2)
+            total = round(time.time()-t0, 2)
+            status = resp.status if resp else 0
+            details.update({"http_status": status, "elapsed_http": elapsed, "elapsed_total": total, "error_type": None})
+            browser.close()
+            if status >= 400:
+                details["error_type"] = f"HTTP_{status}"
+                return False, f"HTTP {status}", total, details
+            if elapsed > VERY_SLOW_THRESHOLD_SECONDS:
+                details["error_type"] = "VERY_SLOW"
+                return False, f"Réponse très lente : {elapsed}s", total, details
+            return True, f"OK ({status}) en {elapsed}s", total, details
+    except Exception as e:
+        elapsed = round(time.time()-t0, 2)
+        details["error_type"] = "PLAYWRIGHT_ERROR"
+        details["error_detail"] = str(e)[:200]
+        return False, f"Erreur navigateur : {type(e).__name__}", elapsed, details
+
+# ─────────────────────────────────────────────
+# CHECK URL (requests)
+# ─────────────────────────────────────────────
+
+def check_url(brand, page, url):
+    hostname = urlparse(url).hostname
+    details = {"brand": brand, "page": page}
+    t0 = time.time()
+    ip, dns_elapsed, dns_error = resolve_dns(hostname)
+    details["dns_elapsed"] = dns_elapsed
+    details["ip"] = ip or "NON RÉSOLU"
+    if not ip:
+        details["error_type"] = "DNS_FAILURE"
+        details["error_detail"] = dns_error
+        return False, f"Erreur DNS : {dns_error}", round(time.time()-t0, 2), details
+    t1 = time.time()
+    try:
+        response = requests.get(url, timeout=RESPONSE_TIME_LIMIT_SECONDS,
+            allow_redirects=True, verify=False,
+            headers={"User-Agent": "Mozilla/5.0 (compatible; STLA-Monitor/2.0)",
+                     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"})
+        elapsed_http = round(time.time()-t1, 2)
+        elapsed_total = round(time.time()-t0, 2)
+        details.update({
+            "http_status": response.status_code,
+            "elapsed_http": elapsed_http,
+            "elapsed_total": elapsed_total,
+            "redirect_count": len(response.history),
+            "final_url": response.url,
+            "headers": {
+                "server": response.headers.get("Server", "—"),
+                "content-type": response.headers.get("Content-Type", "—"),
+                "x-cache": response.headers.get("X-Cache", "—"),
+                "cf-ray": response.headers.get("CF-Ray", "—"),
+            }
+        })
+        if len(response.history) > 5:
+            details["error_type"] = "TOO_MANY_REDIRECTS"
+            return False, f"Trop de redirections ({len(response.history)})", elapsed_total, details
+        if 400 <= response.status_code < 500:
+            details["error_type"] = f"HTTP_{response.status_code}"
+            details["body_preview"] = response.text[:300].strip()
+            return False, f"Erreur client HTTP {response.status_code}", elapsed_total, details
+        if response.status_code >= 500:
+            details["error_type"] = f"HTTP_{response.status_code}"
+            details["body_preview"] = response.text[:300].strip()
+            return False, f"Erreur serveur HTTP {response.status_code}", elapsed_total, details
+        if elapsed_http > VERY_SLOW_THRESHOLD_SECONDS:
+            details["error_type"] = "VERY_SLOW"
+            return False, f"Réponse très lente : {elapsed_http}s", elapsed_total, details
+        body = response.text[:3000]
+        for sig in ERROR_SIGNATURES:
+            if sig.lower() in body.lower():
+                details["error_type"] = "CONTENT_KO"
+                details["triggered_signature"] = sig
+                details["body_preview"] = body[:300].strip()
+                return False, f"Contenu KO — '{sig}' détecté", elapsed_total, details
+        details["error_type"] = None
+        return True, f"OK ({response.status_code}) en {elapsed_http}s", elapsed_total, details
+    except requests.exceptions.SSLError as e:
+        details["error_type"] = "SSL_ERROR"
+        details["error_detail"] = str(e)[:300]
+        return False, "Erreur SSL", round(time.time()-t1, 2), details
+    except requests.exceptions.ConnectionError as e:
+        err = str(e)
+        elapsed = round(time.time()-t1, 2)
+        if "NameResolutionError" in err or "getaddrinfo" in err:
+            details["error_type"] = "DNS_FAILURE"
+        elif "Connection refused" in err:
+            details["error_type"] = "CONNECTION_REFUSED"
+        else:
+            details["error_type"] = "CONNECTION_ERROR"
+        details["error_detail"] = err[:300]
+        return False, f"Erreur connexion ({details['error_type']})", elapsed, details
+    except requests.exceptions.Timeout:
+        details["error_type"] = "TIMEOUT"
+        return False, f"Pas de réponse après {RESPONSE_TIME_LIMIT_SECONDS}s", round(time.time()-t1, 2), details
+    except Exception as e:
+        details["error_type"] = "UNKNOWN"
+        details["error_detail"] = str(e)[:300]
+        return False, f"Erreur : {type(e).__name__}", round(time.time()-t1, 2), details
 
 # ─────────────────────────────────────────────
 # BOUCLE PRINCIPALE
@@ -553,7 +437,10 @@ def run():
             statuses[brand] = {}
             for page, url in urls.items():
                 key = f"{brand}:{page}"
-                ok, reason, elapsed, details = check_url_playwright(brand, page, url) if brand in REFERENCE_BRANDS else check_url(brand, page, url)
+                if brand in REFERENCE_BRANDS:
+                    ok, reason, elapsed, details = check_url_playwright(brand, page, url)
+                else:
+                    ok, reason, elapsed, details = check_url(brand, page, url)
 
                 chart_data[key].append({"time": now_short, "elapsed": elapsed})
                 if len(chart_data[key]) > MAX_CHART:
@@ -570,7 +457,9 @@ def run():
                 if ok:
                     if incident_active.get(key):
                         incident_active[key] = False
-                        history.append({"time": now, "brand": brand, "page": page, "type": "recovery", "detail": "Retour en ligne", "is_reference": brand in REFERENCE_BRANDS})
+                        history.append({"time": now, "brand": brand, "page": page,
+                            "type": "recovery", "detail": "Retour en ligne",
+                            "is_reference": brand in REFERENCE_BRANDS})
                         if brand not in REFERENCE_BRANDS:
                             send_teams_alert(brand, page, url, reason, is_recovery=True, details=details)
                 else:
@@ -579,11 +468,13 @@ def run():
                         screenshot_url = None
                         if brand not in REFERENCE_BRANDS:
                             screenshot_url = take_screenshot(brand, page, url)
-                            send_teams_alert(brand, page, url, reason, is_recovery=False, details=details, screenshot_url=screenshot_url)
-                        history.append({"time": now, "brand": brand, "page": page, "type": "ko", "detail": reason, "diagnostics": details, "screenshot": screenshot_url, "is_reference": brand in REFERENCE_BRANDS})
+                            send_teams_alert(brand, page, url, reason, details=details, screenshot_url=screenshot_url)
+                        history.append({"time": now, "brand": brand, "page": page,
+                            "type": "ko", "detail": reason, "diagnostics": details,
+                            "screenshot": screenshot_url,
+                            "is_reference": brand in REFERENCE_BRANDS})
 
         push_status(statuses)
-        # Push temps réel vers Render (thread pour ne pas bloquer)
         threading.Thread(target=push_to_render, args=(statuses,), daemon=True).start()
         time.sleep(CHECK_INTERVAL_SECONDS)
 
