@@ -17,7 +17,6 @@ html,body{height:100%;overflow:hidden}
   --shadow:0 2px 20px rgba(0,0,0,0.06),0 1px 4px rgba(0,0,0,0.03);
 }
 body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg)}
-
 .blob{position:fixed;border-radius:50%;filter:blur(120px);opacity:0.22;pointer-events:none;z-index:0}
 .blob1{width:500px;height:500px;background:#bfdbfe;top:-150px;left:-100px;animation:o1 24s ease-in-out infinite}
 .blob2{width:400px;height:400px;background:#ddd6fe;top:50%;right:-100px;animation:o2 20s ease-in-out infinite}
@@ -25,35 +24,24 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg)}
 @keyframes o1{0%,100%{transform:translate(0,0)}50%{transform:translate(40px,-30px)}}
 @keyframes o2{0%,100%{transform:translate(0,0)}50%{transform:translate(-30px,40px)}}
 @keyframes o3{0%,100%{transform:translate(0,0)}50%{transform:translate(20px,-40px)}}
-
-
-
-/* ── APP SHELL ── */
-#app{display:none;height:100vh;position:relative;z-index:1;overflow:hidden}
-.app-inner{display:flex;height:100vh;overflow:hidden}
-
-/* ── SIDEBAR ── */
-.sidebar{width:210px;flex-shrink:0;padding:1.25rem .875rem;display:flex;flex-direction:column;gap:4px;background:rgba(255,255,255,0.75);backdrop-filter:blur(40px);border-right:none;height:100vh;overflow:hidden}
+.app{display:flex;height:100vh;overflow:hidden;position:relative;z-index:1}
+.sidebar{width:210px;flex-shrink:0;padding:1.25rem .875rem;display:flex;flex-direction:column;gap:4px;background:rgba(255,255,255,0.75);backdrop-filter:blur(40px);height:100vh;overflow:hidden}
 .sidebar-logo{display:flex;align-items:center;gap:8px;padding:0 8px;margin-bottom:1.25rem}
 .sidebar-logo-text{font-size:15px;font-weight:900;letter-spacing:-0.04em;color:var(--text-primary)}
-.sidebar-logo-badge{font-size:9px;font-weight:800;background:var(--accent);color:#fff;padding:2px 6px;border-radius:6px;letter-spacing:.04em}
+.sidebar-logo-badge{font-size:9px;font-weight:800;background:var(--accent);color:#fff;padding:2px 6px;border-radius:6px}
 .nav-section{font-size:9px;font-weight:700;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:.1em;padding:0 8px;margin:10px 0 3px}
-.tab-switcher{display:flex;background:rgba(0,0,0,0.05);border-radius:10px;padding:3px;gap:2px;margin-bottom:10px}
-.tab-btn{flex:1;padding:6px 0;border-radius:7px;font-size:11px;font-weight:700;border:none;background:none;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;color:var(--text-secondary);transition:all .15s}
-.tab-btn.active{background:#fff;color:var(--text-primary);box-shadow:0 1px 4px rgba(0,0,0,0.08)}
-.tab-btn.active[id="tab-ref"]{background:var(--text-primary);color:#fff}
 .nav-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:10px;cursor:pointer;transition:all .15s;font-size:12px;font-weight:600;color:var(--text-secondary);border:none;background:none;width:100%;text-align:left;font-family:'Plus Jakarta Sans',sans-serif}
 .nav-item:hover{background:var(--accent-light);color:var(--accent)}
 .nav-item.active{background:var(--accent);color:#fff}
-.nav-item .ndot{margin-left:auto}
+.ndot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-left:auto}
+.ndot.ok{background:#22c55e}.ndot.ko{background:#ef4444}.ndot.loading{background:#d1d5db}
+.tab-switcher{display:flex;background:rgba(0,0,0,0.05);border-radius:10px;padding:3px;gap:2px;margin-bottom:10px}
+.tab-btn{flex:1;padding:6px 0;border-radius:7px;font-size:11px;font-weight:700;border:none;background:none;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;color:var(--text-secondary);transition:all .15s}
+.tab-btn.active{background:#fff;color:var(--text-primary);box-shadow:0 1px 4px rgba(0,0,0,0.08)}
 .sidebar-bottom{margin-top:auto;padding:10px 12px;background:var(--accent-light);border-radius:12px}
 .sidebar-bottom-title{font-size:11px;font-weight:800;color:var(--accent);margin-bottom:2px}
 .sidebar-bottom-sub{font-size:10px;color:var(--text-secondary);line-height:1.4}
-
-/* ── MAIN ── */
-.main{flex:1;padding:1.1rem 1.25rem;display:flex;flex-direction:column;gap:10px;overflow:hidden;min-width:0;height:100vh}
-
-/* ── TOPBAR ── */
+.main{flex:1;padding:1.1rem 1.25rem;display:flex;flex-direction:column;gap:8px;overflow:hidden;min-width:0;height:100vh}
 .topbar{display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
 .topbar-left{display:flex;align-items:center;gap:10px}
 .brand-logo{height:28px;object-fit:contain}
@@ -65,13 +53,9 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg)}
 .period-tabs{display:flex;background:rgba(255,255,255,0.9);border-radius:9px;padding:3px;box-shadow:var(--shadow)}
 .period-tab{padding:4px 11px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;border:none;background:none;font-family:'Plus Jakarta Sans',sans-serif;color:var(--text-secondary);transition:all .15s}
 .period-tab.active{background:var(--accent);color:#fff}
-
-/* ── SUMMARY ── */
-.summary{background:var(--surface);backdrop-filter:blur(20px);border-radius:var(--radius);padding:.8rem 1rem;box-shadow:var(--shadow);flex-shrink:0}
+.summary{background:var(--surface);backdrop-filter:blur(20px);border-radius:var(--radius);padding:.7rem 1rem;box-shadow:var(--shadow);flex-shrink:0}
 .summary-title{font-size:9px;font-weight:800;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px}
 .summary-text{font-size:11px;color:#374151;line-height:1.5;font-weight:500}
-
-/* ── KPI ROW ── */
 .kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;flex-shrink:0}
 .kpi-card{background:var(--surface);backdrop-filter:blur(20px);border-radius:var(--radius);padding:.875rem 1rem;box-shadow:var(--shadow)}
 .kpi-label{font-size:9px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px}
@@ -79,76 +63,55 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg)}
 .kpi-val.green{color:var(--green)}.kpi-val.blue{color:var(--accent)}.kpi-val.orange{color:var(--orange)}.kpi-val.red{color:var(--red)}
 .kpi-trend{font-size:9px;font-weight:700;margin-top:3px}
 .trend-good{color:var(--green)}.trend-bad{color:var(--red)}.trend-neutral{color:var(--text-tertiary)}
-
-/* ── CHARTS ROW ── */
-.charts-row{display:grid;grid-template-columns:1fr 240px;gap:8px;flex-shrink:0}
+.charts-row{display:grid;grid-template-columns:1fr 200px;gap:8px;flex-shrink:0}
 .chart-card{background:var(--surface);backdrop-filter:blur(20px);border-radius:var(--radius);padding:1rem 1.1rem;box-shadow:var(--shadow)}
-.card-title{font-size:11px;font-weight:800;color:var(--text-primary);margin-bottom:.6rem;display:flex;align-items:center;justify-content:space-between}
-.card-title-sub{font-size:9px;color:var(--text-tertiary);font-weight:500}
-.legend{display:flex;gap:10px;margin-top:6px}
+.card-title{font-size:11px;font-weight:800;color:var(--text-primary);margin-bottom:.6rem;display:flex;align-items:center;gap:6px}
+.legend{display:flex;gap:10px;margin-top:6px;flex-wrap:wrap}
 .leg{display:flex;align-items:center;gap:4px;font-size:9px;color:var(--text-secondary);font-weight:600}
 .leg-dot{width:7px;height:7px;border-radius:2px}
-.donut-wrap{display:flex;flex-direction:column;align-items:center}
-.donut-legend{width:100%;margin-top:8px;display:flex;flex-direction:column;gap:4px}
-.donut-row{display:flex;align-items:center;justify-content:space-between;font-size:10px}
-.donut-label{display:flex;align-items:center;gap:5px;color:var(--text-secondary);font-weight:500}
-.donut-dot{width:7px;height:7px;border-radius:50%}
-.donut-count{font-weight:800;color:var(--text-primary)}
-
-/* ── BOTTOM ROW ── */
+.timeline-section{background:var(--surface);backdrop-filter:blur(20px);border-radius:var(--radius);padding:.8rem 1rem;box-shadow:var(--shadow);flex-shrink:0}
+.timeline-row{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.timeline-row:last-child{margin-bottom:0}
+.timeline-label{font-size:10px;color:var(--text-secondary);font-weight:600;min-width:72px;flex-shrink:0}
+.timeline-bar{flex:1;height:14px;border-radius:5px;overflow:hidden;display:flex;background:#f3f4f6}
+.tl-seg{height:100%;flex:1}
+.tl-seg.ok{background:#dcfce7}.tl-seg.ko{background:#fee2e2}.tl-seg.empty{background:#f3f4f6}
+.tl-day{font-size:8px;color:var(--text-tertiary);min-width:28px;text-align:right}
 .bottom-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;flex:1;min-height:0}
 .bottom-card{background:var(--surface);backdrop-filter:blur(20px);border-radius:var(--radius);padding:1rem 1.1rem;box-shadow:var(--shadow);display:flex;flex-direction:column;overflow:hidden}
-.bottom-card .card-title{flex-shrink:0}
 .scroll-inner{overflow-y:auto;flex:1;min-height:0}
 .scroll-inner::-webkit-scrollbar{width:3px}
-.scroll-inner::-webkit-scrollbar-track{background:transparent}
 .scroll-inner::-webkit-scrollbar-thumb{background:#e5e7eb;border-radius:10px}
-
-/* Pages */
 .page-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(0,0,0,0.04)}
 .page-row:last-child{border-bottom:none}
 .page-left{display:flex;align-items:center;gap:9px}
 .page-icon{width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.page-icon.ok{background:var(--green-light)}.page-icon.ko{background:var(--red-light)}.page-icon.slow{background:var(--orange-light)}
+.page-icon.ok{background:var(--green-light)}.page-icon.ko{background:var(--red-light)}
 .page-name{font-size:12px;font-weight:800;color:var(--text-primary)}
 .page-url{font-size:9px;color:var(--text-tertiary);margin-top:1px}
-.page-right{text-align:right}
 .badge{padding:3px 9px;border-radius:7px;font-size:9px;font-weight:800;display:inline-block}
-.badge.ok{background:var(--green-light);color:#166534}
-.badge.ko{background:var(--red-light);color:#991b1b}
-.badge.slow{background:var(--orange-light);color:#92400e}
-.page-meta{font-size:9px;color:var(--text-tertiary);margin-top:2px}
+.badge.ok{background:var(--green-light);color:#166534}.badge.ko{background:var(--red-light);color:#991b1b}
+.page-meta{font-size:9px;color:var(--text-tertiary);margin-top:2px;text-align:right}
 .page-row.has-error{cursor:pointer}
 .diag-panel{display:none;padding:8px 10px;background:#fff8f8;border-radius:8px;margin:3px 0 6px}
 .diag-panel.show{display:block}
 .diag-grid{display:grid;grid-template-columns:1fr 1fr;gap:3px 10px}
 .diag-item{font-size:9px;color:var(--text-secondary)}.diag-item b{color:var(--text-primary)}
 .diag-body{margin-top:5px;font-size:9px;color:#991b1b;background:#fff1f2;border-radius:6px;padding:5px 7px;font-family:monospace;word-break:break-all}
-
-/* Incidents */
 .inc-row{display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:1px solid rgba(0,0,0,0.04)}
 .inc-row:last-child{border-bottom:none}
-.inc-time{font-size:9px;color:var(--text-tertiary);font-weight:600;min-width:75px;flex-shrink:0;padding-top:1px}
+.inc-time{font-size:9px;color:var(--text-tertiary);font-weight:600;min-width:95px;flex-shrink:0;padding-top:1px}
 .inc-body{flex:1}
 .inc-title{font-size:11px;font-weight:700;color:var(--text-primary)}
 .inc-sub{font-size:9px;color:var(--text-tertiary);margin-top:1px}
+.inc-duration{font-size:9px;color:#dc2626;font-weight:700;margin-top:2px}
 .inc-badge{padding:2px 7px;border-radius:5px;font-size:9px;font-weight:800;flex-shrink:0;margin-top:1px}
-.inc-badge.ok{background:var(--green-light);color:#166534}
-.inc-badge.ko{background:var(--red-light);color:#991b1b}
+.inc-badge.ok{background:var(--green-light);color:#166534}.inc-badge.ko{background:var(--red-light);color:#991b1b}
 .empty{font-size:11px;color:var(--text-tertiary);padding:.5rem 0}
-.timeline-row{display:flex;align-items:center;gap:8px;font-size:10px}
-.timeline-label{color:var(--text-secondary);font-weight:600;min-width:70px;flex-shrink:0}
-.timeline-bar{flex:1;height:16px;border-radius:6px;background:#f3f4f6;overflow:hidden;position:relative;display:flex}
-.timeline-seg{height:100%;flex-shrink:0}
-.timeline-seg.ok{background:#dcfce7}
-.timeline-seg.ko{background:#fee2e2}
-.timeline-seg.unknown{background:#f3f4f6}
-.inc-duration{font-size:9px;color:#dc2626;font-weight:700;margin-top:1px}
-.screen-link{display:inline-flex;align-items:center;gap:3px;font-size:9px;color:var(--accent);font-weight:700;text-decoration:none;margin-top:3px}
-.screen-link:hover{text-decoration:underline}
-.screen-preview{padding:6px 0 8px;border-bottom:1px solid rgba(0,0,0,0.04)}
-.screen-preview img{width:100%;max-height:120px;object-fit:cover;border-radius:8px;cursor:pointer;transition:opacity .2s}
-.screen-preview img:hover{opacity:.85}
+.gauge-wrap{display:flex;flex-direction:column;align-items:center;position:relative;padding-top:4px}
+.gauge-score{font-size:24px;font-weight:900;letter-spacing:-0.04em;text-align:center;margin-top:-52px;position:relative;z-index:1}
+.gauge-label{font-size:10px;color:var(--text-tertiary);font-weight:600;margin-top:46px}
+.dl-btn{padding:3px 10px;border-radius:7px;background:var(--accent);color:#fff;border:none;font-size:9px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif}
 </style>
 </head>
 <body>
@@ -156,14 +119,17 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg)}
 <div class="blob blob2"></div>
 <div class="blob blob3"></div>
 
-<!-- ══ APP ══ -->
-<div id="app" style="display:block">
-  <div class="app-inner">
-    <div class="sidebar">
-      <div class="sidebar-logo">
-        <div class="sidebar-logo-text">STLA</div>
-        <div class="sidebar-logo-badge">MONITOR</div>
-      </div>
+<div class="app">
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-text">STLA</div>
+      <div class="sidebar-logo-badge">MONITOR</div>
+    </div>
+    <div class="tab-switcher">
+      <button class="tab-btn active" id="tab-vos" onclick="switchTab('vos')">Vos sites</button>
+      <button class="tab-btn" id="tab-ref" onclick="switchTab('ref')">Références</button>
+    </div>
+    <div id="panel-vos">
       <div class="nav-section">Marques</div>
       <button class="nav-item" id="nav-Opel PT" onclick="selectBrand('Opel PT')">
         <i data-lucide="monitor-dot" style="width:14px;height:14px;flex-shrink:0"></i>Opel PT
@@ -173,72 +139,75 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg)}
         <i data-lucide="monitor-dot" style="width:14px;height:14px;flex-shrink:0"></i>Ford FR
         <span class="ndot loading" id="nd-Ford FR"></span>
       </button>
-      <div class="nav-section">Références marché</div>
+    </div>
+    <div id="panel-ref" style="display:none">
+      <div class="nav-section">Témoins marché</div>
       <button class="nav-item" id="nav-Aramisauto" onclick="selectBrand('Aramisauto')">
         <i data-lucide="shield-check" style="width:14px;height:14px;flex-shrink:0"></i>Aramisauto
         <span class="ndot loading" id="nd-Aramisauto"></span>
       </button>
+    </div>
+    <div class="sidebar-bottom">
+      <div class="sidebar-bottom-title">Monitoring actif</div>
+      <div class="sidebar-bottom-sub" id="sb-updated">—</div>
+    </div>
+  </div>
 
-
-      <div class="sidebar-bottom">
-        <div class="sidebar-bottom-title">Monitoring actif</div>
-        <div class="sidebar-bottom-sub" id="sb-updated">—</div>
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-left">
+        <img id="dash-logo" class="brand-logo" src="" alt="">
+        <div>
+          <div class="brand-name" id="dash-title"></div>
+          <div class="brand-sub"><span class="pulse" id="pulse"></span><span id="updated">Chargement...</span></div>
+        </div>
+      </div>
+      <div class="period-tabs">
+        <button class="period-tab active" onclick="setPeriod(this,'7j')">7j</button>
+        <button class="period-tab" onclick="setPeriod(this,'24h')">24h</button>
+        <button class="period-tab" onclick="setPeriod(this,'all')">Tout</button>
       </div>
     </div>
 
-    <div class="main">
-      <div class="topbar">
-        <div class="topbar-left">
-          <img id="dash-logo" class="brand-logo" src="" alt="">
-          <div>
-            <div class="brand-name" id="dash-title"></div>
-            <div class="brand-sub"><span class="pulse" id="pulse"></span><span id="updated">Chargement...</span></div>
-          </div>
-        </div>
-        <div class="period-tabs">
-          <button class="period-tab active" onclick="setPeriod(this,'7j')">7j</button>
-          <button class="period-tab" onclick="setPeriod(this,'24h')">24h</button>
-          <button class="period-tab" onclick="setPeriod(this,'all')">Tout</button>
+    <div class="summary">
+      <div class="summary-title">Synthèse</div>
+      <div class="summary-text" id="summary-text">Chargement...</div>
+    </div>
+
+    <div class="kpi-row" id="kpis"></div>
+
+    <div class="charts-row">
+      <div class="chart-card">
+        <div class="card-title">Temps de réponse <span style="font-size:9px;color:var(--text-tertiary);font-weight:500">historique</span></div>
+        <div style="position:relative;height:120px"><canvas id="lineChart"></canvas></div>
+        <div class="legend" id="legend"></div>
+      </div>
+      <div class="chart-card">
+        <div class="card-title">Fiabilité</div>
+        <div class="gauge-wrap">
+          <div style="position:relative;height:90px;width:90px"><canvas id="gaugeChart"></canvas></div>
+          <div class="gauge-score" id="gauge-score">—</div>
+          <div class="gauge-label" id="gauge-label">—</div>
         </div>
       </div>
+    </div>
 
-      <div class="summary">
-        <div class="summary-title">Synthèse automatique</div>
-        <div class="summary-text" id="summary-text">Chargement...</div>
+    <div class="timeline-section">
+      <div class="card-title">Timeline incidents <span style="font-size:9px;color:var(--text-tertiary);font-weight:500">7 derniers jours</span></div>
+      <div id="timeline"></div>
+    </div>
+
+    <div class="bottom-row">
+      <div class="bottom-card">
+        <div class="card-title">Pages surveillées</div>
+        <div class="scroll-inner" id="pages-list"></div>
       </div>
-
-      <div class="kpi-row" id="kpis"></div>
-
-      <div class="charts-row">
-        <div class="chart-card">
-          <div class="card-title">Temps de réponse <span class="card-title-sub">historique</span></div>
-          <div style="position:relative;height:130px"><canvas id="lineChart"></canvas></div>
-          <div class="legend" id="legend"></div>
+      <div class="bottom-card">
+        <div class="card-title">
+          Incidents <span id="inc-count" style="font-size:9px;color:var(--text-tertiary);font-weight:500"></span>
+          <button class="dl-btn" onclick="downloadReport()" style="margin-left:auto">⬇ Rapport</button>
         </div>
-        <div class="chart-card">
-          <div class="card-title">Répartition erreurs</div>
-          <div class="donut-wrap">
-            <div style="position:relative;height:90px;width:90px"><canvas id="donutChart"></canvas></div>
-            <div class="donut-legend" id="donut-legend"></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="glass chart-card" style="margin-bottom:10px;flex-shrink:0">
-        <div class="card-title">Timeline des incidents <span style="font-size:9px;color:var(--text-tertiary);font-weight:500">7 derniers jours</span></div>
-        <div id="timeline" style="display:flex;flex-direction:column;gap:4px"></div>
-      </div>
-      <div class="bottom-row">
-        <div class="bottom-card">
-          <div class="card-title">Pages surveillées</div>
-          <div class="scroll-inner" id="pages-list"></div>
-        </div>
-        <div class="bottom-card">
-          <div class="card-title">Incidents récents <span id="inc-count" style="font-size:10px;color:var(--text-tertiary);font-weight:500"></span>
-          <button onclick="downloadReport()" style="margin-left:auto;padding:4px 12px;border-radius:8px;background:var(--accent);color:#fff;border:none;font-size:10px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif">⬇ Rapport</button>
-        </div>
-          <div class="scroll-inner" id="history"></div>
-        </div>
+        <div class="scroll-inner" id="history"></div>
       </div>
     </div>
   </div>
@@ -246,309 +215,369 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg)}
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
-const RENDER_STATUS="https://stla-monitor.onrender.com/status";
-const RAW_BASE="https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/status.json";
-const BRAND_META={
-  "Opel PT":{logo:"https://www.stellantis.com/content/dam/stellantis-corporate/brands/opel/opel-logo.png",colors:["#3b5ae0","#0F6E56"],type:"brand"},
-  "Ford FR":{logo:"https://www.logo-voiture.com/wp-content/uploads/2021/01/ford-logo-2017-grand.png",colors:["#0066cc","#1a9e6e"],type:"brand"},
-  "Aramisauto":{logo:"https://www.aramisauto.com/favicon.ico",colors:["#e85d04","#f48c06"],type:"reference"},
-  
+const RENDER_STATUS = "https://stla-monitor.onrender.com/status";
+const RAW_BASE = "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/status.json";
+const BRAND_META = {
+  "Opel PT":    {logo:"https://www.stellantis.com/content/dam/stellantis-corporate/brands/opel/opel-logo.png",   colors:["#3b5ae0","#0F6E56"], type:"brand"},
+  "Ford FR":    {logo:"https://www.logo-voiture.com/wp-content/uploads/2021/01/ford-logo-2017-grand.png",        colors:["#0066cc","#1a9e6e"], type:"brand"},
+  "Aramisauto": {logo:"https://www.aramisauto.com/favicon.ico", colors:["#e85d04","#f48c06"], type:"reference"}
 };
-const REFERENCE_BRANDS=new Set(["Aramisauto"]);
-let allData=null,currentBrand=null,lineChart=null,donutChart=null,currentPeriod='7j';
+const REFERENCE_BRANDS = new Set(["Aramisauto"]);
 
-function setPeriod(btn,period){
-  currentPeriod=period;
-  document.querySelectorAll('.period-tab').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  if(allData)renderDash(allData);
+let allData = null, currentBrand = null, currentPeriod = "7j";
+let lineChart = null, gaugeChart = null;
+
+// ── TABS ──
+function switchTab(tab) {
+  document.getElementById("panel-vos").style.display = tab === "vos" ? "block" : "none";
+  document.getElementById("panel-ref").style.display = tab === "ref" ? "block" : "none";
+  document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+  document.getElementById("tab-" + tab).classList.add("active");
+  selectBrand(tab === "vos" ? "Opel PT" : "Aramisauto");
 }
 
-function filterByPeriod(pts){
-  if(!pts||!pts.length)return pts;
-  if(currentPeriod==='all'||currentPeriod==='7j')return pts;
-  // 24h = les 8640 derniers points (24h x 3600s / 10s)
-  if(currentPeriod==='24h'){
-    const max24h = 8640;
-    return pts.slice(-Math.min(pts.length, max24h));
-  }
-  return pts;
+function setPeriod(btn, period) {
+  currentPeriod = period;
+  document.querySelectorAll(".period-tab").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  if (allData) renderDash(allData);
 }
 
-function updateLandingStatus(data){
-  Object.keys(BRAND_META).forEach(b=>{
-    const nd=document.getElementById("nd-"+b);
-    if(!nd||!data.statuses[b])return;
-    const ok=Object.values(data.statuses[b]).every(s=>s.ok);
-    nd.className="ndot "+(ok?"ok":"ko");
+function filterPts(pts) {
+  if (!pts || !pts.length || currentPeriod === "all" || currentPeriod === "7j") return pts;
+  return pts.slice(-8640); // 24h
+}
+
+// ── NAV ──
+function selectBrand(brand) {
+  currentBrand = brand;
+  document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active"));
+  const nb = document.getElementById("nav-" + brand);
+  if (nb) nb.classList.add("active");
+  const meta = BRAND_META[brand];
+  if (!meta) return;
+  const logoEl = document.getElementById("dash-logo");
+  logoEl.src = meta.logo || "";
+  logoEl.style.display = meta.logo ? "block" : "none";
+  logoEl.onerror = () => { logoEl.style.display = "none"; };
+  const isRef = REFERENCE_BRANDS.has(brand);
+  document.getElementById("dash-title").textContent = brand;
+  if (allData) renderDash(allData);
+}
+
+// ── STATUS DOTS ──
+function updateDots(data) {
+  Object.keys(BRAND_META).forEach(b => {
+    const nd = document.getElementById("nd-" + b);
+    if (!nd || !data.statuses[b]) return;
+    const ok = Object.values(data.statuses[b]).every(s => s.ok);
+    nd.className = "ndot " + (ok ? "ok" : "ko");
   });
 }
 
-
-function switchTab(tab){
-  document.getElementById('panel-vos').style.display = tab==='vos' ? 'block' : 'none';
-  document.getElementById('panel-ref').style.display = tab==='ref' ? 'block' : 'none';
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById('tab-'+tab).classList.add('active');
-  // Sélectionner la première marque du panel
-  if(tab==='vos') selectBrand('Opel PT');
-  else selectBrand('Aramisauto');
+// ── SUMMARY ──
+function renderSummary(brand, data) {
+  const pages = Object.entries(data.statuses[brand] || {});
+  const allOk = pages.every(([, s]) => s.ok);
+  const hist = (data.history || []).filter(h => h.brand === brand);
+  const koCount = hist.filter(h => h.type === "ko").length;
+  const chartPts = Object.entries(data.chart_data || {}).filter(([k]) => k.startsWith(brand + ":")).map(([k, v]) => [k, filterPts(v)]);
+  const allElapsed = chartPts.flatMap(([, pts]) => pts.map(p => p.elapsed));
+  const avg = allElapsed.length ? (allElapsed.reduce((a, b) => a + b, 0) / allElapsed.length).toFixed(2) + "s" : "—";
+  const totalChecks = chartPts.reduce((a, [, pts]) => a + pts.length, 0);
+  const uptimePct = totalChecks > 0 ? ((1 - koCount / Math.max(totalChecks, 1)) * 100).toFixed(1) + "%" : "—";
+  const isRef = REFERENCE_BRANDS.has(brand);
+  let txt = isRef
+    ? (allOk ? "Témoin <b>opérationnel</b> ✓ — vos incidents ne sont pas liés au réseau global." : "<b>Témoin aussi KO</b> — problème réseau global possible.")
+    : (allOk ? "Uptime <b>" + uptimePct + "</b> · Réponse moy. <b>" + avg + "</b>" : "<b>Anomalie</b> sur " + pages.filter(([, s]) => !s.ok).map(([p]) => p).join(", ") + " · Uptime <b>" + uptimePct + "</b> · <b>" + koCount + "</b> incident" + (koCount > 1 ? "s" : ""));
+  document.getElementById("summary-text").innerHTML = txt;
 }
 
-function selectBrand(brand){
-  currentBrand=brand;
-  document.querySelectorAll(".nav-item").forEach(n=>n.classList.remove("active"));
-  const nb=document.getElementById("nav-"+brand);
-  if(nb)nb.classList.add("active");
-  const meta=BRAND_META[brand];
-  if(!meta){ console.error("Brand non trouvé:", brand); return; }
-  const isRef=REFERENCE_BRANDS.has(brand);
-  const logoEl=document.getElementById("dash-logo");
-  logoEl.src=meta.logo||"";
-  logoEl.style.display=meta.logo?"block":"none";
-  logoEl.onerror=()=>{ logoEl.style.display="none"; };
-  document.getElementById("dash-title").innerHTML=brand+(isRef?' <span style="font-size:11px;font-weight:700;color:#6b7280;background:#f3f4f6;padding:3px 10px;border-radius:8px;margin-left:8px;vertical-align:middle">Témoin</span>':"");
-  if(allData)renderDash(allData);
+// ── KPIs ──
+function renderKPIs(brand, data) {
+  const pages = Object.entries(data.statuses[brand] || {});
+  const allOk = pages.every(([, s]) => s.ok);
+  const hist = (data.history || []).filter(h => h.brand === brand);
+  const koCount = hist.filter(h => h.type === "ko").length;
+  const chartPts = Object.entries(data.chart_data || {}).filter(([k]) => k.startsWith(brand + ":")).map(([k, v]) => [k, filterPts(v)]);
+  const allElapsed = chartPts.flatMap(([, pts]) => pts.map(p => p.elapsed));
+  const avg = allElapsed.length ? (allElapsed.reduce((a, b) => a + b, 0) / allElapsed.length).toFixed(2) + "s" : "—";
+  const totalChecks = chartPts.reduce((a, [, pts]) => a + pts.length, 0);
+  const uptimePct = totalChecks > 0 ? ((1 - koCount / Math.max(totalChecks, 1)) * 100).toFixed(1) + "%" : "—";
+  const up = parseFloat(uptimePct);
+  document.getElementById("kpis").innerHTML =
+    '<div class="kpi-card"><div class="kpi-label">Statut</div><div class="kpi-val ' + (allOk ? "green" : "red") + '">' + (allOk ? "OK" : "KO") + '</div><div class="kpi-trend ' + (allOk ? "trend-good" : "trend-bad") + '">' + (allOk ? "✓ Opérationnel" : "⚠ Anomalie") + '</div></div>' +
+    '<div class="kpi-card"><div class="kpi-label">Uptime</div><div class="kpi-val ' + (up >= 99 ? "green" : up >= 95 ? "orange" : "red") + '">' + uptimePct + '</div><div class="kpi-trend trend-neutral">sur la période</div></div>' +
+    '<div class="kpi-card"><div class="kpi-label">Réponse moy.</div><div class="kpi-val ' + (parseFloat(avg) < 2 ? "green" : parseFloat(avg) < 4 ? "orange" : "red") + '">' + avg + '</div><div class="kpi-trend trend-neutral">toutes pages</div></div>' +
+    '<div class="kpi-card"><div class="kpi-label">Incidents</div><div class="kpi-val ' + (koCount === 0 ? "green" : koCount < 5 ? "orange" : "red") + '">' + koCount + '</div><div class="kpi-trend trend-neutral">détectés</div></div>' +
+    '<div class="kpi-card"><div class="kpi-label">Checks</div><div class="kpi-val blue">' + totalChecks.toLocaleString("fr") + '</div><div class="kpi-trend trend-neutral">effectués</div></div>';
 }
 
+// ── LINE CHART ──
+function renderLineChart(brand, data) {
+  const pages = Object.entries(data.statuses[brand] || {});
+  const colors = BRAND_META[brand].colors;
+  const hist = (data.history || []).filter(h => h.brand === brand && h.type === "ko");
+  const koTimes = new Set(hist.map(h => (h.time || "").substring(11, 19)));
 
-function buildSummary(brand,data){
-  const pages=Object.entries(data.statuses[brand]||{});
-  const allOk=pages.every(([,s])=>s.ok);
-  const hist=(data.history||[]).filter(h=>h.brand===brand);
-  const koCount=hist.filter(h=>h.type==="ko").length;
-  const chartPts=Object.entries(data.chart_data||{}).filter(([k])=>k.startsWith(brand+":")).map(([k,v])=>[k,filterByPeriod(v)]);
-  const allElapsed=chartPts.flatMap(([,pts])=>pts.map(p=>p.elapsed));
-  const avg=allElapsed.length?(allElapsed.reduce((a,b)=>a+b,0)/allElapsed.length).toFixed(2):"—";
-  const totalChecks=chartPts.reduce((a,[,pts])=>a+pts.length,0);
-  const uptimePct=totalChecks>0?((1-koCount/Math.max(totalChecks,1))*100).toFixed(1)+"%":"—";
-  const isRef=REFERENCE_BRANDS.has(brand);
-  let txt="";
-  if(isRef){
-    txt=allOk?`Témoin <b>opérationnel</b> ✓ — vos incidents ne sont pas liés au réseau global.`:`<b>Témoin aussi KO</b> — problème réseau global possible.`;
-  } else {
-    txt=allOk
-      ?`<b>Uptime ${uptimePct}</b> · Réponse moy. <b>${avg}</b>`
-      :`<b>Anomalie</b> sur ${pages.filter(([,s])=>!s.ok).map(([p])=>p).join(", ")} · Uptime <b>${uptimePct}</b> · <b>${koCount}</b> incident${koCount>1?"s":""}`;
-  }
-  document.getElementById("summary-text").innerHTML=txt;
-}
-
-function renderKPIs(brand,data){
-  const pages=Object.entries(data.statuses[brand]||{});
-  const allOk=pages.every(([,s])=>s.ok);
-  const hist=(data.history||[]).filter(h=>h.brand===brand);
-  const koCount=hist.filter(h=>h.type==="ko").length;
-  const chartPts=Object.entries(data.chart_data||{}).filter(([k])=>k.startsWith(brand+":")).map(([k,v])=>[k,filterByPeriod(v)]);
-  const allElapsed=chartPts.flatMap(([,pts])=>pts.map(p=>p.elapsed));
-  const avg=allElapsed.length?(allElapsed.reduce((a,b)=>a+b,0)/allElapsed.length).toFixed(2)+"s":"—";
-  const totalChecks=chartPts.reduce((a,[,pts])=>a+pts.length,0);
-  const uptimePct=totalChecks>0?((1-koCount/Math.max(totalChecks,1))*100).toFixed(1)+"%":"—";
-  document.getElementById("kpis").innerHTML=`
-    <div class="kpi-card"><div class="kpi-label">Statut</div><div class="kpi-val ${allOk?"green":"red"}">${allOk?"OK":"KO"}</div><div class="kpi-trend ${allOk?"trend-good":"trend-bad"}">${allOk?"✓ Opérationnel":"⚠ Anomalie"}</div></div>
-    <div class="kpi-card"><div class="kpi-label">Uptime</div><div class="kpi-val ${parseFloat(uptimePct)>99?"green":parseFloat(uptimePct)>95?"orange":"red"}">${uptimePct}</div><div class="kpi-trend trend-neutral">sur la période</div></div>
-    <div class="kpi-card"><div class="kpi-label">Réponse moy.</div><div class="kpi-val ${parseFloat(avg)<2?"green":parseFloat(avg)<4?"orange":"red"}">${avg}</div><div class="kpi-trend trend-neutral">toutes pages</div></div>
-    <div class="kpi-card"><div class="kpi-label">Incidents</div><div class="kpi-val ${koCount===0?"green":koCount<5?"orange":"red"}">${koCount}</div><div class="kpi-trend trend-neutral">détectés</div></div>
-    <div class="kpi-card"><div class="kpi-label">Checks</div><div class="kpi-val blue">${totalChecks.toLocaleString("fr")}</div><div class="kpi-trend trend-neutral">effectués</div></div>`;
-}
-
-function renderLineChart(brand,data){
-  const pages=Object.entries(data.statuses[brand]||{});
-  const colors=BRAND_META[brand].colors;
-  const datasets=pages.map(([page],i)=>{
-    const key=brand+":"+page;
-    const pts=filterByPeriod((data.chart_data||{})[key]||[]);
-    return{label:page,data:pts.map(p=>p.elapsed),_times:pts.map(p=>p.time),borderColor:colors[i]||"#888",backgroundColor:(colors[i]||"#888")+"12",tension:0.4,pointRadius:0,pointHoverRadius:4,borderWidth:2,fill:true};
+  const datasets = pages.map(([page], i) => {
+    const key = brand + ":" + page;
+    const pts = filterPts((data.chart_data || {})[key] || []);
+    return {
+      label: page,
+      data: pts.map(p => p.elapsed),
+      _times: pts.map(p => p.time),
+      borderColor: colors[i] || "#888",
+      backgroundColor: (colors[i] || "#888") + "12",
+      tension: 0.4, pointRadius: 0, pointHoverRadius: 4, borderWidth: 2, fill: true
+    };
   });
-  const labels=datasets[0]?._times||[];
-  document.getElementById("legend").innerHTML=datasets.map((ds,i)=>`<div class="leg"><span class="leg-dot" style="background:${colors[i]}"></span>${ds.label}</div>`).join("");
-  // Ajouter dataset des alertes KO
-  const hist=(data.history||[]).filter(h=>h.brand===brand&&h.type==="ko");
-  const koTimes=new Set(hist.map(h=>(h.time||"").substring(11,19)));
-  const alertDataset={
-    label:"KO",
-    data:datasets[0]?._times?.map((t,i)=>koTimes.has(t)?datasets[0].data[i]:null)||[],
-    borderColor:"#dc2626",backgroundColor:"#dc2626",
-    pointRadius:5,pointHoverRadius:7,
-    showLine:false,type:"scatter"
+
+  const labels = datasets[0] ? datasets[0]._times || [] : [];
+
+  // Points rouges sur les KO
+  const alertDataset = {
+    label: "KO",
+    type: "scatter",
+    data: labels.map((t, i) => koTimes.has(t) ? datasets[0] ? datasets[0].data[i] : null : null),
+    backgroundColor: "#dc2626",
+    pointRadius: 5, pointHoverRadius: 7,
+    showLine: false
   };
-  const allDatasets=[...datasets,alertDataset];
 
-  if(!lineChart){
-    lineChart=new Chart(document.getElementById("lineChart"),{type:"line",data:{labels,datasets:allDatasets},options:{responsive:true,maintainAspectRatio:false,animation:{duration:300},interaction:{mode:"index",intersect:false},plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:9},color:"#9ca3af",maxTicksLimit:8}},y:{grid:{color:"rgba(0,0,0,0.04)"},ticks:{font:{size:9},color:"#9ca3af",callback:v=>v.toFixed(1)+"s"}}}}});
-  } else {
-    lineChart.data.labels=labels;
-    lineChart.data.datasets=allDatasets;
-    lineChart.update('none');
-  }
-}
+  document.getElementById("legend").innerHTML = datasets.map((ds, i) =>
+    '<div class="leg"><span class="leg-dot" style="background:' + colors[i] + '"></span>' + ds.label + '</div>'
+  ).join("") + '<div class="leg"><span class="leg-dot" style="background:#dc2626;border-radius:50%"></span>KO</div>';
 
-function renderDonut(brand,data){
-  const hist=(data.history||[]).filter(h=>h.brand===brand&&h.type==="ko");
-  const types={DNS:0,Timeout:0,"Content KO":0,"HTTP 4xx":0,"HTTP 5xx":0,Autres:0};
-  hist.forEach(h=>{
-    const t=h.diagnostics?.error_type||"";
-    if(t.startsWith("DNS"))types.DNS++;
-    else if(t==="TIMEOUT"||t==="VERY_SLOW"||t==="SLOW_RESPONSE")types.Timeout++;
-    else if(t==="CONTENT_KO")types["Content KO"]++;
-    else if(t.startsWith("HTTP_4"))types["HTTP 4xx"]++;
-    else if(t.startsWith("HTTP_5"))types["HTTP 5xx"]++;
-    else types.Autres++;
-  });
-  const labels=Object.keys(types);
-  const vals=Object.values(types);
-  const colors=["#dc2626","#f59e0b","#8b5cf6","#3b5ae0","#ef4444","#9ca3af"];
-  const total=vals.reduce((a,b)=>a+b,0);
-  document.getElementById("donut-legend").innerHTML=total===0?'<div class="empty">Aucune erreur 🎉</div>':labels.map((l,i)=>vals[i]>0?`<div class="donut-row"><div class="donut-label"><span class="donut-dot" style="background:${colors[i]}"></span>${l}</div><span class="donut-count">${vals[i]}</span></div>`:"").join("");
-  if(!donutChart){
-    donutChart=new Chart(document.getElementById("donutChart"),{type:"doughnut",data:{labels,datasets:[{data:vals.map(v=>v||0.01),backgroundColor:colors,borderWidth:0,hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,animation:{duration:300},cutout:"70%",plugins:{legend:{display:false}}}});
-  } else {
-    donutChart.data.datasets[0].data=vals.map(v=>v||0.01);
-    donutChart.update('none');
-  }
-}
+  const allDatasets = [...datasets, alertDataset];
 
-function getIncidentDuration(hist, idx){
-  const inc=hist[idx];
-  if(inc.type!=="ko") return null;
-  // Chercher le recovery suivant pour la même page
-  for(let i=idx+1;i<hist.length;i++){
-    if(hist[i].type==="recovery"&&hist[i].page===inc.page&&hist[i].brand===inc.brand){
-      const t1=new Date(inc.time.split(" ").reverse().join("T").replace(/(\d{2})\/(\d{2})\/(\d{4})/,"$3-$2-$1"));
-      const t2=new Date(hist[i].time.split(" ").reverse().join("T").replace(/(\d{2})\/(\d{2})\/(\d{4})/,"$3-$2-$1"));
-      const diff=Math.round((t2-t1)/1000);
-      if(diff>0&&diff<86400){
-        if(diff<60) return `${diff}s`;
-        if(diff<3600) return `${Math.floor(diff/60)}m ${diff%60}s`;
-        return `${Math.floor(diff/3600)}h ${Math.floor((diff%3600)/60)}m`;
+  if (!lineChart) {
+    lineChart = new Chart(document.getElementById("lineChart"), {
+      type: "line", data: { labels, datasets: allDatasets },
+      options: {
+        responsive: true, maintainAspectRatio: false, animation: { duration: 300 },
+        interaction: { mode: "index", intersect: false },
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { grid: { display: false }, ticks: { font: { size: 9 }, color: "#9ca3af", maxTicksLimit: 8 } },
+          y: { grid: { color: "rgba(0,0,0,0.04)" }, ticks: { font: { size: 9 }, color: "#9ca3af", callback: v => v.toFixed(1) + "s" } }
+        }
       }
+    });
+  } else {
+    lineChart.data.labels = labels;
+    lineChart.data.datasets = allDatasets;
+    lineChart.update("none");
+  }
+}
+
+// ── GAUGE ──
+function renderGauge(brand, data) {
+  const hist = (data.history || []).filter(h => h.brand === brand);
+  const koCount = hist.filter(h => h.type === "ko").length;
+  const chartPts = Object.entries(data.chart_data || {}).filter(([k]) => k.startsWith(brand + ":"));
+  const totalChecks = chartPts.reduce((a, [, pts]) => a + pts.length, 0);
+  const uptime = totalChecks > 0 ? (1 - koCount / Math.max(totalChecks, 1)) * 100 : 100;
+  const score = Math.round(uptime);
+  const color = score >= 99 ? "#16a34a" : score >= 95 ? "#f59e0b" : "#dc2626";
+  const label = score >= 99 ? "Excellent" : score >= 95 ? "Correct" : "Dégradé";
+
+  document.getElementById("gauge-score").textContent = score + "%";
+  document.getElementById("gauge-score").style.color = color;
+  document.getElementById("gauge-label").textContent = label;
+
+  if (!gaugeChart) {
+    gaugeChart = new Chart(document.getElementById("gaugeChart"), {
+      type: "doughnut",
+      data: { datasets: [{ data: [score, 100 - score], backgroundColor: [color, "#f3f4f6"], borderWidth: 0 }] },
+      options: { responsive: true, maintainAspectRatio: false, cutout: "78%", rotation: -90, circumference: 180, animation: { duration: 300 }, plugins: { legend: { display: false }, tooltip: { enabled: false } } }
+    });
+  } else {
+    gaugeChart.data.datasets[0].data = [score, 100 - score];
+    gaugeChart.data.datasets[0].backgroundColor = [color, "#f3f4f6"];
+    gaugeChart.update("none");
+  }
+}
+
+// ── TIMELINE ──
+function renderTimeline(brand, data) {
+  const hist = (data.history || []).filter(h => h.brand === brand);
+  const pages = Object.keys(data.statuses[brand] || {});
+  const el = document.getElementById("timeline");
+
+  const days = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    days.push(d.toLocaleDateString("fr-FR", { day: "2-digit", month: "2-digit" }));
+  }
+
+  if (!pages.length) { el.innerHTML = '<div class="empty">—</div>'; return; }
+
+  el.innerHTML = pages.map(page => {
+    const segs = days.map(day => {
+      const [dd, mm] = day.split("/");
+      const dayHist = hist.filter(h => h.page === page && (h.time || "").startsWith(dd + "/" + mm));
+      const hasKo = dayHist.some(h => h.type === "ko");
+      return '<div class="tl-seg ' + (hasKo ? "ko" : "ok") + '" title="' + day + ': ' + (hasKo ? "KO" : "OK") + '"></div>';
+    }).join("");
+    return '<div class="timeline-row"><span class="timeline-label">' + page + '</span><div class="timeline-bar">' + segs + '</div><span class="tl-day">' + days[days.length - 1] + '</span></div>';
+  }).join("");
+}
+
+// ── PAGES ──
+function renderPages(brand, data) {
+  const pages = Object.entries(data.statuses[brand] || {});
+  document.getElementById("pages-list").innerHTML = pages.map(([page, s]) => {
+    const d = s.details || {};
+    const cls = s.ok ? "ok" : "ko";
+    const icon = s.ok
+      ? '<i data-lucide="check" style="width:14px;height:14px;color:var(--green)"></i>'
+      : '<i data-lucide="x" style="width:14px;height:14px;color:var(--red)"></i>';
+    const diagHTML = !s.ok
+      ? '<div class="diag-panel" id="dp-' + page.replace(/\W/g, "_") + '">' +
+        '<div class="diag-grid">' +
+        (d.error_type ? '<div class="diag-item"><b>Type</b> : ' + d.error_type + '</div>' : '') +
+        (d.ip ? '<div class="diag-item"><b>IP</b> : ' + d.ip + '</div>' : '') +
+        (d.dns_elapsed != null ? '<div class="diag-item"><b>DNS</b> : ' + d.dns_elapsed + 's</div>' : '') +
+        (d.elapsed_http != null ? '<div class="diag-item"><b>HTTP</b> : ' + d.elapsed_http + 's</div>' : '') +
+        (d.http_status ? '<div class="diag-item"><b>Status</b> : ' + d.http_status + '</div>' : '') +
+        (d.error_detail ? '<div class="diag-item" style="grid-column:1/-1"><b>Détail</b> : ' + d.error_detail.substring(0, 120) + '</div>' : '') +
+        '</div>' +
+        (d.body_preview ? '<div class="diag-body">' + d.body_preview.substring(0, 180) + '</div>' : '') +
+        '</div>'
+      : '';
+    return '<div class="page-row ' + (!s.ok ? "has-error" : "") + '" onclick="' + (!s.ok ? 'toggleDiag("' + page.replace(/\W/g, "_") + '")' : '') + '">' +
+      '<div class="page-left"><div class="page-icon ' + cls + '">' + icon + '</div><div><div class="page-name">' + page + '</div><div class="page-url">' + s.url.replace("https://", "") + '</div></div></div>' +
+      '<div><div class="badge ' + cls + '">' + (s.ok ? "EN LIGNE" : d.error_type || "KO") + '</div><div class="page-meta">' + s.elapsed + 's · HTTP ' + (d.http_status || "—") + '</div></div>' +
+      '</div>' + diagHTML;
+  }).join("");
+  if (window.lucide) lucide.createIcons();
+}
+
+// ── HISTORY ──
+function calcDuration(hist, idx) {
+  const inc = hist[idx];
+  if (inc.type !== "ko") return null;
+  for (let j = idx + 1; j < hist.length; j++) {
+    const h = hist[j];
+    if (h.type === "recovery" && h.page === inc.page && h.brand === inc.brand) {
+      try {
+        function parseDate(s) {
+          var parts = s.match(/(\d{2})\/(\d{2})\/(\d{4}) (\d{2}):(\d{2}):(\d{2})/);
+          if (!parts) return null;
+          return new Date(parts[3], parts[2]-1, parts[1], parts[4], parts[5], parts[6]);
+        }
+        var t1 = parseDate(inc.time);
+        var t2 = parseDate(h.time);
+        if (!t1 || !t2) return null;
+        var diff = Math.round((t2 - t1) / 1000);
+        if (diff > 0 && diff < 86400) {
+          if (diff < 60) return diff + "s";
+          if (diff < 3600) return Math.floor(diff / 60) + "m " + (diff % 60) + "s";
+          return Math.floor(diff / 3600) + "h " + Math.floor((diff % 3600) / 60) + "m";
+        }
+      } catch(e) {}
+      break;
     }
   }
   return null;
 }
 
-function renderTimeline(brand,data){
-  const hist=(data.history||[]).filter(h=>h.brand===brand);
-  const pages=Object.keys(data.statuses[brand]||{});
-  const el=document.getElementById("timeline");
-  if(!hist.length){el.innerHTML='<div class="empty">Aucun incident</div>';return;}
-
-  // Construire 7 jours
-  const days=[];
-  for(let i=6;i>=0;i--){
-    const d=new Date();
-    d.setDate(d.getDate()-i);
-    days.push(d.toLocaleDateString("fr-FR",{day:"2-digit",month:"2-digit"}));
-  }
-
-  el.innerHTML=pages.map(page=>{
-    const pageHist=hist.filter(h=>h.page===page);
-    const bars=days.map(day=>{
-      const dayIncs=pageHist.filter(h=>(h.time||"").startsWith(day.split("/").reverse().join("/").replace(/(\d{4})\/(\d{2})\/(\d{2})/,"$3/$2/$1")||(h.time||"").includes(day));
-      const hasKo=dayIncs.some(h=>h.type==="ko");
-      return `<div class="timeline-seg ${hasKo?"ko":"ok"}" style="flex:1" title="${day}: ${hasKo?"KO":"OK"}"></div>`;
-    }).join("");
-    return `<div class="timeline-row">
-      <span class="timeline-label">${page}</span>
-      <div class="timeline-bar">${bars}</div>
-      <span style="font-size:9px;color:var(--text-tertiary);min-width:30px;text-align:right">${days[days.length-1]}</span>
-    </div>`;
+function renderHistory(brand, data) {
+  const hist = (data.history || []).filter(h => h.brand === brand);
+  const el = document.getElementById("history");
+  document.getElementById("inc-count").textContent = hist.length ? "(" + hist.length + " événements)" : "";
+  if (!hist.length) { el.innerHTML = '<div class="empty">Aucun incident 🎉</div>'; return; }
+  el.innerHTML = [...hist].reverse().map((h, revIdx) => {
+    const origIdx = hist.length - 1 - revIdx;
+    const dur = h.type === "ko" ? calcDuration(hist, origIdx) : null;
+    return '<div class="inc-row">' +
+      '<div class="inc-time">' + (h.time || "—") + '</div>' +
+      '<div class="inc-body">' +
+        '<div class="inc-title">' + h.page + ' — ' + h.detail + '</div>' +
+        (h.diagnostics && h.diagnostics.error_type ? '<div class="inc-sub">' + h.diagnostics.error_type + (h.diagnostics.ip ? " · " + h.diagnostics.ip : "") + '</div>' : '') +
+        (dur ? '<div class="inc-duration">⏱ Durée : ' + dur + '</div>' : '') +
+      '</div>' +
+      '<div class="inc-badge ' + (h.type === "recovery" ? "ok" : "ko") + '">' + (h.type === "recovery" ? "RÉSOLU" : "KO") + '</div>' +
+      '</div>';
   }).join("");
 }
 
-function renderPages(brand,data){
-  const pages=Object.entries(data.statuses[brand]||{});
-  document.getElementById("pages-list").innerHTML=pages.map(([page,s])=>{
-    const d=s.details||{};
-    const cls=s.ok?"ok":d.error_type==="VERY_SLOW"||d.error_type==="SLOW"?"slow":"ko";
-    const icon=s.ok?`<i data-lucide="check" style="width:14px;height:14px;color:var(--green)"></i>`:`<i data-lucide="x" style="width:14px;height:14px;color:var(--red)"></i>`;
-    const diagHTML=!s.ok?`<div class="diag-panel" id="dp-${page.replace(/\W/g,"_")}"><div class="diag-grid">${d.error_type?`<div class="diag-item"><b>Type</b> : ${d.error_type}</div>`:""} ${d.ip?`<div class="diag-item"><b>IP</b> : ${d.ip}</div>`:""} ${d.dns_elapsed!=null?`<div class="diag-item"><b>DNS</b> : ${d.dns_elapsed}s</div>`:""} ${d.elapsed_http!=null?`<div class="diag-item"><b>HTTP</b> : ${d.elapsed_http}s</div>`:""} ${d.http_status?`<div class="diag-item"><b>Status</b> : ${d.http_status}</div>`:""} ${d.error_detail?`<div class="diag-item" style="grid-column:1/-1"><b>Détail</b> : ${d.error_detail.substring(0,120)}</div>`:""}</div>${d.body_preview?`<div class="diag-body">${d.body_preview.substring(0,180)}</div>`:""}</div>`:"";
-    return`<div class="page-row ${!s.ok?"has-error":""}" onclick="${!s.ok?`toggleDiag("${page.replace(/\W/g,"_")}")`:""}" ><div class="page-left"><div class="page-icon ${cls}">${icon}</div><div><div class="page-name">${page}</div><div class="page-url">${s.url.replace("https://","")}</div></div></div><div class="page-right"><div class="badge ${cls}">${s.ok?"EN LIGNE":d.error_type||"KO"}</div><div class="page-meta">${s.elapsed}s · HTTP ${d.http_status||"—"}</div></div></div>${diagHTML}`;
-  }).join("");
-  if(window.lucide)lucide.createIcons();
-}
-
-function renderHistory(brand,data){
-  const hist=(data.history||[]).filter(h=>h.brand===brand);
-  const el=document.getElementById("history");
-  if(!hist.length){el.innerHTML='<div class="empty">Aucun incident 🎉</div>';return;}
-  document.getElementById('inc-count').textContent=hist.length ? `(${hist.length} événements)` : '';
-  el.innerHTML=[...hist].reverse().map(h=>{
-    const hasScreen = h.screenshot && h.type==='ko';
-    return `<div class="inc-row ${hasScreen?'has-screen':''}">
-      <div class="inc-time">${h.time||"—"}</div>
-      <div class="inc-body">
-        <div class="inc-title">${h.page} — ${h.detail}</div>
-        ${(()=>{const dur=getIncidentDuration(hist,hist.length-1-[...hist].reverse().indexOf(h));return dur&&h.type==="ko"?`<div class="inc-duration">⏱ Durée : ${dur}</div>`:""})()}
-        ${h.diagnostics?.error_type?`<div class="inc-sub">${h.diagnostics.error_type}${h.diagnostics?.ip?" · "+h.diagnostics.ip:""}</div>`:""}
-        ${hasScreen?`<a href="${h.screenshot}" target="_blank" class="screen-link"><i data-lucide="image" style="width:11px;height:11px"></i> Voir screenshot</a>`:""}
-      </div>
-      <div class="inc-badge ${h.type==="recovery"?"ok":"ko"}">${h.type==="recovery"?"RÉSOLU":"KO"}</div>
-    </div>
-    ${hasScreen?`<div class="screen-preview"><a href="${h.screenshot}" target="_blank"><img src="${h.screenshot}" alt="screenshot" loading="lazy"/></a></div>`:""}`;
-  }).join("");
-  if(window.lucide)lucide.createIcons();
-}
-
-function downloadReport(){
-  if(!allData||!currentBrand) return;
-  const hist=(allData.history||[]).filter(h=>h.brand===currentBrand);
-  const rows=[['Date','Page','Type','Détail','Est référence']];
-  hist.forEach(h=>{
-    rows.push([
-      h.time||'',
-      h.page||'',
-      h.type||'',
-      h.detail||'',
-      h.is_reference?'Oui':'Non'
-    ]);
+// ── DOWNLOAD ──
+function downloadReport() {
+  if (!allData || !currentBrand) return;
+  const hist = (data.history || []).filter(h => h.brand === currentBrand);
+  const rows = [["Date", "Page", "Type", "Détail", "Durée", "Type erreur", "IP"]];
+  hist.forEach((h, i) => {
+    const dur = h.type === "ko" ? calcDuration(hist, i) : "";
+    rows.push([h.time || "", h.page || "", h.type || "", h.detail || "", dur || "", h.diagnostics && h.diagnostics.error_type ? h.diagnostics.error_type : "", h.diagnostics && h.diagnostics.ip ? h.diagnostics.ip : ""]);
   });
-  const csv=rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
-  const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');
-  a.href=url;
-  a.download=`rapport_${currentBrand.replace(' ','_')}_${new Date().toISOString().slice(0,10)}.csv`;
+  const csv = rows.map(r => r.map(v => '"' + String(v).replace(/"/g, '""') + '"').join(",")).join("\n");
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "rapport_" + currentBrand.replace(" ", "_") + "_" + new Date().toISOString().slice(0, 10) + ".csv";
   a.click();
   URL.revokeObjectURL(url);
 }
 
-function toggleDiag(key){const el=document.getElementById("dp-"+key);if(el)el.classList.toggle("show");}
-
-function renderDash(data){
-  if(!currentBrand)return;
-  buildSummary(currentBrand,data);
-  renderKPIs(currentBrand,data);
-  renderLineChart(currentBrand,data);
-  renderDonut(currentBrand,data);
-  renderPages(currentBrand,data);
-  renderHistory(currentBrand,data);
-  renderTimeline(currentBrand,data);
-  renderGauge(currentBrand,data);
-  if(window.lucide)lucide.createIcons();
+function toggleDiag(key) {
+  const el = document.getElementById("dp-" + key);
+  if (el) el.classList.toggle("show");
 }
 
-async function fetchStatus(){
-  try{
-    const r=await fetch(RAW_BASE+"?nocache="+Math.random()+"&t="+Date.now(), {cache:"no-store"});
-    if(!r.ok)throw new Error();
-    allData=await r.json();
-    document.getElementById("updated").textContent="Mis à jour : "+allData.updated_at;
-    document.getElementById("sb-updated").textContent=allData.updated_at||"";
-    document.getElementById("pulse").className="pulse";
-    updateLandingStatus(allData);
-    if(currentBrand&&document.getElementById("app").style.display!=="none")renderDash(allData);
-  }catch(e){
-    document.getElementById("updated").textContent="Erreur de chargement";
-    document.getElementById("pulse").className="pulse dead";
+// ── RENDER ALL ──
+function renderDash(data) {
+  if (!currentBrand) return;
+  renderSummary(currentBrand, data);
+  renderKPIs(currentBrand, data);
+  renderLineChart(currentBrand, data);
+  renderGauge(currentBrand, data);
+  renderTimeline(currentBrand, data);
+  renderPages(currentBrand, data);
+  renderHistory(currentBrand, data);
+  if (window.lucide) lucide.createIcons();
+}
+
+// ── FETCH ──
+async function fetchStatus() {
+  try {
+    let r = await fetch(RENDER_STATUS + "?t=" + Date.now(), { cache: "no-store" });
+    if (!r.ok) throw new Error("render ko");
+    const newData = await r.json();
+    if (newData.error) throw new Error("no data");
+    if (JSON.stringify(newData.updated_at) === JSON.stringify(allData && allData.updated_at)) return;
+    allData = newData;
+    document.getElementById("updated").textContent = "⚡ " + allData.updated_at;
+    document.getElementById("sb-updated").textContent = allData.updated_at || "";
+    document.getElementById("pulse").className = "pulse";
+    updateDots(allData);
+    if (currentBrand && document.getElementById("app")) renderDash(allData);
+  } catch(e) {
+    try {
+      const r2 = await fetch(RAW_BASE + "?t=" + Date.now(), { cache: "no-store" });
+      if (!r2.ok) throw new Error();
+      const newData = await r2.json();
+      if (JSON.stringify(newData.updated_at) === JSON.stringify(allData && allData.updated_at)) return;
+      allData = newData;
+      document.getElementById("updated").textContent = "📦 " + allData.updated_at;
+      document.getElementById("sb-updated").textContent = allData.updated_at || "";
+      document.getElementById("pulse").className = "pulse";
+      updateDots(allData);
+      if (currentBrand) renderDash(allData);
+    } catch(e2) {
+      document.getElementById("pulse").className = "pulse dead";
+    }
   }
 }
 
-window.addEventListener("load",()=>{
-  selectBrand('Opel PT');
-  if(window.lucide)lucide.createIcons();
+window.addEventListener("load", () => {
+  if (window.lucide) lucide.createIcons();
+  selectBrand("Opel PT");
   fetchStatus();
-  setInterval(fetchStatus,5000);
+  setInterval(fetchStatus, 2000);
 });
 </script>
 </body>
