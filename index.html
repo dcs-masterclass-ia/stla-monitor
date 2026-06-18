@@ -170,10 +170,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg)}
         <i data-lucide="shield-check" style="width:14px;height:14px;flex-shrink:0"></i>Aramisauto
         <span class="ndot loading" id="nd-Aramisauto"></span>
       </button>
-      <button class="nav-item" id="nav-VendezVotreVoiture" onclick="selectBrand('VendezVotreVoiture')">
-        <i data-lucide="shield-check" style="width:14px;height:14px;flex-shrink:0"></i>VendezVotreVoiture
-        <span class="ndot loading" id="nd-VendezVotreVoiture"></span>
-      </button>
+
 
       <div class="sidebar-bottom">
         <div class="sidebar-bottom-title">Monitoring actif</div>
@@ -240,9 +237,9 @@ const BRAND_META={
   "Opel PT":{logo:"https://www.stellantis.com/content/dam/stellantis-corporate/brands/opel/opel-logo.png",colors:["#3b5ae0","#0F6E56"],type:"brand"},
   "Ford FR":{logo:"https://www.logo-voiture.com/wp-content/uploads/2021/01/ford-logo-2017-grand.png",colors:["#0066cc","#1a9e6e"],type:"brand"},
   "Aramisauto":{logo:"https://www.aramisauto.com/favicon.ico",colors:["#e85d04","#f48c06"],type:"reference"},
-  "VendezVotreVoiture":{logo:"https://www.vendezvotrevoiture.fr/favicon.ico",colors:["#2d6a4f","#52b788"],type:"reference"}
+  
 };
-const REFERENCE_BRANDS=new Set(["Aramisauto","VendezVotreVoiture"]);
+const REFERENCE_BRANDS=new Set(["Aramisauto"]);
 let allData=null,currentBrand=null,lineChart=null,donutChart=null,currentPeriod='7j';
 
 function setPeriod(btn,period){
