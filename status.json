@@ -1,21 +1,21 @@
 {
-  "updated_at": "18/06/2026 23:28:56",
+  "updated_at": "18/06/2026 23:29:12",
   "statuses": {
     "Opel PT": {
       "Homepage": {
         "ok": true,
-        "reason": "OK (200) en 0.17s",
-        "elapsed": 0.17,
-        "checked_at": "18/06/2026 23:28:51",
+        "reason": "OK (200) en 0.13s",
+        "elapsed": 0.13,
+        "checked_at": "18/06/2026 23:29:08",
         "url": "https://www.retoma.opel.pt",
         "details": {
           "brand": "Opel PT",
           "page": "Homepage",
-          "dns_elapsed": 0.002,
+          "dns_elapsed": 0.001,
           "ip": "135.125.7.226",
           "http_status": 200,
-          "elapsed_http": 0.17,
-          "elapsed_total": 0.17,
+          "elapsed_http": 0.13,
+          "elapsed_total": 0.13,
           "redirect_count": 0,
           "final_url": "https://www.retoma.opel.pt/",
           "headers": {
@@ -29,9 +29,9 @@
       },
       "Parcours": {
         "ok": true,
-        "reason": "OK (200) en 0.14s",
-        "elapsed": 0.14,
-        "checked_at": "18/06/2026 23:28:51",
+        "reason": "OK (200) en 0.15s",
+        "elapsed": 0.15,
+        "checked_at": "18/06/2026 23:29:08",
         "url": "https://www.retoma.opel.pt/retoma",
         "details": {
           "brand": "Opel PT",
@@ -39,8 +39,8 @@
           "dns_elapsed": 0.001,
           "ip": "135.125.7.226",
           "http_status": 200,
-          "elapsed_http": 0.14,
-          "elapsed_total": 0.14,
+          "elapsed_http": 0.15,
+          "elapsed_total": 0.15,
           "redirect_count": 0,
           "final_url": "https://www.retoma.opel.pt/retoma",
           "headers": {
@@ -56,9 +56,9 @@
     "Ford FR": {
       "Homepage": {
         "ok": true,
-        "reason": "OK (200) en 2.11s",
-        "elapsed": 2.11,
-        "checked_at": "18/06/2026 23:28:51",
+        "reason": "OK (200) en 2.15s",
+        "elapsed": 2.15,
+        "checked_at": "18/06/2026 23:29:08",
         "url": "https://www.ford-reprise.fr/",
         "details": {
           "brand": "Ford FR",
@@ -66,8 +66,8 @@
           "dns_elapsed": 0.001,
           "ip": "3.69.153.2",
           "http_status": 200,
-          "elapsed_http": 2.11,
-          "elapsed_total": 2.11,
+          "elapsed_http": 2.15,
+          "elapsed_total": 2.15,
           "redirect_count": 0,
           "final_url": "https://www.ford-reprise.fr/",
           "headers": {
@@ -81,18 +81,18 @@
       },
       "Formulaire": {
         "ok": true,
-        "reason": "OK (200) en 1.27s",
-        "elapsed": 1.27,
-        "checked_at": "18/06/2026 23:28:51",
+        "reason": "OK (200) en 1.24s",
+        "elapsed": 1.25,
+        "checked_at": "18/06/2026 23:29:08",
         "url": "https://www.ford-reprise.fr/form",
         "details": {
           "brand": "Ford FR",
           "page": "Formulaire",
           "dns_elapsed": 0.002,
-          "ip": "63.180.121.144",
+          "ip": "3.69.153.2",
           "http_status": 200,
-          "elapsed_http": 1.27,
-          "elapsed_total": 1.27,
+          "elapsed_http": 1.24,
+          "elapsed_total": 1.25,
           "redirect_count": 0,
           "final_url": "https://www.ford-reprise.fr/form",
           "headers": {
@@ -108,9 +108,9 @@
     "Aramisauto": {
       "Homepage": {
         "ok": true,
-        "reason": "OK (200) en 0.3s",
-        "elapsed": 0.98,
-        "checked_at": "18/06/2026 23:28:51",
+        "reason": "OK (200) en 0.22s",
+        "elapsed": 0.53,
+        "checked_at": "18/06/2026 23:29:08",
         "url": "https://www.aramisauto.com/reprise/",
         "details": {
           "brand": "Aramisauto",
@@ -118,8 +118,8 @@
           "dns_elapsed": 0.001,
           "ip": "104.16.129.241",
           "http_status": 200,
-          "elapsed_http": 0.3,
-          "elapsed_total": 0.98,
+          "elapsed_http": 0.22,
+          "elapsed_total": 0.53,
           "error_type": null
         }
       }
@@ -3703,6 +3703,10 @@
       {
         "time": "23:28:51",
         "elapsed": 0.17
+      },
+      {
+        "time": "23:29:08",
+        "elapsed": 0.13
       }
     ],
     "Opel PT:Parcours": [
@@ -5573,6 +5577,10 @@
       {
         "time": "23:28:51",
         "elapsed": 0.14
+      },
+      {
+        "time": "23:29:08",
+        "elapsed": 0.15
       }
     ],
     "Ford FR:Homepage": [
@@ -7443,6 +7451,10 @@
       {
         "time": "23:28:51",
         "elapsed": 2.11
+      },
+      {
+        "time": "23:29:08",
+        "elapsed": 2.15
       }
     ],
     "Ford FR:Formulaire": [
@@ -9313,6 +9325,10 @@
       {
         "time": "23:28:51",
         "elapsed": 1.27
+      },
+      {
+        "time": "23:29:08",
+        "elapsed": 1.25
       }
     ],
     "Aramisauto:Homepage": [
@@ -11183,6 +11199,10 @@
       {
         "time": "23:28:51",
         "elapsed": 0.98
+      },
+      {
+        "time": "23:29:08",
+        "elapsed": 0.53
       }
     ]
   },
@@ -11191,6 +11211,6 @@
     "Opel PT:Parcours": 0.14,
     "Ford FR:Homepage": 2.09,
     "Ford FR:Formulaire": 1.35,
-    "Aramisauto:Homepage": 0.93
+    "Aramisauto:Homepage": 0.92
   }
 }
