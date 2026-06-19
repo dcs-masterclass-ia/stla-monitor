@@ -286,7 +286,17 @@ def take_screenshot(brand, page, url):
         safe = lambda s: s.replace(" ", "_").replace("/", "_")
         filename = f"screenshots/{safe(brand)}_{safe(page)}_{timestamp}.png"
         with sync_playwright() as p:
-            browser = p.chromium.launch(headless=True)
+            browser = p.chromium.launch(headless=True, args=[
+                "--no-sandbox",
+                "--disable-dev-shm-usage",
+                "--disable-gpu",
+                "--no-zygote",
+                "--single-process",
+                "--disable-extensions",
+                "--disable-images",
+                "--memory-pressure-off",
+                "--js-flags=--max-old-space-size=128",
+            ])
             ctx = browser.new_context(viewport={"width": 1280, "height": 800},
                 user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36")
             pg = ctx.new_page()
@@ -407,7 +417,17 @@ def check_url_playwright(brand, page, url):
         return False, f"Erreur DNS : {dns_error}", round(time.time()-t0, 2), details
     try:
         with sync_playwright() as p:
-            browser = p.chromium.launch(headless=True)
+            browser = p.chromium.launch(headless=True, args=[
+                "--no-sandbox",
+                "--disable-dev-shm-usage",
+                "--disable-gpu",
+                "--no-zygote",
+                "--single-process",
+                "--disable-extensions",
+                "--disable-images",
+                "--memory-pressure-off",
+                "--js-flags=--max-old-space-size=128",
+            ])
             ctx = browser.new_context(viewport={"width": 1280, "height": 800},
                 user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36")
             pg = ctx.new_page()
@@ -555,7 +575,17 @@ def check_immat_fr(brand, homepage_url):
     details = {"brand": brand, "page": "Immat", "error_type": None}
     try:
         with sync_playwright() as p:
-            browser = p.chromium.launch(headless=True)
+            browser = p.chromium.launch(headless=True, args=[
+                "--no-sandbox",
+                "--disable-dev-shm-usage",
+                "--disable-gpu",
+                "--no-zygote",
+                "--single-process",
+                "--disable-extensions",
+                "--disable-images",
+                "--memory-pressure-off",
+                "--js-flags=--max-old-space-size=128",
+            ])
             ctx = browser.new_context(
                 viewport={"width": 1280, "height": 800},
                 user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
@@ -650,7 +680,7 @@ def run():
                 return brand, page, url, check_url(brand, page, url)
 
         # Exécuter en parallèle — max 10 workers simultanés
-        with ThreadPoolExecutor(max_workers=5) as executor:
+        with ThreadPoolExecutor(max_workers=3) as executor:
             futures = {executor.submit(check_task, t): t for t in tasks}
             for future in as_completed(futures):
                 try:
