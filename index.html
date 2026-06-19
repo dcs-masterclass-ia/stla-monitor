@@ -3,678 +3,685 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>STLA Monitor - NOC Dashboard</title>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet">
+<title>STLA Monitor V2</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;overflow:hidden}
-canvas{display:block;}
-
+canvas{display:block}
 :root{
-  --bg:#f8fafc;
-  --glass:rgba(255,255,255,0.95);
-  --glass-strong:#ffffff;
-  --blur:blur(40px);
-  --shadow-soft:0 10px 40px rgba(0,0,0,0.03),0 2px 10px rgba(0,0,0,0.02);
-  --shadow-lifted:0 20px 50px rgba(59,90,224,0.08),0 6px 20px rgba(0,0,0,0.04);
-  --r:32px;
-  --r-sm:24px;
-  --r-xs:16px;
-  --accent:#111827;
-  --accent-light:#f1f5f9;
-  --text:#0f172a;
-  --text-2:#475569;
-  --text-3:#94a3b8;
+  --bg:#f8fafc;--surface:#fff;
+  --shadow:0 10px 40px rgba(0,0,0,0.03),0 2px 10px rgba(0,0,0,0.02);
+  --shadow-lg:0 20px 50px rgba(59,90,224,0.08),0 6px 20px rgba(0,0,0,0.04);
+  --r:24px;--r-sm:16px;--r-xs:12px;
+  --accent:#111827;--accent-light:#f1f5f9;
+  --text:#0f172a;--text-2:#475569;--text-3:#94a3b8;
   --green:#059669;--green-bg:#ecfdf5;
   --red:#e11d48;--red-bg:#fff1f2;
   --orange:#d97706;--orange-bg:#fffbeb;
 }
 body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text)}
-
-.blob{position:fixed;border-radius:50%;filter:blur(120px);opacity:.35;pointer-events:none;z-index:0}
+.blob{position:fixed;border-radius:50%;filter:blur(120px);opacity:.3;pointer-events:none;z-index:0}
 .b1{width:600px;height:600px;background:#e2e8f0;top:-150px;left:-100px;animation:fl1 26s ease-in-out infinite}
 .b2{width:500px;height:500px;background:#e0e7ff;bottom:-100px;right:-80px;animation:fl2 22s ease-in-out infinite}
-@keyframes fl1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(40px,-30px) scale(1.04)}}
-@keyframes fl2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-30px,40px) scale(1.06)}}
+@keyframes fl1{0%,100%{transform:translate(0,0)}50%{transform:translate(40px,-30px)}}
+@keyframes fl2{0%,100%{transform:translate(0,0)}50%{transform:translate(-30px,40px)}}
 
-.shell{display:grid;grid-template-columns:260px 1fr;height:100vh;position:relative;z-index:1;overflow:hidden;transition:grid-template-columns 0.3s cubic-bezier(0.4, 0, 0.2, 1);}
-
-/* ── ZÉRO BORDURE ── */
-.glass-card, .kpi, .sidebar, .inc-card, .macro-card, .seg, .brand-status, .sidebar-toggle { border: none !important; }
+/* ── SHELL ── */
+.shell{display:grid;grid-template-columns:280px 1fr;height:100vh;position:relative;z-index:1;overflow:hidden}
 
 /* ── SIDEBAR ── */
-.sidebar{background:var(--glass-strong);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);padding:2rem 1.5rem;display:flex;flex-direction:column;gap:4px;overflow:hidden;box-shadow:4px 0 24px rgba(0,0,0,0.02); transition: padding 0.3s;}
-.logo-row{display:flex;align-items:center;gap:12px;margin-bottom:2rem;overflow:hidden;}
-.logo-wordmark{font-size:20px;font-weight:900;letter-spacing:-.05em;color:var(--text); white-space:nowrap;}
-.seg{display:flex;background:var(--accent-light);border-radius:14px;padding:4px;gap:4px;margin-bottom:20px}
-.seg-btn{flex:1;padding:8px 0;border-radius:10px;font-size:12px;font-weight:700;border:none;background:none;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;color:var(--text-2);transition:all .2s}
-.seg-btn.on{background:#fff;color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,.05)}
-.nav-label{font-size:10px;font-weight:800;color:var(--text-3);text-transform:uppercase;letter-spacing:.12em;padding:0 12px;margin:16px 0 8px; white-space:nowrap;}
-.nav-btn{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;cursor:pointer;font-size:13px;font-weight:700;color:var(--text-2);border:none;background:none;width:100%;text-align:left;font-family:'Plus Jakarta Sans',sans-serif;transition:all .15s; white-space:nowrap; overflow:hidden;}
-.nav-btn:hover{background:#fff;box-shadow:var(--shadow-soft);color:var(--text)}
-.nav-btn.on{background:var(--accent);color:#fff;box-shadow:0 8px 20px rgba(17,24,39,0.15)}
-.ndot{width:8px;height:8px;border-radius:50%;margin-left:auto;flex-shrink:0;background:#d1d5db;transition:background .3s}
-.ndot.ok{background:var(--green);box-shadow:0 0 10px rgba(5,150,105,0.4)}
-.ndot.ko{background:var(--red);box-shadow:0 0 10px rgba(225,29,72,0.4)}
-.sidebar-foot{margin-top:auto;background:var(--accent-light);border-radius:var(--r-xs);padding:16px; white-space:nowrap; overflow:hidden;}
-.sidebar-foot-title{font-size:11px;font-weight:800;color:var(--text);margin-bottom:4px}
-.sidebar-foot-sub{font-size:10px;color:var(--text-2);font-weight:600}
-
-/* ÉTATS REPLIÉS */
-.shell.collapsed { grid-template-columns: 80px 1fr; }
-.shell.collapsed .sidebar { padding: 2rem 12px; align-items: center; }
-.shell.collapsed .logo-wordmark, 
-.shell.collapsed .seg, 
-.shell.collapsed .nav-label, 
-.shell.collapsed .nav-text, 
-.shell.collapsed .ndot, 
-.shell.collapsed .sidebar-foot { display: none; }
-.shell.collapsed .logo-row { margin-bottom: 2rem; justify-content: center; width: 100%; gap: 0;}
-.shell.collapsed .nav-btn { justify-content: center; padding: 0; width: 44px; height: 44px; margin: 0 auto 10px auto; border-radius: 12px; }
-.shell.collapsed .nav-btn i { margin: 0; }
-
-/* ── MAIN ── */
-.main{padding:2rem;display:flex;flex-direction:column;gap:20px;overflow:hidden;height:100vh}
-
-.topbar{display:flex;align-items:flex-start;justify-content:space-between;flex-shrink:0;margin-bottom:4px}
-.topbar-brand{display:flex;align-items:flex-start;gap:16px}
-.brand-logo{height:40px;object-fit:contain;filter:drop-shadow(0 2px 8px rgba(0,0,0,.06)); margin-top:4px;}
-.brand-h1{font-size:32px;font-weight:900;letter-spacing:-.04em;color:var(--text);line-height:1}
-
-.brand-endpoints{display:flex;flex-wrap:wrap;gap:8px}
-.ep-chip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;background:var(--glass-strong);border-radius:10px;font-size:10px;font-weight:800;color:var(--text-2);box-shadow:var(--shadow-soft)}
-.ep-dot{width:6px;height:6px;border-radius:50%}
-.ep-dot.ok{background:var(--green)}
-.ep-dot.ko{background:var(--red);box-shadow:0 0 6px rgba(225,29,72,0.5)}
-
-.brand-status{font-size:12px;font-weight:700;color:var(--text-2);display:flex;align-items:center;gap:10px;background:var(--glass-strong);padding:8px 16px;border-radius:12px;box-shadow:var(--shadow-soft);}
-.pulse-dot{width:8px;height:8px;border-radius:50%;background:var(--green);animation:pulse 2s ease-in-out infinite;flex-shrink:0}
+.sidebar{background:#fff;display:flex;flex-direction:column;overflow:hidden;box-shadow:3px 0 20px rgba(0,0,0,0.04)}
+.sb-head{padding:1.5rem 1.25rem 1rem;flex-shrink:0}
+.sb-logo{display:flex;align-items:center;gap:10px;margin-bottom:1.25rem}
+.sb-logo-text{font-size:17px;font-weight:900;letter-spacing:-.05em;color:var(--text)}
+.sb-logo-chip{font-size:9px;font-weight:800;background:var(--accent);color:#fff;padding:3px 7px;border-radius:7px}
+.sb-status{display:flex;align-items:center;gap:6px;font-size:10px;font-weight:600;color:var(--text-2);background:var(--accent-light);padding:7px 12px;border-radius:10px}
+.pulse-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s ease-in-out infinite;flex-shrink:0}
 .pulse-dot.dead{background:var(--red);animation:none}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.5)}}
 
-.kpi-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;flex-shrink:0}
-.kpi{background:var(--glass-strong);border-radius:var(--r-sm);padding:1.25rem 1.5rem;box-shadow:var(--shadow-soft);transition:transform .2s;display:flex;flex-direction:column;justify-content:center}
-.kpi:hover{transform:translateY(-2px);box-shadow:var(--shadow-lifted)}
-.kpi-lbl{font-size:11px;font-weight:800;color:var(--text-3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
-.kpi-num{font-size:32px;font-weight:900;letter-spacing:-.05em;line-height:1;margin-bottom:4px}
-.kpi-num.g{color:var(--green)}.kpi-num.b{color:var(--text)}.kpi-num.o{color:var(--orange)}.kpi-num.r{color:var(--red)}
-.kpi-hint{font-size:11px;font-weight:700;color:var(--text-3)}
+/* Niveau 1 : OEM/STLA tabs */
+.sb-tabs{display:flex;gap:3px;padding:0 1.25rem;margin-bottom:.75rem;flex-shrink:0}
+.sb-tab{flex:1;padding:7px 0;border-radius:10px;font-size:11px;font-weight:800;border:none;background:var(--accent-light);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;color:var(--text-2);transition:all .15s}
+.sb-tab.on{background:var(--accent);color:#fff}
+
+/* Niveau 2 : Pays */
+.sb-scroll{flex:1;overflow-y:auto;padding:0 .875rem .875rem}
+.sb-scroll::-webkit-scrollbar{width:3px}
+.sb-scroll::-webkit-scrollbar-thumb{background:#e2e8f0;border-radius:10px}
+.country-section{margin-bottom:4px}
+.country-btn{display:flex;align-items:center;justify-content:space-between;width:100%;padding:8px 10px;border-radius:10px;border:none;background:none;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all .15s}
+.country-btn:hover{background:var(--accent-light)}
+.country-btn.on{background:var(--accent-light)}
+.country-name{font-size:11px;font-weight:800;color:var(--text);letter-spacing:-.01em;display:flex;align-items:center;gap:7px}
+.country-flag{font-size:14px}
+.country-count{font-size:9px;font-weight:700;color:var(--text-3);background:#f1f5f9;padding:2px 6px;border-radius:6px}
+.country-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.country-dot.ok{background:var(--green)}.country-dot.ko{background:var(--red)}.country-dot.mix{background:var(--orange)}
+
+/* Niveau 3 : Marques */
+.brand-list{padding:2px 0 4px 12px;display:none}
+.brand-list.open{display:block}
+.brand-btn{display:flex;align-items:center;justify-content:space-between;width:100%;padding:6px 10px;border-radius:9px;border:none;background:none;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all .15s;margin-bottom:1px}
+.brand-btn:hover{background:var(--accent-light)}
+.brand-btn.on{background:var(--accent);color:#fff}
+.brand-btn-name{font-size:12px;font-weight:700;color:inherit}
+.brand-btn.on .brand-btn-name{color:#fff}
+.brand-btn:not(.on) .brand-btn-name{color:var(--text-2)}
+.brand-ndot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.brand-ndot.ok{background:var(--green)}.brand-ndot.ko{background:var(--red)}.brand-ndot.loading{background:#d1d5db}
+
+.sb-foot{padding:.875rem 1.25rem;border-top:1px solid #f1f5f9;flex-shrink:0}
+.sb-foot-title{font-size:10px;font-weight:800;color:var(--text);margin-bottom:2px}
+.sb-foot-sub{font-size:10px;color:var(--text-2);font-weight:600}
+
+/* ── MAIN ── */
+.main{display:flex;flex-direction:column;overflow:hidden;height:100vh}
+
+/* Topbar */
+.topbar{padding:1.25rem 1.75rem .75rem;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;gap:12px}
+.topbar-left{display:flex;align-items:center;gap:10px;flex:1;min-width:0;overflow:hidden}
+.brand-logo{height:30px;object-fit:contain;flex-shrink:0}
+.brand-h1{font-size:26px;font-weight:900;letter-spacing:-.04em;color:var(--text);line-height:1;white-space:nowrap;flex-shrink:0}
+.topbar-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.period-wrap{display:flex;background:var(--accent-light);border-radius:10px;padding:3px;gap:2px}
+.period-btn{padding:5px 13px;border-radius:8px;font-size:11px;font-weight:800;cursor:pointer;border:none;background:none;font-family:'Plus Jakarta Sans',sans-serif;color:var(--text-2);transition:all .15s}
+.period-btn.on{background:var(--accent);color:#fff}
+.ep-row{display:flex;gap:6px;flex-wrap:nowrap;align-items:center;overflow:hidden;flex:1;min-width:0}
+.ep-chip{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;background:#fff;border-radius:9px;font-size:10px;font-weight:800;color:var(--text-2);box-shadow:var(--shadow);white-space:nowrap;flex-shrink:0}
+.ep-dot{width:6px;height:6px;border-radius:50%}
+.ep-dot.ok{background:var(--green)}.ep-dot.ko{background:var(--red)}
+.maj-pill{display:flex;align-items:center;gap:6px;padding:5px 12px;background:#fff;border-radius:10px;box-shadow:var(--shadow);font-size:10px;font-weight:700;color:var(--text-2);white-space:nowrap;flex-shrink:0}
+
+/* KPIs */
+.kpi-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;padding:0 1.75rem;flex-shrink:0}
+.kpi{background:#fff;border-radius:var(--r);padding:1.1rem 1.25rem;box-shadow:var(--shadow);border:none}
+.kpi-lbl{font-size:10px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
+.kpi-num{font-size:28px;font-weight:900;letter-spacing:-.05em;line-height:1;margin-bottom:3px}
+.kpi-num.g{color:var(--green)}.kpi-num.r{color:var(--red)}.kpi-num.o{color:var(--orange)}
+.kpi-hint{font-size:10px;font-weight:700;color:var(--text-3)}
 .kpi-hint.g{color:var(--green)}.kpi-hint.r{color:var(--red)}
 
-.callout{border-radius:var(--r-sm);padding:1.25rem 1.5rem;box-shadow:0 10px 30px rgba(217,119,6,0.1);flex-shrink:0;margin-bottom:-8px}
-.callout.orange{background:var(--orange-bg)}
-.callout-title{font-size:13px;font-weight:800;letter-spacing:-.01em;display:flex;align-items:center;gap:8px;margin-bottom:6px}
-.callout-title.orange{color:#92400e}
-.callout-body{font-size:12px;font-weight:600;line-height:1.6;color:#78350f}
+/* Content area */
+.content{flex:1;min-height:0;overflow-y:auto;padding:12px 1.75rem 1.75rem;display:flex;flex-direction:column;gap:12px}
+.content::-webkit-scrollbar{width:4px}
+.content::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:10px}
 
-.content-area{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:16px;padding-right:4px;padding-bottom:4px}
-.content-area::-webkit-scrollbar{width:4px}
-.content-area::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:10px}
+/* Master-detail row */
+.master-row{display:grid;grid-template-columns:1.6fr 1fr;gap:12px;flex:1;min-height:280px;min-width:0;overflow:hidden}
+.glass-card{background:#fff;border-radius:var(--r);padding:1.25rem 1.5rem;box-shadow:var(--shadow);display:flex;flex-direction:column;min-height:0;min-width:0;overflow:hidden}
+.card-hed{font-size:13px;font-weight:800;color:var(--text);letter-spacing:-.02em;margin-bottom:.9rem;display:flex;align-items:center;gap:7px;flex-shrink:0}
+.card-hed-sub{font-size:10px;font-weight:600;color:var(--text-3);margin-left:auto;background:var(--accent-light);padding:3px 9px;border-radius:10px}
+.chart-layout{display:flex;flex:1;min-height:0;position:relative;min-width:0;overflow:hidden}
+.chart-y{width:44px;flex-shrink:0;background:#fff;z-index:10}
+.chart-scroll{flex:1;overflow-x:auto;overflow-y:hidden;position:relative;min-height:0;padding-bottom:8px}
+.chart-scroll::-webkit-scrollbar{height:5px}
+.chart-scroll::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:10px}
+.chart-container{height:100%;position:relative;min-width:100%;transition:width .2s}
+.legend{display:flex;gap:14px;margin-top:10px;flex-wrap:wrap;flex-shrink:0}
+.leg{display:flex;align-items:center;gap:5px;font-size:10px;font-weight:700;color:var(--text-2)}
+.leg-pip{width:9px;height:9px;border-radius:50%}
 
-/* ── MODULE 1 : MASTER-DETAIL ── */
-.master-detail-row { display: grid; grid-template-columns: 1.6fr 1fr; gap: 16px; flex: 1; min-height: 280px; }
-
-.glass-card{background:var(--glass-strong);border-radius:var(--r-sm);padding:1.5rem;box-shadow:var(--shadow-soft);display:flex;flex-direction:column;height:100%; min-width:0; min-height:0;}
-.card-hed{font-size:14px;font-weight:800;color:var(--text);letter-spacing:-.02em;margin-bottom:1rem;display:flex;align-items:center;gap:8px;flex-shrink:0}
-.card-hed-sub{font-size:11px;font-weight:700;color:var(--text-3);margin-left:auto;background:var(--accent-light);padding:4px 10px;border-radius:12px}
-
-.chart-layout-wrapper { display: flex; flex: 1; min-height: 0; position: relative; }
-.chart-y-axis-fixed { width: 48px; flex-shrink: 0; background: var(--glass-strong); z-index: 10; position: relative; }
-
-.chart-scroll-area { flex: 1; width: 100%; overflow-x: auto; overflow-y: hidden; position: relative; min-height: 0; min-width: 0; padding-bottom: 8px; margin-left: 0px; }
-.chart-scroll-area::-webkit-scrollbar { height: 6px; }
-.chart-scroll-area::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-.chart-container{height: 100%; position: relative; min-width: 100%; transition: width 0.2s;}
-
-.legend{display:flex;gap:16px;margin-top:12px;flex-wrap:wrap;flex-shrink:0}
-.leg{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:700;color:var(--text-2)}
-.leg-pip{width:10px;height:10px;border-radius:50%}
-
-.inc-card{background:var(--glass-strong);border-radius:var(--r-sm);padding:1.5rem;box-shadow:var(--shadow-soft);display:flex;flex-direction:column;height:100%; min-height:0; min-width:0;}
-.inc-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-shrink:0}
-.inc-hed{font-size:14px;font-weight:800;color:var(--text);letter-spacing:-.02em;display:flex;align-items:center;gap:8px}
-.inc-count{font-size:11px;font-weight:700;color:var(--text-3);background:var(--accent-light);padding:2px 8px;border-radius:10px}
-.dl-btn{padding:6px 14px;border-radius:10px;background:var(--accent-light);color:var(--text);border:none;font-size:11px;font-weight:800;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;display:flex;align-items:center;gap:6px;transition:background .2s}
-.dl-btn:hover{background:#e2e8f0}
-.feed-scroll { overflow-y: auto; flex: 1; padding-right: 4px; min-height: 0; }
-.feed-scroll::-webkit-scrollbar{width:4px}
-.feed-scroll::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:10px}
-.inc-row{display:flex;flex-direction:column;gap:6px;padding:12px;background:var(--accent-light);border-radius:16px;margin-bottom:8px;transition:all .2s;}
-.inc-row:hover{background:#fff;box-shadow:var(--shadow-soft);transform:translateX(4px);}
-
-.inc-row.ongoing { background: var(--red-bg); animation: alertPulse 2s infinite; border: 1px solid rgba(225,29,72,0.15); }
-@keyframes alertPulse {
-  0% { box-shadow: 0 0 0 0 rgba(225,29,72, 0.4); }
-  70% { box-shadow: 0 0 0 8px rgba(225,29,72, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(225,29,72, 0); }
-}
-
-.inc-top { display: flex; justify-content: space-between; align-items: flex-start; }
-.inc-time{font-size:10px;color:var(--text-3);font-weight:800;}
-.inc-title{font-size:12px;font-weight:800;color:var(--text);line-height:1.2;}
-.inc-chip{padding:2px 8px;border-radius:6px;font-size:9px;font-weight:900;text-transform:uppercase;}
+/* Incidents */
+.inc-card{background:#fff;border-radius:var(--r);padding:1.25rem 1.5rem;box-shadow:var(--shadow);display:flex;flex-direction:column;min-height:0}
+.inc-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:.9rem;flex-shrink:0}
+.inc-hed{font-size:13px;font-weight:800;color:var(--text);display:flex;align-items:center;gap:7px}
+.inc-cnt{font-size:10px;font-weight:700;color:var(--text-3);background:var(--accent-light);padding:2px 7px;border-radius:8px}
+.dl-btn{padding:5px 12px;border-radius:9px;background:var(--accent-light);color:var(--text);border:none;font-size:10px;font-weight:800;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;display:flex;align-items:center;gap:5px}
+.feed{overflow-y:auto;flex:1;min-height:0}
+.feed::-webkit-scrollbar{width:3px}
+.feed::-webkit-scrollbar-thumb{background:#e2e8f0;border-radius:10px}
+.inc-row{display:flex;flex-direction:column;gap:5px;padding:11px;background:var(--accent-light);border-radius:14px;margin-bottom:7px;transition:all .2s}
+.inc-row:hover{background:#fff;box-shadow:var(--shadow);transform:translateX(3px)}
+.inc-row.ongoing{background:var(--red-bg);animation:alertPulse 2s infinite}
+@keyframes alertPulse{0%{box-shadow:0 0 0 0 rgba(225,29,72,.4)}70%{box-shadow:0 0 0 8px rgba(225,29,72,0)}100%{box-shadow:0 0 0 0 rgba(225,29,72,0)}}
+.inc-top{display:flex;justify-content:space-between;align-items:flex-start}
+.inc-time{font-size:9px;color:var(--text-3);font-weight:800}
+.inc-title{font-size:11px;font-weight:800;color:var(--text);line-height:1.2}
+.inc-chip{padding:2px 7px;border-radius:6px;font-size:9px;font-weight:900;text-transform:uppercase}
 .inc-chip.ok{background:var(--green-bg);color:var(--green)}.inc-chip.ko{background:#fecdd3;color:var(--red)}
+.inc-mid{display:flex;align-items:center;justify-content:space-between;margin-top:2px}
+.inc-sub{font-size:10px;font-weight:600;color:var(--text-2)}
+.inc-dur{font-size:9px;color:var(--red);font-weight:800;display:inline-flex;align-items:center;gap:3px;background:var(--red-bg);padding:2px 5px;border-radius:5px}
+.inc-dur.res{color:var(--green);background:var(--green-bg)}
 
-.inc-mid { display:flex; align-items:center; justify-content:space-between; margin-top:2px; }
-.inc-sub{font-size:11px;font-weight:600;color:var(--text-2);}
-.inc-dur{font-size:10px;color:var(--red);font-weight:800;display:inline-flex;align-items:center;gap:4px;background:var(--red-bg);padding:2px 6px;border-radius:6px;}
-.inc-dur.res{color:var(--green); background:var(--green-bg);}
+/* Macro chart */
+.macro-card{background:#fff;border-radius:var(--r);padding:1.1rem 1.5rem;box-shadow:var(--shadow);flex-shrink:0;height:150px;display:flex;flex-direction:column;overflow:hidden}
+.macro-body{flex:1;position:relative;min-height:0;margin-top:4px}
 
-/* ── MODULE MACRO COMPACT ── */
-.macro-card { background:var(--glass-strong); border-radius:var(--r-sm); padding:1rem 1.5rem; box-shadow:var(--shadow-soft); flex-shrink:0; height:160px; display:flex; flex-direction:column; overflow: hidden; }
-.macro-container { flex:1; position:relative; min-height:0; margin-top: 4px; overflow:hidden;}
+/* Empty state */
+.empty-state{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--text-3);gap:12px;padding:3rem}
+.empty-state i{opacity:.3}
+.empty-state p{font-size:14px;font-weight:700}
+.empty-state small{font-size:12px;font-weight:500}
 
-/* PERIOD SELECTOR */
-.brand-endpoints-row { display:flex; align-items:center; gap:8px; margin-top:10px; flex-wrap:wrap; }
-.period-wrap { display:flex; align-items:center; gap:4px; margin-left:auto; background:var(--accent-light); border-radius:12px; padding:3px; }
-.period-btn { padding:5px 14px; border-radius:9px; font-size:11px; font-weight:800; font-family:'Plus Jakarta Sans',sans-serif; border:none; background:none; color:var(--text-2); cursor:pointer; transition:all .15s; }
-.period-btn.on { background:var(--accent); color:#fff; box-shadow:0 2px 8px rgba(17,24,39,0.15); }
+/* Trend callout */
+.callout{border-radius:var(--r-sm);padding:1rem 1.25rem;flex-shrink:0}
+.callout.orange{background:var(--orange-bg)}
+.callout-title{font-size:12px;font-weight:800;display:flex;align-items:center;gap:7px;margin-bottom:4px;color:#92400e}
+.callout-body{font-size:11px;font-weight:600;line-height:1.6;color:#78350f}
 </style>
 </head>
 <body>
 <div class="blob b1"></div><div class="blob b2"></div>
+<div class="shell">
 
-<div class="shell" id="app-shell">
+<!-- ── SIDEBAR ── -->
+<aside class="sidebar">
+  <div class="sb-head">
+    <div class="sb-logo">
+      <i data-lucide="activity" style="width:22px;height:22px;color:var(--text)"></i>
+      <span class="sb-logo-text">STLA MONITOR</span>
+    </div>
+    <div class="sb-status">
+      <i data-lucide="wifi" style="width:12px;height:12px;color:var(--green)" id="pulse"></i>
+      <span id="ts-label">Connexion...</span>
+    </div>
+  </div>
 
-  <aside class="sidebar">
-    <div class="logo-row">
-      <i data-lucide="activity" style="width:24px;height:24px;color:var(--text)"></i>
-      <span class="logo-wordmark">STLA MONITOR</span>
-    </div>
-    
-    <div id="panel-vos">
-      <div class="nav-label">Marques</div>
-      <button class="nav-btn" id="nav-Opel PT" onclick="selectBrand('Opel PT')">
-        <i data-lucide="car-front" style="width:16px;height:16px;flex-shrink:0"></i><span class="nav-text">Opel PT</span><span class="ndot" id="nd-Opel PT"></span>
-      </button>
-      <button class="nav-btn" id="nav-Ford FR" onclick="selectBrand('Ford FR')">
-        <i data-lucide="car-front" style="width:16px;height:16px;flex-shrink:0"></i><span class="nav-text">Ford FR</span><span class="ndot" id="nd-Ford FR"></span>
-      </button>
-    </div>
-    <div id="panel-ref" style="margin-top:10px;">
-      <div class="nav-label">Témoins</div>
-      <button class="nav-btn" id="nav-Aramisauto" onclick="selectBrand('Aramisauto')">
-        <i data-lucide="car-front" style="width:16px;height:16px;flex-shrink:0"></i><span class="nav-text">Aramisauto</span><span class="ndot" id="nd-Aramisauto"></span>
-      </button>
-    </div>
-    <div class="sidebar-foot">
-      <div class="sidebar-foot-title">Monitoring actif</div>
-      <div class="sidebar-foot-sub" id="sb-ts">—</div>
-    </div>
-  </aside>
+  <!-- Niveau 1 : STLA / OEM -->
+  <div class="sb-tabs">
+    <button class="sb-tab on" id="tab-stla" onclick="switchGroup('stla')">STLA</button>
+    <button class="sb-tab" id="tab-oem" onclick="switchGroup('oem')">OEM</button>
+    <button class="sb-tab" id="tab-ref" onclick="switchGroup('ref')">Réf.</button>
+  </div>
 
-  <main class="main">
+  <!-- Niveau 2+3 : Pays > Marques -->
+  <div class="sb-scroll" id="sb-nav"></div>
+
+  <div class="sb-foot">
+    <div class="sb-foot-title">Monitoring actif</div>
+    <div class="sb-foot-sub" id="sb-ts">—</div>
+  </div>
+</aside>
+
+<!-- ── MAIN ── -->
+<main class="main">
+  <div id="empty-state" class="empty-state">
+    <i data-lucide="monitor-dot" style="width:48px;height:48px"></i>
+    <p>Sélectionnez un site</p>
+    <small>Naviguez dans le menu pour accéder au détail d'un site</small>
+  </div>
+
+  <div id="dash" style="display:none;flex-direction:column;flex:1;overflow:hidden">
     <div class="topbar">
-      <div class="topbar-brand">
-        <button class="sidebar-toggle" onclick="toggleSidebar()" title="Replier/Déplier le menu">
-            <i data-lucide="menu" style="width:18px;height:18px;color:var(--text-2)"></i>
-        </button>
+      <div class="topbar-left">
         <img id="brand-logo" class="brand-logo" src="" alt="" style="display:none">
         <div class="brand-h1" id="brand-h1">—</div>
-        <div class="brand-endpoints-row">
-          <div class="brand-endpoints" id="brand-endpoints"></div>
-          <div class="period-wrap">
-            <button class="period-btn on" id="pbtn-24h" onclick="setPeriod('24h',this)">24h</button>
-            <button class="period-btn" id="pbtn-7j" onclick="setPeriod('7j',this)">7j</button>
-            <button class="period-btn" id="pbtn-30j" onclick="setPeriod('30j',this)">30j</button>
-          </div>
-        </div>
+        <div class="ep-row" id="ep-row"></div>
       </div>
-      
-      <div class="brand-status">
-          <span class="pulse-dot" id="pulse"></span>
-          <span id="ts-label">Connexion...</span>
+      <div class="topbar-right">
+        <div class="maj-pill">
+          <i data-lucide="radio" style="width:12px;height:12px;color:var(--green)"></i>
+          <span id="ts-label-main">—</span>
+        </div>
+        <div class="period-wrap">
+          <button class="period-btn on" onclick="setPeriod(this,'24h')">24h</button>
+          <button class="period-btn" onclick="setPeriod(this,'7j')">7j</button>
+          <button class="period-btn" onclick="setPeriod(this,'30j')">30j</button>
+        </div>
       </div>
     </div>
 
-    <div class="kpi-strip" id="kpis">
+    <div class="kpi-strip">
       <div class="kpi">
-        <div class="kpi-lbl">Statut <i id="icon-status" data-lucide="check-circle" style="width:16px;height:16px"></i></div>
+        <div class="kpi-lbl">Statut <i id="icon-status" data-lucide="check-circle" style="width:14px;height:14px"></i></div>
         <div class="kpi-num" id="val-status">—</div>
         <div class="kpi-hint" id="hint-status">—</div>
       </div>
       <div class="kpi">
-        <div class="kpi-lbl">Uptime <i data-lucide="activity" style="width:16px;height:16px"></i></div>
+        <div class="kpi-lbl">Uptime <i data-lucide="activity" style="width:14px;height:14px"></i></div>
         <div class="kpi-num" id="val-uptime">—</div>
         <div class="kpi-hint">Sur la période</div>
       </div>
       <div class="kpi">
-        <div class="kpi-lbl">Réponse moy. <i data-lucide="zap" style="width:16px;height:16px"></i></div>
+        <div class="kpi-lbl">Réponse moy. <i data-lucide="zap" style="width:14px;height:14px"></i></div>
         <div class="kpi-num" id="val-resp">—</div>
         <div class="kpi-hint" id="hint-resp">Global</div>
       </div>
       <div class="kpi">
-        <div class="kpi-lbl">Incidents <i data-lucide="siren" style="width:16px;height:16px"></i></div>
+        <div class="kpi-lbl">Incidents <i data-lucide="siren" style="width:14px;height:14px"></i></div>
         <div class="kpi-num" id="val-inc">—</div>
         <div class="kpi-hint">Détectés</div>
       </div>
       <div class="kpi">
-        <div class="kpi-lbl">Fiabilité <i data-lucide="shield-check" style="width:16px;height:16px"></i></div>
-        <div style="display:flex;align-items:center;gap:14px;margin-top:auto">
-          <div style="position:relative;width:40px;height:40px">
-            <canvas id="gaugeChart"></canvas>
-          </div>
+        <div class="kpi-lbl">Fiabilité <i data-lucide="shield-check" style="width:14px;height:14px"></i></div>
+        <div style="display:flex;align-items:center;gap:12px;margin-top:4px">
+          <div style="position:relative;width:38px;height:38px"><canvas id="gaugeChart"></canvas></div>
           <div>
-            <div class="kpi-num" id="gauge-val" style="font-size:24px;margin-bottom:0;line-height:1">—</div>
-            <div class="kpi-hint" id="gauge-lbl" style="margin-top:4px">—</div>
+            <div class="kpi-num" id="gauge-val" style="font-size:22px;margin-bottom:0">—</div>
+            <div class="kpi-hint" id="gauge-lbl" style="margin-top:3px">—</div>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="callout orange" id="trend-callout" style="display:none">
-      <div class="callout-title orange">
-        <i data-lucide="trending-down" style="width:16px;height:16px"></i>Dégradation détectée
+    <div class="content" id="content-area">
+      <div class="callout orange" id="trend-callout" style="display:none">
+        <div class="callout-title"><i data-lucide="trending-down" style="width:14px;height:14px"></i>Dégradation détectée</div>
+        <div class="callout-body" id="trend-body">—</div>
       </div>
-      <div class="callout-body" id="trend-body">—</div>
-    </div>
 
-    <div class="content-area">
-
-      <div class="master-detail-row">
+      <div class="master-row">
         <div class="glass-card">
-          <div class="card-hed"><i data-lucide="zap" style="width:18px;height:18px;color:var(--text-3)"></i> Télémétrie & Alertes <span class="card-hed-sub">ms / temps</span></div>
-          
-          <div class="chart-layout-wrapper">
-             <div class="chart-y-axis-fixed">
-                 <canvas id="yAxisChart"></canvas>
-             </div>
-             <div class="chart-scroll-area" id="chart-scroll-area">
-                <div class="chart-container" id="chart-container"><canvas id="lineChart"></canvas></div>
-             </div>
+          <div class="card-hed"><i data-lucide="zap" style="width:16px;height:16px;color:var(--text-3)"></i>Télémétrie & Alertes<span class="card-hed-sub">ms / temps</span></div>
+          <div class="chart-layout">
+            <div class="chart-y"><canvas id="yAxisChart"></canvas></div>
+            <div class="chart-scroll" id="chart-scroll">
+              <div class="chart-container" id="chart-container"><canvas id="lineChart"></canvas></div>
+            </div>
           </div>
-          
           <div class="legend" id="legend"></div>
         </div>
-        
         <div class="inc-card">
-          <div class="inc-header">
-            <div class="inc-hed"><i data-lucide="alert-triangle" style="width:18px;height:18px;color:var(--red)"></i> Flux d'Incidents <span class="inc-count" id="inc-count"></span></div>
-            <button class="dl-btn" onclick="downloadReport()">
-              <i data-lucide="download" style="width:12px;height:12px"></i>CSV
-            </button>
+          <div class="inc-head">
+            <div class="inc-hed"><i data-lucide="alert-triangle" style="width:16px;height:16px;color:var(--red)"></i>Flux d'Incidents<span class="inc-cnt" id="inc-count"></span></div>
+            <button class="dl-btn" onclick="downloadReport()"><i data-lucide="download" style="width:10px;height:10px"></i>CSV</button>
           </div>
-          <div class="feed-scroll" id="history"></div>
+          <div class="feed" id="history"></div>
         </div>
       </div>
 
       <div class="macro-card">
-        <div class="card-hed"><i data-lucide="bar-chart-2" style="width:18px;height:18px;color:var(--text-3)"></i> Répartition des Incidents par Heure <span class="card-hed-sub">Macro</span></div>
-        <div class="macro-container"><canvas id="macroChart"></canvas></div>
+        <div class="card-hed"><i data-lucide="bar-chart-2" style="width:16px;height:16px;color:var(--text-3)"></i>Répartition des Incidents par Heure<span class="card-hed-sub">Macro</span></div>
+        <div class="macro-body"><canvas id="macroChart"></canvas></div>
       </div>
-      
     </div>
-
-  </main>
+  </div>
+</main>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
-const RENDER_STATUS="https://stla-monitor.onrender.com/status";
-const RAW_BASE="https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/status.json";
-// Fixation de la période à 24h
-const period = "24h";
+const RENDER = "https://stla-monitor.onrender.com/status";
+const RAW    = "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/status.json";
 
-const BRANDS={
-  "Opel PT":{logo:"https://www.stellantis.com/content/dam/stellantis-corporate/brands/opel/opel-logo.png",colors:["#111827","#0F6E56"],ref:false},
-  "Ford FR":{logo:"https://www.logo-voiture.com/wp-content/uploads/2021/01/ford-logo-2017-grand.png",colors:["#0066cc","#1a9e6e"],ref:false},
-  "Aramisauto":{logo:"",colors:["#e85d04","#f48c06"],ref:true}
+// ── STRUCTURE DES SITES ──
+const SITE_TREE = {
+  stla: {
+    "PT": {
+      flag:"🇵🇹",
+      brands:["Opel PT","Abarth PT","AlfaRomeo PT","Citroen PT","DS PT","Fiat PT","FiatPro PT","Jeep PT","Peugeot PT"]
+    },
+    "FR": {
+      flag:"🇫🇷",
+      brands:["Opel FR","AlfaRomeo FR","Citroen FR","DS FR","Fiat FR","FiatPro FR","Jeep FR","Lancia FR","Peugeot FR"]
+    },
+    "ES": {
+      flag:"🇪🇸",
+      brands:["Abarth ES","AlfaRomeo ES","Citroen ES","DS ES","Fiat ES","FiatPro ES","Jeep ES","Opel ES","Peugeot ES"]
+    },
+    "IT": {
+      flag:"🇮🇹",
+      brands:["Abarth IT","AlfaRomeo IT","Citroen IT","DS IT","Fiat IT","Jeep IT","Lancia IT","Opel IT","Peugeot IT"]
+    },
+    "DE": {
+      flag:"🇩🇪",
+      brands:["AlfaRomeo DE","Citroen DE","DS DE","Opel DE","Peugeot DE","Spoticar DE"]
+    },
+    "AT": {
+      flag:"🇦🇹",
+      brands:["Citroen AT","Opel AT","Peugeot AT"]
+    },
+    "BE": {
+      flag:"🇧🇪",
+      brands:["Abarth BE","AlfaRomeo BE","Citroen BE","DS BE","Fiat BE","FiatPro BE","Jeep BE","Lancia BE","Opel BE","Peugeot BE","Leapmotor BE"]
+    },
+    "BE-NL": {
+      flag:"🇧🇪",
+      brands:["Abarth BE-NL","AlfaRomeo BE-NL","Citroen BE-NL","DS BE-NL","Fiat BE-NL","FiatPro BE-NL","Jeep BE-NL","Lancia BE-NL","Opel BE-NL","Peugeot BE-NL","Leapmotor BE-NL"]
+    },
+    "PL": {
+      flag:"🇵🇱",
+      brands:["AlfaRomeo PL","Citroen PL","Fiat PL","Jeep PL","Opel PL","Peugeot PL"]
+    },
+    "LU": {
+      flag:"🇱🇺",
+      brands:["Abarth LU","AlfaRomeo LU","Citroen LU","DS LU","Fiat LU","FiatPro LU","Jeep LU","Lancia LU","Opel LU","Peugeot LU","Leapmotor LU"]
+    },
+    "UK": {
+      flag:"🇬🇧",
+      brands:["DS UK"]
+    },
+  },
+  oem: {
+    "OEM": {
+      flag:"🏭",
+      brands:["Ford FR"]
+    }
+  },
+  ref: {
+    "Référence": {
+      flag:"📊",
+      brands:["Aramisauto"]
+    }
+  }
 };
-let data=null,brand=null,lineChart=null,yAxisChartInstance=null,gaugeChart=null,macroChartInstance=null;
-let currentPeriod = "24h"; // 24h | 7j | 30j
 
-function setPeriod(p, btn) {
+const BRAND_META = {
+  "Opel PT":      {logo:"https://www.stellantis.com/content/dam/stellantis-corporate/brands/opel/opel-logo.png",   colors:["#111827","#0F6E56"]},
+  "Opel FR":      {logo:"https://www.stellantis.com/content/dam/stellantis-corporate/brands/opel/opel-logo.png",   colors:["#111827","#0F6E56"]},
+  "Opel ES":      {logo:"https://www.stellantis.com/content/dam/stellantis-corporate/brands/opel/opel-logo.png",   colors:["#111827","#0F6E56"]},
+  "Opel IT":      {logo:"https://www.stellantis.com/content/dam/stellantis-corporate/brands/opel/opel-logo.png",   colors:["#111827","#0F6E56"]},
+  "Opel DE":      {logo:"https://www.stellantis.com/content/dam/stellantis-corporate/brands/opel/opel-logo.png",   colors:["#111827","#0F6E56"]},
+  "Opel AT":      {logo:"https://www.stellantis.com/content/dam/stellantis-corporate/brands/opel/opel-logo.png",   colors:["#111827","#0F6E56"]},
+  "Opel BE":      {logo:"https://www.stellantis.com/content/dam/stellantis-corporate/brands/opel/opel-logo.png",   colors:["#111827","#0F6E56"]},
+  "Opel BE-NL":   {logo:"https://www.stellantis.com/content/dam/stellantis-corporate/brands/opel/opel-logo.png",   colors:["#111827","#0F6E56"]},
+  "Opel PL":      {logo:"https://www.stellantis.com/content/dam/stellantis-corporate/brands/opel/opel-logo.png",   colors:["#111827","#0F6E56"]},
+  "Opel LU":      {logo:"https://www.stellantis.com/content/dam/stellantis-corporate/brands/opel/opel-logo.png",   colors:["#111827","#0F6E56"]},
+  "Ford FR":      {logo:"https://www.logo-voiture.com/wp-content/uploads/2021/01/ford-logo-2017-grand.png",        colors:["#0066cc","#1a9e6e"]},
+  "Aramisauto":   {logo:"",                                                                                         colors:["#e85d04","#f48c06"]},
+};
+// Pour toutes les marques sans logo défini — logo Stellantis générique
+const BRAND_LOGOS = {
+  "Peugeot": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Peugeot_logo.svg/120px-Peugeot_logo.svg.png",
+  "Citroen": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Citro%C3%ABn_logo_2022.svg/120px-Citro%C3%ABn_logo_2022.svg.png",
+  "DS":      "https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/DS_Automobiles_logo.svg/120px-DS_Automobiles_logo.svg.png",
+  "Fiat":    "https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Fiat_Automobiles_Logo.svg/120px-Fiat_Automobiles_Logo.svg.png",
+  "Jeep":    "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/Jeep_logo.svg/120px-Jeep_logo.svg.png",
+  "AlfaRomeo": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Alfa_Romeo_logo.svg/80px-Alfa_Romeo_logo.svg.png",
+  "Lancia":  "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Lancia_logo.svg/80px-Lancia_logo.svg.png",
+  "Abarth":  "https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Abarth_Logo.svg/80px-Abarth_Logo.svg.png",
+};
+
+function getBrandMeta(brand) {
+  if (BRAND_META[brand]) return BRAND_META[brand];
+  const base = brand.split(" ")[0];
+  return { logo: BRAND_LOGOS[base] || "", colors: ["#111827", "#475569"] };
+}
+
+let data = null, brand = null, currentPeriod = "24h", currentGroup = "stla";
+let lineChart = null, yAxisInst = null, gaugeChart = null, macroInst = null;
+
+// ── NAV BUILD ──
+function buildNav() {
+  const tree = SITE_TREE[currentGroup];
+  const nav = document.getElementById("sb-nav");
+  nav.innerHTML = "";
+  Object.entries(tree).forEach(([country, info]) => {
+    const allBrands = info.brands;
+    let okCount = 0, koCount = 0;
+    if (data) {
+      allBrands.forEach(b => {
+        if (!data.statuses[b]) return;
+        const ok = Object.values(data.statuses[b]).every(s => s.ok);
+        ok ? okCount++ : koCount++;
+      });
+    }
+    const dotClass = koCount > 0 ? "ko" : okCount > 0 ? "ok" : "mix";
+    const isOpen = allBrands.includes(brand);
+    const section = document.createElement("div");
+    section.className = "country-section";
+    section.innerHTML = `
+      <button class="country-btn ${isOpen ? "on" : ""}" onclick="toggleCountry(this)">
+        <div class="country-name">
+          <span class="country-flag">${info.flag}</span>
+          ${country}
+        </div>
+        <div style="display:flex;align-items:center;gap:6px">
+          <span class="country-count">${allBrands.length}</span>
+          <span class="country-dot ${dotClass}"></span>
+        </div>
+      </button>
+      <div class="brand-list ${isOpen ? "open" : ""}">
+        ${allBrands.map(b => {
+          const active = b === brand ? "on" : "";
+          const ndot = !data || !data.statuses[b] ? "loading" :
+            Object.values(data.statuses[b]).every(s => s.ok) ? "ok" : "ko";
+          return `<button class="brand-btn ${active}" id="navbtn-${b.replace(/\W/g,'_')}" onclick="selectBrand('${b}')">
+            <span class="brand-btn-name">${b}</span>
+            <span class="brand-ndot ${ndot}"></span>
+          </button>`;
+        }).join("")}
+      </div>`;
+    nav.appendChild(section);
+  });
+}
+
+function toggleCountry(btn) {
+  const list = btn.nextElementSibling;
+  const isOpen = list.classList.contains("open");
+  list.classList.toggle("open", !isOpen);
+  btn.classList.toggle("on", !isOpen);
+}
+
+function switchGroup(g) {
+  currentGroup = g;
+  brand = null; // reset brand pour fermer tous les pays
+  ["stla","oem","ref"].forEach(x => document.getElementById("tab-"+x).classList.toggle("on", x === g));
+  // Afficher empty state
+  document.getElementById("empty-state").style.display = "flex";
+  document.getElementById("dash").style.display = "none";
+  buildNav();
+}
+
+// ── BRAND SELECT ──
+function selectBrand(b) {
+  brand = b;
+  const meta = getBrandMeta(b);
+  const logo = document.getElementById("brand-logo");
+  logo.src = meta.logo || "";
+  logo.style.display = meta.logo ? "block" : "none";
+  logo.onerror = () => { logo.style.display = "none"; };
+  document.getElementById("brand-h1").textContent = b;
+  document.getElementById("empty-state").style.display = "none";
+  document.getElementById("dash").style.display = "flex";
+  // Mettre à jour uniquement les classes actives sans rebuilder
+  document.querySelectorAll(".brand-btn").forEach(btn => btn.classList.remove("on"));
+  const active = document.getElementById("navbtn-" + b.replace(/\W/g,"_"));
+  if (active) active.classList.add("on");
+  // Reset charts — détruire ET recréer les canvas pour éviter le bug Chart.js
+  if (lineChart) { lineChart.destroy(); lineChart = null; }
+  if (yAxisInst) { yAxisInst.destroy(); yAxisInst = null; }
+  if (gaugeChart) { gaugeChart.destroy(); gaugeChart = null; }
+  if (macroInst) { macroInst.destroy(); macroInst = null; }
+  // Recréer les canvas proprement
+  ['lineChart','yAxisChart','gaugeChart','macroChart'].forEach(id => {
+    const old = document.getElementById(id);
+    if (old) {
+      const newCanvas = document.createElement('canvas');
+      newCanvas.id = id;
+      old.parentNode.replaceChild(newCanvas, old);
+    }
+  });
+  if (data) render();
+}
+
+function setPeriod(btn, p) {
   currentPeriod = p;
   document.querySelectorAll(".period-btn").forEach(b => b.classList.remove("on"));
-  if(btn) btn.classList.add("on");
-  if(data) render();
+  btn.classList.add("on");
+  if (data) render();
 }
 
-function toggleSidebar() {
-    document.getElementById('app-shell').classList.toggle('collapsed');
-}
-
-function parseDateStr(s){
-  if(!s) return null;
-  let m = s.match(/(\d{2})\/(\d{2})\/(\d{4})\s+(\d{2}):(\d{2}):(\d{2})/);
-  if(m) return new Date(m[3], m[2]-1, m[1], m[4], m[5], m[6]);
-  let m2 = s.match(/(\d{2})\/(\d{2})\/(\d{4})\s+(\d{2}):(\d{2})/);
-  if(m2) return new Date(m2[3], m2[2]-1, m2[1], m[4], m[5], 0);
-  let m3 = s.match(/(\d{4})-(\d{2})-(\d{2})[T\s](\d{2}):(\d{2}):(\d{2})/);
-  if(m3) return new Date(m3[1], m3[2]-1, m3[3], m3[4], m3[5], m3[6]);
-  let d = new Date(s);
-  if(!isNaN(d.getTime())) return d;
-  return null;
-}
-
-function switchTab(t){
-  selectBrand(t==="vos"?"Opel PT":"Aramisauto");
-}
-
-function filterPts(pts){
-  // 1 check/10s = 8640/jour
-  if(!pts||!pts.length) return [];
-  const nPts = currentPeriod === "30j" ? 8640*30 : currentPeriod === "7j" ? 8640*7 : 8640;
-  return pts.slice(-nPts);
-}
-
-function filterPtsStrict(pts) {
-  return filterPts(pts);
-}
-
-function filterHist(hist) {
-  if(!hist||!hist.length) return [];
-  const now = new Date();
+// ── HELPERS ──
+function filterPts(pts) {
+  if (!pts || !pts.length) return [];
+  // D'abord essayer de filtrer par date réelle si les points ont un timestamp
   const days = currentPeriod === "30j" ? 30 : currentPeriod === "7j" ? 7 : 1;
-  const cutoff = new Date(now.getTime() - days * 86400000);
-  return hist.filter(h => {
-    const t = parseDateStr(h.time);
-    return t && t >= cutoff;
-  });
-}
-
-function selectBrand(b){
-  brand=b;
-  document.querySelectorAll(".nav-btn").forEach(n=>n.classList.remove("on"));
-  const nb=document.getElementById("nav-"+b);
-  if(nb)nb.classList.add("on");
-  const m=BRANDS[b];
-  if(!m)return;
-  const logo=document.getElementById("brand-logo");
-  logo.src=m.logo||"";logo.style.display=m.logo?"block":"none";
-  logo.onerror=()=>{logo.style.display="none";};
-  document.getElementById("brand-h1").textContent=b;
-  if(data)render();
-}
-
-function updateDots(d){
-  Object.keys(BRANDS).forEach(b=>{
-    const nd=document.getElementById("nd-"+b);
-    if(!nd||!d.statuses[b])return;
-    const ok=Object.values(d.statuses[b]).every(s=>s.ok);
-    nd.className="ndot "+(ok?"ok":"ko");
-  });
-}
-
-function stats(){
-  const pages=Object.entries(data.statuses[brand]||{});
-  const hist=filterHist((data.history||[]).filter(h=>h.brand===brand));
-  const ko=hist.filter(h=>h.type==="ko").length;
-  const chartPts=Object.entries(data.chart_data||{}).filter(([k])=>k.startsWith(brand+":")).map(([k,v])=>[k,filterPtsStrict(v)]);
-  const elapsed=chartPts.flatMap(([,pts])=>pts.map(p=>p.elapsed));
-  const avg=elapsed.length?(elapsed.reduce((a,b)=>a+b,0)/elapsed.length).toFixed(2)+"s":"—";
-  
-  let sum8h = 0, count8h = 0;
-  chartPts.forEach(([, pts]) => {
-     if (pts.length === 0) return;
-     let validTimeFound = false;
-     let localSum = 0, localCount = 0;
-     const lastPt = pts[pts.length - 1];
-     let nowTime = Date.now();
-     const parsedLast = lastPt.timestamp ? new Date(lastPt.timestamp * 1000) : parseDateStr(lastPt.time);
-     if (parsedLast) nowTime = parsedLast.getTime();
-     const eightHoursAgo = nowTime - (8 * 60 * 60 * 1000);
-     pts.forEach(p => {
-         const t = p.timestamp ? new Date(p.timestamp * 1000) : parseDateStr(p.time);
-         if (t) {
-             validTimeFound = true;
-             if (t.getTime() >= eightHoursAgo) {
-                 localSum += p.elapsed;
-                 localCount++;
-             }
-         }
-     });
-     if (validTimeFound && localCount > 0) {
-         sum8h += localSum;
-         count8h += localCount;
-     } else {
-         const ratio = 8 / 24;
-         const numPoints = Math.max(1, Math.floor(pts.length * ratio));
-         const targetPts = pts.slice(-numPoints);
-         targetPts.forEach(p => {
-             sum8h += p.elapsed;
-             count8h++;
-         });
-     }
-  });
-  const avg8h = count8h > 0 ? (sum8h / count8h).toFixed(2) + "s" : "—";
-  const total=chartPts.reduce((a,[,pts])=>a+pts.length,0);
-  const upPct=total>0?((1-ko/Math.max(total,1))*100).toFixed(1)+"%":"—";
-  return {pages,hist,ko,avg,avg8h,total,upPct,allOk:pages.every(([,s])=>s.ok)};
-}
-
-function renderKPIs(){
-  const {ko,avg,avg8h,upPct,allOk}=stats();
-  const up=parseFloat(upPct);
-  const vStat = document.getElementById("val-status");
-  vStat.textContent = allOk ? "OK" : "KO";
-  vStat.className = "kpi-num " + (allOk ? "g" : "r");
-  const hStat = document.getElementById("hint-status");
-  hStat.textContent = allOk ? "Opérationnel" : "Alerte Critique";
-  hStat.className = "kpi-hint " + (allOk ? "g" : "r");
-  const iStat = document.getElementById("icon-status");
-  if(iStat) iStat.setAttribute("data-lucide", allOk ? "check-circle" : "alert-octagon");
-  const vUp = document.getElementById("val-uptime");
-  vUp.textContent = upPct;
-  vUp.className = "kpi-num " + (up>=99 ? "g" : up>=95 ? "o" : "r");
-  const vResp = document.getElementById("val-resp");
-  vResp.textContent = avg;
-  vResp.className = "kpi-num " + (parseFloat(avg)<2 ? "g" : parseFloat(avg)<4 ? "o" : "r");
-  const hResp = document.getElementById("hint-resp");
-  if(hResp) {
-      hResp.innerHTML = `Global <span style="opacity:0.4;margin:0 6px">|</span> 8h: <span style="color:var(--text)">${avg8h}</span>`;
+  const cutoff = Date.now() - days * 86400000;
+  // Tenter avec le temps du dernier point comme référence
+  const last = pts[pts.length - 1];
+  const lastT = last.timestamp ? new Date(last.timestamp*1000) : parseDateStr(last.time);
+  if (lastT) {
+    // On a des timestamps — filtrer par date
+    const ref = lastT.getTime();
+    const cut = ref - days * 86400000;
+    const filtered = pts.filter(p => {
+      const t = p.timestamp ? new Date(p.timestamp*1000) : parseDateStr(p.time);
+      return t && t.getTime() >= cut;
+    });
+    if (filtered.length > 0) return filtered;
   }
-  const vInc = document.getElementById("val-inc");
-  vInc.textContent = ko;
-  vInc.className = "kpi-num " + (ko===0 ? "g" : ko<5 ? "o" : "r");
-  if(window.lucide)lucide.createIcons();
+  // Fallback : slice par nombre de points
+  const n = currentPeriod === "30j" ? 8640*30 : currentPeriod === "7j" ? 8640*7 : 8640;
+  return pts.slice(-n);
+}
+function filterHist(hist) {
+  if (!hist || !hist.length) return [];
+  const days = currentPeriod === "30j" ? 30 : currentPeriod === "7j" ? 7 : 1;
+  const cutoff = new Date(Date.now() - days * 86400000);
+  return hist.filter(h => { const t = parseDateStr(h.time); return t && t >= cutoff; });
+}
+function parseDateStr(s) {
+  if (!s) return null;
+  let m = s.match(/(\d{2})\/(\d{2})\/(\d{4})\s+(\d{2}):(\d{2}):(\d{2})/);
+  if (m) return new Date(m[3], m[2]-1, m[1], m[4], m[5], m[6]);
+  let d = new Date(s); return isNaN(d.getTime()) ? null : d;
 }
 
-function renderGauge(){
-  const {ko,total}=stats();
-  const score=total>0?Math.round((1-ko/Math.max(total,1))*100):100;
-  const color=score>=99?"#059669":score>=95?"#d97706":"#e11d48";
-  document.getElementById("gauge-val").textContent=score+"%";
-  document.getElementById("gauge-val").style.color=color;
-  document.getElementById("gauge-lbl").textContent=score>=99?"Optimal":score>=95?"Tolérable":"Dégradé";
-  if(!gaugeChart){
-    gaugeChart=new Chart(document.getElementById("gaugeChart"),{
+// ── DOTS UPDATE ──
+function updateDots() {
+  if (!data) return;
+  Object.keys(data.statuses || {}).forEach(b => {
+    const el = document.getElementById("navbtn-" + b.replace(/\W/g,'_'));
+    if (!el) return;
+    const ok = Object.values(data.statuses[b]).every(s => s.ok);
+    const dot = el.querySelector(".brand-ndot");
+    if (dot) dot.className = "brand-ndot " + (ok ? "ok" : "ko");
+  });
+}
+
+// ── STATS ──
+function stats() {
+  const pages = Object.entries((data.statuses || {})[brand] || {});
+  const hist = filterHist((data.history || []).filter(h => h.brand === brand));
+  const ko = hist.filter(h => h.type === "ko").length;
+  const cp = Object.entries(data.chart_data || {})
+    .filter(([k]) => k.startsWith(brand + ":"))
+    .map(([k, v]) => [k, filterPts(v)]);
+  const el = cp.flatMap(([,pts]) => pts.map(p => p.elapsed));
+  const avg = el.length ? (el.reduce((a,b) => a+b, 0) / el.length).toFixed(2) + "s" : "—";
+  const total = cp.reduce((a,[,pts]) => a + pts.length, 0);
+  // Uptime : ko ne peut pas dépasser total — on prend le min
+  const koSafe = Math.min(ko, total);
+  const upPct = total > 0 ? Math.max(0, ((1 - koSafe / total) * 100)).toFixed(1) + "%" : "—";
+  // 8h avg
+  let s8=0,c8=0;
+  cp.forEach(([,pts]) => {
+    const cut = Date.now() - 8*3600000;
+    pts.forEach(p => { const t=parseDateStr(p.time); if(t&&t.getTime()>=cut){s8+=p.elapsed;c8++;} });
+  });
+  const avg8h = c8 > 0 ? (s8/c8).toFixed(2) + "s" : "—";
+  return {pages, hist, ko:koSafe, avg, avg8h, total, upPct, allOk: pages.every(([,s]) => s.ok)};
+}
+
+// ── RENDER ──
+function render() {
+  if (!brand || !data) return;
+  renderEP(); renderKPIs(); renderGauge(); renderChart(); renderMacro(); detectTrend(); renderHistory();
+  if (window.lucide) lucide.createIcons();
+}
+
+function renderEP() {
+  const pages = Object.entries((data.statuses || {})[brand] || {});
+  document.getElementById("ep-row").innerHTML = pages.map(([page, s]) =>
+    `<div class="ep-chip"><span class="ep-dot ${s.ok?'ok':'ko'}"></span>${page}</div>`
+  ).join("");
+}
+
+function renderKPIs() {
+  const {ko,avg,avg8h,upPct,allOk} = stats();
+  const up = parseFloat(upPct);
+  document.getElementById("val-status").textContent = allOk ? "OK" : "KO";
+  document.getElementById("val-status").className = "kpi-num " + (allOk ? "g" : "r");
+  document.getElementById("hint-status").textContent = allOk ? "Opérationnel" : "Alerte Critique";
+  document.getElementById("hint-status").className = "kpi-hint " + (allOk ? "g" : "r");
+  document.getElementById("icon-status").setAttribute("data-lucide", allOk ? "check-circle" : "alert-octagon");
+  document.getElementById("val-uptime").textContent = upPct;
+  document.getElementById("val-uptime").className = "kpi-num " + (up>=99?"g":up>=95?"o":"r");
+  document.getElementById("val-resp").textContent = avg;
+  document.getElementById("val-resp").className = "kpi-num " + (parseFloat(avg)<2?"g":parseFloat(avg)<4?"o":"r");
+  document.getElementById("hint-resp").innerHTML = `Global <span style="opacity:.4;margin:0 4px">|</span> 8h: <b>${avg8h}</b>`;
+  document.getElementById("val-inc").textContent = ko;
+  document.getElementById("val-inc").className = "kpi-num " + (ko===0?"g":ko<5?"o":"r");
+}
+
+function renderGauge() {
+  const {ko,total} = stats();
+  const score = total > 0 ? Math.round((1-ko/Math.max(total,1))*100) : 100;
+  const color = score>=99?"#059669":score>=95?"#d97706":"#e11d48";
+  document.getElementById("gauge-val").textContent = score + "%";
+  document.getElementById("gauge-val").style.color = color;
+  document.getElementById("gauge-lbl").textContent = score>=99?"Optimal":score>=95?"Tolérable":"Dégradé";
+  if (!gaugeChart) {
+    gaugeChart = new Chart(document.getElementById("gaugeChart"), {
       type:"doughnut",
       data:{datasets:[{data:[score,100-score],backgroundColor:[color,"#e2e8f0"],borderWidth:0,borderRadius:2}]},
       options:{responsive:true,maintainAspectRatio:false,cutout:"75%",animation:{duration:200},plugins:{legend:{display:false},tooltip:{enabled:false}}}
     });
-  }else{
-    gaugeChart.data.datasets[0].data=[score,100-score];
-    gaugeChart.data.datasets[0].backgroundColor=[color,"#e2e8f0"];
+  } else {
+    gaugeChart.data.datasets[0].data = [score,100-score];
+    gaugeChart.data.datasets[0].backgroundColor = [color,"#e2e8f0"];
     gaugeChart.update("none");
   }
 }
 
-function renderChart(){
-  const pages=Object.entries(data.statuses[brand]||{});
-  const colors=BRANDS[brand].colors;
-  const koHist=(data.history||[]).filter(h=>h.brand===brand&&h.type==="ko");
-  const koTimes=new Set(koHist.map(h=>(h.time||"").substring(11,19)));
-  
-  // ── DOWNSAMPLING ANTICRASH ──
-  const rawDatasets = pages.map(([page]) => filterPtsStrict((data.chart_data||{})[brand+":"+page]||[]));
-  let masterTimes = rawDatasets.length > 0 ? rawDatasets[0].map(p => p.time) : [];
-  let sampledIndices = new Set();
-  const MAX_POINTS = 300; 
-  
-  if (masterTimes.length > MAX_POINTS) {
-      const factor = Math.ceil(masterTimes.length / MAX_POINTS);
-      masterTimes.forEach((t, i) => {
-          const tShort = (t||"").substring(11,19);
-          if (koTimes.has(tShort) || i % factor === 0 || i === masterTimes.length - 1) {
-              sampledIndices.add(i);
-          }
-      });
-  } else {
-      masterTimes.forEach((_, i) => sampledIndices.add(i));
-  }
-
-  const datasets=pages.map(([page],i)=>{
-    const pts = rawDatasets[i] || [];
-    const filteredPts = pts.filter((_, idx) => sampledIndices.has(idx));
-    return{
-      label:page,
-      data:filteredPts.map(p=>p.elapsed),
-      _t:filteredPts.map(p=>p.time),
-      borderColor:colors[i]||"#888",
-      backgroundColor:(colors[i]||"#888")+"14",
-      tension: 0.4, 
-      pointRadius: 0, 
-      pointBackgroundColor: colors[i]||"#888", 
-      pointBorderColor: "#fff",
-      pointBorderWidth: 1.5,
-      pointHoverRadius: 6, 
-      borderWidth: 2.5,
-      fill: true,
-      order: 1 
-    };
+function renderChart() {
+  const pages = Object.entries((data.statuses||{})[brand]||{});
+  const meta = getBrandMeta(brand);
+  const colors = meta.colors;
+  const koH = (data.history||[]).filter(h=>h.brand===brand&&h.type==="ko");
+  const koT = new Set(koH.map(h=>(h.time||"").substring(11,19)));
+  const rawDs = pages.map(([page]) => filterPts((data.chart_data||{})[brand+":"+page]||[]));
+  let masterT = rawDs.length > 0 ? rawDs[0].map(p=>p.time) : [];
+  let sampled = new Set();
+  const MAX = 300;
+  if (masterT.length > MAX) {
+    const f = Math.ceil(masterT.length/MAX);
+    masterT.forEach((t,i) => { if(koT.has((t||"").substring(11,19))||i%f===0||i===masterT.length-1) sampled.add(i); });
+  } else masterT.forEach((_,i)=>sampled.add(i));
+  const datasets = pages.map(([page],i) => {
+    const pts = (rawDs[i]||[]).filter((_,idx)=>sampled.has(idx));
+    return {label:page,data:pts.map(p=>p.elapsed),_t:pts.map(p=>p.time),borderColor:colors[i]||"#888",backgroundColor:(colors[i]||"#888")+"14",tension:.4,pointRadius:0,pointBackgroundColor:colors[i],pointBorderColor:"#fff",pointBorderWidth:1.5,pointHoverRadius:6,borderWidth:2.5,fill:true,order:1};
   });
-  
-  const labels=datasets[0]?datasets[0]._t||[]:[];
-  
-  const alertDs={
-    label:"Incident (KO)",
-    type:"bar",
-    data:labels.map(t=>koTimes.has((t||"").substring(11,19))?1:0),
-    backgroundColor:"rgba(225,29,72,0.12)", 
-    yAxisID:"yKo", 
-    barPercentage: 1.0,
-    categoryPercentage: 1.0,
-    order: 2 
-  };
-  
-  document.getElementById("legend").innerHTML=
-    datasets.map((ds,i)=>'<div class="leg"><span class="leg-pip" style="background:'+colors[i]+'"></span>'+ds.label+'</div>').join("")+
-    '<div class="leg"><span class="leg-pip" style="background:#e11d48;border-radius:2px"></span>Alerte KO</div>';
-  
-  const allDs=[...datasets, alertDs];
-  
-  const yAxisOpts = {
-      responsive: true, maintainAspectRatio: false, animation: { duration: 0 },
-      interaction: { mode: null }, plugins: { legend: { display: false }, tooltip: { enabled: false } },
-      layout: { padding: { top: 10, bottom: 8 } }, 
-      scales: {
-          x: { 
-              grid: { display: false }, border: { display: false },
-              ticks: { color: "transparent" } 
-          },
-          y: {
-              max: 4, min: 0,
-              grid: { display: false }, border: { display: false },
-              ticks: { stepSize: 1, font: { size: 11, family: 'Plus Jakarta Sans' }, color: "#94a3b8", callback: v => v + "s" }
-          }
-      }
-  };
-
-  if(!yAxisChartInstance) {
-      yAxisChartInstance = new Chart(document.getElementById("yAxisChart"), {
-          type: "line",
-          data: { labels: ["0"], datasets: [] }, 
-          options: yAxisOpts
-      });
-  }
-
-  const mainOpts={
-    responsive:true, maintainAspectRatio:false, animation:{duration:200},
-    interaction:{mode:"index",intersect:false}, plugins:{legend:{display:false}},
-    layout: { padding: { top: 10, bottom: 0 } },
-    scales:{
-      x:{
-          grid:{display:false}, border: { display: false },
-          ticks:{font:{size:11,family:'Plus Jakarta Sans'},color:"#94a3b8",maxTicksLimit:8}
-      },
-      y:{
-        position: 'left',
-        grid:{color:"rgba(0,0,0,0.04)"}, border: { display: false },
-        max: 4, 
-        min: 0,
-        ticks:{ display: false, stepSize: 1 } 
-      },
-      yKo:{display:false, min:0, max:1} 
-    }
-  };
-  
-  const scrollArea = document.getElementById("chart-scroll-area");
+  const labels = datasets[0]?datasets[0]._t||[]:[];
+  const alertDs = {label:"Incident (KO)",type:"bar",data:labels.map(t=>koT.has((t||"").substring(11,19))?1:0),backgroundColor:"rgba(225,29,72,0.12)",yAxisID:"yKo",barPercentage:1,categoryPercentage:1,order:2};
+  document.getElementById("legend").innerHTML = datasets.map((ds,i)=>`<div class="leg"><span class="leg-pip" style="background:${colors[i]}"></span>${ds.label}</div>`).join("") + '<div class="leg"><span class="leg-pip" style="background:#e11d48;border-radius:2px"></span>Alerte KO</div>';
+  const scroll = document.getElementById("chart-scroll");
   const container = document.getElementById("chart-container");
-  
-  // Avec l'échantillonnage, on a ~300 points. 300 * 20px = 6000px de large (très sûr pour le canvas)
-  const calcWidth = Math.max(scrollArea.clientWidth, labels.length * 20);
-  container.style.width = calcWidth + "px";
-  
-  const isAtEnd = scrollArea.scrollLeft + scrollArea.clientWidth >= scrollArea.scrollWidth - 20;
-  
-  if(!lineChart){
-      lineChart=new Chart(container.querySelector('canvas'),{type:"line",data:{labels,datasets:allDs},options:mainOpts});
-      setTimeout(() => scrollArea.scrollLeft = scrollArea.scrollWidth, 100);
+  const w = Math.max(scroll.clientWidth, labels.length*20);
+  container.style.width = w + "px";
+  const isEnd = scroll.scrollLeft + scroll.clientWidth >= scroll.scrollWidth - 20;
+  const yOpts = {responsive:true,maintainAspectRatio:false,animation:{duration:0},interaction:{mode:null},plugins:{legend:{display:false},tooltip:{enabled:false}},layout:{padding:{top:10,bottom:8}},scales:{x:{grid:{display:false},border:{display:false},ticks:{color:"transparent"}},y:{max:4,min:0,grid:{display:false},border:{display:false},ticks:{stepSize:1,font:{size:11,family:'Plus Jakarta Sans'},color:"#94a3b8",callback:v=>v+"s"}}}};
+  const mOpts = {responsive:true,maintainAspectRatio:false,animation:{duration:200},interaction:{mode:"index",intersect:false},plugins:{legend:{display:false}},layout:{padding:{top:10,bottom:0}},scales:{x:{grid:{display:false},border:{display:false},ticks:{font:{size:11,family:'Plus Jakarta Sans'},color:"#94a3b8",maxTicksLimit:8}},y:{position:"left",grid:{color:"rgba(0,0,0,0.04)"},border:{display:false},max:4,min:0,ticks:{display:false,stepSize:1}},yKo:{display:false,min:0,max:1}}};
+  if (!yAxisInst) {
+    yAxisInst = new Chart(document.getElementById("yAxisChart"),{type:"line",data:{labels:["0"],datasets:[]},options:yOpts});
+  }
+  if (!lineChart) {
+    lineChart = new Chart(container.querySelector("canvas"),{type:"line",data:{labels,datasets:[...datasets,alertDs]},options:mOpts});
+    setTimeout(()=>scroll.scrollLeft=scroll.scrollWidth,100);
   } else {
-      lineChart.data.labels=labels;
-      lineChart.data.datasets=allDs;
-      lineChart.options=mainOpts;
-      lineChart.update("none");
-      if (isAtEnd) {
-          setTimeout(() => scrollArea.scrollLeft = scrollArea.scrollWidth, 50);
-      }
+    lineChart.data.labels=labels; lineChart.data.datasets=[...datasets,alertDs]; lineChart.options=mOpts; lineChart.update("none");
+    if(isEnd) setTimeout(()=>scroll.scrollLeft=scroll.scrollWidth,50);
   }
 }
 
-function renderEndpoints() {
-    const pages = Object.entries(data.statuses[brand] || {});
-    document.getElementById("brand-endpoints").innerHTML = pages.map(([page, s]) => {
-        return `<div class="ep-chip"><span class="ep-dot ${s.ok ? 'ok' : 'ko'}"></span>${page}</div>`;
-    }).join("");
+function renderMacro() {
+  const hist = filterHist((data.history||[]).filter(h=>h.brand===brand&&h.type==="ko"));
+  const abs = new Array(24).fill(0);
+  hist.forEach(h=>{const t=parseDateStr(h.time);if(t)abs[t.getHours()]++;});
+  const now=new Date(),cur=now.getHours();
+  const labels=[],counts=[];
+  for(let i=23;i>=0;i--){let h=cur-i;if(h<0)h+=24;labels.push(h+"h");counts.push(abs[h]);}
+  const opts={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.raw+" incident(s)"}}},layout:{padding:{top:10}},scales:{x:{grid:{display:false},border:{display:false},ticks:{font:{size:10,family:'Plus Jakarta Sans'},color:"#94a3b8"}},y:{grid:{color:"rgba(0,0,0,0.03)"},border:{display:false},suggestedMax:5,ticks:{font:{size:10,family:'Plus Jakarta Sans'},color:"#94a3b8",stepSize:1,precision:0}}}};
+  if(!macroInst){macroInst=new Chart(document.getElementById("macroChart"),{type:"bar",data:{labels,datasets:[{data:counts,backgroundColor:"rgba(225,29,72,0.75)",hoverBackgroundColor:"rgba(225,29,72,1)",borderRadius:4,borderSkipped:false,barPercentage:.6}]},options:opts});}
+  else{macroInst.data.labels=labels;macroInst.data.datasets[0].data=counts;macroInst.update("none");}
 }
 
-function renderMacroChart() {
-    const hist = filterHist((data.history || []).filter(h => h.brand === brand && h.type === 'ko'));
-    const absoluteHourCounts = new Array(24).fill(0);
-    hist.forEach(h => {
-        const t = parseDateStr(h.time);
-        if(t) absoluteHourCounts[t.getHours()]++;
-    });
-
-    const now = new Date();
-    const currentHour = now.getHours();
-    const labels = [];
-    const hourCounts = [];
-
-    for (let i = 23; i >= 0; i--) {
-        let h = currentHour - i;
-        if (h < 0) h += 24; 
-        labels.push(h + "h");
-        hourCounts.push(absoluteHourCounts[h]);
-    }
-
-    const opts = {
-        responsive: true, maintainAspectRatio: false,
-        plugins: { legend: { display: false }, tooltip: {
-            callbacks: { label: function(context) { return context.raw + ' Incident(s)'; } }
-        }},
-        layout: { padding: { top: 10 } },
-        scales: {
-            x: { grid: { display: false }, border: {display: false}, ticks: { font: { size: 10, family: 'Plus Jakarta Sans' }, color: "#94a3b8" } },
-            y: { 
-                grid: { color: "rgba(0,0,0,0.03)" }, border: {display: false},
-                suggestedMax: 5,
-                ticks: { font: { size: 10, family: 'Plus Jakarta Sans' }, color: "#94a3b8", stepSize: 1, precision: 0 } 
-            }
-        }
-    };
-
-    if(!macroChartInstance) {
-        macroChartInstance = new Chart(document.getElementById("macroChart"), { type: "bar", data: { labels, datasets: [{
-            data: hourCounts, backgroundColor: "rgba(225,29,72,0.75)", hoverBackgroundColor: "rgba(225,29,72,1)", borderRadius: 4, borderSkipped: false, barPercentage: 0.6
-        }] }, options: opts });
-    } else {
-        macroChartInstance.data.labels = labels;
-        macroChartInstance.data.datasets[0].data = hourCounts;
-        macroChartInstance.update("none");
-    }
+function detectTrend() {
+  const pages = Object.keys((data.statuses||{})[brand]||{});
+  const el = document.getElementById("trend-callout");
+  for(const page of pages){
+    const pts = filterPts((data.chart_data||{})[brand+":"+page]||[]).slice(-10);
+    if(pts.length<6)continue;
+    const e=pts.slice(0,3).map(p=>p.elapsed).reduce((a,b)=>a+b,0)/3;
+    const l=pts.slice(-3).map(p=>p.elapsed).reduce((a,b)=>a+b,0)/3;
+    if(l>e*1.5&&l>1.5){el.style.display="block";document.getElementById("trend-body").textContent=page+" : Lenteur détectée ("+e.toFixed(2)+"s → "+l.toFixed(2)+"s). Risque de timeout.";if(window.lucide)lucide.createIcons();return;}
+  }
+  el.style.display="none";
 }
 
 function dur(hist,idx){
@@ -682,88 +689,28 @@ function dur(hist,idx){
   for(let j=idx+1;j<hist.length;j++){
     const h=hist[j];
     if(h.type==="recovery"&&h.page===inc.page&&h.brand===inc.brand){
-      try{
-        var t1 = parseDateStr(inc.time);
-        var t2 = parseDateStr(h.time);
-        var diff=Math.round((t2-t1)/1000);
-        if(diff>0&&diff<86400){if(diff<60)return diff+"s";if(diff<3600)return Math.floor(diff/60)+"m "+(diff%60)+"s";return Math.floor(diff/3600)+"h "+Math.floor((diff%3600)/60)+"m";}
-      }catch(e){}break;
+      try{const t1=parseDateStr(inc.time),t2=parseDateStr(h.time);const d=Math.round((t2-t1)/1000);if(d>0&&d<86400){if(d<60)return d+"s";if(d<3600)return Math.floor(d/60)+"m "+(d%60)+"s";return Math.floor(d/3600)+"h "+Math.floor((d%3600)/60)+"m";}}catch(e){}break;
     }
-  }return null; 
+  }return null;
 }
 
 function renderHistory(){
   const hist=filterHist((data.history||[]).filter(h=>h.brand===brand));
   document.getElementById("inc-count").textContent=hist.length?"("+hist.length+" evt)":"";
   const el=document.getElementById("history");
-  if(!hist.length){el.innerHTML='<div class="empty">Aucun incident enregistré. 🎉</div>';return;}
+  if(!hist.length){el.innerHTML='<div style="padding:1rem;text-align:center;color:var(--text-3);font-size:12px;font-weight:700">Aucun incident 🎉</div>';return;}
   el.innerHTML=[...hist].reverse().map((h,ri)=>{
     const d=dur(hist,hist.length-1-ri);
-    const isOngoing = (h.type === "ko" && d === null); 
-    return '<div class="inc-row '+(isOngoing ? 'ongoing' : '')+'">'+
-      '<div class="inc-top">'+'<div class="inc-title">'+h.page+'</div>'+'<div class="inc-time">'+(h.time||"—").substring(11,16)+'</div>'+'</div>'+
-      '<div class="inc-mid">'+'<div class="inc-sub">'+h.detail+(h.diagnostics&&h.diagnostics.error_type?' ('+h.diagnostics.error_type+')':'')+'</div>'+
-      '<div class="inc-chip '+(h.type==="recovery"?"ok":"ko")+'">'+(h.type==="recovery"?"RESOLVED":(isOngoing?"CRITICAL":"FAILURE"))+'</div>'+'</div>'+
-      '<div class="inc-bot" style="display:flex; justify-content:space-between; align-items:center; margin-top:4px;">'+
-      '<div>'+(d?'<div class="inc-dur res"><i data-lucide="check" style="width:10px;height:10px"></i> '+d+'</div>':(isOngoing?'<div class="inc-dur"><i data-lucide="loader" style="width:10px;height:10px" class="spin"></i> En cours</div>':'<div class="inc-dur"><i data-lucide="info" style="width:10px;height:10px"></i> -</div>'))+'</div>'+
-      (h.screenshot?'<a href="'+h.screenshot+'" target="_blank" title="Screenshot" style="color:var(--text-3); transition:color .2s" onmouseover="this.style.color=\'var(--red)\'" onmouseout="this.style.color=\'var(--text-3)\'"><i data-lucide="camera" style="width:12px;height:12px"></i></a>':'')+'</div></div>';
+    const ongoing=h.type==="ko"&&d===null;
+    return '<div class="inc-row '+(ongoing?"ongoing":"")+'">'+
+      '<div class="inc-top"><div class="inc-title">'+h.page+'</div><div class="inc-time">'+(h.time||"—").substring(11,16)+'</div></div>'+
+      '<div class="inc-mid"><div class="inc-sub">'+h.detail+(h.diagnostics&&h.diagnostics.error_type?" ("+h.diagnostics.error_type+")":"")+'</div>'+
+      '<div class="inc-chip '+(h.type==="recovery"?"ok":"ko")+'">'+(h.type==="recovery"?"RESOLVED":ongoing?"CRITICAL":"FAILURE")+'</div></div>'+
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px">'+
+      '<div>'+(d?'<div class="inc-dur res"><i data-lucide="check" style="width:9px;height:9px"></i> '+d+'</div>':ongoing?'<div class="inc-dur">En cours</div>':'<div class="inc-dur" style="opacity:.5">-</div>')+'</div>'+
+      (h.screenshot?'<a href="'+h.screenshot+'" target="_blank" style="color:var(--text-3)"><i data-lucide="camera" style="width:11px;height:11px"></i></a>':'')+'</div></div>';
   }).join("");
   if(window.lucide)lucide.createIcons();
-}
-
-function render(){
-  if(!brand||!data)return;
-  renderEndpoints();
-  renderKPIs();
-  renderGauge();
-  renderChart();
-  renderMacroChart();
-  detectTrend();
-  renderHistory();
-  if(window.lucide)lucide.createIcons();
-}
-
-async function fetchStatus(){
-  try{
-    let r=await fetch(RENDER_STATUS+"?t="+Date.now(),{cache:"no-store"});
-    if(!r.ok)throw new Error();
-    const nd=await r.json();
-    if(JSON.stringify(nd.updated_at)===JSON.stringify(data&&data.updated_at))return;
-    data=nd;
-    document.getElementById("ts-label").textContent="Dernière MAJ à "+data.updated_at.split(' ')[1];
-    document.getElementById("pulse").className="pulse-dot";
-    updateDots(data);if(brand)render();
-  }catch(e){
-    try{
-      const r2=await fetch(RAW_BASE+"?t="+Date.now(),{cache:"no-store"});
-      if(!r2.ok)throw new Error();
-      const nd=await r2.json();
-      if(JSON.stringify(nd.updated_at)===JSON.stringify(data&&data.updated_at))return;
-      data=nd;
-      document.getElementById("ts-label").textContent="Dernière MAJ à "+data.updated_at.split(' ')[1];
-      document.getElementById("pulse").className="pulse-dot";
-      updateDots(data);if(brand)render();
-    }catch(e2){document.getElementById("pulse").className="pulse-dot dead";}
-  }
-}
-
-function detectTrend(){
-  const pages=Object.keys(data.statuses[brand]||{});
-  const el=document.getElementById("trend-callout");
-  const txt=document.getElementById("trend-body");
-  for(const page of pages){
-    const pts=filterPts((data.chart_data||{})[brand+":"+page]||[]).slice(-10);
-    if(pts.length<6)continue;
-    const early=pts.slice(0,3).map(p=>p.elapsed).reduce((a,b)=>a+b,0)/3;
-    const late=pts.slice(-3).map(p=>p.elapsed).reduce((a,b)=>a+b,0)/3;
-    if(late>early*1.5&&late>1.5){
-      el.style.display="block";
-      txt.textContent=page+" : Lenteur détectée ("+early.toFixed(2)+"s → "+late.toFixed(2)+"s). Risque de timeout imminent.";
-      if(window.lucide)lucide.createIcons();
-      return;
-    }
-  }
-  el.style.display="none";
 }
 
 function downloadReport(){
@@ -774,12 +721,43 @@ function downloadReport(){
   const csv=rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(",")).join("\n");
   const blob=new Blob([csv],{type:"text/csv;charset=utf-8;"});
   const url=URL.createObjectURL(blob);const a=document.createElement("a");
-  a.href=url;a.download="noc_export_"+brand.replace(" ","_")+"_"+new Date().toISOString().slice(0,10)+".csv";a.click();URL.revokeObjectURL(url);
+  a.href=url;a.download="noc_"+brand.replace(/ /g,"_")+"_"+new Date().toISOString().slice(0,10)+".csv";a.click();URL.revokeObjectURL(url);
+}
+
+// ── FETCH ──
+async function fetchStatus(){
+  try{
+    let r=await fetch(RENDER+"?t="+Date.now(),{cache:"no-store"});
+    if(!r.ok)throw new Error();
+    const nd=await r.json();
+    if(JSON.stringify(nd.updated_at)===JSON.stringify(data&&data.updated_at))return;
+    data=nd;
+    document.getElementById("ts-label").textContent=""+data.updated_at.split(" ")[1];
+    const tlm = document.getElementById("ts-label-main");
+    if(tlm) tlm.textContent = "MAJ " + data.updated_at.split(" ")[1];
+    document.getElementById("sb-ts").textContent=data.updated_at||"";
+    document.getElementById("pulse").className="pulse-dot";
+    updateDots();
+    if(brand)render();
+  }catch(e){
+    try{
+      const r2=await fetch(RAW+"?t="+Date.now(),{cache:"no-store"});if(!r2.ok)throw new Error();
+      const nd=await r2.json();
+      if(JSON.stringify(nd.updated_at)===JSON.stringify(data&&data.updated_at))return;
+      data=nd;
+      document.getElementById("ts-label").textContent=""+data.updated_at.split(" ")[1];
+    const tlm = document.getElementById("ts-label-main");
+    if(tlm) tlm.textContent = "MAJ " + data.updated_at.split(" ")[1];
+      document.getElementById("sb-ts").textContent=data.updated_at||"";
+      document.getElementById("pulse").className="pulse-dot";
+      updateDots();if(brand)render();
+    }catch(e2){document.getElementById("pulse").className="pulse-dot dead";}
+  }
 }
 
 window.addEventListener("load",()=>{
   if(window.lucide)lucide.createIcons();
-  selectBrand("Opel PT");
+  buildNav(); // brand=null donc aucun pays ouvert
   fetchStatus();
   setInterval(fetchStatus,2000);
 });
