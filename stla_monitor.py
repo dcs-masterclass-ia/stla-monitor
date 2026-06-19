@@ -227,6 +227,7 @@ def init_github():
 
 def push_status(statuses):
     if not gh_repo:
+        log.error("[GitHub] gh_repo est None — token manquant ou init échouée")
         return
     now = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
     payload = build_payload(statuses, now)
@@ -557,7 +558,7 @@ def check_url(brand, page, url):
 IMMAT_FR = "GJ100ZP"  # Immat FR valide pour décodage
 
 FR_BRANDS = {
-    "Opel FR","Citroen FR", "DS FR","Peugeot FR"
+    "Opel FR", "Citroen FR", "DS FR", "Peugeot FR"
 }
 
 # Pages de succès après décodage immat
@@ -653,6 +654,8 @@ def check_immat_fr(brand, homepage_url):
         return False, f"Erreur décodage immat : {type(e).__name__}", elapsed, details
 
 def run():
+    token = os.environ.get("GITHUB_TOKEN", "")
+    log.info(f"GITHUB_TOKEN présent: {'OUI' if token else 'NON — PUSH DÉSACTIVÉ'}")
     init_github()
     # Démarrer le keepalive Render en arrière-plan
     threading.Thread(target=_ping_render, daemon=True).start()
