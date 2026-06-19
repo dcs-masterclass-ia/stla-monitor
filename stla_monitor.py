@@ -29,13 +29,13 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 BRANDS = {
     # ── PORTUGAL ──
     "Opel PT":      {"Homepage": "https://www.retoma.opel.pt",             "Parcours": "https://www.retoma.opel.pt/pagina-modelo"},
-    "Abarth PT":    {"Homepage": "https://www.retoma.abarth.pt",           "Parcours": "https://www.retoma.abarth.pt/pagina-modelo"},
-    "AlfaRomeo PT": {"Homepage": "https://www.retoma.alfaromeo.pt",        "Parcours": "https://www.retoma.alfaromeo.pt/pagina-modelo"},
+    "Abarth PT":    {"Homepage": "https://www.retoma.abarth.pt",           "Parcours": "https://www.retoma.abarth.pt/modelo"},
+    "AlfaRomeo PT": {"Homepage": "https://www.retoma.alfaromeo.pt",        "Parcours": "https://www.retoma.alfaromeo.pt/modelo"},
     "Citroen PT":   {"Homepage": "https://www.retoma-citroen.pt",          "Parcours": "https://www.retoma-citroen.pt/pagina-modelo"},
     "DS PT":        {"Homepage": "https://retoma.dsautomobiles.pt",        "Parcours": "https://retoma.dsautomobiles.pt/pagina-modelo"},
-    "Fiat PT":      {"Homepage": "https://www.retoma.fiat.pt",             "Parcours": "https://www.retoma.fiat.pt/pagina-modelo"},
-    "FiatPro PT":   {"Homepage": "https://www.retoma.fiatprofessional.pt", "Parcours": "https://www.retoma.fiatprofessional.pt/pagina-modelo"},
-    "Jeep PT":      {"Homepage": "https://www.retoma.jeep.pt",             "Parcours": "https://www.retoma.jeep.pt/pagina-modelo"},
+    "Fiat PT":      {"Homepage": "https://www.retoma.fiat.pt",             "Parcours": "https://www.retoma.fiat.pt/modelo"},
+    "FiatPro PT":   {"Homepage": "https://www.retoma.fiatprofessional.pt", "Parcours": "https://www.retoma.fiatprofessional.pt/modelo"},
+    "Jeep PT":      {"Homepage": "https://www.retoma.jeep.pt",             "Parcours": "https://www.retoma.jeep.pt/modelo"},
     "Peugeot PT":   {"Homepage": "https://www.retoma.peugeot.pt",          "Parcours": "https://www.retoma.peugeot.pt/pagina-modelo"},
     # ── FRANCE ──
     "Opel FR":      {"Homepage": "https://www.reprise.opel.fr",            "Parcours": "https://www.reprise.opel.fr/page-modele"},
