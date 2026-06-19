@@ -122,7 +122,7 @@ BRANDS = {
     "Peugeot LU":   {"Homepage": "https://reprise.peugeot.lu",                   "Parcours": "https://reprise.peugeot.lu/page-modele"},
     "Leapmotor LU": {"Homepage": "https://reprise.leapmotor-international.lu",   "Parcours": "https://reprise.leapmotor-international.lu/page-modele"},
     # ── UK ──
-    "DS UK":        {"Homepage": "https://www.tradein.dsautomobiles.co.uk",      "Parcours": "https://www.tradein.dsautomobiles.co.uk/page-modele"},
+    "DS UK":        {"Homepage": "https://www.tradein.dsautomobiles.co.uk",      "Parcours": "https://www.tradein.dsautomobiles.co.uk/model"},
     # ── OEM ──
     "Ford FR":      {"Homepage": "https://www.ford-reprise.fr/",           "Formulaire": "https://www.ford-reprise.fr/form"},
     # ── RÉFÉRENCES ──
