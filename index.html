@@ -738,12 +738,12 @@ async function fetchStatus(){
     let r=await fetch(RENDER+"?t="+Date.now(),{cache:"no-store"});
     if(!r.ok)throw new Error();
     const nd=await r.json();
-    if(JSON.stringify(nd.updated_at)===JSON.stringify(data&&data.updated_at || data.server_time))return;
+    if((nd.updated_at||nd.server_time)===(data&&(data.updated_at||data.server_time)))return;
     data=nd;
-    document.getElementById("ts-label").textContent=""+data.updated_at || data.server_time.split(" ")[1];
+    document.getElementById("ts-label").textContent=(data.updated_at||data.server_time||"").split(" ").pop()||"—";
     const tlm = document.getElementById("ts-label-main");
-    if(tlm) tlm.textContent = "MAJ " + data.updated_at || data.server_time.split(" ")[1];
-    document.getElementById("sb-ts").textContent=data.updated_at || data.server_time||"";
+    if(tlm) tlm.textContent = "MAJ " + ((data.updated_at||data.server_time||"").split(" ").pop()||"—");
+    document.getElementById("sb-ts").textContent=data.updated_at||data.server_time||"";
     document.getElementById("pulse").className="pulse-dot";
     updateDots();
     if(brand)render();
@@ -751,12 +751,12 @@ async function fetchStatus(){
     try{
       const r2=await fetch(RAW+"?t="+Date.now(),{cache:"no-store"});if(!r2.ok)throw new Error();
       const nd=await r2.json();
-      if(JSON.stringify(nd.updated_at)===JSON.stringify(data&&data.updated_at || data.server_time))return;
+      if((nd.updated_at||nd.server_time)===(data&&(data.updated_at||data.server_time)))return;
       data=nd;
-      document.getElementById("ts-label").textContent=""+data.updated_at || data.server_time.split(" ")[1];
+      document.getElementById("ts-label").textContent=(data.updated_at||data.server_time||"").split(" ").pop()||"—";
     const tlm = document.getElementById("ts-label-main");
-    if(tlm) tlm.textContent = "MAJ " + data.updated_at || data.server_time.split(" ")[1];
-      document.getElementById("sb-ts").textContent=data.updated_at || data.server_time||"";
+    if(tlm) tlm.textContent = "MAJ " + ((data.updated_at||data.server_time||"").split(" ").pop()||"—");
+      document.getElementById("sb-ts").textContent=data.updated_at||data.server_time||"";
       document.getElementById("pulse").className="pulse-dot";
       updateDots();if(brand)render();
     }catch(e2){document.getElementById("pulse").className="pulse-dot dead";}
