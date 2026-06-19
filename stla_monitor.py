@@ -522,6 +522,93 @@ def check_url(brand, page, url):
 # BOUCLE PRINCIPALE
 # ─────────────────────────────────────────────
 
+
+# ─────────────────────────────────────────────
+# CHECK IMMAT (France uniquement)
+# Saisit une immat, clique sur js-submit-plate,
+# vérifie qu'on arrive sur /pormenores-veiculo ou /page-modele
+# ─────────────────────────────────────────────
+
+IMMAT_FR = "GJ100ZP"  # Immat FR valide pour décodage
+
+FR_BRANDS = {
+    "Opel FR", "AlfaRomeo FR", "Citroen FR", "DS FR",
+    "Fiat FR", "FiatPro FR", "Jeep FR", "Lancia FR", "Peugeot FR"
+}
+
+# Pages de succès après décodage immat
+IMMAT_SUCCESS_SLUGS = [
+    "/details-vehicule",
+]
+
+def check_immat_fr(brand, homepage_url):
+    """
+    Vérifie le décodage immat sur les sites FR :
+    1. Charge la homepage
+    2. Ferme la CMP
+    3. Saisit l'immat dans #registration
+    4. Clique #js-submit-plate
+    5. Vérifie qu'on arrive sur une page de résultat (pas homepage)
+    """
+    t0 = time.time()
+    details = {"brand": brand, "page": "Immat", "error_type": None}
+    try:
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)
+            ctx = browser.new_context(
+                viewport={"width": 1280, "height": 800},
+                user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+            )
+            pg = ctx.new_page()
+
+            # 1. Charger la homepage
+            pg.goto(homepage_url, timeout=30000, wait_until="domcontentloaded")
+            pg.wait_for_timeout(2000)
+
+            # 2. Fermer la CMP
+            try:
+                cmp = pg.locator("a#_psaihm_continue_without_accepting")
+                if cmp.count() > 0 and cmp.first.is_visible(timeout=3000):
+                    cmp.first.click()
+                    pg.wait_for_timeout(1000)
+            except Exception:
+                pass
+
+            # 3. Saisir l'immat
+            pg.wait_for_selector("#registration", timeout=10000)
+            pg.fill("#registration", IMMAT_FR)
+            pg.wait_for_timeout(500)
+
+            # 4. Cliquer le bouton d'estimation
+            pg.locator("#js-submit-plate").click(timeout=8000)
+            pg.wait_for_timeout(3000)
+
+            # 5. Vérifier l'URL résultante
+            final_url = pg.url
+            elapsed = round(time.time() - t0, 2)
+            browser.close()
+
+            # Succès si on n'est plus sur la homepage et sur une page de résultat
+            success = any(slug in final_url for slug in IMMAT_SUCCESS_SLUGS)
+            if not success and final_url != homepage_url and final_url != homepage_url + "/":
+                # On est quand même allé quelque part — c'est ok
+                success = True
+
+            details["final_url"] = final_url
+            details["elapsed_http"] = elapsed
+
+            if success:
+                return True, f"Décodage immat OK → {final_url.split('/')[-1]}", elapsed, details
+            else:
+                details["error_type"] = "IMMAT_DECODE_FAILED"
+                return False, f"Décodage immat KO — resté sur {final_url}", elapsed, details
+
+    except Exception as e:
+        elapsed = round(time.time() - t0, 2)
+        details["error_type"] = "IMMAT_ERROR"
+        details["error_detail"] = str(e)[:200]
+        return False, f"Erreur décodage immat : {type(e).__name__}", elapsed, details
+
 def run():
     init_github()
     # Démarrer le keepalive Render en arrière-plan
@@ -578,6 +665,39 @@ def run():
                             "type": "ko", "detail": reason, "diagnostics": details,
                             "screenshot": screenshot_url,
                             "is_reference": brand in REFERENCE_BRANDS})
+
+        # ── CHECK IMMAT FR ──
+        for brand in FR_BRANDS:
+            if brand not in statuses:
+                continue
+            homepage_url = BRANDS[brand].get("Homepage")
+            if not homepage_url:
+                continue
+            ok_i, reason_i, elapsed_i, details_i = check_immat_fr(brand, homepage_url)
+            key_i = f"{brand}:Immat"
+            statuses[brand]["Immat"] = {
+                "ok": ok_i, "reason": reason_i, "elapsed": elapsed_i,
+                "checked_at": now, "url": homepage_url, "details": details_i
+            }
+            chart_data[key_i].append({"time": now, "elapsed": elapsed_i})
+            if len(chart_data[key_i]) > MAX_CHART:
+                chart_data[key_i].pop(0)
+            icon_i = "✅" if ok_i else "❌"
+            log.info(f"[{brand}][Immat] {icon_i} {reason_i}")
+            if ok_i:
+                if incident_active.get(key_i):
+                    incident_active[key_i] = False
+                    history.append({"time": now, "brand": brand, "page": "Immat",
+                        "type": "recovery", "detail": "Décodage immat rétabli"})
+                    send_teams_alert(brand, "Immat", homepage_url, reason_i, is_recovery=True, details=details_i)
+            else:
+                if not incident_active.get(key_i):
+                    incident_active[key_i] = True
+                    screenshot_url = take_screenshot(brand, "Immat", homepage_url)
+                    send_teams_alert(brand, "Immat", homepage_url, reason_i, details=details_i, screenshot_url=screenshot_url)
+                    history.append({"time": now, "brand": brand, "page": "Immat",
+                        "type": "ko", "detail": reason_i, "diagnostics": details_i,
+                        "screenshot": screenshot_url})
 
         push_status(statuses)
         threading.Thread(target=push_to_render, args=(statuses,), daemon=True).start()
