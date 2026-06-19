@@ -569,13 +569,17 @@ def check_immat_fr(brand, homepage_url):
             # Groupe PSA (Opel, Citroën, DS, Peugeot) : a#_psaihm_continue_without_accepting
             # Groupe STLA (Alfa, Fiat, Jeep, Abarth, Lancia) : button#decline-text
             STLA_CMP_BRANDS = {"AlfaRomeo FR", "Fiat FR", "FiatPro FR", "Jeep FR", "Abarth FR", "Lancia FR"}
-            cmp_sel = "button#decline-text" if brand in STLA_CMP_BRANDS else "a#_psaihm_continue_without_accepting"
             try:
-                cmp = pg.locator(cmp_sel)
+                if brand in STLA_CMP_BRANDS:
+                    # STLA (Alfa, Fiat, Jeep, Abarth, Lancia) → Tout accepter
+                    cmp = pg.locator("button#acceptAllBtn")
+                else:
+                    # PSA (Opel, Citroën, DS, Peugeot) → Continuer sans accepter
+                    cmp = pg.locator("a#_psaihm_continue_without_accepting")
                 cmp.wait_for(timeout=5000, state="visible")
                 cmp.click()
                 pg.wait_for_timeout(1500)
-                log.info(f"[{brand}][Immat] CMP fermée via {cmp_sel}")
+                log.info(f"[{brand}][Immat] CMP fermée")
             except Exception:
                 pass
 
