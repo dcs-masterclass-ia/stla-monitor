@@ -565,13 +565,15 @@ def check_immat_fr(brand, homepage_url):
             pg.goto(homepage_url, timeout=30000, wait_until="domcontentloaded")
             pg.wait_for_timeout(2000)
 
-            # 2. Fermer la CMP
+            # 2. Fermer la CMP — attendre qu'elle apparaisse et la fermer
             try:
                 cmp = pg.locator("a#_psaihm_continue_without_accepting")
-                if cmp.count() > 0 and cmp.first.is_visible(timeout=3000):
-                    cmp.first.click()
-                    pg.wait_for_timeout(1000)
+                cmp.wait_for(timeout=5000, state="visible")
+                cmp.click()
+                pg.wait_for_timeout(1500)
+                log.info(f"[{brand}][Immat] CMP fermée")
             except Exception:
+                # CMP pas présente ou déjà fermée
                 pass
 
             # 3. Saisir l'immat
@@ -668,6 +670,8 @@ def run():
 
         # ── CHECK IMMAT FR ──
         for brand in FR_BRANDS:
+            if f"{brand}:Immat" not in chart_data:
+                chart_data[f"{brand}:Immat"] = []
             if brand not in statuses:
                 continue
             homepage_url = BRANDS[brand].get("Homepage")
