@@ -584,12 +584,12 @@ def check_immat_fr(brand, homepage_url):
                 pass
 
             # 3. Saisir l'immat
-            pg.wait_for_selector("#registration", timeout=10000)
+            pg.wait_for_selector("#registration", timeout=16000)
             pg.fill("#registration", IMMAT_FR)
-            pg.wait_for_timeout(500)
+            pg.wait_for_timeout(3000)
 
             # 4. Cliquer le bouton d'estimation
-            pg.locator("#js-submit-plate").click(timeout=8000)
+            pg.locator("#js-submit-plate").click(timeout=16000)
             pg.wait_for_timeout(3000)
 
             # 5. Vérifier l'URL résultante
