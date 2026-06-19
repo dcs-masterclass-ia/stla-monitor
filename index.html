@@ -135,8 +135,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .feed::-webkit-scrollbar-thumb{background:#e2e8f0;border-radius:10px}
 .inc-row{display:flex;flex-direction:column;gap:5px;padding:11px;background:var(--accent-light);border-radius:14px;margin-bottom:7px;transition:all .2s}
 .inc-row:hover{background:#fff;box-shadow:var(--shadow);transform:translateX(3px)}
-.inc-row.ongoing{background:var(--red-bg);animation:alertPulse 2s infinite}
-@keyframes alertPulse{0%{box-shadow:0 0 0 0 rgba(225,29,72,.4)}70%{box-shadow:0 0 0 8px rgba(225,29,72,0)}100%{box-shadow:0 0 0 0 rgba(225,29,72,0)}}
+.inc-row.ongoing{background:var(--red-bg);} /* Pulse supprimé */
 .inc-top{display:flex;justify-content:space-between;align-items:flex-start}
 .inc-time{font-size:9px;color:var(--text-3);font-weight:800}
 .inc-title{font-size:11px;font-weight:800;color:var(--text);line-height:1.2}
@@ -168,7 +167,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 <div class="blob b1"></div><div class="blob b2"></div>
 <div class="shell">
 
-<!-- ── SIDEBAR ── -->
 <aside class="sidebar">
   <div class="sb-head">
     <div class="sb-logo">
@@ -181,14 +179,12 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
     </div>
   </div>
 
-  <!-- Niveau 1 : STLA / OEM -->
   <div class="sb-tabs">
     <button class="sb-tab on" id="tab-stla" onclick="switchGroup('stla')">STLA</button>
     <button class="sb-tab" id="tab-oem" onclick="switchGroup('oem')">OEM</button>
     <button class="sb-tab" id="tab-ref" onclick="switchGroup('ref')">Réf.</button>
   </div>
 
-  <!-- Niveau 2+3 : Pays > Marques -->
   <div class="sb-scroll" id="sb-nav"></div>
 
   <div class="sb-foot">
@@ -197,7 +193,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
   </div>
 </aside>
 
-<!-- ── MAIN ── -->
 <main class="main">
   <div id="empty-state" class="empty-state">
     <i data-lucide="monitor-dot" style="width:48px;height:48px"></i>
@@ -374,7 +369,6 @@ const BRAND_META = {
   "Ford FR":      {logo:"https://www.logo-voiture.com/wp-content/uploads/2021/01/ford-logo-2017-grand.png",        colors:["#0066cc","#1a9e6e"]},
   "Aramisauto":   {logo:"",                                                                                         colors:["#e85d04","#f48c06"]},
 };
-// Pour toutes les marques sans logo défini — logo Stellantis générique
 const BRAND_LOGOS = {
   "Peugeot": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Peugeot_logo.svg/120px-Peugeot_logo.svg.png",
   "Citroen": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Citro%C3%ABn_logo_2022.svg/120px-Citro%C3%ABn_logo_2022.svg.png",
@@ -646,7 +640,32 @@ function renderChart() {
   container.style.width = w + "px";
   const isEnd = scroll.scrollLeft + scroll.clientWidth >= scroll.scrollWidth - 20;
   const yOpts = {responsive:true,maintainAspectRatio:false,animation:{duration:0},interaction:{mode:null},plugins:{legend:{display:false},tooltip:{enabled:false}},layout:{padding:{top:10,bottom:8}},scales:{x:{grid:{display:false},border:{display:false},ticks:{color:"transparent"}},y:{max:4,min:0,grid:{display:false},border:{display:false},ticks:{stepSize:1,font:{size:11,family:'Plus Jakarta Sans'},color:"#94a3b8",callback:v=>v+"s"}}}};
-  const mOpts = {responsive:true,maintainAspectRatio:false,animation:{duration:200},interaction:{mode:"index",intersect:false},plugins:{legend:{display:false}},layout:{padding:{top:10,bottom:0}},scales:{x:{grid:{display:false},border:{display:false},ticks:{font:{size:11,family:'Plus Jakarta Sans'},color:"#94a3b8",maxTicksLimit:8}},y:{position:"left",grid:{color:"rgba(0,0,0,0.04)"},border:{display:false},max:4,min:0,ticks:{display:false,stepSize:1}},yKo:{display:false,min:0,max:1}}};
+  const mOpts = {
+      responsive:true,
+      maintainAspectRatio:false,
+      animation:{duration:200},
+      interaction:{mode:"index",intersect:false},
+      plugins:{legend:{display:false}},
+      layout:{padding:{top:10,bottom:0}},
+      scales:{
+          x:{
+              grid:{display:false},
+              border:{display:false},
+              ticks:{
+                  font:{size:11,family:'Plus Jakarta Sans'},
+                  color:"#94a3b8",
+                  maxTicksLimit:8,
+                  maxRotation:0,
+                  callback:function(val){
+                      const lbl=this.getLabelForValue(val);
+                      return lbl?lbl.substring(11,16):'';
+                  }
+              }
+          },
+          y:{position:"left",grid:{color:"rgba(0,0,0,0.04)"},border:{display:false},max:4,min:0,ticks:{display:false,stepSize:1}},
+          yKo:{display:false,min:0,max:1}
+      }
+  };
   if (!yAxisInst) {
     yAxisInst = new Chart(document.getElementById("yAxisChart"),{type:"line",data:{labels:["0"],datasets:[]},options:yOpts});
   }
