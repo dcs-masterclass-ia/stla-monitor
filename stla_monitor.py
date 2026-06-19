@@ -405,61 +405,65 @@ def resolve_dns(hostname):
 # ─────────────────────────────────────────────
 
 def check_url_playwright(brand, page, url):
-    details = {"brand": brand, "page": page}
+    """Vérifie une URL avec requests + headers Chrome (bypass WAF léger)."""
+    import urllib3
+    urllib3.disable_warnings()
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+        "Accept-Language": "fr-FR,fr;q=0.9,en;q=0.8",
+        "Accept-Encoding": "gzip, deflate, br",
+        "Connection": "keep-alive",
+        "Upgrade-Insecure-Requests": "1",
+        "Sec-Fetch-Dest": "document",
+        "Sec-Fetch-Mode": "navigate",
+        "Sec-Fetch-Site": "none",
+        "Cache-Control": "max-age=0",
+    }
     t0 = time.time()
-    hostname = urlparse(url).hostname
-    ip, dns_elapsed, dns_error = resolve_dns(hostname)
-    details["dns_elapsed"] = dns_elapsed
-    details["ip"] = ip or "NON RÉSOLU"
-    if not ip:
-        details["error_type"] = "DNS_FAILURE"
-        details["error_detail"] = dns_error
-        return False, f"Erreur DNS : {dns_error}", round(time.time()-t0, 2), details
+    details = {"brand": brand, "page": page}
     try:
-        with sync_playwright() as p:
-            browser = p.chromium.launch(headless=True, args=[
-                "--no-sandbox",
-                "--disable-dev-shm-usage",
-                "--disable-gpu",
-                "--no-zygote",
-                "--single-process",
-                "--disable-extensions",
-                "--disable-images",
-                "--memory-pressure-off",
-                "--js-flags=--max-old-space-size=128",
-            ])
-            ctx = browser.new_context(viewport={"width": 1280, "height": 800},
-                user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36")
-            pg = ctx.new_page()
-            BLOCKED = ["google-analytics.com","googletagmanager.com","facebook.net",
-                "hotjar.com","segment.com","mixpanel.com","criteo.com","doubleclick.net"]
-            def block_tracking(route):
-                if any(d in route.request.url for d in BLOCKED): route.abort()
-                else: route.continue_()
-            pg.route("**/*", block_tracking)
-            t1 = time.time()
-            resp = pg.goto(url, timeout=RESPONSE_TIME_LIMIT_SECONDS*1000, wait_until="domcontentloaded")
-            elapsed = round(time.time()-t1, 2)
-            total = round(time.time()-t0, 2)
-            status = resp.status if resp else 0
-            details.update({"http_status": status, "elapsed_http": elapsed, "elapsed_total": total, "error_type": None})
-            browser.close()
-            if status >= 400:
-                details["error_type"] = f"HTTP_{status}"
-                return False, f"HTTP {status}", total, details
-            if elapsed > VERY_SLOW_THRESHOLD_SECONDS:
-                details["error_type"] = "VERY_SLOW"
-                return False, f"Réponse très lente : {elapsed}s", total, details
-            return True, f"OK ({status}) en {elapsed}s", total, details
-    except Exception as e:
-        elapsed = round(time.time()-t0, 2)
-        details["error_type"] = "PLAYWRIGHT_ERROR"
-        details["error_detail"] = str(e)[:200]
-        return False, f"Erreur navigateur : {type(e).__name__}", elapsed, details
+        session = requests.Session()
+        session.headers.update(headers)
+        r = session.get(url, timeout=8, verify=False, allow_redirects=True)
+        elapsed = round(time.time() - t0, 2)
+        details["http_status"] = r.status_code
+        details["elapsed_http"] = elapsed
+        details["ip"] = resolve_dns(url.split("/")[2])
 
-# ─────────────────────────────────────────────
-# CHECK URL (requests)
-# ─────────────────────────────────────────────
+        body = r.text[:500].lower()
+        ACCESS_DENIED = ["access denied", "403 forbidden", "cloudflare", "just a moment", "enable javascript"]
+        if any(k in body for k in ACCESS_DENIED):
+            details["error_type"] = "WAF_BLOCK"
+            details["body_preview"] = r.text[:200]
+            return False, f"Bloqué WAF ({r.status_code})", elapsed, details
+
+        if r.status_code >= 400:
+            details["error_type"] = f"HTTP_{r.status_code}"
+            return False, f"HTTP {r.status_code}", elapsed, details
+
+        if elapsed > 4:
+            details["error_type"] = "VERY_SLOW"
+            return False, f"Très lent ({elapsed}s)", elapsed, details
+
+        return True, f"OK ({r.status_code}) en {elapsed}s", elapsed, details
+
+    except requests.exceptions.ConnectTimeout:
+        elapsed = round(time.time() - t0, 2)
+        details["error_type"] = "TCP_TIMEOUT"
+        return False, "Pas de réponse après 8s (TIMEOUT)", elapsed, details
+    except requests.exceptions.ConnectionError as e:
+        elapsed = round(time.time() - t0, 2)
+        err = str(e)
+        if "NameOrServiceNotKnown" in err or "nodename nor servname" in err or "Name or service" in err:
+            details["error_type"] = "DNS_FAILURE"
+            return False, f"Erreur DNS : {err[:80]}", elapsed, details
+        details["error_type"] = "CONNECTION_ERROR"
+        return False, f"Erreur connexion : {err[:80]}", elapsed, details
+    except Exception as e:
+        elapsed = round(time.time() - t0, 2)
+        details["error_type"] = "UNKNOWN"
+        return False, f"Erreur : {str(e)[:80]}", elapsed, details
 
 def check_url(brand, page, url):
     hostname = urlparse(url).hostname
