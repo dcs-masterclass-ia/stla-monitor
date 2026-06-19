@@ -15,6 +15,7 @@ import json
 import os
 import socket
 import threading
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
 from urllib.parse import urlparse
 from github import Auth, Github
@@ -532,7 +533,8 @@ def check_url(brand, page, url):
 IMMAT_FR = "GJ100ZP"  # Immat FR valide pour décodage
 
 FR_BRANDS = {
-    "Opel FR", "Citroen FR", "DS FR","Peugeot FR"
+    "Opel FR", "AlfaRomeo FR", "Citroen FR", "DS FR",
+    "Fiat FR", "FiatPro FR", "Jeep FR", "Lancia FR", "Peugeot FR"
 }
 
 # Pages de succès après décodage immat
@@ -561,7 +563,7 @@ def check_immat_fr(brand, homepage_url):
             pg = ctx.new_page()
 
             # 1. Charger la homepage
-            pg.goto(homepage_url, timeout=30000, wait_until="domcontentloaded")
+            pg.goto(homepage_url, timeout=15000, wait_until="domcontentloaded")
             pg.wait_for_timeout(2000)
 
             # 2. Fermer la CMP — deux sélecteurs selon la marque
@@ -583,12 +585,12 @@ def check_immat_fr(brand, homepage_url):
                 pass
 
             # 3. Saisir l'immat
-            pg.wait_for_selector("#registration", timeout=16000)
+            pg.wait_for_selector("#registration", timeout=10000)
             pg.fill("#registration", IMMAT_FR)
-            pg.wait_for_timeout(3000)
+            pg.wait_for_timeout(500)
 
             # 4. Cliquer le bouton d'estimation
-            pg.locator("#js-submit-plate").click(timeout=16000)
+            pg.locator("#js-submit-plate").click(timeout=8000)
             pg.wait_for_timeout(3000)
 
             # 5. Vérifier l'URL résultante
@@ -633,46 +635,61 @@ def run():
         now = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
         now_short = datetime.now().strftime("%H:%M:%S")
 
+        # Construire la liste de toutes les tâches à exécuter
+        tasks = []
         for brand, urls in BRANDS.items():
             statuses[brand] = {}
             for page, url in urls.items():
-                key = f"{brand}:{page}"
-                if brand in REFERENCE_BRANDS:
-                    ok, reason, elapsed, details = check_url_playwright(brand, page, url)
-                else:
-                    ok, reason, elapsed, details = check_url(brand, page, url)
+                tasks.append((brand, page, url))
 
-                chart_data[key].append({"time": now, "elapsed": elapsed})
-                if len(chart_data[key]) > MAX_CHART:
-                    chart_data[key].pop(0)
+        def check_task(task):
+            brand, page, url = task
+            if brand in REFERENCE_BRANDS:
+                return brand, page, url, check_url_playwright(brand, page, url)
+            else:
+                return brand, page, url, check_url(brand, page, url)
 
-                statuses[brand][page] = {
-                    "ok": ok, "reason": reason, "elapsed": elapsed,
-                    "checked_at": now, "url": url, "details": details
-                }
+        # Exécuter en parallèle — max 10 workers simultanés
+        with ThreadPoolExecutor(max_workers=50) as executor:
+            futures = {executor.submit(check_task, t): t for t in tasks}
+            for future in as_completed(futures):
+                try:
+                    brand, page, url, (ok, reason, elapsed, details) = future.result()
+                    key = f"{brand}:{page}"
 
-                icon = "✅" if ok else "❌"
-                log.info(f"[{brand}][{page}] {icon} {reason}")
+                    chart_data[key].append({"time": now, "elapsed": elapsed})
+                    if len(chart_data[key]) > MAX_CHART:
+                        chart_data[key].pop(0)
 
-                if ok:
-                    if incident_active.get(key):
-                        incident_active[key] = False
-                        history.append({"time": now, "brand": brand, "page": page,
-                            "type": "recovery", "detail": "Retour en ligne",
-                            "is_reference": brand in REFERENCE_BRANDS})
-                        if brand not in REFERENCE_BRANDS:
-                            send_teams_alert(brand, page, url, reason, is_recovery=True, details=details)
-                else:
-                    if not incident_active.get(key):
-                        incident_active[key] = True
-                        screenshot_url = None
-                        if brand not in REFERENCE_BRANDS:
-                            screenshot_url = take_screenshot(brand, page, url)
-                            send_teams_alert(brand, page, url, reason, details=details, screenshot_url=screenshot_url)
-                        history.append({"time": now, "brand": brand, "page": page,
-                            "type": "ko", "detail": reason, "diagnostics": details,
-                            "screenshot": screenshot_url,
-                            "is_reference": brand in REFERENCE_BRANDS})
+                    statuses[brand][page] = {
+                        "ok": ok, "reason": reason, "elapsed": elapsed,
+                        "checked_at": now, "url": url, "details": details
+                    }
+
+                    icon = "✅" if ok else "❌"
+                    log.info(f"[{brand}][{page}] {icon} {reason}")
+
+                    if ok:
+                        if incident_active.get(key):
+                            incident_active[key] = False
+                            history.append({"time": now, "brand": brand, "page": page,
+                                "type": "recovery", "detail": "Retour en ligne",
+                                "is_reference": brand in REFERENCE_BRANDS})
+                            if brand not in REFERENCE_BRANDS:
+                                send_teams_alert(brand, page, url, reason, is_recovery=True, details=details)
+                    else:
+                        if not incident_active.get(key):
+                            incident_active[key] = True
+                            screenshot_url = None
+                            if brand not in REFERENCE_BRANDS:
+                                screenshot_url = take_screenshot(brand, page, url)
+                                send_teams_alert(brand, page, url, reason, details=details, screenshot_url=screenshot_url)
+                            history.append({"time": now, "brand": brand, "page": page,
+                                "type": "ko", "detail": reason, "diagnostics": details,
+                                "screenshot": screenshot_url,
+                                "is_reference": brand in REFERENCE_BRANDS})
+                except Exception as e:
+                    log.error(f"Erreur task : {e}")
 
         # ── CHECK IMMAT FR ──
         for brand in FR_BRANDS:
