@@ -82,7 +82,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .brand-logo{height:40px;object-fit:contain;filter:drop-shadow(0 2px 8px rgba(0,0,0,.06)); margin-top:4px;}
 .brand-h1{font-size:32px;font-weight:900;letter-spacing:-.04em;color:var(--text);line-height:1}
 
-.brand-endpoints{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.brand-endpoints{display:flex;flex-wrap:wrap;gap:8px}
 .ep-chip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;background:var(--glass-strong);border-radius:10px;font-size:10px;font-weight:800;color:var(--text-2);box-shadow:var(--shadow-soft)}
 .ep-dot{width:6px;height:6px;border-radius:50%}
 .ep-dot.ok{background:var(--green)}
@@ -165,6 +165,11 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .macro-card { background:var(--glass-strong); border-radius:var(--r-sm); padding:1rem 1.5rem; box-shadow:var(--shadow-soft); flex-shrink:0; height:160px; display:flex; flex-direction:column; overflow: hidden; }
 .macro-container { flex:1; position:relative; min-height:0; margin-top: 4px; overflow:hidden;}
 
+/* PERIOD SELECTOR */
+.brand-endpoints-row { display:flex; align-items:center; gap:8px; margin-top:10px; flex-wrap:wrap; }
+.period-wrap { display:flex; align-items:center; gap:4px; margin-left:auto; background:var(--accent-light); border-radius:12px; padding:3px; }
+.period-btn { padding:5px 14px; border-radius:9px; font-size:11px; font-weight:800; font-family:'Plus Jakarta Sans',sans-serif; border:none; background:none; color:var(--text-2); cursor:pointer; transition:all .15s; }
+.period-btn.on { background:var(--accent); color:#fff; box-shadow:0 2px 8px rgba(17,24,39,0.15); }
 </style>
 </head>
 <body>
@@ -207,7 +212,14 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
         </button>
         <img id="brand-logo" class="brand-logo" src="" alt="" style="display:none">
         <div class="brand-h1" id="brand-h1">—</div>
-        <div class="brand-endpoints" id="brand-endpoints"></div>
+        <div class="brand-endpoints-row">
+          <div class="brand-endpoints" id="brand-endpoints"></div>
+          <div class="period-wrap">
+            <button class="period-btn on" id="pbtn-24h" onclick="setPeriod('24h',this)">24h</button>
+            <button class="period-btn" id="pbtn-7j" onclick="setPeriod('7j',this)">7j</button>
+            <button class="period-btn" id="pbtn-30j" onclick="setPeriod('30j',this)">30j</button>
+          </div>
+        </div>
       </div>
       
       <div class="brand-status">
@@ -310,6 +322,14 @@ const BRANDS={
   "Aramisauto":{logo:"",colors:["#e85d04","#f48c06"],ref:true}
 };
 let data=null,brand=null,lineChart=null,yAxisChartInstance=null,gaugeChart=null,macroChartInstance=null;
+let currentPeriod = "24h"; // 24h | 7j | 30j
+
+function setPeriod(p, btn) {
+  currentPeriod = p;
+  document.querySelectorAll(".period-btn").forEach(b => b.classList.remove("on"));
+  if(btn) btn.classList.add("on");
+  if(data) render();
+}
 
 function toggleSidebar() {
     document.getElementById('app-shell').classList.toggle('collapsed');
@@ -333,8 +353,25 @@ function switchTab(t){
 }
 
 function filterPts(pts){
-  if(!pts||!pts.length)return [];
-  return pts.slice(-8640);
+  // 1 check/10s = 8640/jour
+  if(!pts||!pts.length) return [];
+  const nPts = currentPeriod === "30j" ? 8640*30 : currentPeriod === "7j" ? 8640*7 : 8640;
+  return pts.slice(-nPts);
+}
+
+function filterPtsStrict(pts) {
+  return filterPts(pts);
+}
+
+function filterHist(hist) {
+  if(!hist||!hist.length) return [];
+  const now = new Date();
+  const days = currentPeriod === "30j" ? 30 : currentPeriod === "7j" ? 7 : 1;
+  const cutoff = new Date(now.getTime() - days * 86400000);
+  return hist.filter(h => {
+    const t = parseDateStr(h.time);
+    return t && t >= cutoff;
+  });
 }
 
 function selectBrand(b){
@@ -362,9 +399,9 @@ function updateDots(d){
 
 function stats(){
   const pages=Object.entries(data.statuses[brand]||{});
-  const hist=(data.history||[]).filter(h=>h.brand===brand);
+  const hist=filterHist((data.history||[]).filter(h=>h.brand===brand));
   const ko=hist.filter(h=>h.type==="ko").length;
-  const chartPts=Object.entries(data.chart_data||{}).filter(([k])=>k.startsWith(brand+":")).map(([k,v])=>[k,filterPts(v)]);
+  const chartPts=Object.entries(data.chart_data||{}).filter(([k])=>k.startsWith(brand+":")).map(([k,v])=>[k,filterPtsStrict(v)]);
   const elapsed=chartPts.flatMap(([,pts])=>pts.map(p=>p.elapsed));
   const avg=elapsed.length?(elapsed.reduce((a,b)=>a+b,0)/elapsed.length).toFixed(2)+"s":"—";
   
@@ -461,7 +498,7 @@ function renderChart(){
   const koTimes=new Set(koHist.map(h=>(h.time||"").substring(11,19)));
   
   // ── DOWNSAMPLING ANTICRASH ──
-  const rawDatasets = pages.map(([page]) => filterPts((data.chart_data||{})[brand+":"+page]||[]));
+  const rawDatasets = pages.map(([page]) => filterPtsStrict((data.chart_data||{})[brand+":"+page]||[]));
   let masterTimes = rawDatasets.length > 0 ? rawDatasets[0].map(p => p.time) : [];
   let sampledIndices = new Set();
   const MAX_POINTS = 300; 
@@ -594,7 +631,7 @@ function renderEndpoints() {
 }
 
 function renderMacroChart() {
-    const hist = (data.history || []).filter(h => h.brand === brand && h.type === 'ko');
+    const hist = filterHist((data.history || []).filter(h => h.brand === brand && h.type === 'ko'));
     const absoluteHourCounts = new Array(24).fill(0);
     hist.forEach(h => {
         const t = parseDateStr(h.time);
@@ -656,7 +693,7 @@ function dur(hist,idx){
 }
 
 function renderHistory(){
-  const hist=(data.history||[]).filter(h=>h.brand===brand);
+  const hist=filterHist((data.history||[]).filter(h=>h.brand===brand));
   document.getElementById("inc-count").textContent=hist.length?"("+hist.length+" evt)":"";
   const el=document.getElementById("history");
   if(!hist.length){el.innerHTML='<div class="empty">Aucun incident enregistré. 🎉</div>';return;}
@@ -731,7 +768,7 @@ function detectTrend(){
 
 function downloadReport(){
   if(!data||!brand)return;
-  const hist=(data.history||[]).filter(h=>h.brand===brand);
+  const hist=filterHist((data.history||[]).filter(h=>h.brand===brand));
   const rows=[["Date","Page","Type","Détail","Durée","Erreur","IP"]];
   hist.forEach((h,i)=>{const d=h.type==="ko"?dur(hist,i):"";rows.push([h.time||"",h.page||"",h.type||"",h.detail||"",d||"",h.diagnostics&&h.diagnostics.error_type||"",h.diagnostics&&h.diagnostics.ip||""]);});
   const csv=rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(",")).join("\n");
