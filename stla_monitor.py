@@ -532,8 +532,7 @@ def check_url(brand, page, url):
 IMMAT_FR = "GJ100ZP"  # Immat FR valide pour décodage
 
 FR_BRANDS = {
-    "Opel FR", "AlfaRomeo FR", "Citroen FR", "DS FR",
-    "Fiat FR", "FiatPro FR", "Jeep FR", "Lancia FR", "Peugeot FR"
+    "Opel FR", "Citroen FR", "DS FR","Peugeot FR"
 }
 
 # Pages de succès après décodage immat
