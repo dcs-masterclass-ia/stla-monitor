@@ -650,7 +650,7 @@ def run():
                 return brand, page, url, check_url(brand, page, url)
 
         # Exécuter en parallèle — max 10 workers simultanés
-        with ThreadPoolExecutor(max_workers=50) as executor:
+        with ThreadPoolExecutor(max_workers=5) as executor:
             futures = {executor.submit(check_task, t): t for t in tasks}
             for future in as_completed(futures):
                 try:
