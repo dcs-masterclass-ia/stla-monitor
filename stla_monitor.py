@@ -127,7 +127,21 @@ BRANDS = {
     "Aramisauto":   {"Homepage": "https://www.aramisauto.com/reprise/"},
 }
 
-REFERENCE_BRANDS = {"Aramisauto"}
+REFERENCE_BRANDS = {
+    "Aramisauto",
+    # Sites bloqués par WAF — nécessitent Playwright
+    "Abarth PT", "AlfaRomeo PT", "Citroen PT", "DS PT", "Fiat PT", "FiatPro PT", "Jeep PT", "Peugeot PT", "Opel PT",
+    "Abarth ES", "AlfaRomeo ES", "Citroen ES", "DS ES", "Fiat ES", "FiatPro ES", "Jeep ES", "Opel ES", "Peugeot ES",
+    "Abarth IT", "AlfaRomeo IT", "Citroen IT", "DS IT", "Fiat IT", "Jeep IT", "Lancia IT", "Opel IT", "Peugeot IT",
+    "AlfaRomeo DE", "Citroen DE", "DS DE", "Opel DE", "Peugeot DE", "Spoticar DE",
+    "Citroen AT", "Opel AT", "Peugeot AT",
+    "Abarth BE", "AlfaRomeo BE", "Citroen BE", "DS BE", "Fiat BE", "FiatPro BE", "Jeep BE", "Lancia BE", "Opel BE", "Peugeot BE", "Leapmotor BE",
+    "Abarth BE-NL", "AlfaRomeo BE-NL", "Citroen BE-NL", "DS BE-NL", "Fiat BE-NL", "FiatPro BE-NL", "Jeep BE-NL", "Lancia BE-NL", "Opel BE-NL", "Peugeot BE-NL", "Leapmotor BE-NL",
+    "AlfaRomeo PL", "Citroen PL", "Fiat PL", "Jeep PL", "Opel PL", "Peugeot PL",
+    "Abarth LU", "AlfaRomeo LU", "Citroen LU", "DS LU", "Fiat LU", "FiatPro LU", "Jeep LU", "Lancia LU", "Opel LU", "Peugeot LU", "Leapmotor LU",
+    "Opel FR", "AlfaRomeo FR", "Citroen FR", "DS FR", "Fiat FR", "FiatPro FR", "Jeep FR", "Lancia FR", "Peugeot FR",
+    "DS UK",
+}
 
 TEAMS_WEBHOOK_URL = "https://default64661b8d1758459ca270b19fe3578e.a7.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/c3181d4e41694cfebd1c7502d219b6a9/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=l0lFm8uGc6kFwT73IzDPQBdNut4ZWgNsaXHosdDEh18"
 
