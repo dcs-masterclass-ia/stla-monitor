@@ -45,7 +45,7 @@ BRANDS = {
     "Fiat FR":      {"Homepage": "https://reprise.fiat.fr",                "Parcours": "https://reprise.fiat.fr/page-modele"},
     "FiatPro FR":   {"Homepage": "https://reprise.fiatprofessional.com",   "Parcours": "https://reprise.fiatprofessional.com/page-modele"},
     "Jeep FR":      {"Homepage": "https://reprise.jeep.fr",                "Parcours": "https://reprise.jeep.fr/page-modele"},
-    "Lancia FR":    {"Homepage": "https://reprise.lancia.fr/page-accueil", "Parcours": "https://reprise.lancia.fr/page-modele"},
+    "Lancia FR":    {"Homepage": "https://reprise.lancia.fr/",             "Parcours": "https://reprise.lancia.fr/page-modele"},
     "Peugeot FR":   {"Homepage": "https://www.reprise.peugeot.fr",         "Parcours": "https://www.reprise.peugeot.fr/page-modele"},
     # ── ESPAGNE ──
     "Abarth ES":    {"Homepage": "https://tasacion.abarth.es",             "Parcours": "https://tasacion.abarth.es/pagina-modelo"},
@@ -565,15 +565,18 @@ def check_immat_fr(brand, homepage_url):
             pg.goto(homepage_url, timeout=30000, wait_until="domcontentloaded")
             pg.wait_for_timeout(2000)
 
-            # 2. Fermer la CMP — attendre qu'elle apparaisse et la fermer
+            # 2. Fermer la CMP — deux sélecteurs selon la marque
+            # Groupe PSA (Opel, Citroën, DS, Peugeot) : a#_psaihm_continue_without_accepting
+            # Groupe STLA (Alfa, Fiat, Jeep, Abarth, Lancia) : button#decline-text
+            STLA_CMP_BRANDS = {"AlfaRomeo FR", "Fiat FR", "FiatPro FR", "Jeep FR", "Abarth FR", "Lancia FR"}
+            cmp_sel = "button#decline-text" if brand in STLA_CMP_BRANDS else "a#_psaihm_continue_without_accepting"
             try:
-                cmp = pg.locator("a#_psaihm_continue_without_accepting")
+                cmp = pg.locator(cmp_sel)
                 cmp.wait_for(timeout=5000, state="visible")
                 cmp.click()
                 pg.wait_for_timeout(1500)
-                log.info(f"[{brand}][Immat] CMP fermée")
+                log.info(f"[{brand}][Immat] CMP fermée via {cmp_sel}")
             except Exception:
-                # CMP pas présente ou déjà fermée
                 pass
 
             # 3. Saisir l'immat
