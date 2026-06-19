@@ -123,6 +123,8 @@ BRANDS = {
     "Leapmotor LU": {"Homepage": "https://reprise.leapmotor-international.lu",   "Parcours": "https://reprise.leapmotor-international.lu/page-modele"},
     # ── UK ──
     "DS UK":        {"Homepage": "https://www.tradein.dsautomobiles.co.uk",      "Parcours": "https://www.tradein.dsautomobiles.co.uk/page-modele"},
+    # ── OEM ──
+    "Ford FR":      {"Homepage": "https://www.ford-reprise.fr/",           "Formulaire": "https://www.ford-reprise.fr/form"},
     # ── RÉFÉRENCES ──
     "Aramisauto":   {"Homepage": "https://www.aramisauto.com/reprise/"},
 }
