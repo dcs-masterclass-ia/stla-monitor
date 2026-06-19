@@ -547,7 +547,7 @@ def run():
                 else:
                     ok, reason, elapsed, details = check_url(brand, page, url)
 
-                chart_data[key].append({"time": now_short, "elapsed": elapsed})
+                chart_data[key].append({"time": now, "elapsed": elapsed})
                 if len(chart_data[key]) > MAX_CHART:
                     chart_data[key].pop(0)
 
