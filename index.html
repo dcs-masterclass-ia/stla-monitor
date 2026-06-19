@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>UAS Monitor - NOC Dashboard</title>
+<title>STLA Monitor - NOC Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 <style>
@@ -101,7 +101,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .content-area::-webkit-scrollbar{width:4px}
 .content-area::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:10px}
 
-/* ── MODULE IA GEMINI (Zéro Bordure Strict) ── */
+/* ── MODULE IA GEMINI (Sans bordure) ── */
 .ai-card { background: linear-gradient(to right, #ffffff, #f8fafc); border-radius: var(--r-sm); padding: 1rem 1.25rem; box-shadow: var(--shadow-soft); flex-shrink: 0; display: flex; flex-direction: column; gap: 8px; position: relative; overflow: hidden; border: none !important;}
 .ai-header { display: flex; align-items: center; justify-content: space-between; }
 .ai-brand { display: flex; align-items: center; gap: 8px; }
@@ -200,7 +200,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
   <aside class="sidebar">
     <div class="logo-row">
       <i data-lucide="activity" style="width:24px;height:24px;color:var(--text)"></i>
-      <span class="logo-wordmark">UAS MONITOR</span>
+      <span class="logo-wordmark">STLA MONITOR</span>
     </div>
     <div class="seg">
       <button class="seg-btn on" id="tab-vos" onclick="switchTab('vos')">Production</button>
@@ -257,7 +257,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
       <div class="kpi">
         <div class="kpi-lbl">Réponse moy. <i data-lucide="zap" style="width:16px;height:16px"></i></div>
         <div class="kpi-num" id="val-resp">—</div>
-        <div class="kpi-hint">Toutes pages</div>
+        <div class="kpi-hint" id="hint-resp">Global</div>
       </div>
       <div class="kpi">
         <div class="kpi-lbl">Incidents <i data-lucide="siren" style="width:16px;height:16px"></i></div>
@@ -351,6 +351,24 @@ const BRANDS={
 };
 let data=null,brand=null,period="7j",lineChart=null,gaugeChart=null;
 
+// Failsafe Universel pour le parsing de date
+function parseDateStr(s){
+  if(!s) return null;
+  // Format classique (ex: 19/06/2026 10:00:00)
+  let m = s.match(/(\d{2})\/(\d{2})\/(\d{4})\s+(\d{2}):(\d{2}):(\d{2})/);
+  if(m) return new Date(m[3], m[2]-1, m[1], m[4], m[5], m[6]);
+  // Format partiel (ex: 19/06/2026 10:00)
+  let m2 = s.match(/(\d{2})\/(\d{2})\/(\d{4})\s+(\d{2}):(\d{2})/);
+  if(m2) return new Date(m2[3], m2[2]-1, m2[1], m[4], m[5], 0);
+  // Format ISO manuel (ex: 2026-06-19T10:00:00)
+  let m3 = s.match(/(\d{4})-(\d{2})-(\d{2})[T\s](\d{2}):(\d{2}):(\d{2})/);
+  if(m3) return new Date(m3[1], m3[2]-1, m3[3], m3[4], m3[5], m3[6]);
+  // Format JS natif en dernier recours
+  let d = new Date(s);
+  if(!isNaN(d.getTime())) return d;
+  return null;
+}
+
 function switchTab(t){
   ["vos","ref"].forEach(x=>{
     document.getElementById("panel-"+x).style.display=t===x?"block":"none";
@@ -402,15 +420,60 @@ function stats(){
   const hist=(data.history||[]).filter(h=>h.brand===brand);
   const ko=hist.filter(h=>h.type==="ko").length;
   const chartPts=Object.entries(data.chart_data||{}).filter(([k])=>k.startsWith(brand+":")).map(([k,v])=>[k,filterPts(v)]);
+  
   const elapsed=chartPts.flatMap(([,pts])=>pts.map(p=>p.elapsed));
   const avg=elapsed.length?(elapsed.reduce((a,b)=>a+b,0)/elapsed.length).toFixed(2)+"s":"—";
+  
+  // NOUVEAU: Calcul de la moyenne des 8 dernières heures (Méthode blindée)
+  let sum8h = 0, count8h = 0;
+  chartPts.forEach(([, pts]) => {
+     if (pts.length === 0) return;
+     
+     let validTimeFound = false;
+     let localSum = 0, localCount = 0;
+     
+     // Utilisation du temps du tout dernier point du graphique comme "Maintenant" 
+     const lastPt = pts[pts.length - 1];
+     let nowTime = Date.now();
+     const parsedLast = lastPt.timestamp ? new Date(lastPt.timestamp * 1000) : parseDateStr(lastPt.time);
+     if (parsedLast) nowTime = parsedLast.getTime();
+     
+     const eightHoursAgo = nowTime - (8 * 60 * 60 * 1000);
+     
+     pts.forEach(p => {
+         const t = p.timestamp ? new Date(p.timestamp * 1000) : parseDateStr(p.time);
+         if (t) {
+             validTimeFound = true;
+             if (t.getTime() >= eightHoursAgo) {
+                 localSum += p.elapsed;
+                 localCount++;
+             }
+         }
+     });
+     
+     if (validTimeFound && localCount > 0) {
+         sum8h += localSum;
+         count8h += localCount;
+     } else {
+         // Failsafe Mathématique si les dates n'ont pas pu être lues du tout
+         const ratio = period === '7j' ? (8 / 168) : (8 / 24);
+         const numPoints = Math.max(1, Math.floor(pts.length * ratio));
+         const targetPts = pts.slice(-numPoints);
+         targetPts.forEach(p => {
+             sum8h += p.elapsed;
+             count8h++;
+         });
+     }
+  });
+  const avg8h = count8h > 0 ? (sum8h / count8h).toFixed(2) + "s" : "—";
+  
   const total=chartPts.reduce((a,[,pts])=>a+pts.length,0);
   const upPct=total>0?((1-ko/Math.max(total,1))*100).toFixed(1)+"%":"—";
-  return {pages,hist,ko,avg,total,upPct,allOk:pages.every(([,s])=>s.ok)};
+  return {pages,hist,ko,avg,avg8h,total,upPct,allOk:pages.every(([,s])=>s.ok)};
 }
 
 function renderKPIs(){
-  const {ko,avg,upPct,allOk}=stats();
+  const {ko,avg,avg8h,upPct,allOk}=stats();
   const up=parseFloat(upPct);
   
   const vStat = document.getElementById("val-status");
@@ -431,6 +494,11 @@ function renderKPIs(){
   const vResp = document.getElementById("val-resp");
   vResp.textContent = avg;
   vResp.className = "kpi-num " + (parseFloat(avg)<2 ? "g" : parseFloat(avg)<4 ? "o" : "r");
+  
+  const hResp = document.getElementById("hint-resp");
+  if(hResp) {
+      hResp.innerHTML = `Global <span style="opacity:0.4;margin:0 6px">|</span> 8h: <span style="color:var(--text)">${avg8h}</span>`;
+  }
   
   const vInc = document.getElementById("val-inc");
   vInc.textContent = ko;
@@ -476,10 +544,10 @@ function renderChart(){
       borderColor:colors[i]||"#888",
       backgroundColor:(colors[i]||"#888")+"14",
       tension: 0.4, 
-      pointRadius: 4, 
+      pointRadius: 0, 
       pointBackgroundColor: colors[i]||"#888", 
       pointBorderColor: "#fff",
-      pointBorderWidth: 1.5,
+      pointBorderWidth: 2,
       pointHoverRadius: 6, 
       borderWidth: 2.5,
       fill: true,
@@ -512,8 +580,8 @@ function renderChart(){
       x:{grid:{display:false}, ticks:{font:{size:11,family:'Plus Jakarta Sans'},color:"#94a3b8",maxTicksLimit:8}},
       y:{
         grid:{color:"rgba(0,0,0,0.04)"}, 
-        suggestedMin: 0,
         max: 6, 
+        min: 0,
         ticks:{font:{size:11,family:'Plus Jakarta Sans'},color:"#94a3b8",callback:v=>v.toFixed(1)+"s"}
       },
       yKo:{display:false, min:0, max:1} 
@@ -523,7 +591,6 @@ function renderChart(){
   const scrollArea = document.getElementById("chart-scroll-area");
   const container = document.getElementById("chart-container");
   
-  // Largeur dynamique : 12px par point pour étirer le graphique et forcer le scroll
   const calcWidth = Math.max(scrollArea.clientWidth, labels.length * 12);
   container.style.width = calcWidth + "px";
   
@@ -542,11 +609,6 @@ function renderChart(){
           setTimeout(() => scrollArea.scrollLeft = scrollArea.scrollWidth, 50);
       }
   }
-}
-
-function parseDateStr(s){
-  var m = s.match(/(\d{2})\/(\d{2})\/(\d{4}) (\d{2}):(\d{2}):(\d{2})/);
-  return m ? new Date(m[3], m[2]-1, m[1], m[4], m[5], m[6]) : null;
 }
 
 function dur(hist,idx){
