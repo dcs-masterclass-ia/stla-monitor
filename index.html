@@ -9,7 +9,7 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;overflow:hidden}
-canvas{display:block;} /* Supprime la marge fantôme sous les canvas */
+canvas{display:block;}
 
 :root{
   --bg:#f8fafc;
@@ -32,17 +32,15 @@ canvas{display:block;} /* Supprime la marge fantôme sous les canvas */
 }
 body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text)}
 
-/* ── BLOBS ── */
 .blob{position:fixed;border-radius:50%;filter:blur(120px);opacity:.35;pointer-events:none;z-index:0}
 .b1{width:600px;height:600px;background:#e2e8f0;top:-150px;left:-100px;animation:fl1 26s ease-in-out infinite}
 .b2{width:500px;height:500px;background:#e0e7ff;bottom:-100px;right:-80px;animation:fl2 22s ease-in-out infinite}
 @keyframes fl1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(40px,-30px) scale(1.04)}}
 @keyframes fl2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-30px,40px) scale(1.06)}}
 
-/* ── LAYOUT PRINCIPAL (2 COLONNES) ── */
 .shell{display:grid;grid-template-columns:260px 1fr;height:100vh;position:relative;z-index:1;overflow:hidden;transition:grid-template-columns 0.3s cubic-bezier(0.4, 0, 0.2, 1);}
 
-/* ── NO-BORDER RULE STRICTE ── */
+/* ── ZÉRO BORDURE ── */
 .glass-card, .kpi, .sidebar, .inc-card, .macro-card, .seg, .brand-status, .sidebar-toggle { border: none !important; }
 
 /* ── SIDEBAR ── */
@@ -56,7 +54,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .nav-btn{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;cursor:pointer;font-size:13px;font-weight:700;color:var(--text-2);border:none;background:none;width:100%;text-align:left;font-family:'Plus Jakarta Sans',sans-serif;transition:all .15s; white-space:nowrap; overflow:hidden;}
 .nav-btn:hover{background:#fff;box-shadow:var(--shadow-soft);color:var(--text)}
 .nav-btn.on{background:var(--accent);color:#fff;box-shadow:0 8px 20px rgba(17,24,39,0.15)}
-.nav-btn.on .ndot{background:rgba(255,255,255,.8)}
 .ndot{width:8px;height:8px;border-radius:50%;margin-left:auto;flex-shrink:0;background:#d1d5db;transition:background .3s}
 .ndot.ok{background:var(--green);box-shadow:0 0 10px rgba(5,150,105,0.4)}
 .ndot.ko{background:var(--red);box-shadow:0 0 10px rgba(225,29,72,0.4)}
@@ -64,7 +61,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .sidebar-foot-title{font-size:11px;font-weight:800;color:var(--text);margin-bottom:4px}
 .sidebar-foot-sub{font-size:10px;color:var(--text-2);font-weight:600}
 
-/* ÉTATS REPLIÉS (COLLAPSED) */
+/* ÉTATS REPLIÉS */
 .shell.collapsed { grid-template-columns: 80px 1fr; }
 .shell.collapsed .sidebar { padding: 2rem 12px; align-items: center; }
 .shell.collapsed .logo-wordmark, 
@@ -80,29 +77,22 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 /* ── MAIN ── */
 .main{padding:2rem;display:flex;flex-direction:column;gap:20px;overflow:hidden;height:100vh}
 
-/* Topbar UNIFIÉE */
-.topbar{display:flex;align-items:center;justify-content:space-between;flex-shrink:0;margin-bottom:4px}
-.topbar-brand{display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+.topbar{display:flex;align-items:flex-start;justify-content:space-between;flex-shrink:0;margin-bottom:4px}
+.topbar-brand{display:flex;align-items:flex-start;gap:16px}
+.brand-logo{height:40px;object-fit:contain;filter:drop-shadow(0 2px 8px rgba(0,0,0,.06)); margin-top:4px;}
+.brand-h1{font-size:32px;font-weight:900;letter-spacing:-.04em;color:var(--text);line-height:1}
 
-.sidebar-toggle{background:var(--glass-strong); box-shadow:var(--shadow-soft); border-radius:10px; width:36px; height:36px; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.2s;}
-.sidebar-toggle:hover{transform:scale(1.05); color:var(--accent);}
-
-.brand-logo{height:28px;object-fit:contain;filter:drop-shadow(0 2px 8px rgba(0,0,0,.06));}
-.brand-h1{font-size:26px;font-weight:900;letter-spacing:-.04em;color:var(--text);line-height:1}
-
-.brand-endpoints{display:flex;align-items:center;gap:8px;}
-.ep-chip{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;background:var(--glass-strong);border-radius:10px;font-size:11px;font-weight:800;color:var(--text-2);box-shadow:var(--shadow-soft)}
+.brand-endpoints{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.ep-chip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;background:var(--glass-strong);border-radius:10px;font-size:10px;font-weight:800;color:var(--text-2);box-shadow:var(--shadow-soft)}
 .ep-dot{width:6px;height:6px;border-radius:50%}
 .ep-dot.ok{background:var(--green)}
 .ep-dot.ko{background:var(--red);box-shadow:0 0 6px rgba(225,29,72,0.5)}
 
-/* Statut MAJ */
 .brand-status{font-size:12px;font-weight:700;color:var(--text-2);display:flex;align-items:center;gap:10px;background:var(--glass-strong);padding:8px 16px;border-radius:12px;box-shadow:var(--shadow-soft);}
 .pulse-dot{width:8px;height:8px;border-radius:50%;background:var(--green);animation:pulse 2s ease-in-out infinite;flex-shrink:0}
 .pulse-dot.dead{background:var(--red);animation:none}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.5)}}
 
-/* KPIs (5 Colonnes) */
 .kpi-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;flex-shrink:0}
 .kpi{background:var(--glass-strong);border-radius:var(--r-sm);padding:1.25rem 1.5rem;box-shadow:var(--shadow-soft);transition:transform .2s;display:flex;flex-direction:column;justify-content:center}
 .kpi:hover{transform:translateY(-2px);box-shadow:var(--shadow-lifted)}
@@ -118,19 +108,17 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .callout-title.orange{color:#92400e}
 .callout-body{font-size:12px;font-weight:600;line-height:1.6;color:#78350f}
 
-/* Zone de contenu Scrollable interne optimisée (Flex élastique) */
-.content-area{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;gap:16px;padding-right:4px;padding-bottom:4px}
+.content-area{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:16px;padding-right:4px;padding-bottom:4px}
 .content-area::-webkit-scrollbar{width:4px}
 .content-area::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:10px}
 
-/* ── MODULE 1 : MASTER-DETAIL (Graphique / Incidents) ── */
+/* ── MODULE 1 : MASTER-DETAIL ── */
 .master-detail-row { display: grid; grid-template-columns: 1.6fr 1fr; gap: 16px; flex: 1; min-height: 280px; }
 
 .glass-card{background:var(--glass-strong);border-radius:var(--r-sm);padding:1.5rem;box-shadow:var(--shadow-soft);display:flex;flex-direction:column;height:100%; min-width:0; min-height:0;}
 .card-hed{font-size:14px;font-weight:800;color:var(--text);letter-spacing:-.02em;margin-bottom:1rem;display:flex;align-items:center;gap:8px;flex-shrink:0}
 .card-hed-sub{font-size:11px;font-weight:700;color:var(--text-3);margin-left:auto;background:var(--accent-light);padding:4px 10px;border-radius:12px}
 
-/* Architecture Double Canvas pour fixer l'Axe Y */
 .chart-layout-wrapper { display: flex; flex: 1; min-height: 0; position: relative; }
 .chart-y-axis-fixed { width: 48px; flex-shrink: 0; background: var(--glass-strong); z-index: 10; position: relative; }
 
@@ -143,7 +131,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .leg{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:700;color:var(--text-2)}
 .leg-pip{width:10px;height:10px;border-radius:50%}
 
-/* Incidents Feed (Detail) */
 .inc-card{background:var(--glass-strong);border-radius:var(--r-sm);padding:1.5rem;box-shadow:var(--shadow-soft);display:flex;flex-direction:column;height:100%; min-height:0; min-width:0;}
 .inc-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-shrink:0}
 .inc-hed{font-size:14px;font-weight:800;color:var(--text);letter-spacing:-.02em;display:flex;align-items:center;gap:8px}
@@ -174,8 +161,8 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .inc-dur{font-size:10px;color:var(--red);font-weight:800;display:inline-flex;align-items:center;gap:4px;background:var(--red-bg);padding:2px 6px;border-radius:6px;}
 .inc-dur.res{color:var(--green); background:var(--green-bg);}
 
-/* ── MODULE MACRO COMPACT (Hauteur fluide, Overflow caché) ── */
-.macro-card { background:var(--glass-strong); border-radius:var(--r-sm); padding:1.25rem 1.5rem; box-shadow:var(--shadow-soft); flex-shrink:0; height:160px; display:flex; flex-direction:column; overflow: hidden; }
+/* ── MODULE MACRO COMPACT ── */
+.macro-card { background:var(--glass-strong); border-radius:var(--r-sm); padding:1rem 1.5rem; box-shadow:var(--shadow-soft); flex-shrink:0; height:160px; display:flex; flex-direction:column; overflow: hidden; }
 .macro-container { flex:1; position:relative; min-height:0; margin-top: 4px; overflow:hidden;}
 
 </style>
@@ -190,10 +177,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
       <i data-lucide="activity" style="width:24px;height:24px;color:var(--text)"></i>
       <span class="logo-wordmark">STLA MONITOR</span>
     </div>
-    <div class="seg">
-      <button class="seg-btn on" id="tab-vos" onclick="switchTab('vos')">Production</button>
-      <button class="seg-btn" id="tab-ref" onclick="switchTab('ref')">Références</button>
-    </div>
+    
     <div id="panel-vos">
       <div class="nav-label">Marques</div>
       <button class="nav-btn" id="nav-Opel PT" onclick="selectBrand('Opel PT')">
@@ -203,7 +187,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
         <i data-lucide="car-front" style="width:16px;height:16px;flex-shrink:0"></i><span class="nav-text">Ford FR</span><span class="ndot" id="nd-Ford FR"></span>
       </button>
     </div>
-    <div id="panel-ref" style="display:none">
+    <div id="panel-ref" style="margin-top:10px;">
       <div class="nav-label">Témoins</div>
       <button class="nav-btn" id="nav-Aramisauto" onclick="selectBrand('Aramisauto')">
         <i data-lucide="car-front" style="width:16px;height:16px;flex-shrink:0"></i><span class="nav-text">Aramisauto</span><span class="ndot" id="nd-Aramisauto"></span>
@@ -317,7 +301,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 <script>
 const RENDER_STATUS="https://stla-monitor.onrender.com/status";
 const RAW_BASE="https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/status.json";
-// Fixation de la période à 24h par défaut comme demandé
+// Fixation de la période à 24h
 const period = "24h";
 
 const BRANDS={
@@ -345,10 +329,6 @@ function parseDateStr(s){
 }
 
 function switchTab(t){
-  ["vos","ref"].forEach(x=>{
-    document.getElementById("panel-"+x).style.display=t===x?"block":"none";
-    document.getElementById("tab-"+x).classList.toggle("on",t===x);
-  });
   selectBrand(t==="vos"?"Opel PT":"Aramisauto");
 }
 
@@ -480,12 +460,31 @@ function renderChart(){
   const koHist=(data.history||[]).filter(h=>h.brand===brand&&h.type==="ko");
   const koTimes=new Set(koHist.map(h=>(h.time||"").substring(11,19)));
   
+  // ── DOWNSAMPLING ANTICRASH ──
+  const rawDatasets = pages.map(([page]) => filterPts((data.chart_data||{})[brand+":"+page]||[]));
+  let masterTimes = rawDatasets.length > 0 ? rawDatasets[0].map(p => p.time) : [];
+  let sampledIndices = new Set();
+  const MAX_POINTS = 300; 
+  
+  if (masterTimes.length > MAX_POINTS) {
+      const factor = Math.ceil(masterTimes.length / MAX_POINTS);
+      masterTimes.forEach((t, i) => {
+          const tShort = (t||"").substring(11,19);
+          if (koTimes.has(tShort) || i % factor === 0 || i === masterTimes.length - 1) {
+              sampledIndices.add(i);
+          }
+      });
+  } else {
+      masterTimes.forEach((_, i) => sampledIndices.add(i));
+  }
+
   const datasets=pages.map(([page],i)=>{
-    const pts=filterPts((data.chart_data||{})[brand+":"+page]||[]);
+    const pts = rawDatasets[i] || [];
+    const filteredPts = pts.filter((_, idx) => sampledIndices.has(idx));
     return{
       label:page,
-      data:pts.map(p=>p.elapsed),
-      _t:pts.map(p=>p.time),
+      data:filteredPts.map(p=>p.elapsed),
+      _t:filteredPts.map(p=>p.time),
       borderColor:colors[i]||"#888",
       backgroundColor:(colors[i]||"#888")+"14",
       tension: 0.4, 
@@ -505,7 +504,7 @@ function renderChart(){
   const alertDs={
     label:"Incident (KO)",
     type:"bar",
-    data:labels.map(t=>koTimes.has(t)?1:0),
+    data:labels.map(t=>koTimes.has((t||"").substring(11,19))?1:0),
     backgroundColor:"rgba(225,29,72,0.12)", 
     yAxisID:"yKo", 
     barPercentage: 1.0,
@@ -567,7 +566,8 @@ function renderChart(){
   const scrollArea = document.getElementById("chart-scroll-area");
   const container = document.getElementById("chart-container");
   
-  const calcWidth = Math.max(scrollArea.clientWidth, labels.length * 24);
+  // Avec l'échantillonnage, on a ~300 points. 300 * 20px = 6000px de large (très sûr pour le canvas)
+  const calcWidth = Math.max(scrollArea.clientWidth, labels.length * 20);
   container.style.width = calcWidth + "px";
   
   const isAtEnd = scrollArea.scrollLeft + scrollArea.clientWidth >= scrollArea.scrollWidth - 20;
@@ -593,18 +593,14 @@ function renderEndpoints() {
     }).join("");
 }
 
-// ALGORITHME MACROCHART ROTATIF (Axe X se termine sur l'heure actuelle)
 function renderMacroChart() {
     const hist = (data.history || []).filter(h => h.brand === brand && h.type === 'ko');
-    
-    // Comptage absolu
     const absoluteHourCounts = new Array(24).fill(0);
     hist.forEach(h => {
         const t = parseDateStr(h.time);
         if(t) absoluteHourCounts[t.getHours()]++;
     });
 
-    // Rotation dynamique
     const now = new Date();
     const currentHour = now.getHours();
     const labels = [];
