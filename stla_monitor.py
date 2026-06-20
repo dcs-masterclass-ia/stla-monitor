@@ -150,6 +150,9 @@ REFERENCE_BRANDS = {
 
 TEAMS_WEBHOOK_URL = "https://default64661b8d1758459ca270b19fe3578e.a7.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/c3181d4e41694cfebd1c7502d219b6a9/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=l0lFm8uGc6kFwT73IzDPQBdNut4ZWgNsaXHosdDEh18"
 
+SUPABASE_URL = "https://vqkzrvwwtiktofkpmelt.supabase.co"
+SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZxa3pydnd3dGlrdG9ma3BtZWx0Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4MTk0MDMwNCwiZXhwIjoyMDk3NTE2MzA0fQ.gav2bMIzDp8Fv7BS1pigxnQUCBAaJ4sxN0eFF8I5tcY"
+
 GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "")
 GITHUB_REPO  = "dcs-masterclass-ia/stla-monitor"
 GITHUB_FILE  = "status.json"
@@ -228,6 +231,46 @@ def init_github():
             log.error(f"[GitHub] Erreur chargement historique : {e}")
     except Exception as e:
         log.error(f"[GitHub] Connexion impossible : {e}")
+
+def supabase_insert(incident):
+    """Insère un incident dans Supabase pour historique long terme."""
+    try:
+        from datetime import datetime as dt
+        # Parser le time depuis le format dd/mm/yyyy HH:MM:SS
+        t_str = incident.get("time", "")
+        try:
+            t_parsed = dt.strptime(t_str, "%d/%m/%Y %H:%M:%S")
+            t_iso = t_parsed.strftime("%Y-%m-%dT%H:%M:%S+02:00")
+        except Exception:
+            t_iso = dt.now(TZ_PARIS).isoformat()
+
+        payload = {
+            "brand": incident.get("brand"),
+            "page": incident.get("page"),
+            "type": incident.get("type"),
+            "detail": incident.get("detail"),
+            "diagnostics": incident.get("diagnostics"),
+            "screenshot_url": incident.get("screenshot"),
+            "time": t_iso,
+        }
+        resp = requests.post(
+            f"{SUPABASE_URL}/rest/v1/incidents",
+            json=payload,
+            headers={
+                "apikey": SUPABASE_KEY,
+                "Authorization": f"Bearer {SUPABASE_KEY}",
+                "Content-Type": "application/json",
+                "Prefer": "return=minimal"
+            },
+            timeout=10,
+            verify=False
+        )
+        if resp.status_code in (200, 201):
+            log.info(f"[Supabase] Incident inséré : {incident.get('brand')} / {incident.get('page')} / {incident.get('type')}")
+        else:
+            log.error(f"[Supabase] Erreur insert : {resp.status_code} {resp.text}")
+    except Exception as e:
+        log.error(f"[Supabase] Exception : {e}")
 
 def archive_incident(incident):
     """Archive un incident dans incidents/YYYY-MM-DD/Brand_Name.json sur GitHub"""
@@ -747,6 +790,7 @@ def run():
                                 "is_reference": brand in REFERENCE_BRANDS}
                             history.append(inc)
                             threading.Thread(target=archive_incident, args=(inc,), daemon=True).start()
+                            threading.Thread(target=supabase_insert, args=(inc,), daemon=True).start()
                             if brand not in REFERENCE_BRANDS:
                                 send_teams_alert(brand, page, url, reason, is_recovery=True, details=details)
                     else:
@@ -762,6 +806,7 @@ def run():
                                 "is_reference": brand in REFERENCE_BRANDS}
                             history.append(inc)
                             threading.Thread(target=archive_incident, args=(inc,), daemon=True).start()
+                            threading.Thread(target=supabase_insert, args=(inc,), daemon=True).start()
                 except Exception as e:
                     log.error(f"Erreur task : {e}")
 
@@ -792,6 +837,7 @@ def run():
                         "type": "recovery", "detail": "Décodage immat rétabli"}
                     history.append(inc_i)
                     threading.Thread(target=archive_incident, args=(inc_i,), daemon=True).start()
+                    threading.Thread(target=supabase_insert, args=(inc_i,), daemon=True).start()
                     send_teams_alert(brand, "Immat", homepage_url, reason_i, is_recovery=True, details=details_i)
             else:
                 if not incident_active.get(key_i):
@@ -803,6 +849,7 @@ def run():
                         "screenshot": screenshot_url}
                     history.append(inc_i)
                     threading.Thread(target=archive_incident, args=(inc_i,), daemon=True).start()
+                    threading.Thread(target=supabase_insert, args=(inc_i,), daemon=True).start()
 
         push_status(statuses)
         threading.Thread(target=push_to_render, args=(statuses,), daemon=True).start()
