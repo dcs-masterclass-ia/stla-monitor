@@ -1318,6 +1318,8 @@ async function saveBrandEdit(id, name) {
     btn.textContent = "✓ Supabase OK (GitHub manuel)"; btn.style.background = "var(--orange)";
   }
 }
+
+async function toggleBrand(id, active) {
   await fetch(`${SUPA_URL}/rest/v1/brands?id=eq.${id}`, {
     method: "PATCH",
     headers: {"apikey": SUPA_ANON, "Authorization": `Bearer ${adminToken}`, "Content-Type": "application/json"},
