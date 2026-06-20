@@ -1157,11 +1157,11 @@ async function loadApBrands() {
 }
 
 // Vérif token au load
-window.addEventListener("load",()=>{\n  if(window.lucide)lucide.createIcons();
+window.addEventListener("load",()=>{
+  if(window.lucide)lucide.createIcons();
   buildNav();
   fetchStatus();
   setInterval(fetchStatus,2000);
-  // Vérif admin token
   document.getElementById("admin-email") && document.getElementById("admin-email").addEventListener("keydown", e => { if(e.key==="Enter") document.getElementById("admin-pass").focus(); });
   document.getElementById("admin-pass") && document.getElementById("admin-pass").addEventListener("keydown", e => { if(e.key==="Enter") adminLogin(); });
 });
