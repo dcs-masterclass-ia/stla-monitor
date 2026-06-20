@@ -225,6 +225,15 @@ def init_github():
                 history.clear()
                 history.extend(data["history"][-MAX_HISTORY:])
                 log.info(f"[GitHub] Historique récupéré : {len(history)} entrées")
+                # Reconstruire incident_active depuis l'historique
+                last_event = {}
+                for h in history:
+                    key = f"{h.get('brand')}:{h.get('page')}"
+                    last_event[key] = h.get("type")
+                for key, etype in last_event.items():
+                    if etype == "ko":
+                        incident_active[key] = True
+                        log.info(f"[GitHub] Incident actif restauré : {key}")
             else:
                 log.info("[GitHub] Pas d'historique dans le fichier")
         except Exception as e:
