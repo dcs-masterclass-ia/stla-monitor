@@ -79,7 +79,7 @@ BRANDS = {
     "Spoticar DE":  {"Homepage": "https://autoankauf.spoticar.de",         "Parcours": "https://autoankauf.spoticar.de/modell"},
     # ── AUTRICHE ──
     "Citroen AT":   {"Homepage": "https://www.citroen-kauft-ihr-auto.at",      "Parcours": "https://www.citroen-kauft-ihr-auto.at/Modell-Seite"},
-    "Opel AT":      {"Homepage": "https://opel-kauft-dein-auto.opel.at",       "Parcours": "https://opel-kauft-dein-auto.opel.at/Modell-Seite"},
+    "Opel AT":      {"Homepage": "https://opel-kauft-dein-auto.opel.at",       "Parcours": "https://opel-kauft-dein-auto.opel.at/Seite-Modell"},
     "Peugeot AT":   {"Homepage": "https://www.wir-kaufen-ihr-auto.peugeot.at", "Parcours": "https://www.wir-kaufen-ihr-auto.peugeot.at/Modell-Seite"},
     # ── BELGIQUE FR ──
     "Abarth BE":    {"Homepage": "https://reprise.abarthbelgium.be",            "Parcours": "https://reprise.abarthbelgium.be/page-modele"},
