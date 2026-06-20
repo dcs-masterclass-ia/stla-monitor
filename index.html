@@ -195,6 +195,35 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 
 .sb-admin-btn{display:flex;align-items:center;gap:8px;width:calc(100% - 2.5rem);margin:0 1.25rem .75rem;padding:10px 14px;border-radius:14px;font-size:12px;font-weight:800;border:none;background:#f1f5f9;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;color:var(--text-2);transition:all .2s}
 .sb-admin-btn:hover{background:#e2e8f0}
+.ap-section-title{font-size:14px;font-weight:800;margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between}
+.ap-add-btn{padding:7px 14px;border-radius:10px;font-size:11px;font-weight:800;border:none;background:var(--accent);color:#fff;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;display:flex;align-items:center;gap:6px}
+.ap-add-btn.danger{background:var(--red)}
+.ap-form{background:#f8fafc;border-radius:var(--r-sm);padding:1.25rem;margin-bottom:1rem;display:none}
+.ap-form.open{display:block}
+.ap-form-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.ap-form-row.single{grid-template-columns:1fr}
+.ap-form label{font-size:11px;font-weight:700;color:var(--text-2);display:block;margin-bottom:4px}
+.ap-form input,.ap-form select{width:100%;padding:8px 12px;border-radius:10px;border:1.5px solid #e2e8f0;font-size:12px;font-weight:600;font-family:'Plus Jakarta Sans',sans-serif;outline:none;background:#fff}
+.ap-form input:focus,.ap-form select:focus{border-color:var(--accent)}
+.ap-form-actions{display:flex;gap:8px;margin-top:12px}
+.ap-form-submit{padding:8px 16px;border-radius:10px;font-size:12px;font-weight:800;border:none;background:var(--accent);color:#fff;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif}
+.ap-form-cancel{padding:8px 16px;border-radius:10px;font-size:12px;font-weight:800;border:none;background:var(--accent-light);color:var(--text-2);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif}
+.ap-brand-row{display:flex;align-items:center;gap:12px;padding:10px 12px;border-bottom:1px solid #f1f5f9;transition:background .1s}
+.ap-brand-row:hover{background:#f8fafc}
+.ap-brand-name{font-size:13px;font-weight:700;flex:1}
+.ap-brand-urls{font-size:11px;color:var(--text-3);flex:2}
+.ap-toggle{position:relative;width:36px;height:20px;flex-shrink:0}
+.ap-toggle input{opacity:0;width:0;height:0}
+.ap-toggle-slider{position:absolute;inset:0;background:#e2e8f0;border-radius:20px;cursor:pointer;transition:.2s}
+.ap-toggle-slider:before{content:"";position:absolute;width:14px;height:14px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s}
+.ap-toggle input:checked+.ap-toggle-slider{background:var(--green)}
+.ap-toggle input:checked+.ap-toggle-slider:before{transform:translateX(16px)}
+.ap-del-btn{background:none;border:none;cursor:pointer;color:var(--text-3);padding:4px;border-radius:6px;transition:color .15s}
+.ap-del-btn:hover{color:var(--red)}
+.ap-alert-row{display:grid;grid-template-columns:160px 80px 1fr 80px;align-items:center;gap:12px;padding:10px 12px;border-bottom:1px solid #f1f5f9}
+.ap-alert-input{padding:5px 8px;border-radius:8px;border:1.5px solid #e2e8f0;font-size:12px;font-weight:600;font-family:'Plus Jakarta Sans',sans-serif;width:100%;outline:none}
+.ap-alert-input:focus{border-color:var(--accent)}
+.ap-save-btn{padding:5px 10px;border-radius:8px;font-size:11px;font-weight:800;border:none;background:var(--accent);color:#fff;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif}
 .sb-synth-sep{height:1px;background:#f1f5f9;margin:0 1.25rem .75rem}
 .sb-synth-btn{display:flex;align-items:center;gap:8px;width:calc(100% - 2.5rem);margin:0 1.25rem .75rem;padding:10px 14px;border-radius:14px;font-size:12px;font-weight:800;border:none;background:var(--accent-light);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;color:var(--text-2);transition:all .2s;position:relative;flex-shrink:0}
 .sb-synth-btn:hover{background:#e2e8f0}
@@ -418,6 +447,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
   <div class="ap-tabs">
     <button class="ap-tab on" onclick="apTab('incidents',this)">Incidents</button>
     <button class="ap-tab" onclick="apTab('brands',this)">Brands</button>
+    <button class="ap-tab" onclick="apTab('alertes',this)">Alertes</button>
   </div>
   <div class="ap-content" id="ap-content"></div>
 </div>
@@ -1049,6 +1079,7 @@ function apTab(tab, btn) {
   btn.classList.add("on");
   if(tab === "incidents") loadApIncidents();
   else if(tab === "brands") loadApBrands();
+  else if(tab === "alertes") loadApAlertes();
 }
 
 // ── ADMIN : INCIDENTS ──
@@ -1134,25 +1165,143 @@ async function loadApBrands() {
   const el = document.getElementById("ap-content");
   el.innerHTML = `<div class="ap-empty">Chargement...</div>`;
   try {
-    const r = await fetch(`${SUPA_URL}/rest/v1/brands?order=name.asc`, {
+    const r = await fetch(`${SUPA_URL}/rest/v1/brands?order=name.asc&limit=200`, {
       headers: {"apikey": SUPA_ANON, "Authorization": `Bearer ${adminToken}`}
     });
+    if(r.status === 401) { adminLogout(); return; }
     const brands = await r.json();
-    if(!brands.length) {
-      el.innerHTML = `<div class="ap-empty">Aucune brand configurée dans Supabase.<br><small>Les brands sont gérées dans stla_monitor.py pour l'instant.</small></div>`;
-      return;
-    }
-    el.innerHTML = `<table class="ap-table">
-      <thead><tr><th>Brand</th><th>Pages</th><th>Webhook Teams</th><th>Actif</th></tr></thead>
-      <tbody>${brands.map(b=>`<tr>
-        <td style="font-weight:700">${b.name}</td>
-        <td>${b.pages ? Object.keys(b.pages).join(', ') : '—'}</td>
-        <td style="color:var(--text-3);font-size:11px">${b.teams_webhook ? '✓ Configuré' : '—'}</td>
-        <td><span class="ap-chip ${b.active?'ok':'ko'}">${b.active?'OUI':'NON'}</span></td>
-      </tr>`).join('')}</tbody>
-    </table>`;
+    el.innerHTML = `
+      <div class="ap-section-title">
+        <span>${brands.length} brands configurées</span>
+        <button class="ap-add-btn" onclick="toggleAddBrandForm()">
+          <i data-lucide="plus" style="width:12px;height:12px"></i> Ajouter
+        </button>
+      </div>
+      <div class="ap-form" id="add-brand-form">
+        <div class="ap-form-row">
+          <div><label>Nom de la brand</label><input id="new-brand-name" placeholder="Ex: Ford FR"></div>
+          <div><label>URL Homepage</label><input id="new-brand-homepage" placeholder="https://..."></div>
+        </div>
+        <div class="ap-form-row">
+          <div><label>URL Parcours</label><input id="new-brand-parcours" placeholder="https://... (optionnel)"></div>
+          <div><label>URL Formulaire</label><input id="new-brand-formulaire" placeholder="https://... (optionnel)"></div>
+        </div>
+        <div class="ap-form-actions">
+          <button class="ap-form-submit" onclick="submitAddBrand()">Ajouter</button>
+          <button class="ap-form-cancel" onclick="toggleAddBrandForm()">Annuler</button>
+        </div>
+      </div>
+      <div style="background:#fff;border-radius:var(--r-sm);overflow:hidden;box-shadow:var(--shadow)">
+        <div style="display:grid;grid-template-columns:160px 1fr 50px 30px;padding:8px 12px;border-bottom:2px solid #f1f5f9;font-size:11px;font-weight:800;color:var(--text-3);text-transform:uppercase;letter-spacing:.05em">
+          <span>Brand</span><span>URLs</span><span>Actif</span><span></span>
+        </div>
+        ${brands.map(b => {
+          const pages = b.pages || {};
+          const urlsStr = Object.entries(pages).map(([k,v]) => `<span style="display:block"><b>${k}</b>: ${v}</span>`).join('');
+          return `<div class="ap-brand-row" id="brand-row-${b.id}">
+            <span class="ap-brand-name">${b.name}</span>
+            <span class="ap-brand-urls">${urlsStr}</span>
+            <label class="ap-toggle">
+              <input type="checkbox" ${b.active ? 'checked' : ''} onchange="toggleBrand('${b.id}', this.checked)">
+              <span class="ap-toggle-slider"></span>
+            </label>
+            <button class="ap-del-btn" onclick="deleteBrand('${b.id}', '${b.name.replace(/'/g,"\\'")}')">
+              <i data-lucide="trash-2" style="width:13px;height:13px"></i>
+            </button>
+          </div>`;
+        }).join('')}
+      </div>`;
+    if(window.lucide) lucide.createIcons();
   } catch(e) {
     el.innerHTML = `<div class="ap-empty">Erreur : ${e.message}</div>`;
+  }
+}
+
+function toggleAddBrandForm() {
+  const f = document.getElementById("add-brand-form");
+  f.classList.toggle("open");
+}
+
+async function submitAddBrand() {
+  const name = document.getElementById("new-brand-name").value.trim();
+  const homepage = document.getElementById("new-brand-homepage").value.trim();
+  const parcours = document.getElementById("new-brand-parcours").value.trim();
+  const formulaire = document.getElementById("new-brand-formulaire").value.trim();
+  if(!name || !homepage) { alert("Nom et URL Homepage obligatoires"); return; }
+  const pages = {"Homepage": homepage};
+  if(parcours) pages["Parcours"] = parcours;
+  if(formulaire) pages["Formulaire"] = formulaire;
+  try {
+    const r = await fetch(`${SUPA_URL}/rest/v1/brands`, {
+      method: "POST",
+      headers: {"apikey": SUPA_ANON, "Authorization": `Bearer ${adminToken}`, "Content-Type": "application/json", "Prefer": "return=minimal"},
+      body: JSON.stringify({name, pages, active: true})
+    });
+    if(r.ok || r.status === 201) { loadApBrands(); }
+    else { const e = await r.text(); alert("Erreur : " + e); }
+  } catch(e) { alert("Erreur : " + e.message); }
+}
+
+async function toggleBrand(id, active) {
+  await fetch(`${SUPA_URL}/rest/v1/brands?id=eq.${id}`, {
+    method: "PATCH",
+    headers: {"apikey": SUPA_ANON, "Authorization": `Bearer ${adminToken}`, "Content-Type": "application/json"},
+    body: JSON.stringify({active})
+  });
+}
+
+async function deleteBrand(id, name) {
+  if(!confirm(`Supprimer "${name}" ?`)) return;
+  await fetch(`${SUPA_URL}/rest/v1/brands?id=eq.${id}`, {
+    method: "DELETE",
+    headers: {"apikey": SUPA_ANON, "Authorization": `Bearer ${adminToken}`}
+  });
+  loadApBrands();
+}
+
+// ── ADMIN : ALERTES ──
+async function loadApAlertes() {
+  const el = document.getElementById("ap-content");
+  el.innerHTML = `<div class="ap-empty">Chargement...</div>`;
+  try {
+    const r = await fetch(`${SUPA_URL}/rest/v1/alerts_config?order=brand.asc&limit=200`, {
+      headers: {"apikey": SUPA_ANON, "Authorization": `Bearer ${adminToken}`}
+    });
+    if(r.status === 401) { adminLogout(); return; }
+    const configs = await r.json();
+    el.innerHTML = `
+      <div class="ap-section-title"><span>Configuration des alertes par brand</span></div>
+      <div style="background:#fff;border-radius:var(--r-sm);overflow:hidden;box-shadow:var(--shadow)">
+        <div style="display:grid;grid-template-columns:160px 80px 1fr 80px;padding:8px 12px;border-bottom:2px solid #f1f5f9;font-size:11px;font-weight:800;color:var(--text-3);text-transform:uppercase;letter-spacing:.05em">
+          <span>Brand</span><span>Timeout</span><span>Webhook Teams</span><span></span>
+        </div>
+        ${configs.map(c => `
+          <div class="ap-alert-row" id="alert-row-${c.id}">
+            <span style="font-size:12px;font-weight:700">${c.brand}</span>
+            <input class="ap-alert-input" type="number" value="${c.timeout||8}" min="2" max="30"
+              id="timeout-${c.id}" style="width:60px">
+            <input class="ap-alert-input" type="text" value="${c.teams_webhook||''}"
+              id="webhook-${c.id}" placeholder="https://...">
+            <button class="ap-save-btn" onclick="saveAlertConfig('${c.id}')">Sauv.</button>
+          </div>`).join('')}
+      </div>`;
+  } catch(e) {
+    el.innerHTML = `<div class="ap-empty">Erreur : ${e.message}</div>`;
+  }
+}
+
+async function saveAlertConfig(id) {
+  const timeout = parseInt(document.getElementById(`timeout-${id}`).value) || 8;
+  const webhook = document.getElementById(`webhook-${id}`).value.trim();
+  const r = await fetch(`${SUPA_URL}/rest/v1/alerts_config?id=eq.${id}`, {
+    method: "PATCH",
+    headers: {"apikey": SUPA_ANON, "Authorization": `Bearer ${adminToken}`, "Content-Type": "application/json"},
+    body: JSON.stringify({timeout, teams_webhook: webhook || null})
+  });
+  if(r.ok) {
+    const btn = document.querySelector(`#alert-row-${id} .ap-save-btn`);
+    btn.textContent = "✓"; btn.style.background = "var(--green)";
+    setTimeout(() => { btn.textContent = "Sauv."; btn.style.background = ""; }, 2000);
   }
 }
 
