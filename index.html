@@ -157,28 +157,37 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .empty-state p{font-size:14px;font-weight:700}
 .empty-state small{font-size:12px;font-weight:500}
 
-/* ── SYNTHÈSE ── */
-#synth-view{display:none;flex-direction:column;flex:1;overflow:hidden;padding:1.5rem}
+/* ── SYNTHÈSE BUTTON ── */
+.sb-synth-sep{height:1px;background:#f1f5f9;margin:0 1.25rem .75rem}
+.sb-synth-btn{display:flex;align-items:center;gap:8px;width:calc(100% - 2.5rem);margin:0 1.25rem .75rem;padding:10px 14px;border-radius:14px;font-size:12px;font-weight:800;border:none;background:var(--accent-light);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;color:var(--text-2);transition:all .2s;position:relative;flex-shrink:0}
+.sb-synth-btn:hover{background:#e2e8f0}
+.sb-synth-btn.on{background:var(--accent);color:#fff}
+.sb-synth-btn.on i{stroke:#fff}
+.sb-synth-badge{margin-left:auto;background:var(--red);color:#fff;font-size:9px;font-weight:800;padding:2px 6px;border-radius:20px;display:none}
+.sb-synth-btn.on .sb-synth-badge{background:rgba(255,255,255,0.25)}
+.sb-synth-badge.visible{display:block}
+
+/* ── SYNTHÈSE VIEW ── */
+#synth-view{display:none;flex-direction:column;flex:1;overflow:hidden;padding:2rem}
 #synth-view.active{display:flex}
-.synth-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-shrink:0}
-.synth-title{font-size:18px;font-weight:800;display:flex;align-items:center;gap:8px}
-.synth-count{font-size:12px;font-weight:700;color:var(--text-3);background:var(--accent-light);padding:3px 10px;border-radius:20px}
-.synth-scroll{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:8px;min-height:0}
-.synth-card{background:#fff;border-radius:var(--r-sm);padding:1rem 1.25rem;cursor:pointer;transition:box-shadow .15s,transform .15s;box-shadow:var(--shadow)}
-.synth-card:hover{box-shadow:var(--shadow-lg);transform:translateY(-1px)}
-.synth-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
-.synth-brand{font-size:11px;font-weight:800;color:var(--text-2);text-transform:uppercase;letter-spacing:.05em}
-.synth-time{font-size:11px;font-weight:600;color:var(--text-3)}
-.synth-card-mid{display:flex;align-items:center;justify-content:space-between;gap:8px}
-.synth-page{font-size:14px;font-weight:700;color:var(--text)}
-.synth-chip{font-size:9px;font-weight:800;padding:3px 8px;border-radius:6px;text-transform:uppercase;letter-spacing:.05em}
-.synth-chip.ko{background:var(--red-bg);color:var(--red)}
-.synth-chip.ok{background:var(--green-bg);color:var(--green)}
-.synth-detail{font-size:11px;color:var(--text-3);margin-top:4px;font-weight:500}
-.synth-ongoing{background:#fff7f7}
-.synth-filters{display:flex;gap:6px;margin-bottom:1rem;flex-shrink:0;flex-wrap:wrap}
-.synth-filter{padding:5px 12px;border-radius:20px;font-size:11px;font-weight:700;border:none;background:var(--accent-light);color:var(--text-2);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all .15s}
-.synth-filter.on{background:var(--accent);color:#fff}
+.synth-kpi-bar{display:flex;gap:12px;margin-bottom:1.5rem;flex-shrink:0}
+.synth-kpi{flex:1;background:#fff;border-radius:var(--r-sm);padding:1rem 1.25rem;box-shadow:var(--shadow)}
+.synth-kpi-val{font-size:28px;font-weight:900;line-height:1}
+.synth-kpi-val.red{color:var(--red)}
+.synth-kpi-val.green{color:var(--green)}
+.synth-kpi-label{font-size:11px;font-weight:600;color:var(--text-3);margin-top:4px}
+.synth-table{flex:1;overflow-y:auto;min-height:0;display:flex;flex-direction:column;gap:6px}
+.synth-row{background:#fff;border-radius:var(--r-sm);padding:.875rem 1.25rem;display:flex;align-items:center;gap:1rem;cursor:pointer;transition:box-shadow .15s,transform .15s;box-shadow:var(--shadow)}
+.synth-row:hover{box-shadow:var(--shadow-lg);transform:translateY(-1px)}
+.synth-row-status{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.synth-row-status.ok{background:var(--green)}
+.synth-row-status.ko{background:var(--red);box-shadow:0 0 0 3px rgba(225,29,72,.15)}
+.synth-row-brand{font-size:13px;font-weight:800;color:var(--text);min-width:110px}
+.synth-row-detail{font-size:12px;font-weight:600;color:var(--text-3);flex:1}
+.synth-row-detail.ko{color:var(--red);font-weight:700}
+.synth-row-count{font-size:11px;font-weight:700;color:var(--text-3);white-space:nowrap}
+.synth-row-arrow{color:var(--text-3);flex-shrink:0}
+.synth-empty{flex:1;display:flex;align-items:center;justify-content:center;color:var(--text-3);font-size:13px;font-weight:700}
 
 /* Trend callout */
 .callout{border-radius:var(--r-sm);padding:1rem 1.25rem;flex-shrink:0}
@@ -209,11 +218,17 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
     <button class="sb-tab on" id="tab-stla" onclick="switchGroup('stla')">STLA</button>
     <button class="sb-tab" id="tab-oem" onclick="switchGroup('oem')">OEM</button>
     <button class="sb-tab" id="tab-ref" onclick="switchGroup('ref')">Réf.</button>
-    <button class="sb-tab" id="tab-synth" onclick="switchGroup('synth')">Synthèse</button>
   </div>
 
   <!-- Niveau 2+3 : Pays > Marques -->
   <div class="sb-scroll" id="sb-nav"></div>
+
+  <div class="sb-synth-sep"></div>
+  <button class="sb-synth-btn" id="tab-synth" onclick="switchGroup('synth')">
+    <i data-lucide="layout-list" style="width:13px;height:13px"></i>
+    Vue Synthèse PO
+    <span class="sb-synth-badge" id="synth-ko-badge"></span>
+  </button>
 
   <div class="sb-foot">
     <div class="sb-foot-title">Monitoring actif</div>
@@ -231,20 +246,21 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 
   <!-- ── SYNTHÈSE GLOBALE ── -->
   <div id="synth-view">
-    <div class="synth-header">
-      <div class="synth-title">
-        <i data-lucide="layout-list" style="width:18px;height:18px"></i>
-        Synthèse Globale
-        <span class="synth-count" id="synth-count"></span>
+    <div class="synth-kpi-bar">
+      <div class="synth-kpi">
+        <div class="synth-kpi-val red" id="synth-kpi-ko">—</div>
+        <div class="synth-kpi-label">brands en alerte</div>
+      </div>
+      <div class="synth-kpi">
+        <div class="synth-kpi-val" id="synth-kpi-inc">—</div>
+        <div class="synth-kpi-label">incidents aujourd'hui</div>
+      </div>
+      <div class="synth-kpi">
+        <div class="synth-kpi-val green" id="synth-kpi-ok">—</div>
+        <div class="synth-kpi-label">brands OK</div>
       </div>
     </div>
-    <div class="synth-filters">
-      <button class="synth-filter on" id="sf-all" onclick="setSynthFilter('all',this)">Tous</button>
-      <button class="synth-filter" id="sf-ko" onclick="setSynthFilter('ko',this)">KO</button>
-      <button class="synth-filter" id="sf-recovery" onclick="setSynthFilter('recovery',this)">Résolus</button>
-      <button class="synth-filter" id="sf-ongoing" onclick="setSynthFilter('ongoing',this)">En cours</button>
-    </div>
-    <div class="synth-scroll" id="synth-list"></div>
+    <div class="synth-table" id="synth-list"></div>
   </div>
 
   <div id="dash" style="display:none;flex-direction:column;flex:1;overflow:hidden">
@@ -492,10 +508,12 @@ function toggleCountry(btn) {
 function switchGroup(g) {
   currentGroup = g;
   brand = null;
-  ["stla","oem","ref","synth"].forEach(x => {
+  ["stla","oem","ref"].forEach(x => {
     const t = document.getElementById("tab-"+x);
     if(t) t.classList.toggle("on", x === g);
   });
+  const synthBtn = document.getElementById("tab-synth");
+  if(synthBtn) synthBtn.classList.toggle("on", g === "synth");
   document.getElementById("empty-state").style.display = g === "synth" ? "none" : "flex";
   document.getElementById("dash").style.display = "none";
   const sv = document.getElementById("synth-view");
@@ -764,66 +782,75 @@ function renderHistory(){
   if(window.lucide)lucide.createIcons();
 }
 
+function renderSynth() {
+  if(!data) return;
+  const el = document.getElementById("synth-list");
+  const cutoff = new Date(Date.now() - 86400000);
+  const hist24 = (data.history||[]).filter(h => { const t=parseDateStr(h.time); return t && t>=cutoff; });
+
+  // Collecter tous les brands monitorés
+  const allBrands = [];
+  ["stla","oem","ref"].forEach(g => {
+    Object.values(SITE_TREE[g]||{}).forEach(c => c.brands.forEach(b => { if(!allBrands.includes(b)) allBrands.push(b); }));
+  });
+
+  // Pour chaque brand : statut actuel + incidents 24h
+  const rows = allBrands.map(b => {
+    const statuses = data.statuses && data.statuses[b] ? data.statuses[b] : {};
+    const pages = Object.keys(statuses);
+    const koPages = pages.filter(p => statuses[p] && !statuses[p].ok);
+    const isKO = koPages.length > 0;
+    const inc24 = hist24.filter(h => h.brand === b && h.type === "ko").length;
+
+    // Dernier incident KO en cours
+    let detail = "";
+    if(isKO) {
+      const lastKO = [...hist24].reverse().find(h => h.brand===b && h.type==="ko" && koPages.includes(h.page));
+      if(lastKO) {
+        const t = (lastKO.time||"").substring(11,16);
+        detail = koPages.join(", ") + " KO depuis " + t;
+      } else {
+        detail = koPages.join(", ") + " KO";
+      }
+    }
+    return { brand: b, isKO, detail, inc24 };
+  });
+
+  // Trier : KO en premier, puis par nb incidents
+  rows.sort((a,b) => { if(a.isKO && !b.isKO) return -1; if(!a.isKO && b.isKO) return 1; return b.inc24 - a.inc24; });
+
+  // KPIs
+  const nbKO = rows.filter(r => r.isKO).length;
+  const nbOK = rows.filter(r => !r.isKO).length;
+  const nbInc = hist24.filter(h => h.type==="ko").length;
+  document.getElementById("synth-kpi-ko").textContent = nbKO;
+  document.getElementById("synth-kpi-ok").textContent = nbOK;
+  document.getElementById("synth-kpi-inc").textContent = nbInc;
+
+  // Badge sidebar
+  const badge = document.getElementById("synth-ko-badge");
+  if(nbKO > 0) { badge.textContent = nbKO; badge.classList.add("visible"); }
+  else { badge.classList.remove("visible"); }
+
+  if(!rows.length) { el.innerHTML='<div class="synth-empty">Aucune donnée</div>'; return; }
+
+  el.innerHTML = rows.map(r => `
+    <div class="synth-row" onclick="goToBrand('${r.brand}')">
+      <span class="synth-row-status ${r.isKO?'ko':'ok'}"></span>
+      <span class="synth-row-brand">${r.brand}</span>
+      <span class="synth-row-detail ${r.isKO?'ko':''}">${r.isKO ? r.detail : '✓ Opérationnel'}</span>
+      <span class="synth-row-count">${r.inc24 ? r.inc24+' incident'+(r.inc24>1?'s':'') : ''}</span>
+      <i data-lucide="chevron-right" style="width:14px;height:14px" class="synth-row-arrow"></i>
+    </div>`).join("");
+  if(window.lucide) lucide.createIcons();
+}
+
 let synthFilter = "all";
 function setSynthFilter(f, btn) {
   synthFilter = f;
   document.querySelectorAll(".synth-filter").forEach(b => b.classList.remove("on"));
   btn.classList.add("on");
   renderSynth();
-}
-
-function renderSynth() {
-  if(!data) return;
-  const el = document.getElementById("synth-list");
-  const countEl = document.getElementById("synth-count");
-  let hist = [...(data.history || [])].sort((a,b) => {
-    const ta = parseDateStr(a.time), tb = parseDateStr(b.time);
-    return (tb||0) - (ta||0);
-  });
-  // Filtre période (24h par défaut)
-  const cutoff = new Date(Date.now() - 86400000);
-  hist = hist.filter(h => { const t = parseDateStr(h.time); return t && t >= cutoff; });
-  // Filtre type
-  if(synthFilter === "ko") hist = hist.filter(h => h.type === "ko");
-  else if(synthFilter === "recovery") hist = hist.filter(h => h.type === "recovery");
-  else if(synthFilter === "ongoing") {
-    // KO sans recovery associé dans les 24h
-    hist = hist.filter(h => {
-      if(h.type !== "ko") return false;
-      const hasRecovery = (data.history||[]).some(r =>
-        r.type === "recovery" && r.brand === h.brand && r.page === h.page &&
-        parseDateStr(r.time) > parseDateStr(h.time)
-      );
-      return !hasRecovery;
-    });
-  }
-  countEl.textContent = hist.length ? "("+hist.length+" evt)" : "";
-  if(!hist.length) {
-    el.innerHTML = '<div style="padding:2rem;text-align:center;color:var(--text-3);font-size:13px;font-weight:700">Aucun incident sur les dernières 24h 🎉</div>';
-    return;
-  }
-  el.innerHTML = hist.map(h => {
-    const isOngoing = h.type === "ko" && !(data.history||[]).some(r =>
-      r.type === "recovery" && r.brand === h.brand && r.page === h.page &&
-      parseDateStr(r.time) > parseDateStr(h.time)
-    );
-    const chipClass = h.type === "recovery" ? "ok" : "ko";
-    const chipLabel = h.type === "recovery" ? "RESOLVED" : isOngoing ? "CRITICAL" : "FAILURE";
-    const timeStr = (h.time||"").substring(0,16);
-    const errType = h.diagnostics && h.diagnostics.error_type ? " ("+h.diagnostics.error_type+")" : "";
-    return `<div class="synth-card ${isOngoing?'synth-ongoing':''}" onclick="goToBrand('${h.brand}')">
-      <div class="synth-card-top">
-        <span class="synth-brand">${h.brand}</span>
-        <span class="synth-time">${timeStr}</span>
-      </div>
-      <div class="synth-card-mid">
-        <span class="synth-page">${h.page}</span>
-        <span class="synth-chip ${chipClass}">${chipLabel}</span>
-      </div>
-      <div class="synth-detail">${h.detail||""}${errType}</div>
-    </div>`;
-  }).join("");
-  if(window.lucide) lucide.createIcons();
 }
 
 function goToBrand(b) {
