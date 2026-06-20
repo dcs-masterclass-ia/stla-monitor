@@ -46,6 +46,11 @@ async def get_status():
 async def root():
     return {"service": "STLA Monitor", "status": "running"}
 
+@app.head("/")
+async def root_head():
+    from fastapi.responses import Response
+    return Response(status_code=200)
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8000))
     uvicorn.run(app, host="0.0.0.0", port=port)
