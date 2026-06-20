@@ -157,6 +157,29 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .empty-state p{font-size:14px;font-weight:700}
 .empty-state small{font-size:12px;font-weight:500}
 
+/* ── SYNTHÈSE ── */
+#synth-view{display:none;flex-direction:column;flex:1;overflow:hidden;padding:1.5rem}
+#synth-view.active{display:flex}
+.synth-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-shrink:0}
+.synth-title{font-size:18px;font-weight:800;display:flex;align-items:center;gap:8px}
+.synth-count{font-size:12px;font-weight:700;color:var(--text-3);background:var(--accent-light);padding:3px 10px;border-radius:20px}
+.synth-scroll{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:8px;min-height:0}
+.synth-card{background:#fff;border-radius:var(--r-sm);padding:1rem 1.25rem;cursor:pointer;transition:box-shadow .15s,transform .15s;box-shadow:var(--shadow)}
+.synth-card:hover{box-shadow:var(--shadow-lg);transform:translateY(-1px)}
+.synth-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.synth-brand{font-size:11px;font-weight:800;color:var(--text-2);text-transform:uppercase;letter-spacing:.05em}
+.synth-time{font-size:11px;font-weight:600;color:var(--text-3)}
+.synth-card-mid{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.synth-page{font-size:14px;font-weight:700;color:var(--text)}
+.synth-chip{font-size:9px;font-weight:800;padding:3px 8px;border-radius:6px;text-transform:uppercase;letter-spacing:.05em}
+.synth-chip.ko{background:var(--red-bg);color:var(--red)}
+.synth-chip.ok{background:var(--green-bg);color:var(--green)}
+.synth-detail{font-size:11px;color:var(--text-3);margin-top:4px;font-weight:500}
+.synth-ongoing{background:#fff7f7}
+.synth-filters{display:flex;gap:6px;margin-bottom:1rem;flex-shrink:0;flex-wrap:wrap}
+.synth-filter{padding:5px 12px;border-radius:20px;font-size:11px;font-weight:700;border:none;background:var(--accent-light);color:var(--text-2);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all .15s}
+.synth-filter.on{background:var(--accent);color:#fff}
+
 /* Trend callout */
 .callout{border-radius:var(--r-sm);padding:1rem 1.25rem;flex-shrink:0}
 .callout.orange{background:var(--orange-bg)}
@@ -186,6 +209,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
     <button class="sb-tab on" id="tab-stla" onclick="switchGroup('stla')">STLA</button>
     <button class="sb-tab" id="tab-oem" onclick="switchGroup('oem')">OEM</button>
     <button class="sb-tab" id="tab-ref" onclick="switchGroup('ref')">Réf.</button>
+    <button class="sb-tab" id="tab-synth" onclick="switchGroup('synth')">Synthèse</button>
   </div>
 
   <!-- Niveau 2+3 : Pays > Marques -->
@@ -203,6 +227,24 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
     <i data-lucide="monitor-dot" style="width:48px;height:48px"></i>
     <p>Sélectionnez un site</p>
     <small>Naviguez dans le menu pour accéder au détail d'un site</small>
+  </div>
+
+  <!-- ── SYNTHÈSE GLOBALE ── -->
+  <div id="synth-view">
+    <div class="synth-header">
+      <div class="synth-title">
+        <i data-lucide="layout-list" style="width:18px;height:18px"></i>
+        Synthèse Globale
+        <span class="synth-count" id="synth-count"></span>
+      </div>
+    </div>
+    <div class="synth-filters">
+      <button class="synth-filter on" id="sf-all" onclick="setSynthFilter('all',this)">Tous</button>
+      <button class="synth-filter" id="sf-ko" onclick="setSynthFilter('ko',this)">KO</button>
+      <button class="synth-filter" id="sf-recovery" onclick="setSynthFilter('recovery',this)">Résolus</button>
+      <button class="synth-filter" id="sf-ongoing" onclick="setSynthFilter('ongoing',this)">En cours</button>
+    </div>
+    <div class="synth-scroll" id="synth-list"></div>
   </div>
 
   <div id="dash" style="display:none;flex-direction:column;flex:1;overflow:hidden">
@@ -449,12 +491,21 @@ function toggleCountry(btn) {
 
 function switchGroup(g) {
   currentGroup = g;
-  brand = null; // reset brand pour fermer tous les pays
-  ["stla","oem","ref"].forEach(x => document.getElementById("tab-"+x).classList.toggle("on", x === g));
-  // Afficher empty state
-  document.getElementById("empty-state").style.display = "flex";
+  brand = null;
+  ["stla","oem","ref","synth"].forEach(x => {
+    const t = document.getElementById("tab-"+x);
+    if(t) t.classList.toggle("on", x === g);
+  });
+  document.getElementById("empty-state").style.display = g === "synth" ? "none" : "flex";
   document.getElementById("dash").style.display = "none";
-  buildNav();
+  const sv = document.getElementById("synth-view");
+  if(g === "synth") {
+    sv.classList.add("active");
+    renderSynth();
+  } else {
+    sv.classList.remove("active");
+    buildNav();
+  }
 }
 
 // ── BRAND SELECT ──
@@ -713,6 +764,89 @@ function renderHistory(){
   if(window.lucide)lucide.createIcons();
 }
 
+let synthFilter = "all";
+function setSynthFilter(f, btn) {
+  synthFilter = f;
+  document.querySelectorAll(".synth-filter").forEach(b => b.classList.remove("on"));
+  btn.classList.add("on");
+  renderSynth();
+}
+
+function renderSynth() {
+  if(!data) return;
+  const el = document.getElementById("synth-list");
+  const countEl = document.getElementById("synth-count");
+  let hist = [...(data.history || [])].sort((a,b) => {
+    const ta = parseDateStr(a.time), tb = parseDateStr(b.time);
+    return (tb||0) - (ta||0);
+  });
+  // Filtre période (24h par défaut)
+  const cutoff = new Date(Date.now() - 86400000);
+  hist = hist.filter(h => { const t = parseDateStr(h.time); return t && t >= cutoff; });
+  // Filtre type
+  if(synthFilter === "ko") hist = hist.filter(h => h.type === "ko");
+  else if(synthFilter === "recovery") hist = hist.filter(h => h.type === "recovery");
+  else if(synthFilter === "ongoing") {
+    // KO sans recovery associé dans les 24h
+    hist = hist.filter(h => {
+      if(h.type !== "ko") return false;
+      const hasRecovery = (data.history||[]).some(r =>
+        r.type === "recovery" && r.brand === h.brand && r.page === h.page &&
+        parseDateStr(r.time) > parseDateStr(h.time)
+      );
+      return !hasRecovery;
+    });
+  }
+  countEl.textContent = hist.length ? "("+hist.length+" evt)" : "";
+  if(!hist.length) {
+    el.innerHTML = '<div style="padding:2rem;text-align:center;color:var(--text-3);font-size:13px;font-weight:700">Aucun incident sur les dernières 24h 🎉</div>';
+    return;
+  }
+  el.innerHTML = hist.map(h => {
+    const isOngoing = h.type === "ko" && !(data.history||[]).some(r =>
+      r.type === "recovery" && r.brand === h.brand && r.page === h.page &&
+      parseDateStr(r.time) > parseDateStr(h.time)
+    );
+    const chipClass = h.type === "recovery" ? "ok" : "ko";
+    const chipLabel = h.type === "recovery" ? "RESOLVED" : isOngoing ? "CRITICAL" : "FAILURE";
+    const timeStr = (h.time||"").substring(0,16);
+    const errType = h.diagnostics && h.diagnostics.error_type ? " ("+h.diagnostics.error_type+")" : "";
+    return `<div class="synth-card ${isOngoing?'synth-ongoing':''}" onclick="goToBrand('${h.brand}')">
+      <div class="synth-card-top">
+        <span class="synth-brand">${h.brand}</span>
+        <span class="synth-time">${timeStr}</span>
+      </div>
+      <div class="synth-card-mid">
+        <span class="synth-page">${h.page}</span>
+        <span class="synth-chip ${chipClass}">${chipLabel}</span>
+      </div>
+      <div class="synth-detail">${h.detail||""}${errType}</div>
+    </div>`;
+  }).join("");
+  if(window.lucide) lucide.createIcons();
+}
+
+function goToBrand(b) {
+  let targetGroup = null;
+  ["stla","oem","ref"].forEach(g => {
+    if(SITE_TREE[g] && Object.values(SITE_TREE[g]).some(c => c.brands && c.brands.includes(b)))
+      targetGroup = g;
+  });
+  if(!targetGroup) return;
+  currentGroup = targetGroup;
+  ["stla","oem","ref","synth"].forEach(x => {
+    const t = document.getElementById("tab-"+x);
+    if(t) t.classList.toggle("on", x === targetGroup);
+  });
+  document.getElementById("synth-view").classList.remove("active");
+  buildNav();
+  selectBrand(b);
+  setTimeout(() => {
+    const flux = document.getElementById("history");
+    if(flux) flux.scrollIntoView({behavior:"smooth"});
+  }, 300);
+}
+
 function downloadReport(){
   if(!data||!brand)return;
   const hist=filterHist((data.history||[]).filter(h=>h.brand===brand));
@@ -738,7 +872,7 @@ async function fetchStatus(){
     document.getElementById("sb-ts").textContent=data.updated_at||"";
     document.getElementById("pulse").className="pulse-dot";
     updateDots();
-    if(brand)render();
+    if(brand)render(); if(currentGroup==="synth")renderSynth();
   }catch(e){
     try{
       const r2=await fetch(RAW+"?t="+Date.now(),{cache:"no-store"});if(!r2.ok)throw new Error();
@@ -750,7 +884,7 @@ async function fetchStatus(){
     if(tlm) tlm.textContent = "MAJ " + data.updated_at.split(" ")[1];
       document.getElementById("sb-ts").textContent=data.updated_at||"";
       document.getElementById("pulse").className="pulse-dot";
-      updateDots();if(brand)render();
+      updateDots();if(brand)render(); if(currentGroup==="synth")renderSynth();
     }catch(e2){document.getElementById("pulse").className="pulse-dot dead";}
   }
 }
