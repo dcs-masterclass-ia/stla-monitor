@@ -195,6 +195,7 @@ log = logging.getLogger(__name__)
 
 incident_active = {}
 history = []
+history_lock = threading.Lock()
 chart_data = {}
 
 for brand, urls in BRANDS.items():
@@ -336,10 +337,12 @@ def push_status(statuses, retry=3):
     send_teams_alert_raw("🚨 ERREUR CRITIQUE : impossible de pusher status.json sur GitHub après 3 tentatives. Le dashboard ne reflète plus la réalité.")
 
 def build_payload(statuses, now):
+    with history_lock:
+        hist_snapshot = list(history[-MAX_HISTORY:])
     return {
         "updated_at": now,
         "statuses": statuses,
-        "history": history[-MAX_HISTORY:],
+        "history": hist_snapshot,
         "chart_data": {k: v[-MAX_CHART:] for k, v in chart_data.items()},
         "avg_response": {
             k: round(sum(p["elapsed"] for p in v[-20:]) / len(v[-20:]), 2) if v else 0
@@ -797,7 +800,7 @@ def run():
                             inc = {"time": now, "brand": brand, "page": page,
                                 "type": "recovery", "detail": "Retour en ligne",
                                 "is_reference": brand in REFERENCE_BRANDS}
-                            history.append(inc)
+                            with history_lock: history.append(inc)
                             threading.Thread(target=archive_incident, args=(inc,), daemon=True).start()
                             threading.Thread(target=supabase_insert, args=(inc,), daemon=True).start()
                             if brand not in REFERENCE_BRANDS:
@@ -813,7 +816,7 @@ def run():
                                 "type": "ko", "detail": reason, "diagnostics": details,
                                 "screenshot": screenshot_url,
                                 "is_reference": brand in REFERENCE_BRANDS}
-                            history.append(inc)
+                            with history_lock: history.append(inc)
                             threading.Thread(target=archive_incident, args=(inc,), daemon=True).start()
                             threading.Thread(target=supabase_insert, args=(inc,), daemon=True).start()
                 except Exception as e:
@@ -844,7 +847,7 @@ def run():
                     incident_active[key_i] = False
                     inc_i = {"time": now, "brand": brand, "page": "Immat",
                         "type": "recovery", "detail": "Décodage immat rétabli"}
-                    history.append(inc_i)
+                    with history_lock: history.append(inc_i)
                     threading.Thread(target=archive_incident, args=(inc_i,), daemon=True).start()
                     threading.Thread(target=supabase_insert, args=(inc_i,), daemon=True).start()
                     send_teams_alert(brand, "Immat", homepage_url, reason_i, is_recovery=True, details=details_i)
@@ -856,7 +859,7 @@ def run():
                     inc_i = {"time": now, "brand": brand, "page": "Immat",
                         "type": "ko", "detail": reason_i, "diagnostics": details_i,
                         "screenshot": screenshot_url}
-                    history.append(inc_i)
+                    with history_lock: history.append(inc_i)
                     threading.Thread(target=archive_incident, args=(inc_i,), daemon=True).start()
                     threading.Thread(target=supabase_insert, args=(inc_i,), daemon=True).start()
 
