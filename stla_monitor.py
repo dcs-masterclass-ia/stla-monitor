@@ -225,29 +225,40 @@ def init_github():
     except Exception as e:
         log.error(f"[GitHub] Connexion impossible : {e}")
 
-def push_status(statuses):
+def send_teams_alert_raw(message):
+    try:
+        requests.post(TEAMS_WEBHOOK, json={"text": message}, timeout=10, verify=False)
+    except Exception as e:
+        log.error(f"[Teams] Erreur alerte raw : {e}")
+
+def push_status(statuses, retry=3):
     if not gh_repo:
         log.error("[GitHub] gh_repo est None — token manquant ou init échouée")
+        send_teams_alert_raw("🚨 ERREUR : gh_repo est None — token GitHub manquant ou révoqué. Le dashboard ne se met plus à jour.")
         return
     now = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
     payload = build_payload(statuses, now)
     content = json.dumps(payload, ensure_ascii=False, indent=2)
-    try:
+    for attempt in range(retry):
         try:
-            existing = gh_repo.get_contents(GITHUB_FILE)
-            gh_repo.update_file(GITHUB_FILE, f"Monitor {now}", content, existing.sha)
-        except Exception as e:
-            if "sha" in str(e).lower() or "422" in str(e):
-                try:
-                    existing = gh_repo.get_contents(GITHUB_FILE)
-                    gh_repo.update_file(GITHUB_FILE, f"Monitor {now}", content, existing.sha)
-                except Exception:
+            try:
+                existing = gh_repo.get_contents(GITHUB_FILE)
+                gh_repo.update_file(GITHUB_FILE, f"Monitor {now}", content, existing.sha)
+            except Exception as e:
+                if "sha" in str(e).lower() or "422" in str(e):
+                    try:
+                        existing = gh_repo.get_contents(GITHUB_FILE)
+                        gh_repo.update_file(GITHUB_FILE, f"Monitor {now}", content, existing.sha)
+                    except Exception:
+                        gh_repo.create_file(GITHUB_FILE, f"Monitor {now}", content)
+                else:
                     gh_repo.create_file(GITHUB_FILE, f"Monitor {now}", content)
-            else:
-                gh_repo.create_file(GITHUB_FILE, f"Monitor {now}", content)
-        log.info("[GitHub] status.json mis à jour")
-    except Exception as e:
-        log.error(f"[GitHub] Erreur push : {e}")
+            log.info("[GitHub] status.json mis à jour")
+            return
+        except Exception as e:
+            log.error(f"[GitHub] Erreur push (tentative {attempt+1}/{retry}) : {e}")
+            time.sleep(5)
+    send_teams_alert_raw("🚨 ERREUR CRITIQUE : impossible de pusher status.json sur GitHub après 3 tentatives. Le dashboard ne reflète plus la réalité.")
 
 def build_payload(statuses, now):
     return {
