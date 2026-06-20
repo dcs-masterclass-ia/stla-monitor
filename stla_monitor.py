@@ -17,6 +17,8 @@ import socket
 import threading
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
+from zoneinfo import ZoneInfo
+TZ_PARIS = ZoneInfo("Europe/Paris")
 from urllib.parse import urlparse
 from github import Auth, Github
 from playwright.sync_api import sync_playwright
@@ -236,7 +238,7 @@ def push_status(statuses, retry=3):
         log.error("[GitHub] gh_repo est None — token manquant ou init échouée")
         send_teams_alert_raw("🚨 ERREUR : gh_repo est None — token GitHub manquant ou révoqué. Le dashboard ne se met plus à jour.")
         return
-    now = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+    now = datetime.now(TZ_PARIS).strftime("%d/%m/%Y %H:%M:%S")
     payload = build_payload(statuses, now)
     content = json.dumps(payload, ensure_ascii=False, indent=2)
     for attempt in range(retry):
@@ -278,7 +280,7 @@ def build_payload(statuses, now):
 
 def push_to_render(statuses):
     try:
-        now = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+        now = datetime.now(TZ_PARIS).strftime("%d/%m/%Y %H:%M:%S")
         payload = build_payload(statuses, now)
         resp = requests.post(RENDER_URL, json=payload, timeout=5, verify=False)
         if resp.status_code == 200:
@@ -294,7 +296,7 @@ def take_screenshot(brand, page, url):
     if not gh_repo:
         return None
     try:
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        timestamp = datetime.now(TZ_PARIS).strftime("%Y%m%d_%H%M%S")
         safe = lambda s: s.replace(" ", "_").replace("/", "_")
         filename = f"screenshots/{safe(brand)}_{safe(page)}_{timestamp}.png"
         with sync_playwright() as p:
@@ -336,7 +338,7 @@ def take_screenshot(brand, page, url):
 # ─────────────────────────────────────────────
 
 def send_teams_alert(brand, page, url, reason, is_recovery=False, details=None, screenshot_url=None):
-    now_str = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+    now_str = datetime.now(TZ_PARIS).strftime("%d/%m/%Y %H:%M:%S")
     emoji = "✅" if is_recovery else "🚨"
     title = f"{emoji} {brand} — {page} {'est de nouveau en ligne' if is_recovery else 'est KO'}"
 
@@ -679,8 +681,8 @@ def run():
 
     while True:
         statuses = {}
-        now = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-        now_short = datetime.now().strftime("%H:%M:%S")
+        now = datetime.now(TZ_PARIS).strftime("%d/%m/%Y %H:%M:%S")
+        now_short = datetime.now(TZ_PARIS).strftime("%H:%M:%S")
 
         # Construire la liste de toutes les tâches à exécuter
         tasks = []
