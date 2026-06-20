@@ -7,7 +7,9 @@ STLA Monitor — Serveur HTTP temps réel
 
 import os
 import json
+import base64
 import logging
+import urllib.request
 from datetime import datetime
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -25,6 +27,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "")
+GITHUB_REPO  = "dcs-masterclass-ia/stla-monitor"
+
 # État en mémoire
 latest_data = {}
 
@@ -41,6 +46,62 @@ async def receive_update(request: Request):
 @app.get("/status")
 async def get_status():
     return latest_data if latest_data else {"error": "Pas encore de données"}
+
+@app.post("/push-brand")
+async def push_brand(request: Request):
+    """Met à jour les URLs d'une brand dans stla_monitor.py sur GitHub."""
+    if not GITHUB_TOKEN:
+        return {"ok": False, "error": "GITHUB_TOKEN manquant"}
+    try:
+        body = await request.json()
+        brand_name = body.get("brand")
+        pages = body.get("pages", {})
+        if not brand_name or not pages:
+            return {"ok": False, "error": "brand et pages requis"}
+
+        api = f"https://api.github.com/repos/{GITHUB_REPO}/contents/stla_monitor.py"
+        headers = {
+            "Authorization": f"token {GITHUB_TOKEN}",
+            "Accept": "application/vnd.github.v3+json",
+            "Content-Type": "application/json"
+        }
+
+        # Lire le fichier actuel
+        req = urllib.request.Request(api, headers=headers)
+        with urllib.request.urlopen(req) as r:
+            data = json.loads(r.read())
+        sha = data["sha"]
+        content = base64.b64decode(data["content"].replace("\n", "")).decode("utf-8")
+
+        # Trouver et remplacer la ligne de la brand
+        import re
+        pages_str = json.dumps(pages, ensure_ascii=False)
+        # Pattern: "Brand Name": {...}
+        pattern = rf'("{re.escape(brand_name)}")\s*:\s*\{{[^}}]+\}}'
+        replacement = f'"{brand_name}": {pages_str}'
+        new_content, count = re.subn(pattern, replacement, content)
+
+        if count == 0:
+            return {"ok": False, "error": f"Brand '{brand_name}' non trouvée dans le script"}
+
+        # Pusher
+        new_b64 = base64.b64encode(new_content.encode("utf-8")).decode()
+        push_body = json.dumps({
+            "message": f"update: URLs {brand_name} via admin panel",
+            "content": new_b64,
+            "sha": sha
+        }).encode()
+
+        req2 = urllib.request.Request(api, data=push_body, headers=headers, method="PUT")
+        with urllib.request.urlopen(req2) as r2:
+            resp = json.loads(r2.read())
+            commit_sha = resp["commit"]["sha"][:8]
+            log.info(f"[push-brand] {brand_name} mis à jour — commit {commit_sha}")
+            return {"ok": True, "commit": commit_sha}
+
+    except Exception as e:
+        log.error(f"[push-brand] Erreur : {e}")
+        return {"ok": False, "error": str(e)}
 
 @app.get("/")
 async def root():
