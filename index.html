@@ -1192,22 +1192,29 @@ async function loadApBrands() {
         </div>
       </div>
       <div style="background:#fff;border-radius:var(--r-sm);overflow:hidden;box-shadow:var(--shadow)">
-        <div style="display:grid;grid-template-columns:160px 1fr 50px 30px;padding:8px 12px;border-bottom:2px solid #f1f5f9;font-size:11px;font-weight:800;color:var(--text-3);text-transform:uppercase;letter-spacing:.05em">
+        <div style="display:grid;grid-template-columns:160px 1fr 50px 60px;padding:8px 12px;border-bottom:2px solid #f1f5f9;font-size:11px;font-weight:800;color:var(--text-3);text-transform:uppercase;letter-spacing:.05em">
           <span>Brand</span><span>URLs</span><span>Actif</span><span></span>
         </div>
         ${brands.map(b => {
           const pages = b.pages || {};
           const urlsStr = Object.entries(pages).map(([k,v]) => `<span style="display:block"><b>${k}</b>: ${v}</span>`).join('');
-          return `<div class="ap-brand-row" id="brand-row-${b.id}">
+          const pagesJson = JSON.stringify(pages).replace(/'/g, "\\'").replace(/"/g, '&quot;');
+          return `<div class="ap-brand-row" id="brand-row-${b.id}" style="flex-wrap:wrap">
             <span class="ap-brand-name">${b.name}</span>
-            <span class="ap-brand-urls">${urlsStr}</span>
+            <span class="ap-brand-urls" id="brand-urls-${b.id}">${urlsStr}</span>
             <label class="ap-toggle">
               <input type="checkbox" ${b.active ? 'checked' : ''} onchange="toggleBrand('${b.id}', this.checked)">
               <span class="ap-toggle-slider"></span>
             </label>
-            <button class="ap-del-btn" onclick="deleteBrand('${b.id}', '${b.name.replace(/'/g,"\\'")}')">
-              <i data-lucide="trash-2" style="width:13px;height:13px"></i>
-            </button>
+            <div style="display:flex;gap:4px">
+              <button class="ap-del-btn" title="Éditer" onclick="editBrand('${b.id}', '${b.name.replace(/'/g,"\\'")}', ${JSON.stringify(pages).replace(/"/g,"'")})">
+                <i data-lucide="pencil" style="width:13px;height:13px"></i>
+              </button>
+              <button class="ap-del-btn" onclick="deleteBrand('${b.id}', '${b.name.replace(/'/g,"\\'")}')">
+                <i data-lucide="trash-2" style="width:13px;height:13px"></i>
+              </button>
+            </div>
+            <div class="ap-form" id="edit-form-${b.id}" style="width:100%;margin-top:8px"></div>
           </div>`;
         }).join('')}
       </div>`;
@@ -1242,7 +1249,75 @@ async function submitAddBrand() {
   } catch(e) { alert("Erreur : " + e.message); }
 }
 
-async function toggleBrand(id, active) {
+function editBrand(id, name, pages) {
+  // Fermer les autres formulaires ouverts
+  document.querySelectorAll('.ap-form.open').forEach(f => { if(f.id !== `edit-form-${id}`) f.classList.remove('open'); });
+  const form = document.getElementById(`edit-form-${id}`);
+  if(form.classList.contains('open')) { form.classList.remove('open'); return; }
+  const homepage = pages['Homepage'] || '';
+  const parcours = pages['Parcours'] || '';
+  const formulaire = pages['Formulaire'] || '';
+  form.innerHTML = `
+    <div class="ap-form-row">
+      <div><label>URL Homepage</label><input id="edit-hp-${id}" value="${homepage}"></div>
+      <div><label>URL Parcours</label><input id="edit-pc-${id}" value="${parcours}"></div>
+    </div>
+    <div class="ap-form-row single">
+      <div><label>URL Formulaire</label><input id="edit-fm-${id}" value="${formulaire}"></div>
+    </div>
+    <div class="ap-form-actions">
+      <button class="ap-form-submit" onclick="saveBrandEdit('${id}', '${name.replace(/'/g,"\\'")}')">Sauvegarder + push GitHub</button>
+      <button class="ap-form-cancel" onclick="document.getElementById('edit-form-${id}').classList.remove('open')">Annuler</button>
+    </div>`;
+  form.classList.add('open');
+}
+
+async function saveBrandEdit(id, name) {
+  const homepage   = document.getElementById(`edit-hp-${id}`).value.trim();
+  const parcours   = document.getElementById(`edit-pc-${id}`).value.trim();
+  const formulaire = document.getElementById(`edit-fm-${id}`).value.trim();
+  if(!homepage) { alert("URL Homepage obligatoire"); return; }
+  const pages = {"Homepage": homepage};
+  if(parcours)   pages["Parcours"]   = parcours;
+  if(formulaire) pages["Formulaire"] = formulaire;
+
+  // 1. Mettre à jour Supabase
+  const r = await fetch(`${SUPA_URL}/rest/v1/brands?id=eq.${id}`, {
+    method: "PATCH",
+    headers: {"apikey": SUPA_ANON, "Authorization": `Bearer ${adminToken}`, "Content-Type": "application/json"},
+    body: JSON.stringify({pages})
+  });
+  if(!r.ok) { alert("Erreur Supabase : " + await r.text()); return; }
+
+  // 2. Pusher dans GitHub via l'API Anthropic (Claude)
+  const btn = document.querySelector(`#edit-form-${id} .ap-form-submit`);
+  btn.textContent = "Push GitHub...";
+
+  try {
+    const prompt = `Dans le fichier stla_monitor.py du repo GitHub dcs-masterclass-ia/stla-monitor, 
+    mets à jour les URLs de la brand "${name}" dans le dict BRANDS.
+    Nouvelles URLs : ${JSON.stringify(pages)}
+    Réponds uniquement avec "OK" quand c'est fait.`;
+
+    // On appelle notre propre endpoint de push GitHub
+    const ghResp = await fetch("https://stla-monitor.onrender.com/push-brand", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({brand: name, pages})
+    });
+    if(ghResp.ok) {
+      btn.textContent = "✓ Sauvegardé !"; btn.style.background = "var(--green)";
+      // Mettre à jour l'affichage
+      const urlsStr = Object.entries(pages).map(([k,v]) => `<span style="display:block"><b>${k}</b>: ${v}</span>`).join('');
+      document.getElementById(`brand-urls-${id}`).innerHTML = urlsStr;
+      setTimeout(() => document.getElementById(`edit-form-${id}`).classList.remove('open'), 1500);
+    } else {
+      btn.textContent = "✓ Supabase OK (GitHub manuel)"; btn.style.background = "var(--orange)";
+    }
+  } catch(e) {
+    btn.textContent = "✓ Supabase OK (GitHub manuel)"; btn.style.background = "var(--orange)";
+  }
+}
   await fetch(`${SUPA_URL}/rest/v1/brands?id=eq.${id}`, {
     method: "PATCH",
     headers: {"apikey": SUPA_ANON, "Authorization": `Bearer ${adminToken}`, "Content-Type": "application/json"},
