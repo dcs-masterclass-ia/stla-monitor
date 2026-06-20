@@ -1711,22 +1711,22 @@
         }
       },
       "Parcours": {
-        "ok": false,
-        "reason": "HTTP 404",
+        "ok": true,
+        "reason": "OK (200) en 0.94s",
         "elapsed": 0.94,
         "checked_at": "20/06/2026 11:50:49",
-        "url": "https://opel-kauft-dein-auto.opel.at/Modell-Seite",
+        "url": "https://opel-kauft-dein-auto.opel.at/Seite-Modell",
         "details": {
           "brand": "Opel AT",
           "page": "Parcours",
-          "http_status": 404,
+          "http_status": 200,
           "elapsed_http": 0.94,
           "ip": [
             "135.125.7.226",
             0.001,
             null
           ],
-          "error_type": "HTTP_404"
+          "error_type": null
         }
       }
     },
