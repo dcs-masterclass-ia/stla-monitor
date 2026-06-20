@@ -216,14 +216,16 @@ def init_github():
             existing = gh_repo.get_contents(GITHUB_FILE)
             data = json.loads(existing.decoded_content.decode("utf-8"))
             if "chart_data" in data:
-                for key in chart_data:
-                    if key in data["chart_data"]:
-                        chart_data[key] = data["chart_data"][key][-MAX_CHART:]
-            if "history" in data:
+                for key, values in data["chart_data"].items():
+                    chart_data[key] = values[-MAX_CHART:]
+            if "history" in data and data["history"]:
+                history.clear()
                 history.extend(data["history"][-MAX_HISTORY:])
-            log.info("[GitHub] Historique récupéré")
-        except Exception:
-            log.info("[GitHub] Pas d'historique existant")
+                log.info(f"[GitHub] Historique récupéré : {len(history)} entrées")
+            else:
+                log.info("[GitHub] Pas d'historique dans le fichier")
+        except Exception as e:
+            log.error(f"[GitHub] Erreur chargement historique : {e}")
     except Exception as e:
         log.error(f"[GitHub] Connexion impossible : {e}")
 
