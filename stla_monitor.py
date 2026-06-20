@@ -229,7 +229,26 @@ def init_github():
     except Exception as e:
         log.error(f"[GitHub] Connexion impossible : {e}")
 
-def send_teams_alert_raw(message):
+def archive_incident(incident):
+    """Archive un incident dans incidents/YYYY-MM-DD/Brand_Name.json sur GitHub"""
+    if not gh_repo:
+        return
+    try:
+        date = datetime.now(TZ_PARIS).strftime("%Y-%m-%d")
+        brand_slug = incident["brand"].replace(" ", "_")
+        path = f"incidents/{date}/{brand_slug}.json"
+        try:
+            existing = gh_repo.get_contents(path)
+            data = json.loads(existing.decoded_content.decode("utf-8"))
+            data.append(incident)
+            gh_repo.update_file(path, f"incident {brand_slug} {date}",
+                                json.dumps(data, ensure_ascii=False, indent=2), existing.sha)
+        except Exception:
+            gh_repo.create_file(path, f"incident {brand_slug} {date}",
+                                json.dumps([incident], ensure_ascii=False, indent=2))
+        log.info(f"[Archive] {incident['brand']} / {incident['page']} archivé")
+    except Exception as e:
+        log.error(f"[Archive] Erreur : {e}")
     try:
         requests.post(TEAMS_WEBHOOK, json={"text": message}, timeout=10, verify=False)
     except Exception as e:
@@ -723,9 +742,11 @@ def run():
                     if ok:
                         if incident_active.get(key):
                             incident_active[key] = False
-                            history.append({"time": now, "brand": brand, "page": page,
+                            inc = {"time": now, "brand": brand, "page": page,
                                 "type": "recovery", "detail": "Retour en ligne",
-                                "is_reference": brand in REFERENCE_BRANDS})
+                                "is_reference": brand in REFERENCE_BRANDS}
+                            history.append(inc)
+                            threading.Thread(target=archive_incident, args=(inc,), daemon=True).start()
                             if brand not in REFERENCE_BRANDS:
                                 send_teams_alert(brand, page, url, reason, is_recovery=True, details=details)
                     else:
@@ -735,10 +756,12 @@ def run():
                             if brand not in REFERENCE_BRANDS:
                                 screenshot_url = take_screenshot(brand, page, url)
                                 send_teams_alert(brand, page, url, reason, details=details, screenshot_url=screenshot_url)
-                            history.append({"time": now, "brand": brand, "page": page,
+                            inc = {"time": now, "brand": brand, "page": page,
                                 "type": "ko", "detail": reason, "diagnostics": details,
                                 "screenshot": screenshot_url,
-                                "is_reference": brand in REFERENCE_BRANDS})
+                                "is_reference": brand in REFERENCE_BRANDS}
+                            history.append(inc)
+                            threading.Thread(target=archive_incident, args=(inc,), daemon=True).start()
                 except Exception as e:
                     log.error(f"Erreur task : {e}")
 
@@ -765,17 +788,21 @@ def run():
             if ok_i:
                 if incident_active.get(key_i):
                     incident_active[key_i] = False
-                    history.append({"time": now, "brand": brand, "page": "Immat",
-                        "type": "recovery", "detail": "Décodage immat rétabli"})
+                    inc_i = {"time": now, "brand": brand, "page": "Immat",
+                        "type": "recovery", "detail": "Décodage immat rétabli"}
+                    history.append(inc_i)
+                    threading.Thread(target=archive_incident, args=(inc_i,), daemon=True).start()
                     send_teams_alert(brand, "Immat", homepage_url, reason_i, is_recovery=True, details=details_i)
             else:
                 if not incident_active.get(key_i):
                     incident_active[key_i] = True
                     screenshot_url = take_screenshot(brand, "Immat", homepage_url)
                     send_teams_alert(brand, "Immat", homepage_url, reason_i, details=details_i, screenshot_url=screenshot_url)
-                    history.append({"time": now, "brand": brand, "page": "Immat",
+                    inc_i = {"time": now, "brand": brand, "page": "Immat",
                         "type": "ko", "detail": reason_i, "diagnostics": details_i,
-                        "screenshot": screenshot_url})
+                        "screenshot": screenshot_url}
+                    history.append(inc_i)
+                    threading.Thread(target=archive_incident, args=(inc_i,), daemon=True).start()
 
         push_status(statuses)
         threading.Thread(target=push_to_render, args=(statuses,), daemon=True).start()
