@@ -157,7 +157,44 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .empty-state p{font-size:14px;font-weight:700}
 .empty-state small{font-size:12px;font-weight:500}
 
-/* ── SYNTHÈSE BUTTON ── */
+/* ── ADMIN ── */
+#admin-overlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,.7);backdrop-filter:blur(8px);z-index:100;align-items:center;justify-content:center}
+#admin-overlay.active{display:flex}
+.admin-modal{background:#fff;border-radius:var(--r);width:min(520px,95vw);padding:2rem;box-shadow:0 30px 80px rgba(0,0,0,.15)}
+.admin-modal-title{font-size:18px;font-weight:900;margin-bottom:1.5rem;display:flex;align-items:center;gap:8px}
+.admin-input{width:100%;padding:10px 14px;border-radius:12px;border:1.5px solid #e2e8f0;font-size:13px;font-weight:600;font-family:'Plus Jakarta Sans',sans-serif;outline:none;margin-bottom:12px;transition:border .15s}
+.admin-input:focus{border-color:var(--accent)}
+.admin-btn{width:100%;padding:11px;border-radius:12px;font-size:13px;font-weight:800;border:none;background:var(--accent);color:#fff;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:opacity .15s}
+.admin-btn:hover{opacity:.85}
+.admin-err{font-size:12px;color:var(--red);font-weight:600;margin-bottom:8px;display:none}
+
+/* ── ADMIN PANEL ── */
+#admin-panel{display:none;position:fixed;inset:0;background:var(--bg);z-index:99;flex-direction:column;overflow:hidden}
+#admin-panel.active{display:flex}
+.ap-topbar{background:#fff;padding:1rem 2rem;display:flex;align-items:center;gap:1rem;box-shadow:0 2px 10px rgba(0,0,0,.04);flex-shrink:0}
+.ap-title{font-size:16px;font-weight:900;flex:1}
+.ap-close{background:var(--accent-light);border:none;border-radius:10px;padding:7px 14px;font-size:12px;font-weight:800;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;color:var(--text-2)}
+.ap-tabs{display:flex;gap:4px;padding:1rem 2rem 0;flex-shrink:0}
+.ap-tab{padding:8px 16px;border-radius:10px;font-size:12px;font-weight:800;border:none;background:var(--accent-light);color:var(--text-2);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all .15s}
+.ap-tab.on{background:var(--accent);color:#fff}
+.ap-content{flex:1;overflow-y:auto;padding:1.5rem 2rem;min-height:0}
+
+/* Admin table */
+.ap-table{width:100%;border-collapse:collapse;font-size:12px}
+.ap-table th{text-align:left;font-weight:800;color:var(--text-3);padding:8px 12px;border-bottom:2px solid #f1f5f9;font-size:11px;text-transform:uppercase;letter-spacing:.05em}
+.ap-table td{padding:10px 12px;border-bottom:1px solid #f8fafc;font-weight:600;vertical-align:top}
+.ap-table tr:hover td{background:#f8fafc}
+.ap-chip{font-size:9px;font-weight:800;padding:2px 7px;border-radius:6px;text-transform:uppercase}
+.ap-chip.ko{background:var(--red-bg);color:var(--red)}
+.ap-chip.ok{background:var(--green-bg);color:var(--green)}
+.ap-empty{padding:3rem;text-align:center;color:var(--text-3);font-size:13px;font-weight:700}
+.ap-filters{display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap;align-items:center}
+.ap-filter-input{padding:7px 12px;border-radius:10px;border:1.5px solid #e2e8f0;font-size:12px;font-weight:600;font-family:'Plus Jakarta Sans',sans-serif;outline:none}
+.ap-filter-input:focus{border-color:var(--accent)}
+.ap-export-btn{margin-left:auto;padding:7px 14px;border-radius:10px;font-size:11px;font-weight:800;border:none;background:var(--accent);color:#fff;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;display:flex;align-items:center;gap:6px}
+
+.sb-admin-btn{display:flex;align-items:center;gap:8px;width:calc(100% - 2.5rem);margin:0 1.25rem .75rem;padding:10px 14px;border-radius:14px;font-size:12px;font-weight:800;border:none;background:#f1f5f9;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;color:var(--text-2);transition:all .2s}
+.sb-admin-btn:hover{background:#e2e8f0}
 .sb-synth-sep{height:1px;background:#f1f5f9;margin:0 1.25rem .75rem}
 .sb-synth-btn{display:flex;align-items:center;gap:8px;width:calc(100% - 2.5rem);margin:0 1.25rem .75rem;padding:10px 14px;border-radius:14px;font-size:12px;font-weight:800;border:none;background:var(--accent-light);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;color:var(--text-2);transition:all .2s;position:relative;flex-shrink:0}
 .sb-synth-btn:hover{background:#e2e8f0}
@@ -233,6 +270,10 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
   <div class="sb-foot">
     <div class="sb-foot-title">Monitoring actif</div>
     <div class="sb-foot-sub" id="sb-ts">—</div>
+    <button class="sb-admin-btn" style="margin-top:.75rem;margin-left:0;width:100%" onclick="openAdmin()">
+      <i data-lucide="shield" style="width:13px;height:13px"></i>
+      Admin
+    </button>
   </div>
 </aside>
 
@@ -349,6 +390,36 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
     </div>
   </div>
 </main>
+</div>
+
+<!-- ── ADMIN LOGIN ── -->
+<div id="admin-overlay">
+  <div class="admin-modal">
+    <div class="admin-modal-title">
+      <i data-lucide="shield" style="width:18px;height:18px"></i>
+      Accès Admin
+    </div>
+    <div class="admin-err" id="admin-err">Email ou mot de passe incorrect</div>
+    <input class="admin-input" id="admin-email" type="email" placeholder="Email" autocomplete="email">
+    <input class="admin-input" id="admin-pass" type="password" placeholder="Mot de passe" autocomplete="current-password">
+    <button class="admin-btn" id="admin-login-btn" onclick="adminLogin()">Se connecter</button>
+  </div>
+</div>
+
+<!-- ── ADMIN PANEL ── -->
+<div id="admin-panel">
+  <div class="ap-topbar">
+    <i data-lucide="shield" style="width:16px;height:16px;color:var(--text-3)"></i>
+    <span class="ap-title">Admin Panel — STLA Monitor</span>
+    <span id="ap-user" style="font-size:11px;font-weight:600;color:var(--text-3)"></span>
+    <button class="ap-close" onclick="adminLogout()">Déconnexion</button>
+    <button class="ap-close" onclick="closeAdmin()">✕ Fermer</button>
+  </div>
+  <div class="ap-tabs">
+    <button class="ap-tab on" onclick="apTab('incidents',this)">Incidents</button>
+    <button class="ap-tab" onclick="apTab('brands',this)">Brands</button>
+  </div>
+  <div class="ap-content" id="ap-content"></div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
@@ -916,11 +987,183 @@ async function fetchStatus(){
   }
 }
 
-window.addEventListener("load",()=>{
-  if(window.lucide)lucide.createIcons();
-  buildNav(); // brand=null donc aucun pays ouvert
+// ── ADMIN ──
+const SUPA_URL  = "https://vqkzrvwwtiktofkpmelt.supabase.co";
+const SUPA_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZxa3pydnd3dGlrdG9ma3BtZWx0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE5NDAzMDQsImV4cCI6MjA5NzUxNjMwNH0.5ylyy1Voq9vfLHNO7Jk8leTV55VO4bkXg7oGGC2BNLo";
+let adminToken = localStorage.getItem("admin_token") || null;
+let apCurrentTab = "incidents";
+
+function openAdmin() {
+  if(adminToken) { showAdminPanel(); return; }
+  document.getElementById("admin-overlay").classList.add("active");
+  if(window.lucide) lucide.createIcons();
+}
+function closeAdmin() {
+  document.getElementById("admin-panel").classList.remove("active");
+}
+async function adminLogin() {
+  const email = document.getElementById("admin-email").value.trim();
+  const pass  = document.getElementById("admin-pass").value;
+  const btn   = document.getElementById("admin-login-btn");
+  const err   = document.getElementById("admin-err");
+  err.style.display = "none";
+  btn.textContent = "Connexion...";
+  try {
+    const r = await fetch(`${SUPA_URL}/auth/v1/token?grant_type=password`, {
+      method: "POST",
+      headers: {"apikey": SUPA_ANON, "Content-Type": "application/json"},
+      body: JSON.stringify({email, password: pass})
+    });
+    const d = await r.json();
+    if(d.access_token) {
+      adminToken = d.access_token;
+      localStorage.setItem("admin_token", adminToken);
+      localStorage.setItem("admin_email", email);
+      document.getElementById("admin-overlay").classList.remove("active");
+      showAdminPanel();
+    } else {
+      err.style.display = "block";
+    }
+  } catch(e) {
+    err.style.display = "block";
+    err.textContent = "Erreur réseau";
+  }
+  btn.textContent = "Se connecter";
+}
+function adminLogout() {
+  adminToken = null;
+  localStorage.removeItem("admin_token");
+  localStorage.removeItem("admin_email");
+  document.getElementById("admin-panel").classList.remove("active");
+}
+function showAdminPanel() {
+  const email = localStorage.getItem("admin_email") || "";
+  document.getElementById("ap-user").textContent = email;
+  document.getElementById("admin-panel").classList.add("active");
+  if(window.lucide) lucide.createIcons();
+  apTab("incidents", document.querySelector(".ap-tab"));
+}
+function apTab(tab, btn) {
+  apCurrentTab = tab;
+  document.querySelectorAll(".ap-tab").forEach(b => b.classList.remove("on"));
+  btn.classList.add("on");
+  if(tab === "incidents") loadApIncidents();
+  else if(tab === "brands") loadApBrands();
+}
+
+// ── ADMIN : INCIDENTS ──
+let apIncFilter = {brand:"", type:"", search:""};
+let apIncidents = [];
+
+async function loadApIncidents() {
+  const el = document.getElementById("ap-content");
+  el.innerHTML = `<div class="ap-empty">Chargement...</div>`;
+  try {
+    let url = `${SUPA_URL}/rest/v1/incidents?order=time.desc&limit=500`;
+    const r = await fetch(url, {
+      headers: {"apikey": SUPA_ANON, "Authorization": `Bearer ${adminToken}`, "Accept": "application/json"}
+    });
+    if(r.status === 401) { adminLogout(); return; }
+    apIncidents = await r.json();
+    renderApIncidents();
+  } catch(e) {
+    el.innerHTML = `<div class="ap-empty">Erreur chargement : ${e.message}</div>`;
+  }
+}
+
+function renderApIncidents() {
+  const el = document.getElementById("ap-content");
+  let rows = apIncidents;
+  if(apIncFilter.brand) rows = rows.filter(r => r.brand && r.brand.toLowerCase().includes(apIncFilter.brand.toLowerCase()));
+  if(apIncFilter.type)  rows = rows.filter(r => r.type === apIncFilter.type);
+  if(apIncFilter.search) rows = rows.filter(r => JSON.stringify(r).toLowerCase().includes(apIncFilter.search.toLowerCase()));
+
+  const brands = [...new Set(apIncidents.map(r => r.brand))].sort();
+
+  el.innerHTML = `
+    <div class="ap-filters">
+      <select class="ap-filter-input" onchange="apIncFilter.brand=this.value;renderApIncidents()">
+        <option value="">Toutes les brands</option>
+        ${brands.map(b => `<option value="${b}" ${apIncFilter.brand===b?'selected':''}>${b}</option>`).join('')}
+      </select>
+      <select class="ap-filter-input" onchange="apIncFilter.type=this.value;renderApIncidents()">
+        <option value="">Tous les types</option>
+        <option value="ko" ${apIncFilter.type==='ko'?'selected':''}>KO</option>
+        <option value="recovery" ${apIncFilter.type==='recovery'?'selected':''}>Recovery</option>
+      </select>
+      <input class="ap-filter-input" placeholder="Rechercher..." value="${apIncFilter.search}"
+        oninput="apIncFilter.search=this.value;renderApIncidents()">
+      <button class="ap-export-btn" onclick="exportApCSV()">
+        <i data-lucide="download" style="width:12px;height:12px"></i> CSV
+      </button>
+    </div>
+    ${rows.length === 0 ? '<div class="ap-empty">Aucun incident</div>' : `
+    <table class="ap-table">
+      <thead><tr>
+        <th>Date</th><th>Brand</th><th>Page</th><th>Type</th><th>Détail</th>
+      </tr></thead>
+      <tbody>
+        ${rows.map(r => `<tr>
+          <td style="white-space:nowrap">${r.time ? r.time.replace('T',' ').substring(0,16) : '—'}</td>
+          <td style="font-weight:700">${r.brand||'—'}</td>
+          <td>${r.page||'—'}</td>
+          <td><span class="ap-chip ${r.type==='recovery'?'ok':'ko'}">${r.type==='recovery'?'RESOLVED':'KO'}</span></td>
+          <td style="color:var(--text-3)">${r.detail||'—'}</td>
+        </tr>`).join('')}
+      </tbody>
+    </table>`}
+  `;
+  if(window.lucide) lucide.createIcons();
+}
+
+function exportApCSV() {
+  let rows = apIncidents;
+  if(apIncFilter.brand) rows = rows.filter(r => r.brand && r.brand.toLowerCase().includes(apIncFilter.brand.toLowerCase()));
+  if(apIncFilter.type)  rows = rows.filter(r => r.type === apIncFilter.type);
+  const csv = [["Date","Brand","Page","Type","Détail"],...rows.map(r=>[
+    r.time||"", r.brand||"", r.page||"", r.type||"", r.detail||""
+  ])].map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(",")).join("\n");
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8;"}));
+  a.download = `incidents_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+}
+
+// ── ADMIN : BRANDS ──
+async function loadApBrands() {
+  const el = document.getElementById("ap-content");
+  el.innerHTML = `<div class="ap-empty">Chargement...</div>`;
+  try {
+    const r = await fetch(`${SUPA_URL}/rest/v1/brands?order=name.asc`, {
+      headers: {"apikey": SUPA_ANON, "Authorization": `Bearer ${adminToken}`}
+    });
+    const brands = await r.json();
+    if(!brands.length) {
+      el.innerHTML = `<div class="ap-empty">Aucune brand configurée dans Supabase.<br><small>Les brands sont gérées dans stla_monitor.py pour l'instant.</small></div>`;
+      return;
+    }
+    el.innerHTML = `<table class="ap-table">
+      <thead><tr><th>Brand</th><th>Pages</th><th>Webhook Teams</th><th>Actif</th></tr></thead>
+      <tbody>${brands.map(b=>`<tr>
+        <td style="font-weight:700">${b.name}</td>
+        <td>${b.pages ? Object.keys(b.pages).join(', ') : '—'}</td>
+        <td style="color:var(--text-3);font-size:11px">${b.teams_webhook ? '✓ Configuré' : '—'}</td>
+        <td><span class="ap-chip ${b.active?'ok':'ko'}">${b.active?'OUI':'NON'}</span></td>
+      </tr>`).join('')}</tbody>
+    </table>`;
+  } catch(e) {
+    el.innerHTML = `<div class="ap-empty">Erreur : ${e.message}</div>`;
+  }
+}
+
+// Vérif token au load
+window.addEventListener("load",()=>{\n  if(window.lucide)lucide.createIcons();
+  buildNav();
   fetchStatus();
   setInterval(fetchStatus,2000);
+  // Vérif admin token
+  document.getElementById("admin-email") && document.getElementById("admin-email").addEventListener("keydown", e => { if(e.key==="Enter") document.getElementById("admin-pass").focus(); });
+  document.getElementById("admin-pass") && document.getElementById("admin-pass").addEventListener("keydown", e => { if(e.key==="Enter") adminLogin(); });
 });
 </script>
 </body>
