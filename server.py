@@ -36,6 +36,30 @@ def load_from_github():
         if not latest_data.get("history"):
             latest_data["history"] = load_incidents_from_folder()
 
+        # Toujours charger chart_data.json et merger avec status.json
+        try:
+            cd_url = f"https://raw.githubusercontent.com/{GITHUB_REPO}/main/chart_data.json"
+            req2 = urllib.request.Request(cd_url, headers=headers)
+            with urllib.request.urlopen(req2, timeout=15) as r2:
+                backup = json.loads(r2.read())
+            bcd = backup.get("chart_data", {})
+            cur_cd = latest_data.get("chart_data", {})
+            merged = {}
+            for key in set(list(bcd.keys()) + list(cur_cd.keys())):
+                seen = set()
+                all_pts = []
+                for p in (bcd.get(key, []) + cur_cd.get(key, [])):
+                    if p["time"] not in seen:
+                        seen.add(p["time"])
+                        all_pts.append(p)
+                all_pts.sort(key=lambda p: p["time"])
+                merged[key] = all_pts[-10080:]
+            latest_data["chart_data"] = merged
+            total = sum(len(v) for v in merged.values())
+            log.info(f"[Startup] chart_data fusionné : {total} points")
+        except Exception as e:
+            log.error(f"[Startup] Erreur chart_data.json : {e}")
+
         pts = sum(len(v) for v in latest_data.get("chart_data", {}).values())
         hist = len(latest_data.get("history", []))
         log.info(f"[Startup] GitHub chargé : {hist} incidents, {pts} points")
@@ -91,8 +115,26 @@ app.add_middleware(
 async def receive_update(request: Request):
     global latest_data
     try:
-        latest_data = await request.json()
-        latest_data["server_time"] = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+        new_data = await request.json()
+        new_data["server_time"] = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+
+        # Merger chart_data — garder l'historique existant + ajouter les nouveaux points
+        if latest_data and latest_data.get("chart_data") and new_data.get("chart_data"):
+            cur_cd = latest_data["chart_data"]
+            new_cd = new_data["chart_data"]
+            merged = {}
+            for key in set(list(cur_cd.keys()) + list(new_cd.keys())):
+                seen = set()
+                all_pts = []
+                for p in (cur_cd.get(key, []) + new_cd.get(key, [])):
+                    if p["time"] not in seen:
+                        seen.add(p["time"])
+                        all_pts.append(p)
+                all_pts.sort(key=lambda p: p["time"])
+                merged[key] = all_pts[-10080:]
+            new_data["chart_data"] = merged
+
+        latest_data = new_data
         return {"ok": True}
     except Exception as e:
         return {"ok": False, "error": str(e)}
