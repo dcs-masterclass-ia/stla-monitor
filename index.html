@@ -973,8 +973,10 @@ function renderHistory(){
     const d=dur(hist,hist.length-1-ri);
     const ongoing=h.type==="ko"&&d===null;
     const hhmm=(h.time||"").substring(11,16);
+    const dateStr=(h.time||"").substring(0,5); // DD/MM
+    const timeLabel = dateStr + " " + hhmm;
     return '<div class="inc-row '+(ongoing?"ongoing":"") +'" onclick="highlightChartPoint(\''+hhmm+'\')" style="cursor:pointer">'+
-      '<div class="inc-top"><div class="inc-title">'+h.page+'</div><div class="inc-time">'+hhmm+'</div></div>'+
+      '<div class="inc-top"><div class="inc-title">'+h.page+'</div><div class="inc-time">'+timeLabel+'</div></div>'+
       '<div class="inc-mid"><div class="inc-sub">'+h.detail+(h.diagnostics&&h.diagnostics.error_type?" ("+h.diagnostics.error_type+")":"")+'</div>'+
       '<div class="inc-chip '+(h.type==="recovery"?"ok":"ko")+'">'+(h.type==="recovery"?"RESOLVED":ongoing?"CRITICAL":"FAILURE")+'</div></div>'+
       '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px">'+
