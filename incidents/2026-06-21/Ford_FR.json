@@ -636,5 +636,33 @@
     },
     "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Formulaire_20260621_205834.png",
     "is_reference": false
+  },
+  {
+    "time": "21/06/2026 20:58:44",
+    "brand": "Ford FR",
+    "page": "Formulaire",
+    "type": "ko",
+    "detail": "Erreur serveur HTTP 500",
+    "diagnostics": {
+      "brand": "Ford FR",
+      "page": "Formulaire",
+      "dns_elapsed": 0.05,
+      "ip": "3.69.153.2",
+      "http_status": 500,
+      "elapsed_http": 0.89,
+      "elapsed_total": 0.94,
+      "redirect_count": 0,
+      "final_url": "https://www.ford-reprise.fr/form",
+      "headers": {
+        "server": "—",
+        "content-type": "text/html; charset=UTF-8",
+        "x-cache": "—",
+        "cf-ray": "—"
+      },
+      "error_type": "HTTP_500",
+      "body_preview": "<!DOCTYPE html>\n<html>\n<head>\n    <meta charset=\"utf-8\">\n    <title>500</title>\n</head>\n<body>\n    <h3 style=\"text-align: center;\">\n        We apologize we have an 500 error.\n    </h3>\n</body>\n</html>"
+    },
+    "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Formulaire_20260621_205939.png",
+    "is_reference": false
   }
 ]
