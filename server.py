@@ -28,10 +28,25 @@ app.add_middleware(
 )
 
 GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "")
-GITHUB_REPO  = "dcs-masterclass-ia/stla-monitor"
+GITHUB_RAW = "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/status.json"
 
 # État en mémoire
 latest_data = {}
+
+@app.on_event("startup")
+async def load_from_github():
+    global latest_data
+    try:
+        headers = {"Authorization": f"token {GITHUB_TOKEN}"} if GITHUB_TOKEN else {}
+        req = urllib.request.Request(GITHUB_RAW, headers=headers)
+        with urllib.request.urlopen(req, timeout=10) as r:
+            latest_data = json.loads(r.read())
+            latest_data["server_time"] = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+        pts = sum(len(v) for v in latest_data.get("chart_data", {}).values())
+        hist = len(latest_data.get("history", []))
+        log.info(f"[Startup] status.json chargé depuis GitHub : {hist} incidents, {pts} points chart")
+    except Exception as e:
+        log.error(f"[Startup] Erreur chargement GitHub : {e}")
 
 @app.post("/update")
 async def receive_update(request: Request):
