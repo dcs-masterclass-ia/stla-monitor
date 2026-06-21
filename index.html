@@ -159,6 +159,29 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .kpi-tooltip:hover::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:#0f172a;color:#fff;font-size:10px;font-weight:600;padding:6px 10px;border-radius:8px;white-space:pre-line;width:200px;text-align:left;z-index:999;pointer-events:none;line-height:1.5}
 .kpi-tooltip:hover::before{content:"";position:absolute;bottom:calc(100% + 1px);left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:#0f172a;z-index:999}
 
+/* ── ANALYSE ── */
+.analyse-toggle{display:flex;align-items:center;gap:8px;padding:12px 16px;background:#fff;border-radius:var(--r);box-shadow:var(--shadow);cursor:pointer;font-size:12px;font-weight:800;color:var(--text-2);margin-top:12px;transition:background .15s;flex-shrink:0}
+.analyse-toggle:hover{background:#f8fafc}
+.analyse-section{margin-top:12px;flex-shrink:0}
+.analyse-row{display:grid;grid-template-columns:1fr 1fr 2fr;gap:12px}
+.analyse-card{background:#fff;border-radius:var(--r);padding:1rem 1.25rem;box-shadow:var(--shadow)}
+.analyse-chart-wrap{position:relative;height:160px;margin:12px 0 8px}
+.analyse-legend{display:flex;flex-wrap:wrap;gap:8px;font-size:11px;font-weight:700}
+.analyse-legend-item{display:flex;align-items:center;gap:5px;color:var(--text-2)}
+.analyse-legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.heatmap-wrap{overflow-x:auto;padding-bottom:4px}
+.heatmap-label{width:22px;font-size:9px;color:var(--text-3);font-weight:700;text-align:center}
+.heatmap-row-label{font-size:9px;color:var(--text-3);font-weight:700;width:28px;flex-shrink:0;line-height:22px}
+.heatmap-row{display:flex;align-items:center;gap:3px;margin-bottom:3px}
+.heatmap-cell{width:22px;height:22px;border-radius:4px;cursor:pointer;transition:transform .1s;flex-shrink:0}
+.heatmap-cell:hover{transform:scale(1.2)}
+.heatmap-labels{display:flex;gap:3px;margin-bottom:4px;padding-left:32px}
+.analyse-mttr{display:flex;gap:32px;padding:8px 0}
+.mttr-kpi{text-align:center}
+.mttr-val{font-size:26px;font-weight:900;color:var(--text)}
+.mttr-lbl{font-size:11px;font-weight:600;color:var(--text-3);margin-top:2px}
+.mttr-sub{font-size:10px;color:var(--text-3);margin-top:1px}
+
 /* ── ADMIN ── */
 #admin-overlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,.7);backdrop-filter:blur(8px);z-index:100;align-items:center;justify-content:center}
 #admin-overlay.active{display:flex}
@@ -418,6 +441,39 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
         <div class="card-hed"><i data-lucide="bar-chart-2" style="width:16px;height:16px;color:var(--text-3)"></i>Répartition des Incidents par Heure<span class="card-hed-sub">Macro</span></div>
         <div class="macro-body"><canvas id="macroChart"></canvas></div>
       </div>
+
+      <!-- ── SECTION ANALYSE ── -->
+      <div class="analyse-toggle" id="analyse-toggle" onclick="toggleAnalyse()">
+        <i data-lucide="bar-chart" style="width:14px;height:14px"></i>
+        Analyse approfondie
+        <i data-lucide="chevron-down" style="width:14px;height:14px;margin-left:auto" id="analyse-chevron"></i>
+      </div>
+
+      <div class="analyse-section" id="analyse-section" style="display:none">
+        <div class="analyse-row">
+          <div class="analyse-card">
+            <div class="card-hed"><i data-lucide="pie-chart" style="width:14px;height:14px;color:var(--text-3)"></i>Répartition des statuts</div>
+            <div class="analyse-chart-wrap"><canvas id="pieStatusChart"></canvas></div>
+            <div class="analyse-legend" id="pie-status-legend"></div>
+          </div>
+          <div class="analyse-card">
+            <div class="card-hed"><i data-lucide="pie-chart" style="width:14px;height:14px;color:var(--text-3)"></i>Incidents par page</div>
+            <div class="analyse-chart-wrap"><canvas id="piePageChart"></canvas></div>
+            <div class="analyse-legend" id="pie-page-legend"></div>
+          </div>
+          <div class="analyse-card analyse-card-wide">
+            <div class="card-hed"><i data-lucide="grid" style="width:14px;height:14px;color:var(--text-3)"></i>Heatmap incidents par heure</div>
+            <div id="heatmap-container"></div>
+          </div>
+        </div>
+        <div class="analyse-row" style="margin-top:12px">
+          <div class="analyse-card analyse-card-wide">
+            <div class="card-hed"><i data-lucide="clock" style="width:14px;height:14px;color:var(--text-3)"></i>MTTR &amp; MTBF</div>
+            <div class="analyse-mttr" id="analyse-mttr"></div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 </main>
@@ -1215,6 +1271,111 @@ function apTab(tab, btn) {
   if(tab === "incidents") loadApIncidents();
   else if(tab === "brands") loadApBrands();
   else if(tab === "alertes") loadApAlertes();
+}
+
+// ── ANALYSE ──
+let pieStatusInst = null, piePageInst = null, analyseOpen = false;
+
+function toggleAnalyse() {
+  analyseOpen = !analyseOpen;
+  document.getElementById("analyse-section").style.display = analyseOpen ? "block" : "none";
+  const chev = document.getElementById("analyse-chevron");
+  chev.style.transform = analyseOpen ? "rotate(180deg)" : "";
+  if(analyseOpen) renderAnalyse();
+}
+
+function renderAnalyse() {
+  if(!data || !brand) return;
+  const hist = filterHist((data.history||[]).filter(h=>h.brand===brand));
+  renderPieStatus(hist);
+  renderPiePage(hist);
+  renderHeatmap(hist);
+  renderMTTR(hist);
+}
+
+function renderPieStatus(hist) {
+  const cp = Object.entries(data.chart_data||{})
+    .filter(([k])=>k.startsWith(brand+":") && !k.endsWith(":Immat"))
+    .map(([,v])=>filterPts(v));
+  const total = cp.reduce((a,pts)=>a+pts.length,0);
+  const lent = cp.flatMap(pts=>pts).filter(p=>p.elapsed>=4).length;
+  const koCount = hist.filter(h=>h.type==="ko").length;
+  const ok = Math.max(0, total - lent - koCount);
+  const labels = ["OK","Lent (≥4s)","KO"];
+  const values = [ok, lent, koCount];
+  const colors = ["#059669","#d97706","#e11d48"];
+  document.getElementById("pie-status-legend").innerHTML = labels.map((l,i)=>
+    `<div class="analyse-legend-item"><span class="analyse-legend-dot" style="background:${colors[i]}"></span>${l}: ${values[i]}</div>`
+  ).join("");
+  if(pieStatusInst){pieStatusInst.destroy();pieStatusInst=null;}
+  pieStatusInst = new Chart(document.getElementById("pieStatusChart"),{
+    type:"doughnut",
+    data:{labels,datasets:[{data:values,backgroundColor:colors,borderWidth:2,borderColor:"#fff"}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:"55%",plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.label}: ${c.raw} (${total?Math.round(c.raw/total*100):0}%)`}}}}
+  });
+}
+
+function renderPiePage(hist) {
+  const koByPage = {};
+  hist.filter(h=>h.type==="ko").forEach(h=>{ koByPage[h.page]=(koByPage[h.page]||0)+1; });
+  const labels = Object.keys(koByPage);
+  const values = Object.values(koByPage);
+  const palette = ["#6366f1","#f59e0b","#10b981","#e11d48","#8b5cf6","#06b6d4"];
+  document.getElementById("pie-page-legend").innerHTML = labels.length
+    ? labels.map((l,i)=>`<div class="analyse-legend-item"><span class="analyse-legend-dot" style="background:${palette[i%palette.length]}"></span>${l}: ${values[i]}</div>`).join("")
+    : '<span style="color:var(--text-3);font-size:12px">Aucun incident 🎉</span>';
+  if(piePageInst){piePageInst.destroy();piePageInst=null;}
+  if(!labels.length) return;
+  piePageInst = new Chart(document.getElementById("piePageChart"),{
+    type:"doughnut",
+    data:{labels,datasets:[{data:values,backgroundColor:palette,borderWidth:2,borderColor:"#fff"}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:"55%",plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.label}: ${c.raw} incident(s)`}}}}
+  });
+}
+
+function renderHeatmap(hist) {
+  const el = document.getElementById("heatmap-container");
+  const ko = hist.filter(h=>h.type==="ko");
+  if(!ko.length){el.innerHTML='<div style="padding:1rem;color:var(--text-3);font-size:12px;font-weight:700">Aucun incident sur la période 🎉</div>';return;}
+  const days = ["Lun","Mar","Mer","Jeu","Ven","Sam","Dim"];
+  const matrix = Array.from({length:7},()=>new Array(24).fill(0));
+  ko.forEach(h=>{
+    const t=parseDateStr(h.time);
+    if(!t) return;
+    const d=(t.getDay()+6)%7;
+    matrix[d][t.getHours()]++;
+  });
+  const maxVal = Math.max(...matrix.flat(),1);
+  const getColor = n => {
+    if(n===0) return "#f1f5f9";
+    const r=n/maxVal;
+    return r<0.33?"#fecaca":r<0.66?"#f87171":"#e11d48";
+  };
+  const labelsHTML=`<div class="heatmap-labels">${Array.from({length:24},(_,i)=>`<div class="heatmap-label">${i}h</div>`).join("")}</div>`;
+  const rowsHTML=matrix.map((row,d)=>`<div class="heatmap-row"><span class="heatmap-row-label">${days[d]}</span>${row.map((n,h)=>`<div class="heatmap-cell" style="background:${getColor(n)}" title="${days[d]} ${h}h : ${n} incident(s)"></div>`).join("")}</div>`).join("");
+  el.innerHTML=`<div class="heatmap-wrap">${labelsHTML}${rowsHTML}</div><div style="display:flex;align-items:center;gap:6px;margin-top:8px;font-size:10px;font-weight:700;color:var(--text-3)">Moins <span style="display:flex;gap:3px"><span style="width:12px;height:12px;background:#f1f5f9;border-radius:3px;display:inline-block"></span><span style="width:12px;height:12px;background:#fecaca;border-radius:3px;display:inline-block"></span><span style="width:12px;height:12px;background:#f87171;border-radius:3px;display:inline-block"></span><span style="width:12px;height:12px;background:#e11d48;border-radius:3px;display:inline-block"></span></span> Plus</div>`;
+}
+
+function renderMTTR(hist) {
+  const el=document.getElementById("analyse-mttr");
+  const kos=hist.filter(h=>h.type==="ko");
+  const recs=hist.filter(h=>h.type==="recovery");
+  let mttrTotal=0,mttrCount=0;
+  kos.forEach(ko=>{
+    const rec=recs.find(r=>r.page===ko.page&&parseDateStr(r.time)>parseDateStr(ko.time));
+    if(rec){const diff=(parseDateStr(rec.time)-parseDateStr(ko.time))/60000;mttrTotal+=diff;mttrCount++;}
+  });
+  let mtbfTotal=0,mtbfCount=0;
+  const sorted=[...kos].sort((a,b)=>(parseDateStr(a.time)||0)-(parseDateStr(b.time)||0));
+  for(let i=1;i<sorted.length;i++){const diff=((parseDateStr(sorted[i].time)||0)-(parseDateStr(sorted[i-1].time)||0))/60000;if(diff>0&&diff<10080){mtbfTotal+=diff;mtbfCount++;}}
+  const fmt=min=>{if(!min)return"—";if(min<60)return Math.round(min)+"min";return(min/60).toFixed(1)+"h";};
+  const mttr=mttrCount?(mttrTotal/mttrCount):null;
+  const mtbf=mtbfCount?(mtbfTotal/mtbfCount):null;
+  el.innerHTML=`
+    <div class="mttr-kpi"><div class="mttr-val">${fmt(mttr)}</div><div class="mttr-lbl">MTTR</div><div class="mttr-sub">Temps moyen de résolution</div></div>
+    <div class="mttr-kpi"><div class="mttr-val">${fmt(mtbf)}</div><div class="mttr-lbl">MTBF</div><div class="mttr-sub">Temps moyen entre incidents</div></div>
+    <div class="mttr-kpi"><div class="mttr-val">${kos.length}</div><div class="mttr-lbl">Incidents</div><div class="mttr-sub">Sur la période</div></div>
+    <div class="mttr-kpi"><div class="mttr-val">${mttrCount}</div><div class="mttr-lbl">Résolus</div><div class="mttr-sub">Avec recovery détecté</div></div>`;
 }
 
 // ── ADMIN : INCIDENTS ──
