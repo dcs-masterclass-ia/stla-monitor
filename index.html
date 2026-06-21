@@ -1167,10 +1167,10 @@ let _incidentsCacheTime = 0;
 let _incidentsCache = [];
 
 async function loadIncidentsFromFolder() {
-  if(Date.now() - _incidentsCacheTime < 60000 && _incidentsCache.length) return _incidentsCache;
+  if(Date.now() - _incidentsCacheTime < 300000 && _incidentsCache.length) return _incidentsCache;
   const all = [];
   const today = new Date();
-  for(let i = 0; i < 7; i++) {
+  for(let i = 0; i < 2; i++) { // seulement 2 jours pour limiter les appels API
     const d = new Date(today - i * 86400000);
     const date = d.toISOString().slice(0,10);
     try {
@@ -1178,7 +1178,7 @@ async function loadIncidentsFromFolder() {
       if(!r.ok) continue;
       const files = await r.json();
       for(const f of files) {
-        const r2 = await fetch(`${INCIDENTS_BASE}/${date}/${f.name}?t=${Date.now()}`, {cache:"no-store"});
+        const r2 = await fetch(`${INCIDENTS_BASE}/${date}/${f.name}`, {cache:"no-store"});
         if(r2.ok) { const inc = await r2.json(); all.push(...inc); }
       }
     } catch(e) {}
@@ -1187,6 +1187,14 @@ async function loadIncidentsFromFolder() {
   _incidentsCacheTime = Date.now();
   return _incidentsCache;
 }
+
+// Rafraîchir les incidents en arrière-plan toutes les 5 min
+async function refreshIncidents() {
+  _incidentsCacheTime = 0; // force reload
+  await loadIncidentsFromFolder();
+  if(brand && data) renderHistory();
+}
+setInterval(refreshIncidents, 300000);
 
 async function mergeChartBackup(nd) {
   // Si chart_data pauvre (<100 points total), charger le backup
