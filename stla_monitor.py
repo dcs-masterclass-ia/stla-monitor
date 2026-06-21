@@ -955,7 +955,7 @@ def run():
         threading.Thread(target=push_to_render, args=(statuses,), daemon=True).start()
         # Backup chart_data toutes les 20 cycles (~60min)
         _cycle_counter[0] = _cycle_counter[0] + 1
-        if _cycle_counter[0] % 20 == 0:
+        if _cycle_counter[0] % 5 == 0:
             threading.Thread(target=push_chart_backup, daemon=True).start()
         time.sleep(CHECK_INTERVAL_SECONDS)
 
