@@ -1163,7 +1163,7 @@ const CHART_BACKUP = "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-
 async function mergeChartBackup(nd) {
   // Si chart_data pauvre (<100 points total), charger le backup
   const pts = Object.values(nd.chart_data||{}).reduce((a,v)=>a+v.length,0);
-  if(pts < 500) {
+  if(pts < 5000) {
     try {
       const r = await fetch(CHART_BACKUP+"?t="+Date.now(), {cache:"no-store"});
       if(r.ok) {
