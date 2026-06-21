@@ -429,7 +429,19 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 
       <div class="master-row">
         <div class="glass-card">
-          <div class="card-hed"><i data-lucide="zap" style="width:16px;height:16px;color:var(--text-3)"></i>Télémétrie & Alertes<span class="card-hed-sub">ms / temps</span></div>
+          <div class="card-hed">
+            <i data-lucide="zap" style="width:16px;height:16px;color:var(--text-3)"></i>
+            Télémétrie & Alertes
+            <div style="display:flex;align-items:center;gap:10px;margin-left:auto">
+              <span style="font-size:10px;font-weight:600;color:var(--text-3)">🔍</span>
+              <input type="range" id="zoom-slider" min="10" max="100" value="100"
+                style="width:80px;accent-color:#6366f1;cursor:pointer"
+                oninput="applyZoomSlider(this.value)"
+                title="Zoom">
+              <button class="zoom-reset" id="zoom-reset" onclick="resetZoom()" style="display:none">✕ Reset</button>
+              <span class="card-hed-sub">ms / temps</span>
+            </div>
+          </div>
           <div class="chart-layout">
             <div class="chart-y"><canvas id="yAxisChart"></canvas></div>
             <div class="chart-scroll" id="chart-scroll">
@@ -439,7 +451,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
               </div>
             </div>
           </div>
-          <div class="legend" id="legend"><span class="brush-hint">Cliquer-glisser pour zoomer</span><button class="zoom-reset" id="zoom-reset" onclick="resetZoom()">✕ Réinitialiser</button></div>
+          <div class="legend" id="legend"></div>
         </div>
         <div class="inc-card">
           <div class="inc-head">
@@ -935,8 +947,6 @@ function renderChart() {
 
   // Légende interactive avec toggle
   const legendEl = document.getElementById("legend");
-  const existingHint = legendEl.querySelector(".brush-hint");
-  const existingReset = legendEl.querySelector("#zoom-reset");
   legendEl.innerHTML = "";
   datasets.forEach((ds,i)=>{
     const div = document.createElement("div");
@@ -950,11 +960,6 @@ function renderChart() {
   koLeg.className = "leg";
   koLeg.innerHTML = `<span class="leg-pip" style="background:#e11d48;border-radius:50%;width:9px;height:9px"></span>Incident KO`;
   legendEl.appendChild(koLeg);
-  if(existingHint) legendEl.appendChild(existingHint);
-  const resetBtn = document.createElement("button");
-  resetBtn.className = "zoom-reset"; resetBtn.id = "zoom-reset";
-  resetBtn.textContent = "✕ Réinitialiser"; resetBtn.onclick = resetZoom;
-  legendEl.appendChild(resetBtn);
 
   const scroll = document.getElementById("chart-scroll");
   const container = document.getElementById("chart-container");
@@ -1062,10 +1067,29 @@ function toggleChartLine(idx) {
   });
 }
 
+function applyZoomSlider(val) {
+  // val = 10..100 → afficher les derniers val% des points
+  const pct = parseInt(val) / 100;
+  const chart = window._lineChart;
+  if(!chart || !chart.data.datasets[0]) return;
+  const total = chart.data.datasets[0].data.length;
+  if(total < 2) return;
+  const startIdx = Math.floor(total * (1 - pct));
+  _zoomRange = {startIdx, endIdx: total - 1};
+  const btn = document.getElementById("zoom-reset");
+  if(btn) btn.style.display = pct < 1 ? "inline-block" : "none";
+  renderChart();
+  // Remettre le slider à la bonne valeur après re-render
+  const slider = document.getElementById("zoom-slider");
+  if(slider) slider.value = val;
+}
+
 function resetZoom() {
   _zoomRange = null;
   const btn = document.getElementById("zoom-reset");
   if(btn) btn.style.display = "none";
+  const slider = document.getElementById("zoom-slider");
+  if(slider) slider.value = 100;
   renderChart();
 }
 
