@@ -255,8 +255,10 @@ def init_github():
             current_pts = sum(len(v) for v in chart_data.values())
             if current_pts < 5000:
                 try:
-                    cd_file = gh_repo.get_contents("chart_data.json")
-                    cd_data = json.loads(cd_file.decoded_content.decode("utf-8"))
+                    raw_url = f"https://raw.githubusercontent.com/{GITHUB_REPO}/main/chart_data.json"
+                    req = urllib.request.Request(raw_url, headers={"Authorization": f"token {GITHUB_TOKEN}"})
+                    with urllib.request.urlopen(req, timeout=30) as r:
+                        cd_data = json.loads(r.read())
                     for key, values in cd_data.get("chart_data", {}).items():
                         if key not in chart_data or len(values) > len(chart_data.get(key,[])):
                             chart_data[key] = values[-MAX_CHART:]
@@ -311,11 +313,15 @@ def push_chart_backup():
         path = "chart_data.json"
         new_cd = {k: v[-MAX_CHART:] for k, v in chart_data.items()}
 
-        # Charger l'existant sur GitHub et merger
+        # Lire l'existant via raw URL (évite la limite 1MB de get_contents)
         try:
-            existing_file = gh_repo.get_contents(path)
-            existing_data = json.loads(existing_file.decoded_content.decode("utf-8"))
+            raw_url = f"https://raw.githubusercontent.com/{GITHUB_REPO}/main/{path}"
+            req = urllib.request.Request(raw_url, headers={"Authorization": f"token {GITHUB_TOKEN}"})
+            with urllib.request.urlopen(req, timeout=30) as r:
+                existing_data = json.loads(r.read())
             old_cd = existing_data.get("chart_data", {})
+
+            # Merger
             merged = {}
             for key in set(list(old_cd.keys()) + list(new_cd.keys())):
                 seen = set()
@@ -326,13 +332,38 @@ def push_chart_backup():
                         all_pts.append(p)
                 all_pts.sort(key=lambda p: p["time"])
                 merged[key] = all_pts[-MAX_CHART:]
+
+            # Récupérer le SHA via API (fichier peut être >1MB, on ne lit que le SHA)
+            api_url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/{path}"
+            api_req = urllib.request.Request(api_url, headers={
+                "Authorization": f"token {GITHUB_TOKEN}",
+                "Accept": "application/vnd.github.v3+json"
+            })
+            with urllib.request.urlopen(api_req, timeout=10) as r:
+                meta = json.loads(r.read())
+            sha = meta["sha"]
+
             content = json.dumps({"chart_data": merged}, ensure_ascii=False)
-            gh_repo.update_file(path, "chart_data backup", content, existing_file.sha)
+            import base64 as b64
+            encoded = b64.b64encode(content.encode()).decode()
+            body = json.dumps({"message": "chart_data backup", "content": encoded, "sha": sha}).encode()
+            put_req = urllib.request.Request(api_url, data=body, headers={
+                "Authorization": f"token {GITHUB_TOKEN}",
+                "Accept": "application/vnd.github.v3+json",
+                "Content-Type": "application/json"
+            }, method="PUT")
+            with urllib.request.urlopen(put_req, timeout=30) as r:
+                pass
             total = sum(len(v) for v in merged.values())
-        except Exception:
+
+        except Exception as e:
+            # Créer le fichier s'il n'existe pas
             content = json.dumps({"chart_data": new_cd}, ensure_ascii=False)
+            import base64 as b64
+            encoded = b64.b64encode(content.encode()).decode()
             gh_repo.create_file(path, "chart_data backup", content)
             total = sum(len(v) for v in new_cd.values())
+
         log.info(f"[GitHub] chart_data backup : {total} points")
     except Exception as e:
         log.error(f"[GitHub] Erreur chart_data backup : {e}")
