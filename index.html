@@ -381,7 +381,8 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
           <span id="ts-label-main">—</span>
         </div>
         <div class="period-wrap">
-          <button class="period-btn on" onclick="setPeriod(this,'24h')">24h</button>
+          <button class="period-btn on" onclick="setPeriod(this,'live')">Direct</button>
+          <button class="period-btn" onclick="setPeriod(this,'24h')">24h</button>
           <button class="period-btn" onclick="setPeriod(this,'7j')">7j</button>
           <button class="period-btn" onclick="setPeriod(this,'30j')">30j</button>
         </div>
@@ -634,7 +635,7 @@ function getBrandMeta(brand) {
   return { logo: BRAND_LOGOS[base] || "", colors: ["#111827", "#475569"] };
 }
 
-let data = null, brand = null, currentPeriod = "24h", currentGroup = "stla";
+let data = null, brand = null, currentPeriod = "live", currentGroup = "stla";
 let lineChart = null, yAxisInst = null, gaugeChart = null, macroInst = null;
 
 // ── NAV BUILD ──
@@ -752,29 +753,40 @@ function setPeriod(btn, p) {
 // ── HELPERS ──
 function filterPts(pts) {
   if (!pts || !pts.length) return [];
-  const days = currentPeriod === "30j" ? 30 : currentPeriod === "7j" ? 7 : 1;
   let cutoff;
-  if (currentPeriod === "24h") {
-    // Afficher depuis minuit aujourd'hui (00h00)
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    cutoff = today.getTime();
+  if (currentPeriod === "live") {
+    // Dernières 2h — vue temps réel
+    cutoff = Date.now() - 2 * 3600000;
+  } else if (currentPeriod === "24h") {
+    // 24h glissantes depuis maintenant
+    cutoff = Date.now() - 24 * 3600000;
+  } else if (currentPeriod === "7j") {
+    cutoff = Date.now() - 7 * 86400000;
+  } else if (currentPeriod === "30j") {
+    cutoff = Date.now() - 30 * 86400000;
   } else {
-    cutoff = Date.now() - days * 86400000;
+    cutoff = Date.now() - 24 * 3600000;
   }
   const filtered = pts.filter(p => {
-    const t = p.timestamp ? new Date(p.timestamp*1000) : parseDateStr(p.time);
+    const t = parseDateStr(p.time);
     return t && t.getTime() >= cutoff;
   });
-  if (filtered.length > 0) return filtered;
-  // Fallback
-  const n = currentPeriod === "30j" ? 8640*30 : currentPeriod === "7j" ? 8640*7 : 8640;
-  return pts.slice(-n);
+  // Si pas assez de points filtrés, prendre les derniers disponibles
+  if (filtered.length < 5) {
+    const n = currentPeriod === "30j" ? 14400 : currentPeriod === "7j" ? 3360 : currentPeriod === "24h" ? 480 : 40;
+    return pts.slice(-n);
+  }
+  return filtered;
 }
 function filterHist(hist) {
   if (!hist || !hist.length) return [];
-  const days = currentPeriod === "30j" ? 30 : currentPeriod === "7j" ? 7 : 1;
-  const cutoff = new Date(Date.now() - days * 86400000);
+  let ms;
+  if (currentPeriod === "live")       ms = 2 * 3600000;
+  else if (currentPeriod === "24h")   ms = 24 * 3600000;
+  else if (currentPeriod === "7j")    ms = 7 * 86400000;
+  else if (currentPeriod === "30j")   ms = 30 * 86400000;
+  else                                ms = 24 * 3600000;
+  const cutoff = new Date(Date.now() - ms);
   return hist.filter(h => { const t = parseDateStr(h.time); return t && t >= cutoff; });
 }
 function parseDateStr(s) {
@@ -932,17 +944,48 @@ function renderChart() {
   });
 
   const labels = datasets[0]?datasets[0]._t||[]:[];
-  // Formatter labels : heure seulement HH:MM
-  let labelsFmt = labels.map(t => (t||"").substring(11,16));
 
-  // Appliquer le zoom si actif
-  if(_zoomRange && _zoomRange.startIdx < _zoomRange.endIdx) {
-    const {startIdx, endIdx} = _zoomRange;
-    datasets.forEach(ds => {
-      ds.data = ds.data.slice(startIdx, endIdx+1);
-      ds._t = ds._t.slice(startIdx, endIdx+1);
+  // Formatter les labels X selon le mode
+  let labelsFmt;
+  let xTickLimit;
+  if (currentPeriod === "live") {
+    // HH:MM uniquement
+    labelsFmt = labels.map(t => (t||"").substring(11,16));
+    xTickLimit = 8;
+  } else if (currentPeriod === "24h") {
+    // HH:MM — une tick toutes les 2h
+    labelsFmt = labels.map(t => (t||"").substring(11,16));
+    xTickLimit = 12;
+  } else if (currentPeriod === "7j") {
+    // JJ/MM HH:MM — une tick par jour
+    labelsFmt = labels.map(t => {
+      if(!t) return "";
+      return t.substring(0,5) + " " + t.substring(11,16);
     });
-    labelsFmt = labelsFmt.slice(startIdx, endIdx+1);
+    xTickLimit = 7;
+  } else if (currentPeriod === "30j") {
+    // JJ/MM uniquement — une tick tous les 2-3 jours
+    labelsFmt = labels.map(t => t ? t.substring(0,5) : "");
+    xTickLimit = 10;
+  } else {
+    labelsFmt = labels.map(t => (t||"").substring(11,16));
+    xTickLimit = 10;
+  }
+
+  // Sampling adapté selon le mode — on garde les points KO toujours
+  const MAX_PTS = currentPeriod === "30j" ? 400 : currentPeriod === "7j" ? 500 : 600;
+  if (datasets[0] && datasets[0].data.length > MAX_PTS) {
+    const f = Math.ceil(datasets[0].data.length / MAX_PTS);
+    const keep = new Set();
+    datasets[0].data.forEach((_, i) => {
+      const hhmm = labelsFmt[i];
+      if (koTimes.has(hhmm) || i % f === 0 || i === datasets[0].data.length - 1) keep.add(i);
+    });
+    datasets.forEach(ds => {
+      ds.data = ds.data.filter((_, i) => keep.has(i));
+      ds._t = ds._t.filter((_, i) => keep.has(i));
+    });
+    labelsFmt = labelsFmt.filter((_, i) => keep.has(i));
   }
 
   // Légende interactive avec toggle
@@ -1000,7 +1043,7 @@ function renderChart() {
         ticks:{
           font:{size:10,family:'Plus Jakarta Sans'},
           color:"#94a3b8",
-          maxTicksLimit:10,
+          maxTicksLimit: xTickLimit,
           maxRotation:0,
           minRotation:0,
           callback: (val, idx) => labelsFmt[idx] || ""
