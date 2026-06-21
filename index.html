@@ -1237,7 +1237,13 @@ function renderHistory(){
   const hist=filterHist((data.history||[]).filter(h=>h.brand===brand));
   document.getElementById("inc-count").textContent=hist.length?"("+hist.length+" evt)":"";
   const el=document.getElementById("history");
-  if(!hist.length){el.innerHTML='<div style="padding:1rem;text-align:center;color:var(--text-3);font-size:12px;font-weight:700">Aucun incident 🎉</div>';return;}
+  if(!hist.length){
+    const msg = currentPeriod === "live"
+      ? '<div style="padding:1rem;text-align:center;color:var(--text-3);font-size:12px;font-weight:700">Aucun incident dans les 2 dernières heures 🎉<br><span style="font-weight:500;opacity:.7">Consultez la vue 24h pour l\'historique complet</span></div>'
+      : '<div style="padding:1rem;text-align:center;color:var(--text-3);font-size:12px;font-weight:700">Aucun incident 🎉</div>';
+    el.innerHTML = msg;
+    return;
+  }
   el.innerHTML=[...hist].reverse().map((h,ri)=>{
     const d=dur(hist,hist.length-1-ri);
     const ongoing=h.type==="ko"&&d===null;
