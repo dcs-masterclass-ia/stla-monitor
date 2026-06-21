@@ -1068,20 +1068,17 @@ function toggleChartLine(idx) {
 }
 
 function applyZoomSlider(val) {
-  // val = 10..100 → afficher les derniers val% des points
-  const pct = parseInt(val) / 100;
   const chart = window._lineChart;
-  if(!chart || !chart.data.datasets[0]) return;
-  const total = chart.data.datasets[0].data.length;
-  if(total < 2) return;
+  if(!chart || !chart.data.labels || !chart.data.labels.length) return;
+  const pct = parseInt(val) / 100;
+  const total = chart.data.labels.length;
   const startIdx = Math.floor(total * (1 - pct));
-  _zoomRange = {startIdx, endIdx: total - 1};
+  // Modifier directement les limites de l'axe X sans re-render
+  chart.options.scales.x.min = startIdx;
+  chart.options.scales.x.max = total - 1;
+  chart.update("none");
   const btn = document.getElementById("zoom-reset");
-  if(btn) btn.style.display = pct < 1 ? "inline-block" : "none";
-  renderChart();
-  // Remettre le slider à la bonne valeur après re-render
-  const slider = document.getElementById("zoom-slider");
-  if(slider) slider.value = val;
+  if(btn) btn.style.display = pct < 0.99 ? "inline-block" : "none";
 }
 
 function resetZoom() {
@@ -1090,7 +1087,13 @@ function resetZoom() {
   if(btn) btn.style.display = "none";
   const slider = document.getElementById("zoom-slider");
   if(slider) slider.value = 100;
-  renderChart();
+  // Réinitialiser les limites de l'axe
+  const chart = window._lineChart;
+  if(chart) {
+    chart.options.scales.x.min = undefined;
+    chart.options.scales.x.max = undefined;
+    chart.update("none");
+  }
 }
 
 function initBrush() {
@@ -1126,10 +1129,17 @@ function initBrush() {
     for(let i=0;i<pts.length;i++) { if(pts[i].x >= x1) { i1=i; break; } }
     for(let i=pts.length-1;i>=0;i--) { if(pts[i].x <= x2) { i2=i; break; } }
     if(i2 - i1 < 3) return;
-    _zoomRange = {startIdx: i1, endIdx: i2};
+    // Appliquer directement sur l'axe
+    chart.options.scales.x.min = i1;
+    chart.options.scales.x.max = i2;
+    chart.update("none");
+    // Mettre à jour le slider
+    const total = pts.length;
+    const pct = Math.round((i2 - i1) / total * 100);
+    const slider = document.getElementById("zoom-slider");
+    if(slider) slider.value = pct;
     const btn = document.getElementById("zoom-reset");
     if(btn) btn.style.display = "inline-block";
-    renderChart();
   });
   container.addEventListener("mouseleave", () => {
     if(dragging) { dragging = false; overlay.style.display = "none"; }
