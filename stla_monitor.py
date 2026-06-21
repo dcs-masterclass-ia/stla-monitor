@@ -314,6 +314,20 @@ def push_status(statuses, retry=3):
         return
     now = datetime.now(TZ_PARIS).strftime("%d/%m/%Y %H:%M:%S")
     payload = build_payload(statuses, now)
+
+    # Si history est vide, récupérer l'existant sur GitHub avant d'écraser
+    if not payload["history"]:
+        try:
+            existing_content = gh_repo.get_contents(GITHUB_FILE)
+            existing_data = json.loads(existing_content.decoded_content.decode("utf-8"))
+            if existing_data.get("history"):
+                payload["history"] = existing_data["history"]
+                with history_lock:
+                    history.extend(existing_data["history"][-MAX_HISTORY:])
+                log.info(f"[GitHub] History récupérée depuis GitHub : {len(payload['history'])} entrées")
+        except Exception as e:
+            log.error(f"[GitHub] Impossible de récupérer l'history existante : {e}")
+
     content = json.dumps(payload, ensure_ascii=False, indent=2)
     for attempt in range(retry):
         try:
