@@ -728,23 +728,22 @@ function setPeriod(btn, p) {
 // ── HELPERS ──
 function filterPts(pts) {
   if (!pts || !pts.length) return [];
-  // D'abord essayer de filtrer par date réelle si les points ont un timestamp
   const days = currentPeriod === "30j" ? 30 : currentPeriod === "7j" ? 7 : 1;
-  const cutoff = Date.now() - days * 86400000;
-  // Tenter avec le temps du dernier point comme référence
-  const last = pts[pts.length - 1];
-  const lastT = last.timestamp ? new Date(last.timestamp*1000) : parseDateStr(last.time);
-  if (lastT) {
-    // On a des timestamps — filtrer par date
-    const ref = lastT.getTime();
-    const cut = ref - days * 86400000;
-    const filtered = pts.filter(p => {
-      const t = p.timestamp ? new Date(p.timestamp*1000) : parseDateStr(p.time);
-      return t && t.getTime() >= cut;
-    });
-    if (filtered.length > 0) return filtered;
+  let cutoff;
+  if (currentPeriod === "24h") {
+    // Afficher depuis minuit aujourd'hui (00h00)
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    cutoff = today.getTime();
+  } else {
+    cutoff = Date.now() - days * 86400000;
   }
-  // Fallback : slice par nombre de points
+  const filtered = pts.filter(p => {
+    const t = p.timestamp ? new Date(p.timestamp*1000) : parseDateStr(p.time);
+    return t && t.getTime() >= cutoff;
+  });
+  if (filtered.length > 0) return filtered;
+  // Fallback
   const n = currentPeriod === "30j" ? 8640*30 : currentPeriod === "7j" ? 8640*7 : 8640;
   return pts.slice(-n);
 }
@@ -869,7 +868,7 @@ function renderChart() {
   const rawDs = pages.map(([page]) => filterPts((data.chart_data||{})[brand+":"+page]||[]));
   let masterT = rawDs.length > 0 ? rawDs[0].map(p=>p.time) : [];
   let sampled = new Set();
-  const MAX = 300;
+  const MAX = 600;
   if (masterT.length > MAX) {
     const f = Math.ceil(masterT.length/MAX);
     masterT.forEach((t,i) => { const hhmm=(t||"").substring(11,16); if(koTimes.has(hhmm)||i%f===0||i===masterT.length-1) sampled.add(i); });
