@@ -245,8 +245,12 @@ def init_github():
         gh_repo = g.get_repo(GITHUB_REPO)
         log.info(f"[GitHub] Connecté au repo {GITHUB_REPO}")
         try:
-            existing = gh_repo.get_contents(GITHUB_FILE)
-            data = json.loads(existing.decoded_content.decode("utf-8"))
+            # Lire status.json via raw URL (évite la limite 1MB de get_contents)
+            raw_url = f"https://raw.githubusercontent.com/{GITHUB_REPO}/main/{GITHUB_FILE}"
+            req = urllib.request.Request(raw_url, headers={"Authorization": f"token {GITHUB_TOKEN}"})
+            with urllib.request.urlopen(req, timeout=30) as r:
+                data = json.loads(r.read())
+
             if "chart_data" in data:
                 for key, values in data["chart_data"].items():
                     chart_data[key] = values[-MAX_CHART:]
@@ -883,8 +887,6 @@ def run():
     token = os.environ.get("GITHUB_TOKEN", "")
     log.info(f"GITHUB_TOKEN présent: {'OUI' if token else 'NON — PUSH DÉSACTIVÉ'}")
     init_github()
-    # Démarrer le keepalive Render en arrière-plan
-    threading.Thread(target=_ping_render, daemon=True).start()
     log.info("═" * 60)
     log.info("  STLA Monitor V2 démarré")
     for brand, urls in BRANDS.items():
