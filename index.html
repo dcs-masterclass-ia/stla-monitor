@@ -1436,20 +1436,10 @@ async function fetchStatus(){
     let nd=await r.json();
     if(JSON.stringify(nd.updated_at)===JSON.stringify(data&&data.updated_at))return;
     nd = await mergeChartBackup(nd);
-    // Toujours merger avec incidents/ pour ne rien rater
-    const folderInc = await loadIncidentsFromFolder();
-    if(folderInc.length) {
-      const seen = new Set((nd.history||[]).map(h=>`${h.time}|${h.brand}|${h.page}|${h.type}`));
-      folderInc.forEach(h => {
-        const k=`${h.time}|${h.brand}|${h.page}|${h.type}`;
-        if(!seen.has(k)){seen.add(k);(nd.history=nd.history||[]).push(h);}
-      });
-      nd.history.sort((a,b)=>a.time<b.time?-1:1);
-    }
     data=nd;
-    document.getElementById("ts-label").textContent=""+data.updated_at.split(" ")[1];
+    document.getElementById("ts-label").textContent=""+(data.server_time||data.updated_at||"").split(" ")[1];
     const tlm = document.getElementById("ts-label-main");
-    if(tlm) tlm.textContent = "MAJ " + data.updated_at.split(" ")[1];
+    if(tlm) tlm.textContent = "MAJ " + (data.server_time||data.updated_at||"").split(" ")[1];
     document.getElementById("sb-ts").textContent=data.updated_at||"";
     document.getElementById("pulse").className="pulse-dot";
     updateDots();
@@ -1461,9 +1451,9 @@ async function fetchStatus(){
       if(JSON.stringify(nd.updated_at)===JSON.stringify(data&&data.updated_at))return;
       nd = await mergeChartBackup(nd);
       data=nd;
-      document.getElementById("ts-label").textContent=""+data.updated_at.split(" ")[1];
-    const tlm = document.getElementById("ts-label-main");
-    if(tlm) tlm.textContent = "MAJ " + data.updated_at.split(" ")[1];
+      document.getElementById("ts-label").textContent=""+(data.updated_at||"").split(" ")[1];
+      const tlm = document.getElementById("ts-label-main");
+      if(tlm) tlm.textContent = "MAJ " + (data.updated_at||"").split(" ")[1];
       document.getElementById("sb-ts").textContent=data.updated_at||"";
       document.getElementById("pulse").className="pulse-dot";
       updateDots();if(brand)render(); if(currentGroup==="synth")renderSynth();
@@ -2002,16 +1992,7 @@ function initSSE() {
       try {
         let nd = JSON.parse(e.data);
         nd = await mergeChartBackup(nd);
-        // Merger incidents depuis folder (cache 5min)
-        const folderInc = await loadIncidentsFromFolder();
-        if(folderInc.length) {
-          const seen = new Set((nd.history||[]).map(h=>`${h.time}|${h.brand}|${h.page}|${h.type}`));
-          folderInc.forEach(h => {
-            const k=`${h.time}|${h.brand}|${h.page}|${h.type}`;
-            if(!seen.has(k)){seen.add(k);(nd.history=nd.history||[]).push(h);}
-          });
-          nd.history.sort((a,b)=>a.time<b.time?-1:1);
-        }
+        // History vient directement de Render via SSE — pas besoin de GitHub
         data = nd;
         const t = data.server_time || data.updated_at || "";
         document.getElementById("ts-label").textContent = t.split(" ")[1] || "";
