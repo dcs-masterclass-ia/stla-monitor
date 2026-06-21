@@ -251,17 +251,18 @@ def init_github():
                 for key, values in data["chart_data"].items():
                     chart_data[key] = values[-MAX_CHART:]
 
-            # Si chart_data vide ou petit, charger depuis chart_data.json backup
-            if len(chart_data) < 10:
+            # Toujours charger depuis chart_data.json backup si peu de points
+            current_pts = sum(len(v) for v in chart_data.values())
+            if current_pts < 1000:
                 try:
                     cd_file = gh_repo.get_contents("chart_data.json")
                     cd_data = json.loads(cd_file.decoded_content.decode("utf-8"))
                     for key, values in cd_data.get("chart_data", {}).items():
                         if key not in chart_data or len(values) > len(chart_data.get(key,[])):
                             chart_data[key] = values[-MAX_CHART:]
-                    log.info(f"[GitHub] chart_data restauré depuis backup : {len(chart_data)} clés")
-                except Exception:
-                    log.info("[GitHub] Pas de backup chart_data disponible")
+                    log.info(f"[GitHub] chart_data restauré depuis backup : {len(chart_data)} clés, {sum(len(v) for v in chart_data.values())} points")
+                except Exception as e:
+                    log.info(f"[GitHub] Pas de backup chart_data : {e}")
 
             # Charger history depuis status.json
             status_hist = data.get("history", [])
