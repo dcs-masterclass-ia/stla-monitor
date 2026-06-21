@@ -253,7 +253,7 @@ def init_github():
 
             # Toujours charger depuis chart_data.json backup si peu de points
             current_pts = sum(len(v) for v in chart_data.values())
-            if current_pts < 1000:
+            if current_pts < 5000:
                 try:
                     cd_file = gh_repo.get_contents("chart_data.json")
                     cd_data = json.loads(cd_file.decoded_content.decode("utf-8"))
