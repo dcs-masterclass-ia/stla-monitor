@@ -210,6 +210,34 @@ for brand, urls in BRANDS.items():
 
 gh_repo = None
 
+def load_history_from_incidents():
+    """Charge tous les incidents depuis le dossier incidents/ sur GitHub."""
+    if not gh_repo:
+        return []
+    all_incidents = []
+    try:
+        from datetime import datetime as dt
+        today = dt.now(TZ_PARIS)
+        dates = [
+            (today - __import__('datetime').timedelta(days=i)).strftime("%Y-%m-%d")
+            for i in range(7)
+        ]
+        for date in dates:
+            try:
+                files = gh_repo.get_contents(f"incidents/{date}")
+                for f in files:
+                    try:
+                        incidents = json.loads(f.decoded_content.decode("utf-8"))
+                        all_incidents.extend(incidents)
+                    except Exception:
+                        pass
+            except Exception:
+                pass
+        log.info(f"[GitHub] incidents/ : {len(all_incidents)} incidents chargés")
+    except Exception as e:
+        log.error(f"[GitHub] Erreur chargement incidents/ : {e}")
+    return all_incidents
+
 def init_github():
     global gh_repo
     try:
@@ -222,23 +250,41 @@ def init_github():
             if "chart_data" in data:
                 for key, values in data["chart_data"].items():
                     chart_data[key] = values[-MAX_CHART:]
-            if "history" in data and data["history"]:
+
+            # Charger history depuis status.json
+            status_hist = data.get("history", [])
+
+            # Toujours charger depuis incidents/ en fallback
+            folder_hist = load_history_from_incidents()
+
+            # Merger les deux — dédupliquer par time+brand+page+type
+            seen = set()
+            merged = []
+            for h in status_hist + folder_hist:
+                key = f"{h.get('time')}|{h.get('brand')}|{h.get('page')}|{h.get('type')}"
+                if key not in seen:
+                    seen.add(key)
+                    merged.append(h)
+
+            merged.sort(key=lambda h: h.get("time", ""))
+
+            if merged:
                 history.clear()
-                history.extend(data["history"][-MAX_HISTORY:])
-                log.info(f"[GitHub] Historique récupéré : {len(history)} entrées")
-                # Reconstruire incident_active depuis l'historique
+                history.extend(merged[-MAX_HISTORY:])
+                log.info(f"[GitHub] Historique final : {len(history)} entrées")
+                # Reconstruire incident_active
                 last_event = {}
                 for h in history:
-                    key = f"{h.get('brand')}:{h.get('page')}"
-                    last_event[key] = h.get("type")
-                for key, etype in last_event.items():
+                    k = f"{h.get('brand')}:{h.get('page')}"
+                    last_event[k] = h.get("type")
+                for k, etype in last_event.items():
                     if etype == "ko":
-                        incident_active[key] = True
-                        log.info(f"[GitHub] Incident actif restauré : {key}")
+                        incident_active[k] = True
+                        log.info(f"[GitHub] Incident actif restauré : {k}")
             else:
-                log.info("[GitHub] Pas d'historique dans le fichier")
+                log.info("[GitHub] Aucun historique trouvé")
         except Exception as e:
-            log.error(f"[GitHub] Erreur chargement historique : {e}")
+            log.error(f"[GitHub] Erreur chargement : {e}")
     except Exception as e:
         log.error(f"[GitHub] Connexion impossible : {e}")
 
