@@ -251,6 +251,18 @@ def init_github():
                 for key, values in data["chart_data"].items():
                     chart_data[key] = values[-MAX_CHART:]
 
+            # Si chart_data vide ou petit, charger depuis chart_data.json backup
+            if len(chart_data) < 10:
+                try:
+                    cd_file = gh_repo.get_contents("chart_data.json")
+                    cd_data = json.loads(cd_file.decoded_content.decode("utf-8"))
+                    for key, values in cd_data.get("chart_data", {}).items():
+                        if key not in chart_data or len(values) > len(chart_data.get(key,[])):
+                            chart_data[key] = values[-MAX_CHART:]
+                    log.info(f"[GitHub] chart_data restauré depuis backup : {len(chart_data)} clés")
+                except Exception:
+                    log.info("[GitHub] Pas de backup chart_data disponible")
+
             # Charger history depuis status.json
             status_hist = data.get("history", [])
 
@@ -287,6 +299,24 @@ def init_github():
             log.error(f"[GitHub] Erreur chargement : {e}")
     except Exception as e:
         log.error(f"[GitHub] Connexion impossible : {e}")
+
+_cycle_counter = [0]
+
+def push_chart_backup():
+    """Sauvegarde chart_data dans chart_data.json sur GitHub toutes les 20 cycles."""
+    if not gh_repo:
+        return
+    try:
+        content = json.dumps({"chart_data": {k: v[-MAX_CHART:] for k, v in chart_data.items()}}, ensure_ascii=False)
+        path = "chart_data.json"
+        try:
+            existing = gh_repo.get_contents(path)
+            gh_repo.update_file(path, "chart_data backup", content, existing.sha)
+        except Exception:
+            gh_repo.create_file(path, "chart_data backup", content)
+        log.info(f"[GitHub] chart_data backup : {len(chart_data)} clés")
+    except Exception as e:
+        log.error(f"[GitHub] Erreur chart_data backup : {e}")
 
 def supabase_insert(incident):
     """Insère un incident dans Supabase pour historique long terme."""
@@ -925,6 +955,10 @@ def run():
 
         push_status(statuses)
         threading.Thread(target=push_to_render, args=(statuses,), daemon=True).start()
+        # Backup chart_data toutes les 20 cycles (~60min)
+        _cycle_counter[0] = _cycle_counter[0] + 1
+        if _cycle_counter[0] % 20 == 0:
+            threading.Thread(target=push_chart_backup, daemon=True).start()
         time.sleep(CHECK_INTERVAL_SECONDS)
 
 # Ping Render toutes les 10 min pour éviter la mise en veille (plan free)
