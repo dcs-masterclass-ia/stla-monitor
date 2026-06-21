@@ -110,7 +110,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .content::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:10px}
 
 /* Master-detail row */
-.master-row{display:grid;grid-template-columns:1.6fr 1fr;gap:12px;flex:1;min-height:280px;min-width:0;overflow:hidden}
+.master-row{display:grid;grid-template-columns:1.6fr 1fr;gap:12px;flex:1;min-height:380px;min-width:0;overflow:hidden}
 .glass-card{background:#fff;border-radius:var(--r);padding:1.25rem 1.5rem;box-shadow:var(--shadow);display:flex;flex-direction:column;min-height:0;min-width:0;overflow:hidden}
 .card-hed{font-size:13px;font-weight:800;color:var(--text);letter-spacing:-.02em;margin-bottom:.9rem;display:flex;align-items:center;gap:7px;flex-shrink:0}
 .card-hed-sub{font-size:10px;font-weight:600;color:var(--text-3);margin-left:auto;background:var(--accent-light);padding:3px 9px;border-radius:10px}
@@ -120,9 +120,15 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .chart-scroll::-webkit-scrollbar{height:5px}
 .chart-scroll::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:10px}
 .chart-container{height:100%;position:relative;min-width:100%;transition:width .2s}
-.legend{display:flex;gap:14px;margin-top:10px;flex-wrap:wrap;flex-shrink:0}
-.leg{display:flex;align-items:center;gap:5px;font-size:10px;font-weight:700;color:var(--text-2)}
-.leg-pip{width:9px;height:9px;border-radius:50%}
+.legend{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;flex-shrink:0;align-items:center}
+.leg{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:700;color:var(--text-2);cursor:pointer;padding:4px 10px;border-radius:20px;transition:all .15s;user-select:none;border:1px solid transparent}
+.leg:hover{background:var(--accent-light);border-color:var(--border)}
+.leg.muted{opacity:0.3}
+.leg-pip{width:20px;height:3px;border-radius:2px;flex-shrink:0}
+.zoom-reset{display:none;margin-left:auto;font-size:11px;font-weight:700;color:#6366f1;cursor:pointer;padding:4px 12px;border-radius:20px;border:1px solid #6366f1;background:transparent}
+.zoom-reset:hover{background:#6366f115}
+.brush-overlay{position:absolute;top:0;bottom:0;background:rgba(99,102,241,.12);border-left:2px solid #6366f1;border-right:2px solid #6366f1;pointer-events:none;display:none;z-index:5}
+.brush-hint{position:absolute;top:8px;right:12px;font-size:10px;font-weight:600;color:var(--text-3)}
 
 /* Incidents */
 .inc-card{background:#fff;border-radius:var(--r);padding:1.25rem 1.5rem;box-shadow:var(--shadow);display:flex;flex-direction:column;min-height:0}
@@ -427,10 +433,13 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
           <div class="chart-layout">
             <div class="chart-y"><canvas id="yAxisChart"></canvas></div>
             <div class="chart-scroll" id="chart-scroll">
-              <div class="chart-container" id="chart-container"><canvas id="lineChart"></canvas></div>
+              <div class="chart-container" id="chart-container">
+                <canvas id="lineChart"></canvas>
+                <div class="brush-overlay" id="brush-overlay"></div>
+              </div>
             </div>
           </div>
-          <div class="legend" id="legend"></div>
+          <div class="legend" id="legend"><span class="brush-hint">Cliquer-glisser pour zoomer</span><button class="zoom-reset" id="zoom-reset" onclick="resetZoom()">✕ Réinitialiser</button></div>
         </div>
         <div class="inc-card">
           <div class="inc-head">
@@ -912,9 +921,40 @@ function renderChart() {
 
   const labels = datasets[0]?datasets[0]._t||[]:[];
   // Formatter labels : heure seulement HH:MM
-  const labelsFmt = labels.map(t => (t||"").substring(11,16));
+  let labelsFmt = labels.map(t => (t||"").substring(11,16));
 
-  document.getElementById("legend").innerHTML = datasets.map((ds,i)=>`<div class="leg"><span class="leg-pip" style="background:${colors[i]}"></span>${ds.label}</div>`).join("") + '<div class="leg"><span class="leg-pip" style="background:#e11d48;border-radius:50%"></span>Incident KO</div>';
+  // Appliquer le zoom si actif
+  if(_zoomRange && _zoomRange.startIdx < _zoomRange.endIdx) {
+    const {startIdx, endIdx} = _zoomRange;
+    datasets.forEach(ds => {
+      ds.data = ds.data.slice(startIdx, endIdx+1);
+      ds._t = ds._t.slice(startIdx, endIdx+1);
+    });
+    labelsFmt = labelsFmt.slice(startIdx, endIdx+1);
+  }
+
+  // Légende interactive avec toggle
+  const legendEl = document.getElementById("legend");
+  const existingHint = legendEl.querySelector(".brush-hint");
+  const existingReset = legendEl.querySelector("#zoom-reset");
+  legendEl.innerHTML = "";
+  datasets.forEach((ds,i)=>{
+    const div = document.createElement("div");
+    div.className = "leg";
+    div.dataset.idx = i;
+    div.innerHTML = `<span class="leg-pip" style="background:${colors[i]}"></span>${ds.label}`;
+    div.onclick = () => toggleChartLine(i);
+    legendEl.appendChild(div);
+  });
+  const koLeg = document.createElement("div");
+  koLeg.className = "leg";
+  koLeg.innerHTML = `<span class="leg-pip" style="background:#e11d48;border-radius:50%;width:9px;height:9px"></span>Incident KO`;
+  legendEl.appendChild(koLeg);
+  if(existingHint) legendEl.appendChild(existingHint);
+  const resetBtn = document.createElement("button");
+  resetBtn.className = "zoom-reset"; resetBtn.id = "zoom-reset";
+  resetBtn.textContent = "✕ Réinitialiser"; resetBtn.onclick = resetZoom;
+  legendEl.appendChild(resetBtn);
 
   const scroll = document.getElementById("chart-scroll");
   const container = document.getElementById("chart-container");
@@ -993,11 +1033,83 @@ function renderChart() {
   }
   if (!lineChart) {
     lineChart = new Chart(container.querySelector("canvas"),{type:"line",data:{labels:labelsFmt,datasets},options:mOpts});
+    window._lineChart = lineChart;
     setTimeout(()=>scroll.scrollLeft=scroll.scrollWidth,100);
   } else {
     lineChart.data.labels=labelsFmt; lineChart.data.datasets=datasets; lineChart.options=mOpts; lineChart.update("none");
     if(isEnd) setTimeout(()=>scroll.scrollLeft=scroll.scrollWidth,50);
+  initBrush();
   }
+}
+
+// ── CHART INTERACTIVITÉ ──
+let _hiddenLines = new Set();
+let _zoomRange = null;
+
+function toggleChartLine(idx) {
+  const chart = window._lineChart;
+  if(!chart) return;
+  if(_hiddenLines.has(idx)) {
+    _hiddenLines.delete(idx);
+    chart.data.datasets[idx].hidden = false;
+  } else {
+    _hiddenLines.add(idx);
+    chart.data.datasets[idx].hidden = true;
+  }
+  chart.update("none");
+  document.querySelectorAll(".leg[data-idx]").forEach(el => {
+    el.classList.toggle("muted", _hiddenLines.has(parseInt(el.dataset.idx)));
+  });
+}
+
+function resetZoom() {
+  _zoomRange = null;
+  const btn = document.getElementById("zoom-reset");
+  if(btn) btn.style.display = "none";
+  renderChart();
+}
+
+function initBrush() {
+  const container = document.getElementById("chart-container");
+  const overlay = document.getElementById("brush-overlay");
+  if(!container || !overlay) return;
+  let dragging = false, startX = 0;
+
+  container.addEventListener("mousedown", e => {
+    if(e.button !== 0) return;
+    dragging = true; startX = e.offsetX;
+    overlay.style.display = "block";
+    overlay.style.left = startX + "px"; overlay.style.width = "0px";
+    e.preventDefault();
+  });
+  container.addEventListener("mousemove", e => {
+    if(!dragging) return;
+    const w = e.offsetX - startX;
+    if(w >= 0) { overlay.style.left = startX + "px"; overlay.style.width = w + "px"; }
+    else { overlay.style.left = e.offsetX + "px"; overlay.style.width = (-w) + "px"; }
+  });
+  container.addEventListener("mouseup", e => {
+    if(!dragging) return;
+    dragging = false; overlay.style.display = "none";
+    const x1 = Math.min(startX, e.offsetX), x2 = Math.max(startX, e.offsetX);
+    if(x2 - x1 < 20) return;
+    const chart = window._lineChart;
+    if(!chart) return;
+    const meta = chart.getDatasetMeta(0);
+    if(!meta || !meta.data.length) return;
+    const pts = meta.data;
+    let i1 = 0, i2 = pts.length - 1;
+    for(let i=0;i<pts.length;i++) { if(pts[i].x >= x1) { i1=i; break; } }
+    for(let i=pts.length-1;i>=0;i--) { if(pts[i].x <= x2) { i2=i; break; } }
+    if(i2 - i1 < 3) return;
+    _zoomRange = {startIdx: i1, endIdx: i2};
+    const btn = document.getElementById("zoom-reset");
+    if(btn) btn.style.display = "inline-block";
+    renderChart();
+  });
+  container.addEventListener("mouseleave", () => {
+    if(dragging) { dragging = false; overlay.style.display = "none"; }
+  });
 }
 
 function renderMacro() {
