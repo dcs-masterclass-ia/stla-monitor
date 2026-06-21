@@ -377,7 +377,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
         <div class="kpi-hint">Détectés</div>
       </div>
       <div class="kpi">
-        <div class="kpi-lbl">Fiabilité <i data-lucide="shield-check" style="width:14px;height:14px"></i><span class="kpi-tooltip" data-tip="Score de fiabilité = (checks OK / total checks) × 100.&#10;≥99% → Optimal&#10;≥95% → Tolérable&#10;&lt;95% → Dégradé">?</span></div>
+        <div class="kpi-lbl">Fiabilité <i data-lucide="shield-check" style="width:14px;height:14px"></i><span class="kpi-tooltip" data-tip="Détecte les dégradations applicatives.&#10;Score = checks sans anomalie / total.&#10;Anomalie = KO ou réponse ≥ 4s (lenteur applicative).&#10;≥99% → Optimal&#10;≥95% → Tolérable&#10;&lt;95% → Dégradé">?</span></div>
         <div style="display:flex;align-items:center;gap:12px;margin-top:4px">
           <div style="position:relative;width:38px;height:38px"><canvas id="gaugeChart"></canvas></div>
           <div>
@@ -724,13 +724,22 @@ function stats() {
   const cp = Object.entries(data.chart_data || {})
     .filter(([k]) => k.startsWith(brand + ":"))
     .map(([k, v]) => [k, filterPts(v)]);
-  // Exclure Immat du calcul de la réponse moyenne
+  // Exclure Immat du calcul de la réponse moyenne et fiabilité
   const cpNoImmat = cp.filter(([k]) => !k.endsWith(":Immat"));
   const el = cpNoImmat.flatMap(([,pts]) => pts.map(p => p.elapsed));
   const avg = el.length ? (el.reduce((a,b) => a+b, 0) / el.length).toFixed(2) + "s" : "—";
   const total = cp.reduce((a,[,pts]) => a + pts.length, 0);
   const koSafe = Math.min(ko, total);
+  // Uptime = disponibilité brute (checks OK / total)
   const upPct = total > 0 ? Math.max(0, ((1 - koSafe / total) * 100)).toFixed(1) + "%" : "—";
+  // Fiabilité = checks sans dégradation applicative (réponse < 4s ET pas KO)
+  // On compte les points hors Immat qui dépassent 4s comme dégradations
+  const SEUIL_LENT = 4;
+  const totalNoImmat = cpNoImmat.reduce((a,[,pts]) => a + pts.length, 0);
+  const degrad = cpNoImmat.flatMap(([,pts]) => pts).filter(p => p.elapsed >= SEUIL_LENT).length;
+  const fiabScore = totalNoImmat > 0
+    ? Math.max(0, Math.round((1 - (koSafe + degrad) / Math.max(totalNoImmat, 1)) * 100))
+    : 100;
   // 8h avg (hors Immat)
   let s8=0,c8=0;
   cpNoImmat.forEach(([,pts]) => {
@@ -738,7 +747,7 @@ function stats() {
     pts.forEach(p => { const t=parseDateStr(p.time); if(t&&t.getTime()>=cut){s8+=p.elapsed;c8++;} });
   });
   const avg8h = c8 > 0 ? (s8/c8).toFixed(2) + "s" : "—";
-  return {pages, hist, ko:koSafe, avg, avg8h, total, upPct, allOk: pages.every(([,s]) => s.ok)};
+  return {pages, hist, ko:koSafe, avg, avg8h, total, upPct, allOk: pages.every(([,s]) => s.ok), fiabScore};
 }
 
 // ── RENDER ──
@@ -773,8 +782,8 @@ function renderKPIs() {
 }
 
 function renderGauge() {
-  const {ko,total} = stats();
-  const score = total > 0 ? Math.round((1-ko/Math.max(total,1))*100) : 100;
+  const {fiabScore} = stats();
+  const score = fiabScore;
   const color = score>=99?"#059669":score>=95?"#d97706":"#e11d48";
   document.getElementById("gauge-val").textContent = score + "%";
   document.getElementById("gauge-val").style.color = color;
