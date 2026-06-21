@@ -155,7 +155,9 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .empty-state{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--text-3);gap:12px;padding:3rem}
 .empty-state i{opacity:.3}
 .empty-state p{font-size:14px;font-weight:700}
-.inc-row.highlighted{background:rgba(225,29,72,0.06);outline:2px solid rgba(225,29,72,0.3);border-radius:var(--r-xs)}
+.kpi-tooltip{position:relative;display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:50%;background:var(--accent-light);color:var(--text-2);font-size:9px;font-weight:800;cursor:help;margin-left:4px;flex-shrink:0}
+.kpi-tooltip:hover::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:#0f172a;color:#fff;font-size:10px;font-weight:600;padding:6px 10px;border-radius:8px;white-space:pre-line;width:200px;text-align:left;z-index:999;pointer-events:none;line-height:1.5}
+.kpi-tooltip:hover::before{content:"";position:absolute;bottom:calc(100% + 1px);left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:#0f172a;z-index:999}
 
 /* ── ADMIN ── */
 #admin-overlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,.7);backdrop-filter:blur(8px);z-index:100;align-items:center;justify-content:center}
@@ -355,27 +357,27 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 
     <div class="kpi-strip">
       <div class="kpi">
-        <div class="kpi-lbl">Statut <i id="icon-status" data-lucide="check-circle" style="width:14px;height:14px"></i></div>
+        <div class="kpi-lbl">Statut <i id="icon-status" data-lucide="check-circle" style="width:14px;height:14px"></i><span class="kpi-tooltip" data-tip="Statut en temps réel du site.&#10;OK = toutes les pages répondent correctement.&#10;KO = au moins une page est en erreur.">?</span></div>
         <div class="kpi-num" id="val-status">—</div>
         <div class="kpi-hint" id="hint-status">—</div>
       </div>
       <div class="kpi">
-        <div class="kpi-lbl">Uptime <i data-lucide="activity" style="width:14px;height:14px"></i></div>
+        <div class="kpi-lbl">Uptime <i data-lucide="activity" style="width:14px;height:14px"></i><span class="kpi-tooltip" data-tip="% de checks réussis sur la période sélectionnée (24h / 7j / 30j).&#10;Calculé sur l'ensemble des pages surveillées.">?</span></div>
         <div class="kpi-num" id="val-uptime">—</div>
         <div class="kpi-hint">Sur la période</div>
       </div>
       <div class="kpi">
-        <div class="kpi-lbl">Réponse moy. <i data-lucide="zap" style="width:14px;height:14px"></i></div>
+        <div class="kpi-lbl">Réponse moy. <i data-lucide="zap" style="width:14px;height:14px"></i><span class="kpi-tooltip" data-tip="Temps de réponse HTTP moyen sur la période.&#10;Hors page Immat (test fonctionnel long).&#10;8h = moyenne des 8 dernières heures.">?</span></div>
         <div class="kpi-num" id="val-resp">—</div>
         <div class="kpi-hint" id="hint-resp">Global</div>
       </div>
       <div class="kpi">
-        <div class="kpi-lbl">Incidents <i data-lucide="siren" style="width:14px;height:14px"></i></div>
+        <div class="kpi-lbl">Incidents <i data-lucide="siren" style="width:14px;height:14px"></i><span class="kpi-tooltip" data-tip="Nombre de KO détectés sur la période.&#10;Un incident = une page qui ne répond pas ou dépasse le timeout.&#10;Les recoveries ne sont pas comptées.">?</span></div>
         <div class="kpi-num" id="val-inc">—</div>
         <div class="kpi-hint">Détectés</div>
       </div>
       <div class="kpi">
-        <div class="kpi-lbl">Fiabilité <i data-lucide="shield-check" style="width:14px;height:14px"></i></div>
+        <div class="kpi-lbl">Fiabilité <i data-lucide="shield-check" style="width:14px;height:14px"></i><span class="kpi-tooltip" data-tip="Score de fiabilité = (checks OK / total checks) × 100.&#10;≥99% → Optimal&#10;≥95% → Tolérable&#10;&lt;95% → Dégradé">?</span></div>
         <div style="display:flex;align-items:center;gap:12px;margin-top:4px">
           <div style="position:relative;width:38px;height:38px"><canvas id="gaugeChart"></canvas></div>
           <div>
@@ -722,15 +724,16 @@ function stats() {
   const cp = Object.entries(data.chart_data || {})
     .filter(([k]) => k.startsWith(brand + ":"))
     .map(([k, v]) => [k, filterPts(v)]);
-  const el = cp.flatMap(([,pts]) => pts.map(p => p.elapsed));
+  // Exclure Immat du calcul de la réponse moyenne
+  const cpNoImmat = cp.filter(([k]) => !k.endsWith(":Immat"));
+  const el = cpNoImmat.flatMap(([,pts]) => pts.map(p => p.elapsed));
   const avg = el.length ? (el.reduce((a,b) => a+b, 0) / el.length).toFixed(2) + "s" : "—";
   const total = cp.reduce((a,[,pts]) => a + pts.length, 0);
-  // Uptime : ko ne peut pas dépasser total — on prend le min
   const koSafe = Math.min(ko, total);
   const upPct = total > 0 ? Math.max(0, ((1 - koSafe / total) * 100)).toFixed(1) + "%" : "—";
-  // 8h avg
+  // 8h avg (hors Immat)
   let s8=0,c8=0;
-  cp.forEach(([,pts]) => {
+  cpNoImmat.forEach(([,pts]) => {
     const cut = Date.now() - 8*3600000;
     pts.forEach(p => { const t=parseDateStr(p.time); if(t&&t.getTime()>=cut){s8+=p.elapsed;c8++;} });
   });
