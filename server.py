@@ -31,11 +31,46 @@ def load_from_github():
         with urllib.request.urlopen(req, timeout=15) as r:
             latest_data = json.loads(r.read())
             latest_data["server_time"] = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+
+        # Si history vide, charger depuis incidents/
+        if not latest_data.get("history"):
+            latest_data["history"] = load_incidents_from_folder()
+
         pts = sum(len(v) for v in latest_data.get("chart_data", {}).values())
         hist = len(latest_data.get("history", []))
         log.info(f"[Startup] GitHub chargé : {hist} incidents, {pts} points")
     except Exception as e:
         log.error(f"[Startup] Erreur : {e}")
+
+def load_incidents_from_folder():
+    """Charge tous les incidents depuis incidents/ sur GitHub."""
+    all_incidents = []
+    try:
+        from datetime import datetime as dt, timedelta
+        headers = {"Authorization": f"token {GITHUB_TOKEN}"} if GITHUB_TOKEN else {}
+        today = dt.now()
+        for i in range(7):
+            date = (today - timedelta(days=i)).strftime("%Y-%m-%d")
+            url = f"https://raw.githubusercontent.com/{GITHUB_REPO}/main/incidents/{date}"
+            try:
+                # Lister les fichiers via API
+                api_url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/incidents/{date}"
+                req = urllib.request.Request(api_url, headers={**headers, "Accept": "application/vnd.github.v3+json"})
+                with urllib.request.urlopen(req, timeout=10) as r:
+                    files = json.loads(r.read())
+                for f in files:
+                    raw_url = f"https://raw.githubusercontent.com/{GITHUB_REPO}/main/incidents/{date}/{f['name']}"
+                    req2 = urllib.request.Request(raw_url, headers=headers)
+                    with urllib.request.urlopen(req2, timeout=10) as r2:
+                        incidents = json.loads(r2.read())
+                        all_incidents.extend(incidents)
+            except Exception:
+                pass
+        all_incidents.sort(key=lambda h: h.get("time", ""))
+        log.info(f"[Startup] incidents/ chargés : {len(all_incidents)} entrées")
+    except Exception as e:
+        log.error(f"[Startup] Erreur incidents/ : {e}")
+    return all_incidents
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
