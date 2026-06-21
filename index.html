@@ -947,7 +947,8 @@ function renderChart() {
       borderColor: colors[i]||"#888",
       backgroundColor: "transparent",
       tension: 0.4,
-      pointRadius: pointSizes,
+      _koSizes: pointSizes,
+      pointRadius: _showKO ? pointSizes : pointSizes.map(() => 0),
       pointBackgroundColor: pointColors,
       pointBorderColor: pointBorders,
       pointBorderWidth: 2,
@@ -1001,7 +1002,10 @@ function renderChart() {
   });
   const koLeg = document.createElement("div");
   koLeg.className = "leg";
+  koLeg.id = "leg-ko";
+  if(!_showKO) koLeg.classList.add("muted");
   koLeg.innerHTML = `<span class="leg-pip" style="background:#e11d48;border-radius:50%;width:9px;height:9px"></span>Incident KO`;
+  koLeg.onclick = () => toggleKO();
   legendEl.appendChild(koLeg);
 
   const scroll = document.getElementById("chart-scroll");
@@ -1101,7 +1105,38 @@ function renderChart() {
 
 // ── CHART INTERACTIVITÉ ──
 let _hiddenLines = new Set();
+let _showKO = true;
 let _zoomRange = null;
+
+function toggleChartLine(idx) {
+  const chart = window._lineChart;
+  if(!chart) return;
+  if(_hiddenLines.has(idx)) {
+    _hiddenLines.delete(idx);
+    chart.data.datasets[idx].hidden = false;
+  } else {
+    _hiddenLines.add(idx);
+    chart.data.datasets[idx].hidden = true;
+  }
+  chart.update("none");
+  document.querySelectorAll(".leg[data-idx]").forEach(el => {
+    el.classList.toggle("muted", _hiddenLines.has(parseInt(el.dataset.idx)));
+  });
+}
+
+function toggleKO() {
+  _showKO = !_showKO;
+  const chart = window._lineChart;
+  if(!chart) return;
+  // Mettre à jour les pointRadius sur tous les datasets
+  chart.data.datasets.forEach(ds => {
+    if(ds._koSizes) {
+      ds.pointRadius = _showKO ? ds._koSizes : ds._koSizes.map(() => 0);
+    }
+  });
+  chart.update("none");
+  document.getElementById("leg-ko")?.classList.toggle("muted", !_showKO);
+}
 
 function toggleChartLine(idx) {
   const chart = window._lineChart;
