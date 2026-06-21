@@ -1,8 +1,5 @@
 """
 STLA Monitor — Serveur HTTP temps réel
-- Reçoit les données du script Python toutes les 10s
-- Sert les données au dashboard sans cache
-- Le ping régulier du script empêche la mise en veille Render
 """
 
 import os
@@ -10,43 +7,50 @@ import json
 import base64
 import logging
 import urllib.request
+from contextlib import asynccontextmanager
 from datetime import datetime
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import Response
 import uvicorn
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 log = logging.getLogger(__name__)
 
-app = FastAPI()
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
 GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "")
-GITHUB_RAW = "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/status.json"
+GITHUB_REPO  = "dcs-masterclass-ia/stla-monitor"
+GITHUB_RAW   = f"https://raw.githubusercontent.com/{GITHUB_REPO}/main/status.json"
 
-# État en mémoire
 latest_data = {}
 
-@app.on_event("startup")
-async def load_from_github():
+def load_from_github():
     global latest_data
     try:
         headers = {"Authorization": f"token {GITHUB_TOKEN}"} if GITHUB_TOKEN else {}
         req = urllib.request.Request(GITHUB_RAW, headers=headers)
-        with urllib.request.urlopen(req, timeout=10) as r:
+        with urllib.request.urlopen(req, timeout=15) as r:
             latest_data = json.loads(r.read())
             latest_data["server_time"] = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
         pts = sum(len(v) for v in latest_data.get("chart_data", {}).values())
         hist = len(latest_data.get("history", []))
-        log.info(f"[Startup] status.json chargé depuis GitHub : {hist} incidents, {pts} points chart")
+        log.info(f"[Startup] GitHub chargé : {hist} incidents, {pts} points")
     except Exception as e:
-        log.error(f"[Startup] Erreur chargement GitHub : {e}")
+        log.error(f"[Startup] Erreur : {e}")
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    load_from_github()
+    yield
+
+app = FastAPI(lifespan=lifespan)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=False,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.post("/update")
 async def receive_update(request: Request):
@@ -64,7 +68,6 @@ async def get_status():
 
 @app.post("/push-brand")
 async def push_brand(request: Request):
-    """Met à jour les URLs d'une brand dans stla_monitor.py sur GitHub."""
     if not GITHUB_TOKEN:
         return {"ok": False, "error": "GITHUB_TOKEN manquant"}
     try:
@@ -80,42 +83,31 @@ async def push_brand(request: Request):
             "Accept": "application/vnd.github.v3+json",
             "Content-Type": "application/json"
         }
-
-        # Lire le fichier actuel
         req = urllib.request.Request(api, headers=headers)
         with urllib.request.urlopen(req) as r:
             data = json.loads(r.read())
         sha = data["sha"]
         content = base64.b64decode(data["content"].replace("\n", "")).decode("utf-8")
 
-        # Trouver et remplacer la ligne de la brand
         import re
         pages_str = json.dumps(pages, ensure_ascii=False)
-        # Pattern: "Brand Name": {...}
         pattern = rf'("{re.escape(brand_name)}")\s*:\s*\{{[^}}]+\}}'
         replacement = f'"{brand_name}": {pages_str}'
         new_content, count = re.subn(pattern, replacement, content)
 
         if count == 0:
-            return {"ok": False, "error": f"Brand '{brand_name}' non trouvée dans le script"}
+            return {"ok": False, "error": f"Brand '{brand_name}' non trouvée"}
 
-        # Pusher
         new_b64 = base64.b64encode(new_content.encode("utf-8")).decode()
         push_body = json.dumps({
-            "message": f"update: URLs {brand_name} via admin panel",
-            "content": new_b64,
-            "sha": sha
+            "message": f"update: URLs {brand_name} via admin",
+            "content": new_b64, "sha": sha
         }).encode()
-
         req2 = urllib.request.Request(api, data=push_body, headers=headers, method="PUT")
         with urllib.request.urlopen(req2) as r2:
             resp = json.loads(r2.read())
-            commit_sha = resp["commit"]["sha"][:8]
-            log.info(f"[push-brand] {brand_name} mis à jour — commit {commit_sha}")
-            return {"ok": True, "commit": commit_sha}
-
+            return {"ok": True, "commit": resp["commit"]["sha"][:8]}
     except Exception as e:
-        log.error(f"[push-brand] Erreur : {e}")
         return {"ok": False, "error": str(e)}
 
 @app.get("/")
@@ -124,7 +116,6 @@ async def root():
 
 @app.head("/")
 async def root_head():
-    from fastapi.responses import Response
     return Response(status_code=200)
 
 if __name__ == "__main__":
