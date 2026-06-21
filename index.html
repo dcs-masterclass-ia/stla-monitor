@@ -754,29 +754,45 @@ function setPeriod(btn, p) {
 function filterPts(pts) {
   if (!pts || !pts.length) return [];
   let cutoff;
-  if (currentPeriod === "live") {
-    // Dernières 2h — vue temps réel
-    cutoff = Date.now() - 2 * 3600000;
-  } else if (currentPeriod === "24h") {
-    // 24h glissantes depuis maintenant
-    cutoff = Date.now() - 24 * 3600000;
-  } else if (currentPeriod === "7j") {
-    cutoff = Date.now() - 7 * 86400000;
-  } else if (currentPeriod === "30j") {
-    cutoff = Date.now() - 30 * 86400000;
-  } else {
-    cutoff = Date.now() - 24 * 3600000;
-  }
+  if (currentPeriod === "live")       cutoff = Date.now() - 2 * 3600000;
+  else if (currentPeriod === "24h")   cutoff = Date.now() - 24 * 3600000;
+  else if (currentPeriod === "7j")    cutoff = Date.now() - 7 * 86400000;
+  else if (currentPeriod === "30j")   cutoff = Date.now() - 30 * 86400000;
+  else                                cutoff = Date.now() - 24 * 3600000;
+
   const filtered = pts.filter(p => {
     const t = parseDateStr(p.time);
     return t && t.getTime() >= cutoff;
   });
-  // Si pas assez de points filtrés, prendre les derniers disponibles
-  if (filtered.length < 5) {
-    const n = currentPeriod === "30j" ? 14400 : currentPeriod === "7j" ? 3360 : currentPeriod === "24h" ? 480 : 40;
-    return pts.slice(-n);
+  const src = filtered.length >= 5 ? filtered : pts.slice(-(currentPeriod==="30j"?14400:currentPeriod==="7j"?3360:480));
+
+  // Agréger selon le mode pour réduire les points
+  if (currentPeriod === "7j") {
+    // Agréger par heure — moyenne des elapsed
+    const buckets = {};
+    src.forEach(p => {
+      const t = parseDateStr(p.time);
+      if(!t) return;
+      const key = p.time.substring(0,5) + " " + p.time.substring(11,13) + ":00:00"; // DD/MM/YYYY HH:00:00
+      if(!buckets[key]) buckets[key] = [];
+      buckets[key].push(p.elapsed);
+    });
+    return Object.entries(buckets).sort((a,b)=>a[0]<b[0]?-1:1).map(([time, vals]) => ({
+      time, elapsed: Math.round(vals.reduce((a,b)=>a+b,0)/vals.length * 100)/100
+    }));
+  } else if (currentPeriod === "30j") {
+    // Agréger par jour
+    const buckets = {};
+    src.forEach(p => {
+      const key = p.time.substring(0,10) + " 12:00:00"; // DD/MM/YYYY 12:00:00
+      if(!buckets[key]) buckets[key] = [];
+      buckets[key].push(p.elapsed);
+    });
+    return Object.entries(buckets).sort((a,b)=>a[0]<b[0]?-1:1).map(([time, vals]) => ({
+      time, elapsed: Math.round(vals.reduce((a,b)=>a+b,0)/vals.length * 100)/100
+    }));
   }
-  return filtered;
+  return src;
 }
 function filterHist(hist) {
   if (!hist || !hist.length) return [];
@@ -949,43 +965,27 @@ function renderChart() {
   let labelsFmt;
   let xTickLimit;
   if (currentPeriod === "live") {
-    // HH:MM uniquement
     labelsFmt = labels.map(t => (t||"").substring(11,16));
     xTickLimit = 8;
   } else if (currentPeriod === "24h") {
-    // HH:MM — une tick toutes les 2h
     labelsFmt = labels.map(t => (t||"").substring(11,16));
     xTickLimit = 12;
   } else if (currentPeriod === "7j") {
-    // JJ/MM HH:MM — une tick par jour
+    // Agrégé par heure — afficher jour + heure
     labelsFmt = labels.map(t => {
       if(!t) return "";
-      return t.substring(0,5) + " " + t.substring(11,16);
+      const day = t.substring(0,5); // DD/MM
+      const hour = t.substring(11,13) + "h";
+      return day + " " + hour;
     });
-    xTickLimit = 7;
+    xTickLimit = 14;
   } else if (currentPeriod === "30j") {
-    // JJ/MM uniquement — une tick tous les 2-3 jours
+    // Agrégé par jour — afficher DD/MM
     labelsFmt = labels.map(t => t ? t.substring(0,5) : "");
     xTickLimit = 10;
   } else {
     labelsFmt = labels.map(t => (t||"").substring(11,16));
     xTickLimit = 10;
-  }
-
-  // Sampling adapté selon le mode — on garde les points KO toujours
-  const MAX_PTS = currentPeriod === "30j" ? 400 : currentPeriod === "7j" ? 500 : 600;
-  if (datasets[0] && datasets[0].data.length > MAX_PTS) {
-    const f = Math.ceil(datasets[0].data.length / MAX_PTS);
-    const keep = new Set();
-    datasets[0].data.forEach((_, i) => {
-      const hhmm = labelsFmt[i];
-      if (koTimes.has(hhmm) || i % f === 0 || i === datasets[0].data.length - 1) keep.add(i);
-    });
-    datasets.forEach(ds => {
-      ds.data = ds.data.filter((_, i) => keep.has(i));
-      ds._t = ds._t.filter((_, i) => keep.has(i));
-    });
-    labelsFmt = labelsFmt.filter((_, i) => keep.has(i));
   }
 
   // Légende interactive avec toggle
@@ -1006,7 +1006,16 @@ function renderChart() {
 
   const scroll = document.getElementById("chart-scroll");
   const container = document.getElementById("chart-container");
-  const w = Math.max(scroll.clientWidth, labels.length*20);
+
+  // Largeur du container adaptée au mode
+  // Direct/24h : 20px/point, 7j : fixe scroll, 30j : fixe scroll
+  let pxPerPt;
+  if (currentPeriod === "live")       pxPerPt = 12;
+  else if (currentPeriod === "24h")   pxPerPt = 8;
+  else if (currentPeriod === "7j")    pxPerPt = 6;
+  else                                pxPerPt = 4;
+
+  const w = Math.max(scroll.clientWidth, labelsFmt.length * pxPerPt);
   container.style.width = w + "px";
   const isEnd = scroll.scrollLeft + scroll.clientWidth >= scroll.scrollWidth - 20;
 
