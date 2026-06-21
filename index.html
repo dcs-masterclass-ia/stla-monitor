@@ -1162,7 +1162,11 @@ const CHART_BACKUP = "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-
 
 const INCIDENTS_BASE = "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/incidents";
 
+let _incidentsCacheTime = 0;
+let _incidentsCache = [];
+
 async function loadIncidentsFromFolder() {
+  if(Date.now() - _incidentsCacheTime < 60000 && _incidentsCache.length) return _incidentsCache;
   const all = [];
   const today = new Date();
   for(let i = 0; i < 7; i++) {
@@ -1178,7 +1182,9 @@ async function loadIncidentsFromFolder() {
       }
     } catch(e) {}
   }
-  return all.sort((a,b) => a.time < b.time ? -1 : 1);
+  _incidentsCache = all.sort((a,b) => a.time < b.time ? -1 : 1);
+  _incidentsCacheTime = Date.now();
+  return _incidentsCache;
 }
 
 async function mergeChartBackup(nd) {
@@ -1216,9 +1222,15 @@ async function fetchStatus(){
     let nd=await r.json();
     if(JSON.stringify(nd.updated_at)===JSON.stringify(data&&data.updated_at))return;
     nd = await mergeChartBackup(nd);
-    // Si history vide, charger depuis incidents/
-    if(!nd.history || !nd.history.length) {
-      nd.history = await loadIncidentsFromFolder();
+    // Toujours merger avec incidents/ pour ne rien rater
+    const folderInc = await loadIncidentsFromFolder();
+    if(folderInc.length) {
+      const seen = new Set((nd.history||[]).map(h=>`${h.time}|${h.brand}|${h.page}|${h.type}`));
+      folderInc.forEach(h => {
+        const k=`${h.time}|${h.brand}|${h.page}|${h.type}`;
+        if(!seen.has(k)){seen.add(k);(nd.history=nd.history||[]).push(h);}
+      });
+      nd.history.sort((a,b)=>a.time<b.time?-1:1);
     }
     data=nd;
     document.getElementById("ts-label").textContent=""+data.updated_at.split(" ")[1];
