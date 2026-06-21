@@ -170,12 +170,12 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .analyse-legend-item{display:flex;align-items:center;gap:5px;color:var(--text-2)}
 .analyse-legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
 .heatmap-wrap{overflow-x:auto;padding-bottom:4px}
-.heatmap-label{width:22px;font-size:9px;color:var(--text-3);font-weight:700;text-align:center}
-.heatmap-row-label{font-size:9px;color:var(--text-3);font-weight:700;width:28px;flex-shrink:0;line-height:22px}
-.heatmap-row{display:flex;align-items:center;gap:3px;margin-bottom:3px}
-.heatmap-cell{width:22px;height:22px;border-radius:4px;cursor:pointer;transition:transform .1s;flex-shrink:0}
+.heatmap-label{font-size:9px;color:var(--text-3);font-weight:700;text-align:center;flex-shrink:0}
+.heatmap-row-label{font-size:9px;color:var(--text-3);font-weight:700;width:24px;flex-shrink:0;line-height:18px}
+.heatmap-row{display:flex;align-items:center;gap:2px;margin-bottom:2px}
+.heatmap-cell{width:18px;height:18px;border-radius:3px;cursor:pointer;transition:transform .1s;flex-shrink:0}
 .heatmap-cell:hover{transform:scale(1.2)}
-.heatmap-labels{display:flex;gap:3px;margin-bottom:4px;padding-left:32px}
+.heatmap-labels{display:flex;gap:2px;margin-bottom:4px;padding-left:26px}
 .analyse-mttr{display:flex;gap:32px;padding:8px 0}
 .mttr-kpi{text-align:center}
 .mttr-val{font-size:26px;font-weight:900;color:var(--text)}
@@ -1383,7 +1383,7 @@ function renderHeatmap(hist) {
     const r=n/maxVal;
     return r<0.33?"#fecaca":r<0.66?"#f87171":"#e11d48";
   };
-  const labelsHTML=`<div class="heatmap-labels">${Array.from({length:24},(_,i)=>`<div class="heatmap-label">${i}h</div>`).join("")}</div>`;
+  const labelsHTML=`<div class="heatmap-labels">${Array.from({length:24},(_,i)=>`<div class="heatmap-label" style="width:18px">${i}h</div>`).join("")}</div>`;
   const rowsHTML=matrix.map((row,d)=>`<div class="heatmap-row"><span class="heatmap-row-label">${days[d]}</span>${row.map((n,h)=>`<div class="heatmap-cell" style="background:${getColor(n)}" title="${days[d]} ${h}h : ${n} incident(s)"></div>`).join("")}</div>`).join("");
   el.innerHTML=`<div class="heatmap-wrap">${labelsHTML}${rowsHTML}</div><div style="display:flex;align-items:center;gap:6px;margin-top:8px;font-size:10px;font-weight:700;color:var(--text-3)">Moins <span style="display:flex;gap:3px"><span style="width:12px;height:12px;background:#f1f5f9;border-radius:3px;display:inline-block"></span><span style="width:12px;height:12px;background:#fecaca;border-radius:3px;display:inline-block"></span><span style="width:12px;height:12px;background:#f87171;border-radius:3px;display:inline-block"></span><span style="width:12px;height:12px;background:#e11d48;border-radius:3px;display:inline-block"></span></span> Plus</div>`;
 }
