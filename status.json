@@ -1,36 +1,36 @@
 {
-  "updated_at": "21/06/2026 02:22:56",
+  "updated_at": "21/06/2026 02:26:16",
   "statuses": {
     "Opel PT": {
-      "Parcours": {
-        "ok": true,
-        "reason": "OK (200) en 1.66s",
-        "elapsed": 1.66,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://www.retoma.opel.pt/pagina-modelo",
-        "details": {
-          "brand": "Opel PT",
-          "page": "Parcours",
-          "http_status": 200,
-          "elapsed_http": 1.66,
-          "ip": [
-            "135.125.7.226",
-            0.002,
-            null
-          ]
-        }
-      },
       "Homepage": {
         "ok": true,
-        "reason": "OK (200) en 1.69s",
-        "elapsed": 1.69,
-        "checked_at": "21/06/2026 02:20:48",
+        "reason": "OK (200) en 1.48s",
+        "elapsed": 1.48,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://www.retoma.opel.pt",
         "details": {
           "brand": "Opel PT",
           "page": "Homepage",
           "http_status": 200,
-          "elapsed_http": 1.69,
+          "elapsed_http": 1.48,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      },
+      "Parcours": {
+        "ok": true,
+        "reason": "OK (200) en 1.49s",
+        "elapsed": 1.49,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://www.retoma.opel.pt/pagina-modelo",
+        "details": {
+          "brand": "Opel PT",
+          "page": "Parcours",
+          "http_status": 200,
+          "elapsed_http": 1.49,
           "ip": [
             "135.125.7.226",
             0.001,
@@ -42,33 +42,33 @@
     "Abarth PT": {
       "Homepage": {
         "ok": true,
-        "reason": "OK (200) en 1.66s",
-        "elapsed": 1.66,
-        "checked_at": "21/06/2026 02:20:48",
+        "reason": "OK (200) en 1.51s",
+        "elapsed": 1.51,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://www.retoma.abarth.pt",
         "details": {
           "brand": "Abarth PT",
           "page": "Homepage",
           "http_status": 200,
-          "elapsed_http": 1.66,
+          "elapsed_http": 1.51,
           "ip": [
             "135.125.7.226",
-            0.002,
+            0.001,
             null
           ]
         }
       },
       "Parcours": {
         "ok": true,
-        "reason": "OK (200) en 0.93s",
-        "elapsed": 0.93,
-        "checked_at": "21/06/2026 02:20:48",
+        "reason": "OK (200) en 0.96s",
+        "elapsed": 0.96,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://www.retoma.abarth.pt/modelo",
         "details": {
           "brand": "Abarth PT",
           "page": "Parcours",
           "http_status": 200,
-          "elapsed_http": 0.93,
+          "elapsed_http": 0.96,
           "ip": [
             "135.125.7.226",
             0.001,
@@ -80,12 +80,164 @@
     "AlfaRomeo PT": {
       "Homepage": {
         "ok": true,
-        "reason": "OK (200) en 0.9s",
-        "elapsed": 0.9,
-        "checked_at": "21/06/2026 02:20:48",
+        "reason": "OK (200) en 1.4s",
+        "elapsed": 1.4,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://www.retoma.alfaromeo.pt",
         "details": {
           "brand": "AlfaRomeo PT",
+          "page": "Homepage",
+          "http_status": 200,
+          "elapsed_http": 1.4,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      },
+      "Parcours": {
+        "ok": true,
+        "reason": "OK (200) en 1.56s",
+        "elapsed": 1.56,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://www.retoma.alfaromeo.pt/modelo",
+        "details": {
+          "brand": "AlfaRomeo PT",
+          "page": "Parcours",
+          "http_status": 200,
+          "elapsed_http": 1.56,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      }
+    },
+    "Citroen PT": {
+      "Homepage": {
+        "ok": true,
+        "reason": "OK (200) en 0.91s",
+        "elapsed": 0.91,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://www.retoma-citroen.pt",
+        "details": {
+          "brand": "Citroen PT",
+          "page": "Homepage",
+          "http_status": 200,
+          "elapsed_http": 0.91,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      },
+      "Parcours": {
+        "ok": true,
+        "reason": "OK (200) en 0.98s",
+        "elapsed": 0.98,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://www.retoma-citroen.pt/pagina-modelo",
+        "details": {
+          "brand": "Citroen PT",
+          "page": "Parcours",
+          "http_status": 200,
+          "elapsed_http": 0.98,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      }
+    },
+    "DS PT": {
+      "Homepage": {
+        "ok": true,
+        "reason": "OK (200) en 0.97s",
+        "elapsed": 0.97,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://retoma.dsautomobiles.pt",
+        "details": {
+          "brand": "DS PT",
+          "page": "Homepage",
+          "http_status": 200,
+          "elapsed_http": 0.97,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      },
+      "Parcours": {
+        "ok": true,
+        "reason": "OK (200) en 0.94s",
+        "elapsed": 0.94,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://retoma.dsautomobiles.pt/pagina-modelo",
+        "details": {
+          "brand": "DS PT",
+          "page": "Parcours",
+          "http_status": 200,
+          "elapsed_http": 0.94,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      }
+    },
+    "Fiat PT": {
+      "Homepage": {
+        "ok": true,
+        "reason": "OK (200) en 0.91s",
+        "elapsed": 0.91,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://www.retoma.fiat.pt",
+        "details": {
+          "brand": "Fiat PT",
+          "page": "Homepage",
+          "http_status": 200,
+          "elapsed_http": 0.91,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      },
+      "Parcours": {
+        "ok": true,
+        "reason": "OK (200) en 0.93s",
+        "elapsed": 0.93,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://www.retoma.fiat.pt/modelo",
+        "details": {
+          "brand": "Fiat PT",
+          "page": "Parcours",
+          "http_status": 200,
+          "elapsed_http": 0.93,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      }
+    },
+    "FiatPro PT": {
+      "Homepage": {
+        "ok": true,
+        "reason": "OK (200) en 0.9s",
+        "elapsed": 0.9,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://www.retoma.fiatprofessional.pt",
+        "details": {
+          "brand": "FiatPro PT",
           "page": "Homepage",
           "http_status": 200,
           "elapsed_http": 0.9,
@@ -98,15 +250,15 @@
       },
       "Parcours": {
         "ok": true,
-        "reason": "OK (200) en 1.05s",
-        "elapsed": 1.05,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://www.retoma.alfaromeo.pt/modelo",
+        "reason": "OK (200) en 0.96s",
+        "elapsed": 0.96,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://www.retoma.fiatprofessional.pt/modelo",
         "details": {
-          "brand": "AlfaRomeo PT",
+          "brand": "FiatPro PT",
           "page": "Parcours",
           "http_status": 200,
-          "elapsed_http": 1.05,
+          "elapsed_http": 0.96,
           "ip": [
             "135.125.7.226",
             0.001,
@@ -115,18 +267,18 @@
         }
       }
     },
-    "Citroen PT": {
+    "Jeep PT": {
       "Homepage": {
         "ok": true,
-        "reason": "OK (200) en 1.21s",
-        "elapsed": 1.21,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://www.retoma-citroen.pt",
+        "reason": "OK (200) en 0.89s",
+        "elapsed": 0.89,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://www.retoma.jeep.pt",
         "details": {
-          "brand": "Citroen PT",
+          "brand": "Jeep PT",
           "page": "Homepage",
           "http_status": 200,
-          "elapsed_http": 1.21,
+          "elapsed_http": 0.89,
           "ip": [
             "135.125.7.226",
             0.001,
@@ -136,70 +288,70 @@
       },
       "Parcours": {
         "ok": true,
-        "reason": "OK (200) en 1.35s",
-        "elapsed": 1.35,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://www.retoma-citroen.pt/pagina-modelo",
+        "reason": "OK (200) en 1.08s",
+        "elapsed": 1.08,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://www.retoma.jeep.pt/modelo",
         "details": {
-          "brand": "Citroen PT",
+          "brand": "Jeep PT",
           "page": "Parcours",
           "http_status": 200,
-          "elapsed_http": 1.35,
+          "elapsed_http": 1.08,
           "ip": [
             "135.125.7.226",
-            0.001,
+            0.004,
             null
           ]
         }
       }
     },
-    "DS PT": {
+    "Peugeot PT": {
       "Homepage": {
         "ok": true,
-        "reason": "OK (200) en 1.02s",
-        "elapsed": 1.02,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://retoma.dsautomobiles.pt",
+        "reason": "OK (200) en 0.84s",
+        "elapsed": 0.84,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://www.retoma.peugeot.pt",
         "details": {
-          "brand": "DS PT",
+          "brand": "Peugeot PT",
           "page": "Homepage",
           "http_status": 200,
-          "elapsed_http": 1.02,
+          "elapsed_http": 0.84,
           "ip": [
             "135.125.7.226",
-            0.001,
+            0.007,
             null
           ]
         }
       },
       "Parcours": {
         "ok": true,
-        "reason": "OK (200) en 0.92s",
-        "elapsed": 0.92,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://retoma.dsautomobiles.pt/pagina-modelo",
+        "reason": "OK (200) en 1.01s",
+        "elapsed": 1.01,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://www.retoma.peugeot.pt/pagina-modelo",
         "details": {
-          "brand": "DS PT",
+          "brand": "Peugeot PT",
           "page": "Parcours",
           "http_status": 200,
-          "elapsed_http": 0.92,
+          "elapsed_http": 1.01,
           "ip": [
             "135.125.7.226",
-            0.001,
+            0.005,
             null
           ]
         }
       }
     },
-    "Fiat PT": {
+    "Opel FR": {
       "Homepage": {
         "ok": true,
         "reason": "OK (200) en 1.03s",
         "elapsed": 1.03,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://www.retoma.fiat.pt",
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://www.reprise.opel.fr",
         "details": {
-          "brand": "Fiat PT",
+          "brand": "Opel FR",
           "page": "Homepage",
           "http_status": 200,
           "elapsed_http": 1.03,
@@ -212,167 +364,15 @@
       },
       "Parcours": {
         "ok": true,
-        "reason": "OK (200) en 0.95s",
-        "elapsed": 0.95,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://www.retoma.fiat.pt/modelo",
-        "details": {
-          "brand": "Fiat PT",
-          "page": "Parcours",
-          "http_status": 200,
-          "elapsed_http": 0.95,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      }
-    },
-    "FiatPro PT": {
-      "Homepage": {
-        "ok": true,
-        "reason": "OK (200) en 0.96s",
-        "elapsed": 0.96,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://www.retoma.fiatprofessional.pt",
-        "details": {
-          "brand": "FiatPro PT",
-          "page": "Homepage",
-          "http_status": 200,
-          "elapsed_http": 0.96,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      },
-      "Parcours": {
-        "ok": true,
-        "reason": "OK (200) en 1.02s",
-        "elapsed": 1.02,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://www.retoma.fiatprofessional.pt/modelo",
-        "details": {
-          "brand": "FiatPro PT",
-          "page": "Parcours",
-          "http_status": 200,
-          "elapsed_http": 1.02,
-          "ip": [
-            "135.125.7.226",
-            0.002,
-            null
-          ]
-        }
-      }
-    },
-    "Jeep PT": {
-      "Homepage": {
-        "ok": true,
-        "reason": "OK (200) en 1.01s",
-        "elapsed": 1.01,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://www.retoma.jeep.pt",
-        "details": {
-          "brand": "Jeep PT",
-          "page": "Homepage",
-          "http_status": 200,
-          "elapsed_http": 1.01,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      },
-      "Parcours": {
-        "ok": true,
-        "reason": "OK (200) en 0.94s",
-        "elapsed": 0.94,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://www.retoma.jeep.pt/modelo",
-        "details": {
-          "brand": "Jeep PT",
-          "page": "Parcours",
-          "http_status": 200,
-          "elapsed_http": 0.94,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      }
-    },
-    "Peugeot PT": {
-      "Homepage": {
-        "ok": true,
-        "reason": "OK (200) en 0.95s",
-        "elapsed": 0.95,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://www.retoma.peugeot.pt",
-        "details": {
-          "brand": "Peugeot PT",
-          "page": "Homepage",
-          "http_status": 200,
-          "elapsed_http": 0.95,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      },
-      "Parcours": {
-        "ok": true,
-        "reason": "OK (200) en 1.04s",
-        "elapsed": 1.04,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://www.retoma.peugeot.pt/pagina-modelo",
-        "details": {
-          "brand": "Peugeot PT",
-          "page": "Parcours",
-          "http_status": 200,
-          "elapsed_http": 1.04,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      }
-    },
-    "Opel FR": {
-      "Homepage": {
-        "ok": true,
-        "reason": "OK (200) en 0.92s",
-        "elapsed": 0.92,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://www.reprise.opel.fr",
-        "details": {
-          "brand": "Opel FR",
-          "page": "Homepage",
-          "http_status": 200,
-          "elapsed_http": 0.92,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      },
-      "Parcours": {
-        "ok": true,
-        "reason": "OK (200) en 0.97s",
-        "elapsed": 0.97,
-        "checked_at": "21/06/2026 02:20:48",
+        "reason": "OK (200) en 1.03s",
+        "elapsed": 1.03,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://www.reprise.opel.fr/page-modele",
         "details": {
           "brand": "Opel FR",
           "page": "Parcours",
           "http_status": 200,
-          "elapsed_http": 0.97,
+          "elapsed_http": 1.03,
           "ip": [
             "135.125.7.226",
             0.001,
@@ -383,117 +383,27 @@
       "Immat": {
         "ok": true,
         "reason": "Décodage immat OK → details-vehicule",
-        "elapsed": 15.98,
-        "checked_at": "21/06/2026 02:20:48",
+        "elapsed": 15.3,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://www.reprise.opel.fr",
         "details": {
           "brand": "Opel FR",
           "page": "Immat",
           "error_type": null,
           "final_url": "https://www.reprise.opel.fr/details-vehicule",
-          "elapsed_http": 15.98
+          "elapsed_http": 15.3
         }
       }
     },
     "AlfaRomeo FR": {
       "Homepage": {
         "ok": true,
-        "reason": "OK (200) en 0.88s",
-        "elapsed": 0.88,
-        "checked_at": "21/06/2026 02:20:48",
+        "reason": "OK (200) en 0.87s",
+        "elapsed": 0.87,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://reprise.alfaromeo.fr",
         "details": {
           "brand": "AlfaRomeo FR",
-          "page": "Homepage",
-          "http_status": 200,
-          "elapsed_http": 0.88,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      },
-      "Parcours": {
-        "ok": true,
-        "reason": "OK (200) en 0.91s",
-        "elapsed": 0.91,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://reprise.alfaromeo.fr/page-modele",
-        "details": {
-          "brand": "AlfaRomeo FR",
-          "page": "Parcours",
-          "http_status": 200,
-          "elapsed_http": 0.91,
-          "ip": [
-            "135.125.7.226",
-            0.002,
-            null
-          ]
-        }
-      }
-    },
-    "Citroen FR": {
-      "Homepage": {
-        "ok": true,
-        "reason": "OK (200) en 1.23s",
-        "elapsed": 1.23,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://www.reprise.citroen.fr",
-        "details": {
-          "brand": "Citroen FR",
-          "page": "Homepage",
-          "http_status": 200,
-          "elapsed_http": 1.23,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      },
-      "Parcours": {
-        "ok": true,
-        "reason": "OK (200) en 1.19s",
-        "elapsed": 1.19,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://www.reprise.citroen.fr/page-modele",
-        "details": {
-          "brand": "Citroen FR",
-          "page": "Parcours",
-          "http_status": 200,
-          "elapsed_http": 1.19,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      },
-      "Immat": {
-        "ok": true,
-        "reason": "Décodage immat OK → details-vehicule",
-        "elapsed": 15.2,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://www.reprise.citroen.fr",
-        "details": {
-          "brand": "Citroen FR",
-          "page": "Immat",
-          "error_type": null,
-          "final_url": "https://www.reprise.citroen.fr/details-vehicule",
-          "elapsed_http": 15.2
-        }
-      }
-    },
-    "DS FR": {
-      "Homepage": {
-        "ok": true,
-        "reason": "OK (200) en 0.87s",
-        "elapsed": 0.87,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://www.reprise.dsautomobiles.fr",
-        "details": {
-          "brand": "DS FR",
           "page": "Homepage",
           "http_status": 200,
           "elapsed_http": 0.87,
@@ -506,15 +416,53 @@
       },
       "Parcours": {
         "ok": true,
-        "reason": "OK (200) en 0.95s",
-        "elapsed": 0.95,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://www.reprise.dsautomobiles.fr/page-modele",
+        "reason": "OK (200) en 0.94s",
+        "elapsed": 0.94,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://reprise.alfaromeo.fr/page-modele",
         "details": {
-          "brand": "DS FR",
+          "brand": "AlfaRomeo FR",
           "page": "Parcours",
           "http_status": 200,
-          "elapsed_http": 0.95,
+          "elapsed_http": 0.94,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      }
+    },
+    "Citroen FR": {
+      "Homepage": {
+        "ok": true,
+        "reason": "OK (200) en 1.11s",
+        "elapsed": 1.11,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://www.reprise.citroen.fr",
+        "details": {
+          "brand": "Citroen FR",
+          "page": "Homepage",
+          "http_status": 200,
+          "elapsed_http": 1.11,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      },
+      "Parcours": {
+        "ok": true,
+        "reason": "OK (200) en 1.14s",
+        "elapsed": 1.14,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://www.reprise.citroen.fr/page-modele",
+        "details": {
+          "brand": "Citroen FR",
+          "page": "Parcours",
+          "http_status": 200,
+          "elapsed_http": 1.14,
           "ip": [
             "135.125.7.226",
             0.001,
@@ -525,30 +473,30 @@
       "Immat": {
         "ok": true,
         "reason": "Décodage immat OK → details-vehicule",
-        "elapsed": 16.96,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://www.reprise.dsautomobiles.fr",
+        "elapsed": 16.03,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://www.reprise.citroen.fr",
         "details": {
-          "brand": "DS FR",
+          "brand": "Citroen FR",
           "page": "Immat",
           "error_type": null,
-          "final_url": "https://www.reprise.dsautomobiles.fr/details-vehicule",
-          "elapsed_http": 16.96
+          "final_url": "https://www.reprise.citroen.fr/details-vehicule",
+          "elapsed_http": 16.03
         }
       }
     },
-    "Fiat FR": {
+    "DS FR": {
       "Homepage": {
         "ok": true,
-        "reason": "OK (200) en 0.97s",
-        "elapsed": 0.97,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://reprise.fiat.fr",
+        "reason": "OK (200) en 0.79s",
+        "elapsed": 0.79,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://www.reprise.dsautomobiles.fr",
         "details": {
-          "brand": "Fiat FR",
+          "brand": "DS FR",
           "page": "Homepage",
           "http_status": 200,
-          "elapsed_http": 0.97,
+          "elapsed_http": 0.79,
           "ip": [
             "135.125.7.226",
             0.001,
@@ -558,9 +506,61 @@
       },
       "Parcours": {
         "ok": true,
+        "reason": "OK (200) en 0.98s",
+        "elapsed": 0.98,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://www.reprise.dsautomobiles.fr/page-modele",
+        "details": {
+          "brand": "DS FR",
+          "page": "Parcours",
+          "http_status": 200,
+          "elapsed_http": 0.98,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      },
+      "Immat": {
+        "ok": true,
+        "reason": "Décodage immat OK → details-vehicule",
+        "elapsed": 17.18,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://www.reprise.dsautomobiles.fr",
+        "details": {
+          "brand": "DS FR",
+          "page": "Immat",
+          "error_type": null,
+          "final_url": "https://www.reprise.dsautomobiles.fr/details-vehicule",
+          "elapsed_http": 17.18
+        }
+      }
+    },
+    "Fiat FR": {
+      "Homepage": {
+        "ok": true,
+        "reason": "OK (200) en 0.89s",
+        "elapsed": 0.89,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://reprise.fiat.fr",
+        "details": {
+          "brand": "Fiat FR",
+          "page": "Homepage",
+          "http_status": 200,
+          "elapsed_http": 0.89,
+          "ip": [
+            "135.125.7.226",
+            0.002,
+            null
+          ]
+        }
+      },
+      "Parcours": {
+        "ok": true,
         "reason": "OK (200) en 0.96s",
         "elapsed": 0.96,
-        "checked_at": "21/06/2026 02:20:48",
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://reprise.fiat.fr/page-modele",
         "details": {
           "brand": "Fiat FR",
@@ -578,53 +578,15 @@
     "FiatPro FR": {
       "Homepage": {
         "ok": true,
-        "reason": "OK (200) en 0.91s",
-        "elapsed": 0.91,
-        "checked_at": "21/06/2026 02:20:48",
+        "reason": "OK (200) en 0.84s",
+        "elapsed": 0.84,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://reprise.fiatprofessional.com",
         "details": {
           "brand": "FiatPro FR",
           "page": "Homepage",
           "http_status": 200,
-          "elapsed_http": 0.91,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      },
-      "Parcours": {
-        "ok": true,
-        "reason": "OK (200) en 0.99s",
-        "elapsed": 0.99,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://reprise.fiatprofessional.com/page-modele",
-        "details": {
-          "brand": "FiatPro FR",
-          "page": "Parcours",
-          "http_status": 200,
-          "elapsed_http": 0.99,
-          "ip": [
-            "135.125.7.226",
-            0.003,
-            null
-          ]
-        }
-      }
-    },
-    "Jeep FR": {
-      "Homepage": {
-        "ok": true,
-        "reason": "OK (200) en 1.07s",
-        "elapsed": 1.07,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://reprise.jeep.fr",
-        "details": {
-          "brand": "Jeep FR",
-          "page": "Homepage",
-          "http_status": 200,
-          "elapsed_http": 1.07,
+          "elapsed_http": 0.84,
           "ip": [
             "135.125.7.226",
             0.001,
@@ -636,10 +598,10 @@
         "ok": true,
         "reason": "OK (200) en 0.94s",
         "elapsed": 0.94,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://reprise.jeep.fr/page-modele",
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://reprise.fiatprofessional.com/page-modele",
         "details": {
-          "brand": "Jeep FR",
+          "brand": "FiatPro FR",
           "page": "Parcours",
           "http_status": 200,
           "elapsed_http": 0.94,
@@ -651,18 +613,18 @@
         }
       }
     },
-    "Lancia FR": {
+    "Jeep FR": {
       "Homepage": {
         "ok": true,
-        "reason": "OK (200) en 1.02s",
-        "elapsed": 1.02,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://reprise.lancia.fr/",
+        "reason": "OK (200) en 0.87s",
+        "elapsed": 0.87,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://reprise.jeep.fr",
         "details": {
-          "brand": "Lancia FR",
+          "brand": "Jeep FR",
           "page": "Homepage",
           "http_status": 200,
-          "elapsed_http": 1.02,
+          "elapsed_http": 0.87,
           "ip": [
             "135.125.7.226",
             0.001,
@@ -672,15 +634,53 @@
       },
       "Parcours": {
         "ok": true,
-        "reason": "OK (200) en 0.93s",
-        "elapsed": 0.93,
-        "checked_at": "21/06/2026 02:20:48",
+        "reason": "OK (200) en 1.04s",
+        "elapsed": 1.04,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://reprise.jeep.fr/page-modele",
+        "details": {
+          "brand": "Jeep FR",
+          "page": "Parcours",
+          "http_status": 200,
+          "elapsed_http": 1.04,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      }
+    },
+    "Lancia FR": {
+      "Homepage": {
+        "ok": true,
+        "reason": "OK (200) en 0.88s",
+        "elapsed": 0.88,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://reprise.lancia.fr/",
+        "details": {
+          "brand": "Lancia FR",
+          "page": "Homepage",
+          "http_status": 200,
+          "elapsed_http": 0.88,
+          "ip": [
+            "135.125.7.226",
+            0.002,
+            null
+          ]
+        }
+      },
+      "Parcours": {
+        "ok": true,
+        "reason": "OK (200) en 0.96s",
+        "elapsed": 0.96,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://reprise.lancia.fr/page-modele",
         "details": {
           "brand": "Lancia FR",
           "page": "Parcours",
           "http_status": 200,
-          "elapsed_http": 0.93,
+          "elapsed_http": 0.96,
           "ip": [
             "135.125.7.226",
             0.001,
@@ -692,15 +692,15 @@
     "Peugeot FR": {
       "Homepage": {
         "ok": true,
-        "reason": "OK (200) en 0.96s",
-        "elapsed": 0.96,
-        "checked_at": "21/06/2026 02:20:48",
+        "reason": "OK (200) en 0.87s",
+        "elapsed": 0.87,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://www.reprise.peugeot.fr",
         "details": {
           "brand": "Peugeot FR",
           "page": "Homepage",
           "http_status": 200,
-          "elapsed_http": 0.96,
+          "elapsed_http": 0.87,
           "ip": [
             "135.125.7.226",
             0.001,
@@ -712,7 +712,7 @@
         "ok": true,
         "reason": "OK (200) en 0.98s",
         "elapsed": 0.98,
-        "checked_at": "21/06/2026 02:20:48",
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://www.reprise.peugeot.fr/page-modele",
         "details": {
           "brand": "Peugeot FR",
@@ -729,48 +729,48 @@
       "Immat": {
         "ok": true,
         "reason": "Décodage immat OK → details-vehicule",
-        "elapsed": 17.17,
-        "checked_at": "21/06/2026 02:20:48",
+        "elapsed": 17.78,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://www.reprise.peugeot.fr",
         "details": {
           "brand": "Peugeot FR",
           "page": "Immat",
           "error_type": null,
           "final_url": "https://www.reprise.peugeot.fr/details-vehicule",
-          "elapsed_http": 17.17
+          "elapsed_http": 17.78
         }
       }
     },
     "Abarth ES": {
       "Homepage": {
         "ok": true,
-        "reason": "OK (200) en 0.86s",
-        "elapsed": 0.86,
-        "checked_at": "21/06/2026 02:20:48",
+        "reason": "OK (200) en 0.81s",
+        "elapsed": 0.81,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://tasacion.abarth.es",
         "details": {
           "brand": "Abarth ES",
           "page": "Homepage",
           "http_status": 200,
-          "elapsed_http": 0.86,
+          "elapsed_http": 0.81,
           "ip": [
             "135.125.7.226",
-            0.003,
+            0.001,
             null
           ]
         }
       },
       "Parcours": {
         "ok": true,
-        "reason": "OK (200) en 0.96s",
-        "elapsed": 0.96,
-        "checked_at": "21/06/2026 02:20:48",
+        "reason": "OK (200) en 0.93s",
+        "elapsed": 0.93,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://tasacion.abarth.es/pagina-modelo",
         "details": {
           "brand": "Abarth ES",
           "page": "Parcours",
           "http_status": 200,
-          "elapsed_http": 0.96,
+          "elapsed_http": 0.93,
           "ip": [
             "135.125.7.226",
             0.001,
@@ -784,7 +784,7 @@
         "ok": true,
         "reason": "OK (200) en 0.87s",
         "elapsed": 0.87,
-        "checked_at": "21/06/2026 02:20:48",
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://tasacion.alfaromeo.es",
         "details": {
           "brand": "AlfaRomeo ES",
@@ -800,15 +800,15 @@
       },
       "Parcours": {
         "ok": true,
-        "reason": "OK (200) en 0.94s",
-        "elapsed": 0.94,
-        "checked_at": "21/06/2026 02:20:48",
+        "reason": "OK (200) en 1.0s",
+        "elapsed": 1.0,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://tasacion.alfaromeo.es/pagina-modelo",
         "details": {
           "brand": "AlfaRomeo ES",
           "page": "Parcours",
           "http_status": 200,
-          "elapsed_http": 0.94,
+          "elapsed_http": 1.0,
           "ip": [
             "135.125.7.226",
             0.001,
@@ -820,15 +820,15 @@
     "Citroen ES": {
       "Homepage": {
         "ok": true,
-        "reason": "OK (200) en 0.86s",
-        "elapsed": 0.86,
-        "checked_at": "21/06/2026 02:20:48",
+        "reason": "OK (200) en 0.8s",
+        "elapsed": 0.8,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://www.tasacion.citroen.es",
         "details": {
           "brand": "Citroen ES",
           "page": "Homepage",
           "http_status": 200,
-          "elapsed_http": 0.86,
+          "elapsed_http": 0.8,
           "ip": [
             "135.125.7.226",
             0.001,
@@ -838,15 +838,15 @@
       },
       "Parcours": {
         "ok": true,
-        "reason": "OK (200) en 0.92s",
-        "elapsed": 0.92,
-        "checked_at": "21/06/2026 02:20:48",
+        "reason": "OK (200) en 0.95s",
+        "elapsed": 0.95,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://www.tasacion.citroen.es/pagina-modelo",
         "details": {
           "brand": "Citroen ES",
           "page": "Parcours",
           "http_status": 200,
-          "elapsed_http": 0.92,
+          "elapsed_http": 0.95,
           "ip": [
             "135.125.7.226",
             0.001,
@@ -858,15 +858,15 @@
     "DS ES": {
       "Homepage": {
         "ok": true,
-        "reason": "OK (200) en 0.9s",
-        "elapsed": 0.9,
-        "checked_at": "21/06/2026 02:20:48",
+        "reason": "OK (200) en 0.8s",
+        "elapsed": 0.8,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://www.tasacion.dsautomobiles.es",
         "details": {
           "brand": "DS ES",
           "page": "Homepage",
           "http_status": 200,
-          "elapsed_http": 0.9,
+          "elapsed_http": 0.8,
           "ip": [
             "135.125.7.226",
             0.001,
@@ -878,7 +878,7 @@
         "ok": true,
         "reason": "OK (200) en 0.97s",
         "elapsed": 0.97,
-        "checked_at": "21/06/2026 02:20:48",
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://www.tasacion.dsautomobiles.es/pagina-modelo",
         "details": {
           "brand": "DS ES",
@@ -896,15 +896,15 @@
     "Fiat ES": {
       "Homepage": {
         "ok": true,
-        "reason": "OK (200) en 0.88s",
-        "elapsed": 0.88,
-        "checked_at": "21/06/2026 02:20:48",
+        "reason": "OK (200) en 0.86s",
+        "elapsed": 0.86,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://tasacion.fiat.es",
         "details": {
           "brand": "Fiat ES",
           "page": "Homepage",
           "http_status": 200,
-          "elapsed_http": 0.88,
+          "elapsed_http": 0.86,
           "ip": [
             "135.125.7.226",
             0.001,
@@ -914,18 +914,18 @@
       },
       "Parcours": {
         "ok": true,
-        "reason": "OK (200) en 0.97s",
-        "elapsed": 0.97,
-        "checked_at": "21/06/2026 02:20:48",
+        "reason": "OK (200) en 1.01s",
+        "elapsed": 1.01,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://tasacion.fiat.es/pagina-modelo",
         "details": {
           "brand": "Fiat ES",
           "page": "Parcours",
           "http_status": 200,
-          "elapsed_http": 0.97,
+          "elapsed_http": 1.01,
           "ip": [
             "135.125.7.226",
-            0.001,
+            0.003,
             null
           ]
         }
@@ -934,50 +934,12 @@
     "FiatPro ES": {
       "Homepage": {
         "ok": true,
-        "reason": "OK (200) en 0.91s",
-        "elapsed": 0.91,
-        "checked_at": "21/06/2026 02:20:48",
+        "reason": "OK (200) en 0.87s",
+        "elapsed": 0.87,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://tasacion.fiatprofessional.es",
         "details": {
           "brand": "FiatPro ES",
-          "page": "Homepage",
-          "http_status": 200,
-          "elapsed_http": 0.91,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      },
-      "Parcours": {
-        "ok": true,
-        "reason": "OK (200) en 0.93s",
-        "elapsed": 0.93,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://tasacion.fiatprofessional.es/pagina-modelo",
-        "details": {
-          "brand": "FiatPro ES",
-          "page": "Parcours",
-          "http_status": 200,
-          "elapsed_http": 0.93,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      }
-    },
-    "Jeep ES": {
-      "Homepage": {
-        "ok": true,
-        "reason": "OK (200) en 0.87s",
-        "elapsed": 0.87,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://tasacion.jeep.es",
-        "details": {
-          "brand": "Jeep ES",
           "page": "Homepage",
           "http_status": 200,
           "elapsed_http": 0.87,
@@ -990,15 +952,53 @@
       },
       "Parcours": {
         "ok": true,
-        "reason": "OK (200) en 0.95s",
-        "elapsed": 0.95,
-        "checked_at": "21/06/2026 02:20:48",
+        "reason": "OK (200) en 0.98s",
+        "elapsed": 0.98,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://tasacion.fiatprofessional.es/pagina-modelo",
+        "details": {
+          "brand": "FiatPro ES",
+          "page": "Parcours",
+          "http_status": 200,
+          "elapsed_http": 0.98,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      }
+    },
+    "Jeep ES": {
+      "Homepage": {
+        "ok": true,
+        "reason": "OK (200) en 0.96s",
+        "elapsed": 0.96,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://tasacion.jeep.es",
+        "details": {
+          "brand": "Jeep ES",
+          "page": "Homepage",
+          "http_status": 200,
+          "elapsed_http": 0.96,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      },
+      "Parcours": {
+        "ok": true,
+        "reason": "OK (200) en 0.97s",
+        "elapsed": 0.97,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://tasacion.jeep.es/pagina-modelo",
         "details": {
           "brand": "Jeep ES",
           "page": "Parcours",
           "http_status": 200,
-          "elapsed_http": 0.95,
+          "elapsed_http": 0.97,
           "ip": [
             "135.125.7.226",
             0.001,
@@ -1010,15 +1010,15 @@
     "Opel ES": {
       "Homepage": {
         "ok": true,
-        "reason": "OK (200) en 0.91s",
-        "elapsed": 0.91,
-        "checked_at": "21/06/2026 02:20:48",
+        "reason": "OK (200) en 0.82s",
+        "elapsed": 0.82,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://www.tasacion.opel.es",
         "details": {
           "brand": "Opel ES",
           "page": "Homepage",
           "http_status": 200,
-          "elapsed_http": 0.91,
+          "elapsed_http": 0.82,
           "ip": [
             "135.125.7.226",
             0.001,
@@ -1028,15 +1028,15 @@
       },
       "Parcours": {
         "ok": true,
-        "reason": "OK (200) en 0.94s",
-        "elapsed": 0.94,
-        "checked_at": "21/06/2026 02:20:48",
+        "reason": "OK (200) en 0.93s",
+        "elapsed": 0.93,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://www.tasacion.opel.es/pagina-modelo",
         "details": {
           "brand": "Opel ES",
           "page": "Parcours",
           "http_status": 200,
-          "elapsed_http": 0.94,
+          "elapsed_http": 0.93,
           "ip": [
             "135.125.7.226",
             0.001,
@@ -1048,12 +1048,50 @@
     "Peugeot ES": {
       "Homepage": {
         "ok": true,
-        "reason": "OK (200) en 0.89s",
-        "elapsed": 0.89,
-        "checked_at": "21/06/2026 02:20:48",
+        "reason": "OK (200) en 0.82s",
+        "elapsed": 0.82,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://tasacion.peugeot.es",
         "details": {
           "brand": "Peugeot ES",
+          "page": "Homepage",
+          "http_status": 200,
+          "elapsed_http": 0.82,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      },
+      "Parcours": {
+        "ok": true,
+        "reason": "OK (200) en 0.95s",
+        "elapsed": 0.95,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://tasacion.peugeot.es/pagina-modelo",
+        "details": {
+          "brand": "Peugeot ES",
+          "page": "Parcours",
+          "http_status": 200,
+          "elapsed_http": 0.95,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      }
+    },
+    "Abarth IT": {
+      "Homepage": {
+        "ok": true,
+        "reason": "OK (200) en 0.89s",
+        "elapsed": 0.89,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://www.valutazioneusato.abarth.it",
+        "details": {
+          "brand": "Abarth IT",
           "page": "Homepage",
           "http_status": 200,
           "elapsed_http": 0.89,
@@ -1068,10 +1106,10 @@
         "ok": true,
         "reason": "OK (200) en 0.96s",
         "elapsed": 0.96,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://tasacion.peugeot.es/pagina-modelo",
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://www.valutazioneusato.abarth.it/modello",
         "details": {
-          "brand": "Peugeot ES",
+          "brand": "Abarth IT",
           "page": "Parcours",
           "http_status": 200,
           "elapsed_http": 0.96,
@@ -1083,211 +1121,21 @@
         }
       }
     },
-    "Abarth IT": {
-      "Homepage": {
-        "ok": true,
-        "reason": "OK (200) en 0.84s",
-        "elapsed": 0.84,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://www.valutazioneusato.abarth.it",
-        "details": {
-          "brand": "Abarth IT",
-          "page": "Homepage",
-          "http_status": 200,
-          "elapsed_http": 0.84,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      },
-      "Parcours": {
-        "ok": true,
-        "reason": "OK (200) en 0.94s",
-        "elapsed": 0.94,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://www.valutazioneusato.abarth.it/modello",
-        "details": {
-          "brand": "Abarth IT",
-          "page": "Parcours",
-          "http_status": 200,
-          "elapsed_http": 0.94,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      }
-    },
     "AlfaRomeo IT": {
       "Homepage": {
         "ok": true,
-        "reason": "OK (200) en 1.08s",
-        "elapsed": 1.08,
-        "checked_at": "21/06/2026 02:20:48",
+        "reason": "OK (200) en 0.86s",
+        "elapsed": 0.86,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://www.valutazioneusato.alfaromeo.it",
         "details": {
           "brand": "AlfaRomeo IT",
           "page": "Homepage",
           "http_status": 200,
-          "elapsed_http": 1.08,
+          "elapsed_http": 0.86,
           "ip": [
             "135.125.7.226",
             0.001,
-            null
-          ]
-        }
-      },
-      "Parcours": {
-        "ok": true,
-        "reason": "OK (200) en 1.12s",
-        "elapsed": 1.12,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://www.valutazioneusato.alfaromeo.it/modello",
-        "details": {
-          "brand": "AlfaRomeo IT",
-          "page": "Parcours",
-          "http_status": 200,
-          "elapsed_http": 1.12,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      }
-    },
-    "Citroen IT": {
-      "Homepage": {
-        "ok": true,
-        "reason": "OK (200) en 0.89s",
-        "elapsed": 0.89,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://www.valutazioneusato.citroen.it",
-        "details": {
-          "brand": "Citroen IT",
-          "page": "Homepage",
-          "http_status": 200,
-          "elapsed_http": 0.89,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      },
-      "Parcours": {
-        "ok": true,
-        "reason": "OK (200) en 0.94s",
-        "elapsed": 0.94,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://www.valutazioneusato.citroen.it/modello",
-        "details": {
-          "brand": "Citroen IT",
-          "page": "Parcours",
-          "http_status": 200,
-          "elapsed_http": 0.94,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      }
-    },
-    "DS IT": {
-      "Homepage": {
-        "ok": true,
-        "reason": "OK (200) en 1.04s",
-        "elapsed": 1.04,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://valutazioneusato.dsautomobiles.it",
-        "details": {
-          "brand": "DS IT",
-          "page": "Homepage",
-          "http_status": 200,
-          "elapsed_http": 1.04,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      },
-      "Parcours": {
-        "ok": true,
-        "reason": "OK (200) en 0.94s",
-        "elapsed": 0.94,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://valutazioneusato.dsautomobiles.it/modello",
-        "details": {
-          "brand": "DS IT",
-          "page": "Parcours",
-          "http_status": 200,
-          "elapsed_http": 0.94,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      }
-    },
-    "Fiat IT": {
-      "Homepage": {
-        "ok": true,
-        "reason": "OK (200) en 0.94s",
-        "elapsed": 0.94,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://www.valutazioneusato.fiat.it",
-        "details": {
-          "brand": "Fiat IT",
-          "page": "Homepage",
-          "http_status": 200,
-          "elapsed_http": 0.94,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      },
-      "Parcours": {
-        "ok": true,
-        "reason": "OK (200) en 0.91s",
-        "elapsed": 0.91,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://www.valutazioneusato.fiat.it/modello",
-        "details": {
-          "brand": "Fiat IT",
-          "page": "Parcours",
-          "http_status": 200,
-          "elapsed_http": 0.91,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      }
-    },
-    "Jeep IT": {
-      "Homepage": {
-        "ok": true,
-        "reason": "OK (200) en 0.93s",
-        "elapsed": 0.93,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://www.valutazioneusato.jeep-official.it",
-        "details": {
-          "brand": "Jeep IT",
-          "page": "Homepage",
-          "http_status": 200,
-          "elapsed_http": 0.93,
-          "ip": [
-            "135.125.7.226",
-            0.002,
             null
           ]
         }
@@ -1296,10 +1144,10 @@
         "ok": true,
         "reason": "OK (200) en 0.97s",
         "elapsed": 0.97,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://www.valutazioneusato.jeep-official.it/modello",
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://www.valutazioneusato.alfaromeo.it/modello",
         "details": {
-          "brand": "Jeep IT",
+          "brand": "AlfaRomeo IT",
           "page": "Parcours",
           "http_status": 200,
           "elapsed_http": 0.97,
@@ -1311,15 +1159,91 @@
         }
       }
     },
-    "Lancia IT": {
+    "Citroen IT": {
+      "Homepage": {
+        "ok": true,
+        "reason": "OK (200) en 0.79s",
+        "elapsed": 0.79,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://www.valutazioneusato.citroen.it",
+        "details": {
+          "brand": "Citroen IT",
+          "page": "Homepage",
+          "http_status": 200,
+          "elapsed_http": 0.79,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      },
+      "Parcours": {
+        "ok": true,
+        "reason": "OK (200) en 0.95s",
+        "elapsed": 0.95,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://www.valutazioneusato.citroen.it/modello",
+        "details": {
+          "brand": "Citroen IT",
+          "page": "Parcours",
+          "http_status": 200,
+          "elapsed_http": 0.95,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      }
+    },
+    "DS IT": {
+      "Homepage": {
+        "ok": true,
+        "reason": "OK (200) en 0.77s",
+        "elapsed": 0.77,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://valutazioneusato.dsautomobiles.it",
+        "details": {
+          "brand": "DS IT",
+          "page": "Homepage",
+          "http_status": 200,
+          "elapsed_http": 0.77,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      },
+      "Parcours": {
+        "ok": true,
+        "reason": "OK (200) en 0.96s",
+        "elapsed": 0.96,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://valutazioneusato.dsautomobiles.it/modello",
+        "details": {
+          "brand": "DS IT",
+          "page": "Parcours",
+          "http_status": 200,
+          "elapsed_http": 0.96,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      }
+    },
+    "Fiat IT": {
       "Homepage": {
         "ok": true,
         "reason": "OK (200) en 0.91s",
         "elapsed": 0.91,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://valutazioneusato.lancia.it",
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://www.valutazioneusato.fiat.it",
         "details": {
-          "brand": "Lancia IT",
+          "brand": "Fiat IT",
           "page": "Homepage",
           "http_status": 200,
           "elapsed_http": 0.91,
@@ -1332,9 +1256,85 @@
       },
       "Parcours": {
         "ok": true,
+        "reason": "OK (200) en 0.95s",
+        "elapsed": 0.95,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://www.valutazioneusato.fiat.it/modello",
+        "details": {
+          "brand": "Fiat IT",
+          "page": "Parcours",
+          "http_status": 200,
+          "elapsed_http": 0.95,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      }
+    },
+    "Jeep IT": {
+      "Homepage": {
+        "ok": true,
+        "reason": "OK (200) en 1.05s",
+        "elapsed": 1.05,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://www.valutazioneusato.jeep-official.it",
+        "details": {
+          "brand": "Jeep IT",
+          "page": "Homepage",
+          "http_status": 200,
+          "elapsed_http": 1.05,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      },
+      "Parcours": {
+        "ok": true,
+        "reason": "OK (200) en 0.98s",
+        "elapsed": 0.98,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://www.valutazioneusato.jeep-official.it/modello",
+        "details": {
+          "brand": "Jeep IT",
+          "page": "Parcours",
+          "http_status": 200,
+          "elapsed_http": 0.98,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      }
+    },
+    "Lancia IT": {
+      "Homepage": {
+        "ok": true,
+        "reason": "OK (200) en 0.88s",
+        "elapsed": 0.88,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://valutazioneusato.lancia.it",
+        "details": {
+          "brand": "Lancia IT",
+          "page": "Homepage",
+          "http_status": 200,
+          "elapsed_http": 0.88,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      },
+      "Parcours": {
+        "ok": true,
         "reason": "OK (200) en 0.94s",
         "elapsed": 0.94,
-        "checked_at": "21/06/2026 02:20:48",
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://valutazioneusato.lancia.it/modello",
         "details": {
           "brand": "Lancia IT",
@@ -1352,15 +1352,15 @@
     "Opel IT": {
       "Homepage": {
         "ok": true,
-        "reason": "OK (200) en 0.9s",
-        "elapsed": 0.9,
-        "checked_at": "21/06/2026 02:20:48",
+        "reason": "OK (200) en 0.84s",
+        "elapsed": 0.84,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://www.valutazioneusato.opel.it",
         "details": {
           "brand": "Opel IT",
           "page": "Homepage",
           "http_status": 200,
-          "elapsed_http": 0.9,
+          "elapsed_http": 0.84,
           "ip": [
             "135.125.7.226",
             0.001,
@@ -1370,15 +1370,15 @@
       },
       "Parcours": {
         "ok": true,
-        "reason": "OK (200) en 1.0s",
-        "elapsed": 1.0,
-        "checked_at": "21/06/2026 02:20:48",
+        "reason": "OK (200) en 0.96s",
+        "elapsed": 0.96,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://www.valutazioneusato.opel.it/modello",
         "details": {
           "brand": "Opel IT",
           "page": "Parcours",
           "http_status": 200,
-          "elapsed_http": 1.0,
+          "elapsed_http": 0.96,
           "ip": [
             "135.125.7.226",
             0.001,
@@ -1390,15 +1390,15 @@
     "Peugeot IT": {
       "Homepage": {
         "ok": true,
-        "reason": "OK (200) en 1.03s",
-        "elapsed": 1.03,
-        "checked_at": "21/06/2026 02:20:48",
+        "reason": "OK (200) en 0.96s",
+        "elapsed": 0.96,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://www.valutiamoiltuousato.peugeot.it",
         "details": {
           "brand": "Peugeot IT",
           "page": "Homepage",
           "http_status": 200,
-          "elapsed_http": 1.03,
+          "elapsed_http": 0.96,
           "ip": [
             "135.125.7.226",
             0.001,
@@ -1408,15 +1408,15 @@
       },
       "Parcours": {
         "ok": true,
-        "reason": "OK (200) en 0.96s",
-        "elapsed": 0.96,
-        "checked_at": "21/06/2026 02:20:48",
+        "reason": "OK (200) en 1.07s",
+        "elapsed": 1.07,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://www.valutiamoiltuousato.peugeot.it/modello",
         "details": {
           "brand": "Peugeot IT",
           "page": "Parcours",
           "http_status": 200,
-          "elapsed_http": 0.96,
+          "elapsed_http": 1.07,
           "ip": [
             "135.125.7.226",
             0.001,
@@ -1428,15 +1428,15 @@
     "AlfaRomeo DE": {
       "Homepage": {
         "ok": true,
-        "reason": "OK (200) en 0.9s",
-        "elapsed": 0.9,
-        "checked_at": "21/06/2026 02:20:48",
+        "reason": "OK (200) en 0.82s",
+        "elapsed": 0.82,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://autoankauf.alfaromeo.de",
         "details": {
           "brand": "AlfaRomeo DE",
           "page": "Homepage",
           "http_status": 200,
-          "elapsed_http": 0.9,
+          "elapsed_http": 0.82,
           "ip": [
             "135.125.7.226",
             0.001,
@@ -1446,15 +1446,15 @@
       },
       "Parcours": {
         "ok": true,
-        "reason": "OK (200) en 0.93s",
-        "elapsed": 0.93,
-        "checked_at": "21/06/2026 02:20:48",
+        "reason": "OK (200) en 0.94s",
+        "elapsed": 0.94,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://autoankauf.alfaromeo.de/modell",
         "details": {
           "brand": "AlfaRomeo DE",
           "page": "Parcours",
           "http_status": 200,
-          "elapsed_http": 0.93,
+          "elapsed_http": 0.94,
           "ip": [
             "135.125.7.226",
             0.001,
@@ -1466,696 +1466,12 @@
     "Citroen DE": {
       "Homepage": {
         "ok": true,
-        "reason": "OK (200) en 0.92s",
-        "elapsed": 0.92,
-        "checked_at": "21/06/2026 02:20:48",
+        "reason": "OK (200) en 0.94s",
+        "elapsed": 0.94,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://www.citroen-kauft-ihr-auto.de",
         "details": {
           "brand": "Citroen DE",
-          "page": "Homepage",
-          "http_status": 200,
-          "elapsed_http": 0.92,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      },
-      "Parcours": {
-        "ok": true,
-        "reason": "OK (200) en 0.99s",
-        "elapsed": 0.99,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://www.citroen-kauft-ihr-auto.de/modell",
-        "details": {
-          "brand": "Citroen DE",
-          "page": "Parcours",
-          "http_status": 200,
-          "elapsed_http": 0.99,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      }
-    },
-    "DS DE": {
-      "Homepage": {
-        "ok": true,
-        "reason": "OK (200) en 0.88s",
-        "elapsed": 0.88,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://www.autoankauf.dsautomobiles.de",
-        "details": {
-          "brand": "DS DE",
-          "page": "Homepage",
-          "http_status": 200,
-          "elapsed_http": 0.88,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      },
-      "Parcours": {
-        "ok": true,
-        "reason": "OK (200) en 0.9s",
-        "elapsed": 0.9,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://www.autoankauf.dsautomobiles.de/modell",
-        "details": {
-          "brand": "DS DE",
-          "page": "Parcours",
-          "http_status": 200,
-          "elapsed_http": 0.9,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      }
-    },
-    "Opel DE": {
-      "Homepage": {
-        "ok": true,
-        "reason": "OK (200) en 1.14s",
-        "elapsed": 1.14,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://www.opel-kauft-dein-auto.de",
-        "details": {
-          "brand": "Opel DE",
-          "page": "Homepage",
-          "http_status": 200,
-          "elapsed_http": 1.14,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      },
-      "Parcours": {
-        "ok": true,
-        "reason": "OK (200) en 1.04s",
-        "elapsed": 1.04,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://www.opel-kauft-dein-auto.de/modell",
-        "details": {
-          "brand": "Opel DE",
-          "page": "Parcours",
-          "http_status": 200,
-          "elapsed_http": 1.04,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      }
-    },
-    "Peugeot DE": {
-      "Homepage": {
-        "ok": true,
-        "reason": "OK (200) en 0.88s",
-        "elapsed": 0.88,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://www.autoankauf.peugeot.de",
-        "details": {
-          "brand": "Peugeot DE",
-          "page": "Homepage",
-          "http_status": 200,
-          "elapsed_http": 0.88,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      },
-      "Parcours": {
-        "ok": true,
-        "reason": "OK (200) en 0.96s",
-        "elapsed": 0.96,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://www.autoankauf.peugeot.de/modell",
-        "details": {
-          "brand": "Peugeot DE",
-          "page": "Parcours",
-          "http_status": 200,
-          "elapsed_http": 0.96,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      }
-    },
-    "Spoticar DE": {
-      "Homepage": {
-        "ok": true,
-        "reason": "OK (200) en 1.03s",
-        "elapsed": 1.03,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://autoankauf.spoticar.de",
-        "details": {
-          "brand": "Spoticar DE",
-          "page": "Homepage",
-          "http_status": 200,
-          "elapsed_http": 1.03,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      },
-      "Parcours": {
-        "ok": true,
-        "reason": "OK (200) en 0.89s",
-        "elapsed": 0.89,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://autoankauf.spoticar.de/modell",
-        "details": {
-          "brand": "Spoticar DE",
-          "page": "Parcours",
-          "http_status": 200,
-          "elapsed_http": 0.89,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      }
-    },
-    "Citroen AT": {
-      "Homepage": {
-        "ok": true,
-        "reason": "OK (200) en 1.23s",
-        "elapsed": 1.23,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://www.citroen-kauft-ihr-auto.at",
-        "details": {
-          "brand": "Citroen AT",
-          "page": "Homepage",
-          "http_status": 200,
-          "elapsed_http": 1.23,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      },
-      "Parcours": {
-        "ok": true,
-        "reason": "OK (200) en 1.01s",
-        "elapsed": 1.01,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://www.citroen-kauft-ihr-auto.at/Modell-Seite",
-        "details": {
-          "brand": "Citroen AT",
-          "page": "Parcours",
-          "http_status": 200,
-          "elapsed_http": 1.01,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      }
-    },
-    "Opel AT": {
-      "Homepage": {
-        "ok": true,
-        "reason": "OK (200) en 1.07s",
-        "elapsed": 1.07,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://opel-kauft-dein-auto.opel.at",
-        "details": {
-          "brand": "Opel AT",
-          "page": "Homepage",
-          "http_status": 200,
-          "elapsed_http": 1.07,
-          "ip": [
-            "135.125.7.226",
-            0.005,
-            null
-          ]
-        }
-      },
-      "Parcours": {
-        "ok": true,
-        "reason": "OK (200) en 0.99s",
-        "elapsed": 0.99,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://opel-kauft-dein-auto.opel.at/Seite-Modell",
-        "details": {
-          "brand": "Opel AT",
-          "page": "Parcours",
-          "http_status": 200,
-          "elapsed_http": 0.99,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      }
-    },
-    "Peugeot AT": {
-      "Homepage": {
-        "ok": true,
-        "reason": "OK (200) en 1.13s",
-        "elapsed": 1.13,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://www.wir-kaufen-ihr-auto.peugeot.at",
-        "details": {
-          "brand": "Peugeot AT",
-          "page": "Homepage",
-          "http_status": 200,
-          "elapsed_http": 1.13,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      },
-      "Parcours": {
-        "ok": true,
-        "reason": "OK (200) en 1.16s",
-        "elapsed": 1.16,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://www.wir-kaufen-ihr-auto.peugeot.at/Modell-Seite",
-        "details": {
-          "brand": "Peugeot AT",
-          "page": "Parcours",
-          "http_status": 200,
-          "elapsed_http": 1.16,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      }
-    },
-    "Abarth BE": {
-      "Homepage": {
-        "ok": true,
-        "reason": "OK (200) en 0.91s",
-        "elapsed": 0.91,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://reprise.abarthbelgium.be",
-        "details": {
-          "brand": "Abarth BE",
-          "page": "Homepage",
-          "http_status": 200,
-          "elapsed_http": 0.91,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      },
-      "Parcours": {
-        "ok": true,
-        "reason": "OK (200) en 0.99s",
-        "elapsed": 0.99,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://reprise.abarthbelgium.be/page-modele",
-        "details": {
-          "brand": "Abarth BE",
-          "page": "Parcours",
-          "http_status": 200,
-          "elapsed_http": 0.99,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      }
-    },
-    "AlfaRomeo BE": {
-      "Homepage": {
-        "ok": true,
-        "reason": "OK (200) en 1.01s",
-        "elapsed": 1.01,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://reprise.alfaromeo.be",
-        "details": {
-          "brand": "AlfaRomeo BE",
-          "page": "Homepage",
-          "http_status": 200,
-          "elapsed_http": 1.01,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      },
-      "Parcours": {
-        "ok": true,
-        "reason": "OK (200) en 1.08s",
-        "elapsed": 1.08,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://reprise.alfaromeo.be/page-modele",
-        "details": {
-          "brand": "AlfaRomeo BE",
-          "page": "Parcours",
-          "http_status": 200,
-          "elapsed_http": 1.08,
-          "ip": [
-            "135.125.7.226",
-            0.002,
-            null
-          ]
-        }
-      }
-    },
-    "Citroen BE": {
-      "Homepage": {
-        "ok": true,
-        "reason": "OK (200) en 1.02s",
-        "elapsed": 1.02,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://reprise.citroen.be",
-        "details": {
-          "brand": "Citroen BE",
-          "page": "Homepage",
-          "http_status": 200,
-          "elapsed_http": 1.02,
-          "ip": [
-            "135.125.7.226",
-            0.002,
-            null
-          ]
-        }
-      },
-      "Parcours": {
-        "ok": true,
-        "reason": "OK (200) en 1.04s",
-        "elapsed": 1.04,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://reprise.citroen.be/page-modele",
-        "details": {
-          "brand": "Citroen BE",
-          "page": "Parcours",
-          "http_status": 200,
-          "elapsed_http": 1.04,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      }
-    },
-    "DS BE": {
-      "Homepage": {
-        "ok": true,
-        "reason": "OK (200) en 1.04s",
-        "elapsed": 1.04,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://reprise.dsautomobiles.be",
-        "details": {
-          "brand": "DS BE",
-          "page": "Homepage",
-          "http_status": 200,
-          "elapsed_http": 1.04,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      },
-      "Parcours": {
-        "ok": true,
-        "reason": "OK (200) en 0.93s",
-        "elapsed": 0.93,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://reprise.dsautomobiles.be/page-modele",
-        "details": {
-          "brand": "DS BE",
-          "page": "Parcours",
-          "http_status": 200,
-          "elapsed_http": 0.93,
-          "ip": [
-            "135.125.7.226",
-            0.002,
-            null
-          ]
-        }
-      }
-    },
-    "Fiat BE": {
-      "Homepage": {
-        "ok": true,
-        "reason": "OK (200) en 0.83s",
-        "elapsed": 0.83,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://reprise.fiat.be",
-        "details": {
-          "brand": "Fiat BE",
-          "page": "Homepage",
-          "http_status": 200,
-          "elapsed_http": 0.83,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      },
-      "Parcours": {
-        "ok": true,
-        "reason": "OK (200) en 0.83s",
-        "elapsed": 0.83,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://reprise.fiat.be/page-modele",
-        "details": {
-          "brand": "Fiat BE",
-          "page": "Parcours",
-          "http_status": 200,
-          "elapsed_http": 0.83,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      }
-    },
-    "FiatPro BE": {
-      "Homepage": {
-        "ok": true,
-        "reason": "OK (200) en 0.92s",
-        "elapsed": 0.92,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://reprisebelgique.fiatprofessional.com",
-        "details": {
-          "brand": "FiatPro BE",
-          "page": "Homepage",
-          "http_status": 200,
-          "elapsed_http": 0.92,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      },
-      "Parcours": {
-        "ok": true,
-        "reason": "OK (200) en 1.0s",
-        "elapsed": 1.0,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://reprisebelgique.fiatprofessional.com/page-modele",
-        "details": {
-          "brand": "FiatPro BE",
-          "page": "Parcours",
-          "http_status": 200,
-          "elapsed_http": 1.0,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      }
-    },
-    "Jeep BE": {
-      "Homepage": {
-        "ok": true,
-        "reason": "OK (200) en 0.87s",
-        "elapsed": 0.87,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://reprise.jeep.be",
-        "details": {
-          "brand": "Jeep BE",
-          "page": "Homepage",
-          "http_status": 200,
-          "elapsed_http": 0.87,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      },
-      "Parcours": {
-        "ok": true,
-        "reason": "OK (200) en 0.93s",
-        "elapsed": 0.93,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://reprise.jeep.be/page-modele",
-        "details": {
-          "brand": "Jeep BE",
-          "page": "Parcours",
-          "http_status": 200,
-          "elapsed_http": 0.93,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      }
-    },
-    "Lancia BE": {
-      "Homepage": {
-        "ok": true,
-        "reason": "OK (200) en 0.93s",
-        "elapsed": 0.93,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://reprise.lancia.be",
-        "details": {
-          "brand": "Lancia BE",
-          "page": "Homepage",
-          "http_status": 200,
-          "elapsed_http": 0.93,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      },
-      "Parcours": {
-        "ok": true,
-        "reason": "OK (200) en 0.95s",
-        "elapsed": 0.95,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://reprise.lancia.be/page-modele",
-        "details": {
-          "brand": "Lancia BE",
-          "page": "Parcours",
-          "http_status": 200,
-          "elapsed_http": 0.95,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      }
-    },
-    "Opel BE": {
-      "Homepage": {
-        "ok": true,
-        "reason": "OK (200) en 0.92s",
-        "elapsed": 0.92,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://www.reprise.opel.be",
-        "details": {
-          "brand": "Opel BE",
-          "page": "Homepage",
-          "http_status": 200,
-          "elapsed_http": 0.92,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      },
-      "Parcours": {
-        "ok": true,
-        "reason": "OK (200) en 0.95s",
-        "elapsed": 0.95,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://www.reprise.opel.be/page-modele",
-        "details": {
-          "brand": "Opel BE",
-          "page": "Parcours",
-          "http_status": 200,
-          "elapsed_http": 0.95,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      }
-    },
-    "Peugeot BE": {
-      "Homepage": {
-        "ok": true,
-        "reason": "OK (200) en 0.81s",
-        "elapsed": 0.81,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://reprise.peugeot.be",
-        "details": {
-          "brand": "Peugeot BE",
-          "page": "Homepage",
-          "http_status": 200,
-          "elapsed_http": 0.81,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      },
-      "Parcours": {
-        "ok": true,
-        "reason": "OK (200) en 0.96s",
-        "elapsed": 0.96,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://reprise.peugeot.be/page-modele",
-        "details": {
-          "brand": "Peugeot BE",
-          "page": "Parcours",
-          "http_status": 200,
-          "elapsed_http": 0.96,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      }
-    },
-    "Leapmotor BE": {
-      "Homepage": {
-        "ok": true,
-        "reason": "OK (200) en 0.94s",
-        "elapsed": 0.94,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://reprise.leapmotor-international.be",
-        "details": {
-          "brand": "Leapmotor BE",
           "page": "Homepage",
           "http_status": 200,
           "elapsed_http": 0.94,
@@ -2168,15 +1484,699 @@
       },
       "Parcours": {
         "ok": true,
+        "reason": "OK (200) en 1.0s",
+        "elapsed": 1.0,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://www.citroen-kauft-ihr-auto.de/modell",
+        "details": {
+          "brand": "Citroen DE",
+          "page": "Parcours",
+          "http_status": 200,
+          "elapsed_http": 1.0,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      }
+    },
+    "DS DE": {
+      "Homepage": {
+        "ok": true,
         "reason": "OK (200) en 0.97s",
         "elapsed": 0.97,
-        "checked_at": "21/06/2026 02:20:48",
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://www.autoankauf.dsautomobiles.de",
+        "details": {
+          "brand": "DS DE",
+          "page": "Homepage",
+          "http_status": 200,
+          "elapsed_http": 0.97,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      },
+      "Parcours": {
+        "ok": true,
+        "reason": "OK (200) en 0.94s",
+        "elapsed": 0.94,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://www.autoankauf.dsautomobiles.de/modell",
+        "details": {
+          "brand": "DS DE",
+          "page": "Parcours",
+          "http_status": 200,
+          "elapsed_http": 0.94,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      }
+    },
+    "Opel DE": {
+      "Homepage": {
+        "ok": true,
+        "reason": "OK (200) en 0.76s",
+        "elapsed": 0.76,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://www.opel-kauft-dein-auto.de",
+        "details": {
+          "brand": "Opel DE",
+          "page": "Homepage",
+          "http_status": 200,
+          "elapsed_http": 0.76,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      },
+      "Parcours": {
+        "ok": true,
+        "reason": "OK (200) en 0.91s",
+        "elapsed": 0.91,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://www.opel-kauft-dein-auto.de/modell",
+        "details": {
+          "brand": "Opel DE",
+          "page": "Parcours",
+          "http_status": 200,
+          "elapsed_http": 0.91,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      }
+    },
+    "Peugeot DE": {
+      "Homepage": {
+        "ok": true,
+        "reason": "OK (200) en 0.8s",
+        "elapsed": 0.8,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://www.autoankauf.peugeot.de",
+        "details": {
+          "brand": "Peugeot DE",
+          "page": "Homepage",
+          "http_status": 200,
+          "elapsed_http": 0.8,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      },
+      "Parcours": {
+        "ok": true,
+        "reason": "OK (200) en 0.93s",
+        "elapsed": 0.93,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://www.autoankauf.peugeot.de/modell",
+        "details": {
+          "brand": "Peugeot DE",
+          "page": "Parcours",
+          "http_status": 200,
+          "elapsed_http": 0.93,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      }
+    },
+    "Spoticar DE": {
+      "Homepage": {
+        "ok": true,
+        "reason": "OK (200) en 1.0s",
+        "elapsed": 1.0,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://autoankauf.spoticar.de",
+        "details": {
+          "brand": "Spoticar DE",
+          "page": "Homepage",
+          "http_status": 200,
+          "elapsed_http": 1.0,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      },
+      "Parcours": {
+        "ok": true,
+        "reason": "OK (200) en 0.91s",
+        "elapsed": 0.91,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://autoankauf.spoticar.de/modell",
+        "details": {
+          "brand": "Spoticar DE",
+          "page": "Parcours",
+          "http_status": 200,
+          "elapsed_http": 0.91,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      }
+    },
+    "Citroen AT": {
+      "Homepage": {
+        "ok": true,
+        "reason": "OK (200) en 0.85s",
+        "elapsed": 0.85,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://www.citroen-kauft-ihr-auto.at",
+        "details": {
+          "brand": "Citroen AT",
+          "page": "Homepage",
+          "http_status": 200,
+          "elapsed_http": 0.85,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      },
+      "Parcours": {
+        "ok": true,
+        "reason": "OK (200) en 0.96s",
+        "elapsed": 0.96,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://www.citroen-kauft-ihr-auto.at/Modell-Seite",
+        "details": {
+          "brand": "Citroen AT",
+          "page": "Parcours",
+          "http_status": 200,
+          "elapsed_http": 0.96,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      }
+    },
+    "Opel AT": {
+      "Homepage": {
+        "ok": true,
+        "reason": "OK (200) en 0.94s",
+        "elapsed": 0.94,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://opel-kauft-dein-auto.opel.at",
+        "details": {
+          "brand": "Opel AT",
+          "page": "Homepage",
+          "http_status": 200,
+          "elapsed_http": 0.94,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      },
+      "Parcours": {
+        "ok": true,
+        "reason": "OK (200) en 1.05s",
+        "elapsed": 1.05,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://opel-kauft-dein-auto.opel.at/Seite-Modell",
+        "details": {
+          "brand": "Opel AT",
+          "page": "Parcours",
+          "http_status": 200,
+          "elapsed_http": 1.05,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      }
+    },
+    "Peugeot AT": {
+      "Homepage": {
+        "ok": true,
+        "reason": "OK (200) en 0.88s",
+        "elapsed": 0.88,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://www.wir-kaufen-ihr-auto.peugeot.at",
+        "details": {
+          "brand": "Peugeot AT",
+          "page": "Homepage",
+          "http_status": 200,
+          "elapsed_http": 0.88,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      },
+      "Parcours": {
+        "ok": true,
+        "reason": "OK (200) en 1.01s",
+        "elapsed": 1.01,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://www.wir-kaufen-ihr-auto.peugeot.at/Modell-Seite",
+        "details": {
+          "brand": "Peugeot AT",
+          "page": "Parcours",
+          "http_status": 200,
+          "elapsed_http": 1.01,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      }
+    },
+    "Abarth BE": {
+      "Homepage": {
+        "ok": true,
+        "reason": "OK (200) en 0.92s",
+        "elapsed": 0.92,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://reprise.abarthbelgium.be",
+        "details": {
+          "brand": "Abarth BE",
+          "page": "Homepage",
+          "http_status": 200,
+          "elapsed_http": 0.92,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      },
+      "Parcours": {
+        "ok": true,
+        "reason": "OK (200) en 0.95s",
+        "elapsed": 0.95,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://reprise.abarthbelgium.be/page-modele",
+        "details": {
+          "brand": "Abarth BE",
+          "page": "Parcours",
+          "http_status": 200,
+          "elapsed_http": 0.95,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      }
+    },
+    "AlfaRomeo BE": {
+      "Homepage": {
+        "ok": true,
+        "reason": "OK (200) en 0.87s",
+        "elapsed": 0.87,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://reprise.alfaromeo.be",
+        "details": {
+          "brand": "AlfaRomeo BE",
+          "page": "Homepage",
+          "http_status": 200,
+          "elapsed_http": 0.87,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      },
+      "Parcours": {
+        "ok": true,
+        "reason": "OK (200) en 0.95s",
+        "elapsed": 0.95,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://reprise.alfaromeo.be/page-modele",
+        "details": {
+          "brand": "AlfaRomeo BE",
+          "page": "Parcours",
+          "http_status": 200,
+          "elapsed_http": 0.95,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      }
+    },
+    "Citroen BE": {
+      "Homepage": {
+        "ok": true,
+        "reason": "OK (200) en 0.91s",
+        "elapsed": 0.91,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://reprise.citroen.be",
+        "details": {
+          "brand": "Citroen BE",
+          "page": "Homepage",
+          "http_status": 200,
+          "elapsed_http": 0.91,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      },
+      "Parcours": {
+        "ok": true,
+        "reason": "OK (200) en 0.98s",
+        "elapsed": 0.98,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://reprise.citroen.be/page-modele",
+        "details": {
+          "brand": "Citroen BE",
+          "page": "Parcours",
+          "http_status": 200,
+          "elapsed_http": 0.98,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      }
+    },
+    "DS BE": {
+      "Homepage": {
+        "ok": true,
+        "reason": "OK (200) en 0.86s",
+        "elapsed": 0.86,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://reprise.dsautomobiles.be",
+        "details": {
+          "brand": "DS BE",
+          "page": "Homepage",
+          "http_status": 200,
+          "elapsed_http": 0.86,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      },
+      "Parcours": {
+        "ok": true,
+        "reason": "OK (200) en 0.99s",
+        "elapsed": 0.99,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://reprise.dsautomobiles.be/page-modele",
+        "details": {
+          "brand": "DS BE",
+          "page": "Parcours",
+          "http_status": 200,
+          "elapsed_http": 0.99,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      }
+    },
+    "Fiat BE": {
+      "Homepage": {
+        "ok": true,
+        "reason": "OK (200) en 0.85s",
+        "elapsed": 0.85,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://reprise.fiat.be",
+        "details": {
+          "brand": "Fiat BE",
+          "page": "Homepage",
+          "http_status": 200,
+          "elapsed_http": 0.85,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      },
+      "Parcours": {
+        "ok": true,
+        "reason": "OK (200) en 0.99s",
+        "elapsed": 0.99,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://reprise.fiat.be/page-modele",
+        "details": {
+          "brand": "Fiat BE",
+          "page": "Parcours",
+          "http_status": 200,
+          "elapsed_http": 0.99,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      }
+    },
+    "FiatPro BE": {
+      "Homepage": {
+        "ok": true,
+        "reason": "OK (200) en 0.89s",
+        "elapsed": 0.89,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://reprisebelgique.fiatprofessional.com",
+        "details": {
+          "brand": "FiatPro BE",
+          "page": "Homepage",
+          "http_status": 200,
+          "elapsed_http": 0.89,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      },
+      "Parcours": {
+        "ok": true,
+        "reason": "OK (200) en 1.06s",
+        "elapsed": 1.06,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://reprisebelgique.fiatprofessional.com/page-modele",
+        "details": {
+          "brand": "FiatPro BE",
+          "page": "Parcours",
+          "http_status": 200,
+          "elapsed_http": 1.06,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      }
+    },
+    "Jeep BE": {
+      "Homepage": {
+        "ok": true,
+        "reason": "OK (200) en 0.88s",
+        "elapsed": 0.88,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://reprise.jeep.be",
+        "details": {
+          "brand": "Jeep BE",
+          "page": "Homepage",
+          "http_status": 200,
+          "elapsed_http": 0.88,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      },
+      "Parcours": {
+        "ok": true,
+        "reason": "OK (200) en 0.94s",
+        "elapsed": 0.94,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://reprise.jeep.be/page-modele",
+        "details": {
+          "brand": "Jeep BE",
+          "page": "Parcours",
+          "http_status": 200,
+          "elapsed_http": 0.94,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      }
+    },
+    "Lancia BE": {
+      "Homepage": {
+        "ok": true,
+        "reason": "OK (200) en 0.8s",
+        "elapsed": 0.8,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://reprise.lancia.be",
+        "details": {
+          "brand": "Lancia BE",
+          "page": "Homepage",
+          "http_status": 200,
+          "elapsed_http": 0.8,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      },
+      "Parcours": {
+        "ok": true,
+        "reason": "OK (200) en 1.02s",
+        "elapsed": 1.02,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://reprise.lancia.be/page-modele",
+        "details": {
+          "brand": "Lancia BE",
+          "page": "Parcours",
+          "http_status": 200,
+          "elapsed_http": 1.02,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      }
+    },
+    "Opel BE": {
+      "Homepage": {
+        "ok": true,
+        "reason": "OK (200) en 0.87s",
+        "elapsed": 0.87,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://www.reprise.opel.be",
+        "details": {
+          "brand": "Opel BE",
+          "page": "Homepage",
+          "http_status": 200,
+          "elapsed_http": 0.87,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      },
+      "Parcours": {
+        "ok": true,
+        "reason": "OK (200) en 1.01s",
+        "elapsed": 1.01,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://www.reprise.opel.be/page-modele",
+        "details": {
+          "brand": "Opel BE",
+          "page": "Parcours",
+          "http_status": 200,
+          "elapsed_http": 1.01,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      }
+    },
+    "Peugeot BE": {
+      "Homepage": {
+        "ok": true,
+        "reason": "OK (200) en 0.74s",
+        "elapsed": 0.74,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://reprise.peugeot.be",
+        "details": {
+          "brand": "Peugeot BE",
+          "page": "Homepage",
+          "http_status": 200,
+          "elapsed_http": 0.74,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      },
+      "Parcours": {
+        "ok": true,
+        "reason": "OK (200) en 0.89s",
+        "elapsed": 0.89,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://reprise.peugeot.be/page-modele",
+        "details": {
+          "brand": "Peugeot BE",
+          "page": "Parcours",
+          "http_status": 200,
+          "elapsed_http": 0.89,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      }
+    },
+    "Leapmotor BE": {
+      "Homepage": {
+        "ok": true,
+        "reason": "OK (200) en 0.87s",
+        "elapsed": 0.87,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://reprise.leapmotor-international.be",
+        "details": {
+          "brand": "Leapmotor BE",
+          "page": "Homepage",
+          "http_status": 200,
+          "elapsed_http": 0.87,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      },
+      "Parcours": {
+        "ok": true,
+        "reason": "OK (200) en 0.92s",
+        "elapsed": 0.92,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://reprise.leapmotor-international.be/page-modele",
         "details": {
           "brand": "Leapmotor BE",
           "page": "Parcours",
           "http_status": 200,
-          "elapsed_http": 0.97,
+          "elapsed_http": 0.92,
           "ip": [
             "135.125.7.226",
             0.001,
@@ -2190,7 +2190,7 @@
         "ok": true,
         "reason": "OK (200) en 0.86s",
         "elapsed": 0.86,
-        "checked_at": "21/06/2026 02:20:48",
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://overname.abarthbelgium.be",
         "details": {
           "brand": "Abarth BE-NL",
@@ -2206,15 +2206,15 @@
       },
       "Parcours": {
         "ok": true,
-        "reason": "OK (200) en 0.93s",
-        "elapsed": 0.93,
-        "checked_at": "21/06/2026 02:20:48",
+        "reason": "OK (200) en 0.95s",
+        "elapsed": 0.95,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://overname.abarthbelgium.be/pagina-model",
         "details": {
           "brand": "Abarth BE-NL",
           "page": "Parcours",
           "http_status": 200,
-          "elapsed_http": 0.93,
+          "elapsed_http": 0.95,
           "ip": [
             "135.125.7.226",
             0.001,
@@ -2228,7 +2228,7 @@
         "ok": true,
         "reason": "OK (200) en 0.85s",
         "elapsed": 0.85,
-        "checked_at": "21/06/2026 02:20:48",
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://overname.alfaromeo.be",
         "details": {
           "brand": "AlfaRomeo BE-NL",
@@ -2244,15 +2244,15 @@
       },
       "Parcours": {
         "ok": true,
-        "reason": "OK (200) en 0.91s",
-        "elapsed": 0.91,
-        "checked_at": "21/06/2026 02:20:48",
+        "reason": "OK (200) en 0.92s",
+        "elapsed": 0.92,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://overname.alfaromeo.be/pagina-model",
         "details": {
           "brand": "AlfaRomeo BE-NL",
           "page": "Parcours",
           "http_status": 200,
-          "elapsed_http": 0.91,
+          "elapsed_http": 0.92,
           "ip": [
             "135.125.7.226",
             0.001,
@@ -2264,15 +2264,15 @@
     "Citroen BE-NL": {
       "Homepage": {
         "ok": true,
-        "reason": "OK (200) en 0.85s",
-        "elapsed": 0.85,
-        "checked_at": "21/06/2026 02:20:48",
+        "reason": "OK (200) en 0.86s",
+        "elapsed": 0.86,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://overname.citroen.be",
         "details": {
           "brand": "Citroen BE-NL",
           "page": "Homepage",
           "http_status": 200,
-          "elapsed_http": 0.85,
+          "elapsed_http": 0.86,
           "ip": [
             "135.125.7.226",
             0.001,
@@ -2282,15 +2282,15 @@
       },
       "Parcours": {
         "ok": true,
-        "reason": "OK (200) en 0.96s",
-        "elapsed": 0.96,
-        "checked_at": "21/06/2026 02:20:48",
+        "reason": "OK (200) en 1.04s",
+        "elapsed": 1.04,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://overname.citroen.be/pagina-model",
         "details": {
           "brand": "Citroen BE-NL",
           "page": "Parcours",
           "http_status": 200,
-          "elapsed_http": 0.96,
+          "elapsed_http": 1.04,
           "ip": [
             "135.125.7.226",
             0.001,
@@ -2302,15 +2302,15 @@
     "DS BE-NL": {
       "Homepage": {
         "ok": true,
-        "reason": "OK (200) en 0.85s",
-        "elapsed": 0.85,
-        "checked_at": "21/06/2026 02:20:48",
+        "reason": "OK (200) en 0.8s",
+        "elapsed": 0.8,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://overname.dsautomobiles.be",
         "details": {
           "brand": "DS BE-NL",
           "page": "Homepage",
           "http_status": 200,
-          "elapsed_http": 0.85,
+          "elapsed_http": 0.8,
           "ip": [
             "135.125.7.226",
             0.001,
@@ -2322,7 +2322,7 @@
         "ok": true,
         "reason": "OK (200) en 0.92s",
         "elapsed": 0.92,
-        "checked_at": "21/06/2026 02:20:48",
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://overname.dsautomobiles.be/pagina-model",
         "details": {
           "brand": "DS BE-NL",
@@ -2342,10 +2342,48 @@
         "ok": true,
         "reason": "OK (200) en 0.88s",
         "elapsed": 0.88,
-        "checked_at": "21/06/2026 02:20:48",
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://overname.fiat.be",
         "details": {
           "brand": "Fiat BE-NL",
+          "page": "Homepage",
+          "http_status": 200,
+          "elapsed_http": 0.88,
+          "ip": [
+            "135.125.7.226",
+            0.003,
+            null
+          ]
+        }
+      },
+      "Parcours": {
+        "ok": true,
+        "reason": "OK (200) en 0.98s",
+        "elapsed": 0.98,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://overname.fiat.be/pagina-model",
+        "details": {
+          "brand": "Fiat BE-NL",
+          "page": "Parcours",
+          "http_status": 200,
+          "elapsed_http": 0.98,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      }
+    },
+    "FiatPro BE-NL": {
+      "Homepage": {
+        "ok": true,
+        "reason": "OK (200) en 0.88s",
+        "elapsed": 0.88,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://overname.fiatprofessional.com",
+        "details": {
+          "brand": "FiatPro BE-NL",
           "page": "Homepage",
           "http_status": 200,
           "elapsed_http": 0.88,
@@ -2358,53 +2396,15 @@
       },
       "Parcours": {
         "ok": true,
-        "reason": "OK (200) en 0.93s",
-        "elapsed": 0.93,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://overname.fiat.be/pagina-model",
-        "details": {
-          "brand": "Fiat BE-NL",
-          "page": "Parcours",
-          "http_status": 200,
-          "elapsed_http": 0.93,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      }
-    },
-    "FiatPro BE-NL": {
-      "Homepage": {
-        "ok": true,
-        "reason": "OK (200) en 0.9s",
-        "elapsed": 0.9,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://overname.fiatprofessional.com",
-        "details": {
-          "brand": "FiatPro BE-NL",
-          "page": "Homepage",
-          "http_status": 200,
-          "elapsed_http": 0.9,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      },
-      "Parcours": {
-        "ok": true,
-        "reason": "OK (200) en 0.96s",
-        "elapsed": 0.96,
-        "checked_at": "21/06/2026 02:20:48",
+        "reason": "OK (200) en 0.98s",
+        "elapsed": 0.98,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://overname.fiatprofessional.com/pagina-model",
         "details": {
           "brand": "FiatPro BE-NL",
           "page": "Parcours",
           "http_status": 200,
-          "elapsed_http": 0.96,
+          "elapsed_http": 0.98,
           "ip": [
             "135.125.7.226",
             0.001,
@@ -2416,15 +2416,15 @@
     "Jeep BE-NL": {
       "Homepage": {
         "ok": true,
-        "reason": "OK (200) en 0.9s",
-        "elapsed": 0.9,
-        "checked_at": "21/06/2026 02:20:48",
+        "reason": "OK (200) en 0.83s",
+        "elapsed": 0.83,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://overname.jeep.be",
         "details": {
           "brand": "Jeep BE-NL",
           "page": "Homepage",
           "http_status": 200,
-          "elapsed_http": 0.9,
+          "elapsed_http": 0.83,
           "ip": [
             "135.125.7.226",
             0.001,
@@ -2434,15 +2434,15 @@
       },
       "Parcours": {
         "ok": true,
-        "reason": "OK (200) en 0.92s",
-        "elapsed": 0.92,
-        "checked_at": "21/06/2026 02:20:48",
+        "reason": "OK (200) en 0.95s",
+        "elapsed": 0.95,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://overname.jeep.be/pagina-model",
         "details": {
           "brand": "Jeep BE-NL",
           "page": "Parcours",
           "http_status": 200,
-          "elapsed_http": 0.92,
+          "elapsed_http": 0.95,
           "ip": [
             "135.125.7.226",
             0.001,
@@ -2454,15 +2454,15 @@
     "Lancia BE-NL": {
       "Homepage": {
         "ok": true,
-        "reason": "OK (200) en 0.87s",
-        "elapsed": 0.87,
-        "checked_at": "21/06/2026 02:20:48",
+        "reason": "OK (200) en 0.76s",
+        "elapsed": 0.76,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://overname.lancia.be",
         "details": {
           "brand": "Lancia BE-NL",
           "page": "Homepage",
           "http_status": 200,
-          "elapsed_http": 0.87,
+          "elapsed_http": 0.76,
           "ip": [
             "135.125.7.226",
             0.001,
@@ -2474,7 +2474,7 @@
         "ok": true,
         "reason": "OK (200) en 0.92s",
         "elapsed": 0.92,
-        "checked_at": "21/06/2026 02:20:48",
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://overname.lancia.be/pagina-model",
         "details": {
           "brand": "Lancia BE-NL",
@@ -2492,12 +2492,50 @@
     "Opel BE-NL": {
       "Homepage": {
         "ok": true,
-        "reason": "OK (200) en 0.91s",
-        "elapsed": 0.91,
-        "checked_at": "21/06/2026 02:20:48",
+        "reason": "OK (200) en 0.78s",
+        "elapsed": 0.78,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://www.overname.opel.be",
         "details": {
           "brand": "Opel BE-NL",
+          "page": "Homepage",
+          "http_status": 200,
+          "elapsed_http": 0.78,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      },
+      "Parcours": {
+        "ok": true,
+        "reason": "OK (200) en 0.95s",
+        "elapsed": 0.95,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://www.overname.opel.be/pagina-model",
+        "details": {
+          "brand": "Opel BE-NL",
+          "page": "Parcours",
+          "http_status": 200,
+          "elapsed_http": 0.95,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      }
+    },
+    "Peugeot BE-NL": {
+      "Homepage": {
+        "ok": true,
+        "reason": "OK (200) en 0.91s",
+        "elapsed": 0.91,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://overname.peugeot.be",
+        "details": {
+          "brand": "Peugeot BE-NL",
           "page": "Homepage",
           "http_status": 200,
           "elapsed_http": 0.91,
@@ -2510,12 +2548,50 @@
       },
       "Parcours": {
         "ok": true,
+        "reason": "OK (200) en 1.04s",
+        "elapsed": 1.04,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://overname.peugeot.be/pagina-model",
+        "details": {
+          "brand": "Peugeot BE-NL",
+          "page": "Parcours",
+          "http_status": 200,
+          "elapsed_http": 1.04,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      }
+    },
+    "Leapmotor BE-NL": {
+      "Homepage": {
+        "ok": true,
+        "reason": "OK (200) en 0.85s",
+        "elapsed": 0.85,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://overname.leapmotor-international.be",
+        "details": {
+          "brand": "Leapmotor BE-NL",
+          "page": "Homepage",
+          "http_status": 200,
+          "elapsed_http": 0.85,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      },
+      "Parcours": {
+        "ok": true,
         "reason": "OK (200) en 0.94s",
         "elapsed": 0.94,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://www.overname.opel.be/pagina-model",
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://overname.leapmotor-international.be/pagina-model",
         "details": {
-          "brand": "Opel BE-NL",
+          "brand": "Leapmotor BE-NL",
           "page": "Parcours",
           "http_status": 200,
           "elapsed_http": 0.94,
@@ -2527,15 +2603,15 @@
         }
       }
     },
-    "Peugeot BE-NL": {
+    "AlfaRomeo PL": {
       "Homepage": {
         "ok": true,
         "reason": "OK (200) en 0.88s",
         "elapsed": 0.88,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://overname.peugeot.be",
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://odkup.alfaromeo.pl",
         "details": {
-          "brand": "Peugeot BE-NL",
+          "brand": "AlfaRomeo PL",
           "page": "Homepage",
           "http_status": 200,
           "elapsed_http": 0.88,
@@ -2548,91 +2624,15 @@
       },
       "Parcours": {
         "ok": true,
-        "reason": "OK (200) en 1.0s",
-        "elapsed": 1.0,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://overname.peugeot.be/pagina-model",
-        "details": {
-          "brand": "Peugeot BE-NL",
-          "page": "Parcours",
-          "http_status": 200,
-          "elapsed_http": 1.0,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      }
-    },
-    "Leapmotor BE-NL": {
-      "Homepage": {
-        "ok": true,
-        "reason": "OK (200) en 0.87s",
-        "elapsed": 0.87,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://overname.leapmotor-international.be",
-        "details": {
-          "brand": "Leapmotor BE-NL",
-          "page": "Homepage",
-          "http_status": 200,
-          "elapsed_http": 0.87,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      },
-      "Parcours": {
-        "ok": true,
-        "reason": "OK (200) en 0.91s",
-        "elapsed": 0.91,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://overname.leapmotor-international.be/pagina-model",
-        "details": {
-          "brand": "Leapmotor BE-NL",
-          "page": "Parcours",
-          "http_status": 200,
-          "elapsed_http": 0.91,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      }
-    },
-    "AlfaRomeo PL": {
-      "Homepage": {
-        "ok": true,
-        "reason": "OK (200) en 0.89s",
-        "elapsed": 0.89,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://odkup.alfaromeo.pl",
-        "details": {
-          "brand": "AlfaRomeo PL",
-          "page": "Homepage",
-          "http_status": 200,
-          "elapsed_http": 0.89,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      },
-      "Parcours": {
-        "ok": true,
-        "reason": "OK (200) en 0.98s",
-        "elapsed": 0.98,
-        "checked_at": "21/06/2026 02:20:48",
+        "reason": "OK (200) en 1.02s",
+        "elapsed": 1.02,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://odkup.alfaromeo.pl/strona-model",
         "details": {
           "brand": "AlfaRomeo PL",
           "page": "Parcours",
           "http_status": 200,
-          "elapsed_http": 0.98,
+          "elapsed_http": 1.02,
           "ip": [
             "135.125.7.226",
             0.001,
@@ -2644,15 +2644,15 @@
     "Citroen PL": {
       "Homepage": {
         "ok": true,
-        "reason": "OK (200) en 0.87s",
-        "elapsed": 0.87,
-        "checked_at": "21/06/2026 02:20:48",
+        "reason": "OK (200) en 0.84s",
+        "elapsed": 0.84,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://odkup.citroen.pl",
         "details": {
           "brand": "Citroen PL",
           "page": "Homepage",
           "http_status": 200,
-          "elapsed_http": 0.87,
+          "elapsed_http": 0.84,
           "ip": [
             "135.125.7.226",
             0.001,
@@ -2664,7 +2664,7 @@
         "ok": true,
         "reason": "OK (200) en 0.93s",
         "elapsed": 0.93,
-        "checked_at": "21/06/2026 02:20:48",
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://odkup.citroen.pl/strona-model",
         "details": {
           "brand": "Citroen PL",
@@ -2682,15 +2682,15 @@
     "Fiat PL": {
       "Homepage": {
         "ok": true,
-        "reason": "OK (200) en 0.9s",
-        "elapsed": 0.9,
-        "checked_at": "21/06/2026 02:20:48",
+        "reason": "OK (200) en 0.81s",
+        "elapsed": 0.81,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://odkup.fiat.pl",
         "details": {
           "brand": "Fiat PL",
           "page": "Homepage",
           "http_status": 200,
-          "elapsed_http": 0.9,
+          "elapsed_http": 0.81,
           "ip": [
             "135.125.7.226",
             0.001,
@@ -2700,15 +2700,15 @@
       },
       "Parcours": {
         "ok": true,
-        "reason": "OK (200) en 0.94s",
-        "elapsed": 0.94,
-        "checked_at": "21/06/2026 02:20:48",
+        "reason": "OK (200) en 0.9s",
+        "elapsed": 0.9,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://odkup.fiat.pl/strona-model",
         "details": {
           "brand": "Fiat PL",
           "page": "Parcours",
           "http_status": 200,
-          "elapsed_http": 0.94,
+          "elapsed_http": 0.9,
           "ip": [
             "135.125.7.226",
             0.001,
@@ -2720,12 +2720,164 @@
     "Jeep PL": {
       "Homepage": {
         "ok": true,
-        "reason": "OK (200) en 0.9s",
-        "elapsed": 0.9,
-        "checked_at": "21/06/2026 02:20:48",
+        "reason": "OK (200) en 0.85s",
+        "elapsed": 0.85,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://odkup.jeep.pl",
         "details": {
           "brand": "Jeep PL",
+          "page": "Homepage",
+          "http_status": 200,
+          "elapsed_http": 0.85,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      },
+      "Parcours": {
+        "ok": true,
+        "reason": "OK (200) en 1.0s",
+        "elapsed": 1.0,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://odkup.jeep.pl/strona-model",
+        "details": {
+          "brand": "Jeep PL",
+          "page": "Parcours",
+          "http_status": 200,
+          "elapsed_http": 1.0,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      }
+    },
+    "Opel PL": {
+      "Homepage": {
+        "ok": true,
+        "reason": "OK (200) en 0.87s",
+        "elapsed": 0.87,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://www.odkup.opel.pl",
+        "details": {
+          "brand": "Opel PL",
+          "page": "Homepage",
+          "http_status": 200,
+          "elapsed_http": 0.87,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      },
+      "Parcours": {
+        "ok": true,
+        "reason": "OK (200) en 0.97s",
+        "elapsed": 0.97,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://www.odkup.opel.pl/strona-model",
+        "details": {
+          "brand": "Opel PL",
+          "page": "Parcours",
+          "http_status": 200,
+          "elapsed_http": 0.97,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      }
+    },
+    "Peugeot PL": {
+      "Homepage": {
+        "ok": true,
+        "reason": "OK (200) en 0.85s",
+        "elapsed": 0.85,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://odkup.peugeot.pl",
+        "details": {
+          "brand": "Peugeot PL",
+          "page": "Homepage",
+          "http_status": 200,
+          "elapsed_http": 0.85,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      },
+      "Parcours": {
+        "ok": true,
+        "reason": "OK (200) en 0.94s",
+        "elapsed": 0.94,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://odkup.peugeot.pl/strona-model",
+        "details": {
+          "brand": "Peugeot PL",
+          "page": "Parcours",
+          "http_status": 200,
+          "elapsed_http": 0.94,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      }
+    },
+    "Abarth LU": {
+      "Homepage": {
+        "ok": true,
+        "reason": "OK (200) en 0.94s",
+        "elapsed": 0.94,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://reprise.abarth.lu",
+        "details": {
+          "brand": "Abarth LU",
+          "page": "Homepage",
+          "http_status": 200,
+          "elapsed_http": 0.94,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      },
+      "Parcours": {
+        "ok": true,
+        "reason": "OK (200) en 1.13s",
+        "elapsed": 1.13,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://reprise.abarth.lu/page-modele",
+        "details": {
+          "brand": "Abarth LU",
+          "page": "Parcours",
+          "http_status": 200,
+          "elapsed_http": 1.13,
+          "ip": [
+            "135.125.7.226",
+            0.001,
+            null
+          ]
+        }
+      }
+    },
+    "AlfaRomeo LU": {
+      "Homepage": {
+        "ok": true,
+        "reason": "OK (200) en 0.9s",
+        "elapsed": 0.9,
+        "checked_at": "21/06/2026 02:24:09",
+        "url": "https://reprise.alfaromeo.lu",
+        "details": {
+          "brand": "AlfaRomeo LU",
           "page": "Homepage",
           "http_status": 200,
           "elapsed_http": 0.9,
@@ -2738,167 +2890,15 @@
       },
       "Parcours": {
         "ok": true,
-        "reason": "OK (200) en 0.97s",
-        "elapsed": 0.97,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://odkup.jeep.pl/strona-model",
-        "details": {
-          "brand": "Jeep PL",
-          "page": "Parcours",
-          "http_status": 200,
-          "elapsed_http": 0.97,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      }
-    },
-    "Opel PL": {
-      "Homepage": {
-        "ok": true,
-        "reason": "OK (200) en 0.89s",
-        "elapsed": 0.89,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://www.odkup.opel.pl",
-        "details": {
-          "brand": "Opel PL",
-          "page": "Homepage",
-          "http_status": 200,
-          "elapsed_http": 0.89,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      },
-      "Parcours": {
-        "ok": true,
-        "reason": "OK (200) en 1.02s",
-        "elapsed": 1.02,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://www.odkup.opel.pl/strona-model",
-        "details": {
-          "brand": "Opel PL",
-          "page": "Parcours",
-          "http_status": 200,
-          "elapsed_http": 1.02,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      }
-    },
-    "Peugeot PL": {
-      "Homepage": {
-        "ok": true,
-        "reason": "OK (200) en 0.93s",
-        "elapsed": 0.93,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://odkup.peugeot.pl",
-        "details": {
-          "brand": "Peugeot PL",
-          "page": "Homepage",
-          "http_status": 200,
-          "elapsed_http": 0.93,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      },
-      "Parcours": {
-        "ok": true,
-        "reason": "OK (200) en 1.05s",
-        "elapsed": 1.05,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://odkup.peugeot.pl/strona-model",
-        "details": {
-          "brand": "Peugeot PL",
-          "page": "Parcours",
-          "http_status": 200,
-          "elapsed_http": 1.05,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      }
-    },
-    "Abarth LU": {
-      "Homepage": {
-        "ok": true,
-        "reason": "OK (200) en 0.88s",
-        "elapsed": 0.88,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://reprise.abarth.lu",
-        "details": {
-          "brand": "Abarth LU",
-          "page": "Homepage",
-          "http_status": 200,
-          "elapsed_http": 0.88,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      },
-      "Parcours": {
-        "ok": true,
-        "reason": "OK (200) en 0.98s",
-        "elapsed": 0.98,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://reprise.abarth.lu/page-modele",
-        "details": {
-          "brand": "Abarth LU",
-          "page": "Parcours",
-          "http_status": 200,
-          "elapsed_http": 0.98,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      }
-    },
-    "AlfaRomeo LU": {
-      "Homepage": {
-        "ok": true,
-        "reason": "OK (200) en 0.89s",
-        "elapsed": 0.89,
-        "checked_at": "21/06/2026 02:20:48",
-        "url": "https://reprise.alfaromeo.lu",
-        "details": {
-          "brand": "AlfaRomeo LU",
-          "page": "Homepage",
-          "http_status": 200,
-          "elapsed_http": 0.89,
-          "ip": [
-            "135.125.7.226",
-            0.001,
-            null
-          ]
-        }
-      },
-      "Parcours": {
-        "ok": true,
-        "reason": "OK (200) en 0.94s",
-        "elapsed": 0.94,
-        "checked_at": "21/06/2026 02:20:48",
+        "reason": "OK (200) en 0.9s",
+        "elapsed": 0.9,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://reprise.alfaromeo.lu/page-modele",
         "details": {
           "brand": "AlfaRomeo LU",
           "page": "Parcours",
           "http_status": 200,
-          "elapsed_http": 0.94,
+          "elapsed_http": 0.9,
           "ip": [
             "135.125.7.226",
             0.001,
@@ -2912,7 +2912,7 @@
         "ok": true,
         "reason": "OK (200) en 0.96s",
         "elapsed": 0.96,
-        "checked_at": "21/06/2026 02:20:48",
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://reprise.citroen.lu",
         "details": {
           "brand": "Citroen LU",
@@ -2921,25 +2921,25 @@
           "elapsed_http": 0.96,
           "ip": [
             "135.125.7.226",
-            0.001,
+            0.002,
             null
           ]
         }
       },
       "Parcours": {
         "ok": true,
-        "reason": "OK (200) en 1.02s",
-        "elapsed": 1.02,
-        "checked_at": "21/06/2026 02:20:48",
+        "reason": "OK (200) en 0.92s",
+        "elapsed": 0.92,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://reprise.citroen.lu/page-modele",
         "details": {
           "brand": "Citroen LU",
           "page": "Parcours",
           "http_status": 200,
-          "elapsed_http": 1.02,
+          "elapsed_http": 0.92,
           "ip": [
             "135.125.7.226",
-            0.001,
+            0.006,
             null
           ]
         }
@@ -2948,33 +2948,33 @@
     "DS LU": {
       "Homepage": {
         "ok": true,
-        "reason": "OK (200) en 0.83s",
-        "elapsed": 0.83,
-        "checked_at": "21/06/2026 02:20:48",
+        "reason": "OK (200) en 0.84s",
+        "elapsed": 0.84,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://reprise.dsautomobiles.lu",
         "details": {
           "brand": "DS LU",
           "page": "Homepage",
           "http_status": 200,
-          "elapsed_http": 0.83,
+          "elapsed_http": 0.84,
           "ip": [
             "135.125.7.226",
-            0.001,
+            0.002,
             null
           ]
         }
       },
       "Parcours": {
         "ok": true,
-        "reason": "OK (200) en 0.9s",
-        "elapsed": 0.9,
-        "checked_at": "21/06/2026 02:20:48",
+        "reason": "OK (200) en 0.95s",
+        "elapsed": 0.95,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://reprise.dsautomobiles.lu/page-modele",
         "details": {
           "brand": "DS LU",
           "page": "Parcours",
           "http_status": 200,
-          "elapsed_http": 0.9,
+          "elapsed_http": 0.95,
           "ip": [
             "135.125.7.226",
             0.001,
@@ -2986,15 +2986,15 @@
     "Fiat LU": {
       "Homepage": {
         "ok": true,
-        "reason": "OK (200) en 0.9s",
-        "elapsed": 0.9,
-        "checked_at": "21/06/2026 02:20:48",
+        "reason": "OK (200) en 0.92s",
+        "elapsed": 0.92,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://reprise.fiat.lu",
         "details": {
           "brand": "Fiat LU",
           "page": "Homepage",
           "http_status": 200,
-          "elapsed_http": 0.9,
+          "elapsed_http": 0.92,
           "ip": [
             "135.125.7.226",
             0.001,
@@ -3004,15 +3004,15 @@
       },
       "Parcours": {
         "ok": true,
-        "reason": "OK (200) en 0.92s",
-        "elapsed": 0.92,
-        "checked_at": "21/06/2026 02:20:48",
+        "reason": "OK (200) en 1.0s",
+        "elapsed": 1.0,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://reprise.fiat.lu/page-modele",
         "details": {
           "brand": "Fiat LU",
           "page": "Parcours",
           "http_status": 200,
-          "elapsed_http": 0.92,
+          "elapsed_http": 1.0,
           "ip": [
             "135.125.7.226",
             0.001,
@@ -3024,15 +3024,15 @@
     "FiatPro LU": {
       "Homepage": {
         "ok": true,
-        "reason": "OK (200) en 0.84s",
-        "elapsed": 0.84,
-        "checked_at": "21/06/2026 02:20:48",
+        "reason": "OK (200) en 0.87s",
+        "elapsed": 0.87,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://repriseluxembourg.fiatprofessional.com",
         "details": {
           "brand": "FiatPro LU",
           "page": "Homepage",
           "http_status": 200,
-          "elapsed_http": 0.84,
+          "elapsed_http": 0.87,
           "ip": [
             "135.125.7.226",
             0.001,
@@ -3044,7 +3044,7 @@
         "ok": true,
         "reason": "OK (200) en 0.93s",
         "elapsed": 0.93,
-        "checked_at": "21/06/2026 02:20:48",
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://repriseluxembourg.fiatprofessional.com/page-modele",
         "details": {
           "brand": "FiatPro LU",
@@ -3062,15 +3062,15 @@
     "Jeep LU": {
       "Homepage": {
         "ok": true,
-        "reason": "OK (200) en 0.9s",
-        "elapsed": 0.9,
-        "checked_at": "21/06/2026 02:20:48",
+        "reason": "OK (200) en 0.89s",
+        "elapsed": 0.89,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://reprise.jeep.lu",
         "details": {
           "brand": "Jeep LU",
           "page": "Homepage",
           "http_status": 200,
-          "elapsed_http": 0.9,
+          "elapsed_http": 0.89,
           "ip": [
             "135.125.7.226",
             0.001,
@@ -3080,15 +3080,15 @@
       },
       "Parcours": {
         "ok": true,
-        "reason": "OK (200) en 0.95s",
-        "elapsed": 0.95,
-        "checked_at": "21/06/2026 02:20:48",
+        "reason": "OK (200) en 0.92s",
+        "elapsed": 0.92,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://reprise.jeep.lu/page-modele",
         "details": {
           "brand": "Jeep LU",
           "page": "Parcours",
           "http_status": 200,
-          "elapsed_http": 0.95,
+          "elapsed_http": 0.92,
           "ip": [
             "135.125.7.226",
             0.001,
@@ -3100,15 +3100,15 @@
     "Lancia LU": {
       "Homepage": {
         "ok": true,
-        "reason": "OK (200) en 0.88s",
-        "elapsed": 0.88,
-        "checked_at": "21/06/2026 02:20:48",
+        "reason": "OK (200) en 0.81s",
+        "elapsed": 0.81,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://reprise.lancia.lu",
         "details": {
           "brand": "Lancia LU",
           "page": "Homepage",
           "http_status": 200,
-          "elapsed_http": 0.88,
+          "elapsed_http": 0.81,
           "ip": [
             "135.125.7.226",
             0.001,
@@ -3118,15 +3118,15 @@
       },
       "Parcours": {
         "ok": true,
-        "reason": "OK (200) en 0.96s",
-        "elapsed": 0.96,
-        "checked_at": "21/06/2026 02:20:48",
+        "reason": "OK (200) en 0.94s",
+        "elapsed": 0.94,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://reprise.lancia.lu/page-modele",
         "details": {
           "brand": "Lancia LU",
           "page": "Parcours",
           "http_status": 200,
-          "elapsed_http": 0.96,
+          "elapsed_http": 0.94,
           "ip": [
             "135.125.7.226",
             0.001,
@@ -3138,15 +3138,15 @@
     "Opel LU": {
       "Homepage": {
         "ok": true,
-        "reason": "OK (200) en 0.93s",
-        "elapsed": 0.93,
-        "checked_at": "21/06/2026 02:20:48",
+        "reason": "OK (200) en 0.8s",
+        "elapsed": 0.8,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://www.reprise.opel.lu",
         "details": {
           "brand": "Opel LU",
           "page": "Homepage",
           "http_status": 200,
-          "elapsed_http": 0.93,
+          "elapsed_http": 0.8,
           "ip": [
             "135.125.7.226",
             0.001,
@@ -3156,15 +3156,15 @@
       },
       "Parcours": {
         "ok": true,
-        "reason": "OK (200) en 0.99s",
-        "elapsed": 0.99,
-        "checked_at": "21/06/2026 02:20:48",
+        "reason": "OK (200) en 1.08s",
+        "elapsed": 1.08,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://www.reprise.opel.lu/page-modele",
         "details": {
           "brand": "Opel LU",
           "page": "Parcours",
           "http_status": 200,
-          "elapsed_http": 0.99,
+          "elapsed_http": 1.08,
           "ip": [
             "135.125.7.226",
             0.001,
@@ -3176,15 +3176,15 @@
     "Peugeot LU": {
       "Homepage": {
         "ok": true,
-        "reason": "OK (200) en 0.94s",
-        "elapsed": 0.94,
-        "checked_at": "21/06/2026 02:20:48",
+        "reason": "OK (200) en 0.82s",
+        "elapsed": 0.82,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://reprise.peugeot.lu",
         "details": {
           "brand": "Peugeot LU",
           "page": "Homepage",
           "http_status": 200,
-          "elapsed_http": 0.94,
+          "elapsed_http": 0.82,
           "ip": [
             "135.125.7.226",
             0.001,
@@ -3194,15 +3194,15 @@
       },
       "Parcours": {
         "ok": true,
-        "reason": "OK (200) en 0.97s",
-        "elapsed": 0.97,
-        "checked_at": "21/06/2026 02:20:48",
+        "reason": "OK (200) en 0.99s",
+        "elapsed": 0.99,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://reprise.peugeot.lu/page-modele",
         "details": {
           "brand": "Peugeot LU",
           "page": "Parcours",
           "http_status": 200,
-          "elapsed_http": 0.97,
+          "elapsed_http": 0.99,
           "ip": [
             "135.125.7.226",
             0.001,
@@ -3216,7 +3216,7 @@
         "ok": true,
         "reason": "OK (200) en 1.0s",
         "elapsed": 1.0,
-        "checked_at": "21/06/2026 02:20:48",
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://reprise.leapmotor-international.lu",
         "details": {
           "brand": "Leapmotor LU",
@@ -3232,15 +3232,15 @@
       },
       "Parcours": {
         "ok": true,
-        "reason": "OK (200) en 0.99s",
-        "elapsed": 0.99,
-        "checked_at": "21/06/2026 02:20:48",
+        "reason": "OK (200) en 0.95s",
+        "elapsed": 0.95,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://reprise.leapmotor-international.lu/page-modele",
         "details": {
           "brand": "Leapmotor LU",
           "page": "Parcours",
           "http_status": 200,
-          "elapsed_http": 0.99,
+          "elapsed_http": 0.95,
           "ip": [
             "135.125.7.226",
             0.001,
@@ -3252,15 +3252,15 @@
     "DS UK": {
       "Homepage": {
         "ok": true,
-        "reason": "OK (200) en 0.87s",
-        "elapsed": 0.87,
-        "checked_at": "21/06/2026 02:20:48",
+        "reason": "OK (200) en 0.74s",
+        "elapsed": 0.74,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://www.tradein.dsautomobiles.co.uk",
         "details": {
           "brand": "DS UK",
           "page": "Homepage",
           "http_status": 200,
-          "elapsed_http": 0.87,
+          "elapsed_http": 0.74,
           "ip": [
             "135.125.7.226",
             0.001,
@@ -3272,7 +3272,7 @@
         "ok": true,
         "reason": "OK (200) en 0.9s",
         "elapsed": 0.9,
-        "checked_at": "21/06/2026 02:20:48",
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://www.tradein.dsautomobiles.co.uk/model",
         "details": {
           "brand": "DS UK",
@@ -3281,7 +3281,7 @@
           "elapsed_http": 0.9,
           "ip": [
             "135.125.7.226",
-            0.016,
+            0.001,
             null
           ]
         }
@@ -3290,18 +3290,18 @@
     "Ford FR": {
       "Formulaire": {
         "ok": true,
-        "reason": "OK (200) en 1.95s",
-        "elapsed": 1.95,
-        "checked_at": "21/06/2026 02:20:48",
+        "reason": "OK (200) en 2.02s",
+        "elapsed": 2.02,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://www.ford-reprise.fr/form",
         "details": {
           "brand": "Ford FR",
           "page": "Formulaire",
-          "dns_elapsed": 0.001,
+          "dns_elapsed": 0.002,
           "ip": "51.102.168.47",
           "http_status": 200,
-          "elapsed_http": 1.95,
-          "elapsed_total": 1.95,
+          "elapsed_http": 2.02,
+          "elapsed_total": 2.02,
           "redirect_count": 0,
           "final_url": "https://www.ford-reprise.fr/form",
           "headers": {
@@ -3315,18 +3315,18 @@
       },
       "Homepage": {
         "ok": true,
-        "reason": "OK (200) en 2.74s",
-        "elapsed": 2.98,
-        "checked_at": "21/06/2026 02:20:48",
+        "reason": "OK (200) en 2.94s",
+        "elapsed": 3.03,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://www.ford-reprise.fr/",
         "details": {
           "brand": "Ford FR",
           "page": "Homepage",
-          "dns_elapsed": 0.24,
+          "dns_elapsed": 0.093,
           "ip": "51.102.168.47",
           "http_status": 200,
-          "elapsed_http": 2.74,
-          "elapsed_total": 2.98,
+          "elapsed_http": 2.94,
+          "elapsed_total": 3.03,
           "redirect_count": 0,
           "final_url": "https://www.ford-reprise.fr/",
           "headers": {
@@ -3342,17 +3342,17 @@
     "Aramisauto": {
       "Homepage": {
         "ok": true,
-        "reason": "OK (200) en 0.16s",
-        "elapsed": 0.16,
-        "checked_at": "21/06/2026 02:20:48",
+        "reason": "OK (200) en 0.11s",
+        "elapsed": 0.11,
+        "checked_at": "21/06/2026 02:24:09",
         "url": "https://www.aramisauto.com/reprise/",
         "details": {
           "brand": "Aramisauto",
           "page": "Homepage",
           "http_status": 200,
-          "elapsed_http": 0.16,
+          "elapsed_http": 0.11,
           "ip": [
-            "104.16.129.241",
+            "104.16.128.241",
             0.002,
             null
           ]
@@ -3546,6 +3546,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 1.69
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 1.48
       }
     ],
     "Opel PT:Parcours": [
@@ -3732,6 +3736,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 1.66
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 1.49
       }
     ],
     "Abarth PT:Homepage": [
@@ -3918,6 +3926,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 1.66
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 1.51
       }
     ],
     "Abarth PT:Parcours": [
@@ -4104,6 +4116,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.93
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.96
       }
     ],
     "AlfaRomeo PT:Homepage": [
@@ -4290,6 +4306,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.9
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 1.4
       }
     ],
     "AlfaRomeo PT:Parcours": [
@@ -4476,6 +4496,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 1.05
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 1.56
       }
     ],
     "Citroen PT:Homepage": [
@@ -4662,6 +4686,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 1.21
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.91
       }
     ],
     "Citroen PT:Parcours": [
@@ -4848,6 +4876,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 1.35
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.98
       }
     ],
     "DS PT:Homepage": [
@@ -5034,6 +5066,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 1.02
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.97
       }
     ],
     "DS PT:Parcours": [
@@ -5220,6 +5256,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.92
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.94
       }
     ],
     "Fiat PT:Homepage": [
@@ -5406,6 +5446,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 1.03
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.91
       }
     ],
     "Fiat PT:Parcours": [
@@ -5592,6 +5636,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.95
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.93
       }
     ],
     "FiatPro PT:Homepage": [
@@ -5778,6 +5826,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.96
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.9
       }
     ],
     "FiatPro PT:Parcours": [
@@ -5964,6 +6016,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 1.02
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.96
       }
     ],
     "Jeep PT:Homepage": [
@@ -6150,6 +6206,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 1.01
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.89
       }
     ],
     "Jeep PT:Parcours": [
@@ -6336,6 +6396,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.94
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 1.08
       }
     ],
     "Peugeot PT:Homepage": [
@@ -6522,6 +6586,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.95
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.84
       }
     ],
     "Peugeot PT:Parcours": [
@@ -6708,6 +6776,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 1.04
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 1.01
       }
     ],
     "Opel FR:Homepage": [
@@ -6894,6 +6966,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.92
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 1.03
       }
     ],
     "Opel FR:Parcours": [
@@ -7080,6 +7156,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.97
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 1.03
       }
     ],
     "AlfaRomeo FR:Homepage": [
@@ -7266,6 +7346,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.88
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.87
       }
     ],
     "AlfaRomeo FR:Parcours": [
@@ -7452,6 +7536,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.91
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.94
       }
     ],
     "Citroen FR:Homepage": [
@@ -7638,6 +7726,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 1.23
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 1.11
       }
     ],
     "Citroen FR:Parcours": [
@@ -7824,6 +7916,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 1.19
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 1.14
       }
     ],
     "DS FR:Homepage": [
@@ -8010,6 +8106,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.87
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.79
       }
     ],
     "DS FR:Parcours": [
@@ -8196,6 +8296,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.95
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.98
       }
     ],
     "Fiat FR:Homepage": [
@@ -8382,6 +8486,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.97
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.89
       }
     ],
     "Fiat FR:Parcours": [
@@ -8567,6 +8675,10 @@
       },
       {
         "time": "21/06/2026 02:20:48",
+        "elapsed": 0.96
+      },
+      {
+        "time": "21/06/2026 02:24:09",
         "elapsed": 0.96
       }
     ],
@@ -8754,6 +8866,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.91
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.84
       }
     ],
     "FiatPro FR:Parcours": [
@@ -8940,6 +9056,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.99
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.94
       }
     ],
     "Jeep FR:Homepage": [
@@ -9126,6 +9246,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 1.07
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.87
       }
     ],
     "Jeep FR:Parcours": [
@@ -9312,6 +9436,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.94
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 1.04
       }
     ],
     "Lancia FR:Homepage": [
@@ -9498,6 +9626,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 1.02
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.88
       }
     ],
     "Lancia FR:Parcours": [
@@ -9684,6 +9816,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.93
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.96
       }
     ],
     "Peugeot FR:Homepage": [
@@ -9870,6 +10006,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.96
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.87
       }
     ],
     "Peugeot FR:Parcours": [
@@ -10055,6 +10195,10 @@
       },
       {
         "time": "21/06/2026 02:20:48",
+        "elapsed": 0.98
+      },
+      {
+        "time": "21/06/2026 02:24:09",
         "elapsed": 0.98
       }
     ],
@@ -10242,6 +10386,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.86
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.81
       }
     ],
     "Abarth ES:Parcours": [
@@ -10428,6 +10576,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.96
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.93
       }
     ],
     "AlfaRomeo ES:Homepage": [
@@ -10613,6 +10765,10 @@
       },
       {
         "time": "21/06/2026 02:20:48",
+        "elapsed": 0.87
+      },
+      {
+        "time": "21/06/2026 02:24:09",
         "elapsed": 0.87
       }
     ],
@@ -10800,6 +10956,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.94
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 1.0
       }
     ],
     "Citroen ES:Homepage": [
@@ -10986,6 +11146,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.86
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.8
       }
     ],
     "Citroen ES:Parcours": [
@@ -11172,6 +11336,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.92
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.95
       }
     ],
     "DS ES:Homepage": [
@@ -11358,6 +11526,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.9
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.8
       }
     ],
     "DS ES:Parcours": [
@@ -11543,6 +11715,10 @@
       },
       {
         "time": "21/06/2026 02:20:48",
+        "elapsed": 0.97
+      },
+      {
+        "time": "21/06/2026 02:24:09",
         "elapsed": 0.97
       }
     ],
@@ -11730,6 +11906,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.88
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.86
       }
     ],
     "Fiat ES:Parcours": [
@@ -11916,6 +12096,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.97
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 1.01
       }
     ],
     "FiatPro ES:Homepage": [
@@ -12102,6 +12286,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.91
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.87
       }
     ],
     "FiatPro ES:Parcours": [
@@ -12288,6 +12476,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.93
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.98
       }
     ],
     "Jeep ES:Homepage": [
@@ -12474,6 +12666,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.87
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.96
       }
     ],
     "Jeep ES:Parcours": [
@@ -12660,6 +12856,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.95
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.97
       }
     ],
     "Opel ES:Homepage": [
@@ -12846,6 +13046,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.91
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.82
       }
     ],
     "Opel ES:Parcours": [
@@ -13032,6 +13236,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.94
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.93
       }
     ],
     "Peugeot ES:Homepage": [
@@ -13218,6 +13426,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.89
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.82
       }
     ],
     "Peugeot ES:Parcours": [
@@ -13404,6 +13616,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.96
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.95
       }
     ],
     "Abarth IT:Homepage": [
@@ -13590,6 +13806,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.84
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.89
       }
     ],
     "Abarth IT:Parcours": [
@@ -13776,6 +13996,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.94
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.96
       }
     ],
     "AlfaRomeo IT:Homepage": [
@@ -13962,6 +14186,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 1.08
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.86
       }
     ],
     "AlfaRomeo IT:Parcours": [
@@ -14148,6 +14376,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 1.12
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.97
       }
     ],
     "Citroen IT:Homepage": [
@@ -14334,6 +14566,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.89
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.79
       }
     ],
     "Citroen IT:Parcours": [
@@ -14520,6 +14756,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.94
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.95
       }
     ],
     "DS IT:Homepage": [
@@ -14706,6 +14946,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 1.04
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.77
       }
     ],
     "DS IT:Parcours": [
@@ -14892,6 +15136,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.94
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.96
       }
     ],
     "Fiat IT:Homepage": [
@@ -15078,6 +15326,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.94
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.91
       }
     ],
     "Fiat IT:Parcours": [
@@ -15264,6 +15516,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.91
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.95
       }
     ],
     "Jeep IT:Homepage": [
@@ -15450,6 +15706,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.93
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 1.05
       }
     ],
     "Jeep IT:Parcours": [
@@ -15636,6 +15896,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.97
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.98
       }
     ],
     "Lancia IT:Homepage": [
@@ -15822,6 +16086,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.91
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.88
       }
     ],
     "Lancia IT:Parcours": [
@@ -16007,6 +16275,10 @@
       },
       {
         "time": "21/06/2026 02:20:48",
+        "elapsed": 0.94
+      },
+      {
+        "time": "21/06/2026 02:24:09",
         "elapsed": 0.94
       }
     ],
@@ -16194,6 +16466,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.9
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.84
       }
     ],
     "Opel IT:Parcours": [
@@ -16380,6 +16656,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 1.0
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.96
       }
     ],
     "Peugeot IT:Homepage": [
@@ -16566,6 +16846,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 1.03
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.96
       }
     ],
     "Peugeot IT:Parcours": [
@@ -16752,6 +17036,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.96
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 1.07
       }
     ],
     "AlfaRomeo DE:Homepage": [
@@ -16938,6 +17226,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.9
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.82
       }
     ],
     "AlfaRomeo DE:Parcours": [
@@ -17124,6 +17416,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.93
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.94
       }
     ],
     "Citroen DE:Homepage": [
@@ -17310,6 +17606,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.92
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.94
       }
     ],
     "Citroen DE:Parcours": [
@@ -17496,6 +17796,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.99
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 1.0
       }
     ],
     "DS DE:Homepage": [
@@ -17682,6 +17986,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.88
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.97
       }
     ],
     "DS DE:Parcours": [
@@ -17868,6 +18176,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.9
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.94
       }
     ],
     "Opel DE:Homepage": [
@@ -18054,6 +18366,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 1.14
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.76
       }
     ],
     "Opel DE:Parcours": [
@@ -18240,6 +18556,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 1.04
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.91
       }
     ],
     "Peugeot DE:Homepage": [
@@ -18426,6 +18746,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.88
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.8
       }
     ],
     "Peugeot DE:Parcours": [
@@ -18612,6 +18936,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.96
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.93
       }
     ],
     "Spoticar DE:Homepage": [
@@ -18798,6 +19126,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 1.03
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 1.0
       }
     ],
     "Spoticar DE:Parcours": [
@@ -18984,6 +19316,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.89
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.91
       }
     ],
     "Citroen AT:Homepage": [
@@ -19170,6 +19506,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 1.23
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.85
       }
     ],
     "Citroen AT:Parcours": [
@@ -19356,6 +19696,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 1.01
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.96
       }
     ],
     "Opel AT:Homepage": [
@@ -19542,6 +19886,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 1.07
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.94
       }
     ],
     "Opel AT:Parcours": [
@@ -19728,6 +20076,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.99
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 1.05
       }
     ],
     "Peugeot AT:Homepage": [
@@ -19914,6 +20266,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 1.13
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.88
       }
     ],
     "Peugeot AT:Parcours": [
@@ -20100,6 +20456,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 1.16
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 1.01
       }
     ],
     "Abarth BE:Homepage": [
@@ -20286,6 +20646,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.91
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.92
       }
     ],
     "Abarth BE:Parcours": [
@@ -20472,6 +20836,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.99
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.95
       }
     ],
     "AlfaRomeo BE:Homepage": [
@@ -20658,6 +21026,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 1.01
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.87
       }
     ],
     "AlfaRomeo BE:Parcours": [
@@ -20844,6 +21216,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 1.08
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.95
       }
     ],
     "Citroen BE:Homepage": [
@@ -21030,6 +21406,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 1.02
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.91
       }
     ],
     "Citroen BE:Parcours": [
@@ -21216,6 +21596,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 1.04
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.98
       }
     ],
     "DS BE:Homepage": [
@@ -21402,6 +21786,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 1.04
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.86
       }
     ],
     "DS BE:Parcours": [
@@ -21588,6 +21976,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.93
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.99
       }
     ],
     "Fiat BE:Homepage": [
@@ -21774,6 +22166,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.83
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.85
       }
     ],
     "Fiat BE:Parcours": [
@@ -21960,6 +22356,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.83
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.99
       }
     ],
     "FiatPro BE:Homepage": [
@@ -22146,6 +22546,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.92
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.89
       }
     ],
     "FiatPro BE:Parcours": [
@@ -22332,6 +22736,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 1.0
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 1.06
       }
     ],
     "Jeep BE:Homepage": [
@@ -22518,6 +22926,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.87
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.88
       }
     ],
     "Jeep BE:Parcours": [
@@ -22704,6 +23116,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.93
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.94
       }
     ],
     "Lancia BE:Homepage": [
@@ -22890,6 +23306,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.93
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.8
       }
     ],
     "Lancia BE:Parcours": [
@@ -23076,6 +23496,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.95
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 1.02
       }
     ],
     "Opel BE:Homepage": [
@@ -23262,6 +23686,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.92
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.87
       }
     ],
     "Opel BE:Parcours": [
@@ -23448,6 +23876,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.95
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 1.01
       }
     ],
     "Peugeot BE:Homepage": [
@@ -23634,6 +24066,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.81
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.74
       }
     ],
     "Peugeot BE:Parcours": [
@@ -23820,6 +24256,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.96
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.89
       }
     ],
     "Leapmotor BE:Homepage": [
@@ -24006,6 +24446,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.94
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.87
       }
     ],
     "Leapmotor BE:Parcours": [
@@ -24192,6 +24636,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.97
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.92
       }
     ],
     "Abarth BE-NL:Homepage": [
@@ -24377,6 +24825,10 @@
       },
       {
         "time": "21/06/2026 02:20:48",
+        "elapsed": 0.86
+      },
+      {
+        "time": "21/06/2026 02:24:09",
         "elapsed": 0.86
       }
     ],
@@ -24564,6 +25016,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.93
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.95
       }
     ],
     "AlfaRomeo BE-NL:Homepage": [
@@ -24749,6 +25205,10 @@
       },
       {
         "time": "21/06/2026 02:20:48",
+        "elapsed": 0.85
+      },
+      {
+        "time": "21/06/2026 02:24:09",
         "elapsed": 0.85
       }
     ],
@@ -24936,6 +25396,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.91
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.92
       }
     ],
     "Citroen BE-NL:Homepage": [
@@ -25122,6 +25586,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.85
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.86
       }
     ],
     "Citroen BE-NL:Parcours": [
@@ -25308,6 +25776,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.96
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 1.04
       }
     ],
     "DS BE-NL:Homepage": [
@@ -25494,6 +25966,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.85
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.8
       }
     ],
     "DS BE-NL:Parcours": [
@@ -25679,6 +26155,10 @@
       },
       {
         "time": "21/06/2026 02:20:48",
+        "elapsed": 0.92
+      },
+      {
+        "time": "21/06/2026 02:24:09",
         "elapsed": 0.92
       }
     ],
@@ -25866,6 +26346,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.88
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.88
       }
     ],
     "Fiat BE-NL:Parcours": [
@@ -26052,6 +26536,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.93
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.98
       }
     ],
     "FiatPro BE-NL:Homepage": [
@@ -26238,6 +26726,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.9
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.88
       }
     ],
     "FiatPro BE-NL:Parcours": [
@@ -26424,6 +26916,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.96
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.98
       }
     ],
     "Jeep BE-NL:Homepage": [
@@ -26610,6 +27106,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.9
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.83
       }
     ],
     "Jeep BE-NL:Parcours": [
@@ -26796,6 +27296,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.92
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.95
       }
     ],
     "Lancia BE-NL:Homepage": [
@@ -26982,6 +27486,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.87
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.76
       }
     ],
     "Lancia BE-NL:Parcours": [
@@ -27167,6 +27675,10 @@
       },
       {
         "time": "21/06/2026 02:20:48",
+        "elapsed": 0.92
+      },
+      {
+        "time": "21/06/2026 02:24:09",
         "elapsed": 0.92
       }
     ],
@@ -27354,6 +27866,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.91
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.78
       }
     ],
     "Opel BE-NL:Parcours": [
@@ -27540,6 +28056,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.94
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.95
       }
     ],
     "Peugeot BE-NL:Homepage": [
@@ -27726,6 +28246,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.88
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.91
       }
     ],
     "Peugeot BE-NL:Parcours": [
@@ -27912,6 +28436,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 1.0
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 1.04
       }
     ],
     "Leapmotor BE-NL:Homepage": [
@@ -28098,6 +28626,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.87
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.85
       }
     ],
     "Leapmotor BE-NL:Parcours": [
@@ -28284,6 +28816,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.91
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.94
       }
     ],
     "AlfaRomeo PL:Homepage": [
@@ -28470,6 +29006,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.89
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.88
       }
     ],
     "AlfaRomeo PL:Parcours": [
@@ -28656,6 +29196,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.98
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 1.02
       }
     ],
     "Citroen PL:Homepage": [
@@ -28842,6 +29386,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.87
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.84
       }
     ],
     "Citroen PL:Parcours": [
@@ -29027,6 +29575,10 @@
       },
       {
         "time": "21/06/2026 02:20:48",
+        "elapsed": 0.93
+      },
+      {
+        "time": "21/06/2026 02:24:09",
         "elapsed": 0.93
       }
     ],
@@ -29214,6 +29766,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.9
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.81
       }
     ],
     "Fiat PL:Parcours": [
@@ -29400,6 +29956,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.94
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.9
       }
     ],
     "Jeep PL:Homepage": [
@@ -29586,6 +30146,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.9
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.85
       }
     ],
     "Jeep PL:Parcours": [
@@ -29772,6 +30336,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.97
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 1.0
       }
     ],
     "Opel PL:Homepage": [
@@ -29958,6 +30526,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.89
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.87
       }
     ],
     "Opel PL:Parcours": [
@@ -30144,6 +30716,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 1.02
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.97
       }
     ],
     "Peugeot PL:Homepage": [
@@ -30330,6 +30906,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.93
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.85
       }
     ],
     "Peugeot PL:Parcours": [
@@ -30516,6 +31096,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 1.05
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.94
       }
     ],
     "Abarth LU:Homepage": [
@@ -30702,6 +31286,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.88
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.94
       }
     ],
     "Abarth LU:Parcours": [
@@ -30888,6 +31476,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.98
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 1.13
       }
     ],
     "AlfaRomeo LU:Homepage": [
@@ -31074,6 +31666,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.89
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.9
       }
     ],
     "AlfaRomeo LU:Parcours": [
@@ -31260,6 +31856,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.94
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.9
       }
     ],
     "Citroen LU:Homepage": [
@@ -31445,6 +32045,10 @@
       },
       {
         "time": "21/06/2026 02:20:48",
+        "elapsed": 0.96
+      },
+      {
+        "time": "21/06/2026 02:24:09",
         "elapsed": 0.96
       }
     ],
@@ -31632,6 +32236,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 1.02
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.92
       }
     ],
     "DS LU:Homepage": [
@@ -31818,6 +32426,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.83
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.84
       }
     ],
     "DS LU:Parcours": [
@@ -32004,6 +32616,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.9
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.95
       }
     ],
     "Fiat LU:Homepage": [
@@ -32190,6 +32806,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.9
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.92
       }
     ],
     "Fiat LU:Parcours": [
@@ -32376,6 +32996,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.92
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 1.0
       }
     ],
     "FiatPro LU:Homepage": [
@@ -32562,6 +33186,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.84
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.87
       }
     ],
     "FiatPro LU:Parcours": [
@@ -32747,6 +33375,10 @@
       },
       {
         "time": "21/06/2026 02:20:48",
+        "elapsed": 0.93
+      },
+      {
+        "time": "21/06/2026 02:24:09",
         "elapsed": 0.93
       }
     ],
@@ -32934,6 +33566,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.9
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.89
       }
     ],
     "Jeep LU:Parcours": [
@@ -33120,6 +33756,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.95
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.92
       }
     ],
     "Lancia LU:Homepage": [
@@ -33306,6 +33946,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.88
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.81
       }
     ],
     "Lancia LU:Parcours": [
@@ -33492,6 +34136,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.96
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.94
       }
     ],
     "Opel LU:Homepage": [
@@ -33678,6 +34326,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.93
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.8
       }
     ],
     "Opel LU:Parcours": [
@@ -33864,6 +34516,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.99
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 1.08
       }
     ],
     "Peugeot LU:Homepage": [
@@ -34050,6 +34706,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.94
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.82
       }
     ],
     "Peugeot LU:Parcours": [
@@ -34236,6 +34896,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.97
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.99
       }
     ],
     "Leapmotor LU:Homepage": [
@@ -34421,6 +35085,10 @@
       },
       {
         "time": "21/06/2026 02:20:48",
+        "elapsed": 1.0
+      },
+      {
+        "time": "21/06/2026 02:24:09",
         "elapsed": 1.0
       }
     ],
@@ -34608,6 +35276,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.99
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.95
       }
     ],
     "DS UK:Homepage": [
@@ -34794,6 +35466,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.87
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.74
       }
     ],
     "DS UK:Parcours": [
@@ -34979,6 +35655,10 @@
       },
       {
         "time": "21/06/2026 02:20:48",
+        "elapsed": 0.9
+      },
+      {
+        "time": "21/06/2026 02:24:09",
         "elapsed": 0.9
       }
     ],
@@ -35166,6 +35846,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 2.98
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 3.03
       }
     ],
     "Ford FR:Formulaire": [
@@ -35352,6 +36036,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 1.95
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 2.02
       }
     ],
     "Aramisauto:Homepage": [
@@ -35538,6 +36226,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 0.16
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 0.11
       }
     ],
     "Peugeot FR:Immat": [
@@ -35724,6 +36416,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 17.17
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 17.78
       }
     ],
     "Opel FR:Immat": [
@@ -35910,6 +36606,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 15.98
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 15.3
       }
     ],
     "DS FR:Immat": [
@@ -36096,6 +36796,10 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 16.96
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 17.18
       }
     ],
     "Citroen FR:Immat": [
@@ -36282,48 +36986,52 @@
       {
         "time": "21/06/2026 02:20:48",
         "elapsed": 15.2
+      },
+      {
+        "time": "21/06/2026 02:24:09",
+        "elapsed": 16.03
       }
     ]
   },
   "avg_response": {
-    "Opel PT:Homepage": 1.51,
+    "Opel PT:Homepage": 1.5,
     "Opel PT:Parcours": 1.5,
     "Abarth PT:Homepage": 1.51,
     "Abarth PT:Parcours": 0.96,
     "AlfaRomeo PT:Homepage": 1.19,
-    "AlfaRomeo PT:Parcours": 1.32,
-    "Citroen PT:Homepage": 1.09,
+    "AlfaRomeo PT:Parcours": 1.31,
+    "Citroen PT:Homepage": 1.06,
     "Citroen PT:Parcours": 1.08,
-    "DS PT:Homepage": 1.04,
+    "DS PT:Homepage": 1.05,
     "DS PT:Parcours": 0.97,
-    "Fiat PT:Homepage": 1.01,
+    "Fiat PT:Homepage": 1.0,
     "Fiat PT:Parcours": 1.05,
     "FiatPro PT:Homepage": 0.99,
     "FiatPro PT:Parcours": 1.0,
     "Jeep PT:Homepage": 0.94,
-    "Jeep PT:Parcours": 0.96,
+    "Jeep PT:Parcours": 0.97,
     "Peugeot PT:Homepage": 0.92,
     "Peugeot PT:Parcours": 1.01,
-    "Opel FR:Homepage": 0.93,
+    "Opel FR:Homepage": 0.94,
     "Opel FR:Parcours": 1.0,
     "AlfaRomeo FR:Homepage": 0.89,
     "AlfaRomeo FR:Parcours": 0.96,
     "Citroen FR:Homepage": 1.12,
-    "Citroen FR:Parcours": 1.22,
-    "DS FR:Homepage": 0.89,
+    "Citroen FR:Parcours": 1.21,
+    "DS FR:Homepage": 0.88,
     "DS FR:Parcours": 0.98,
     "Fiat FR:Homepage": 0.95,
     "Fiat FR:Parcours": 1.03,
-    "FiatPro FR:Homepage": 0.88,
+    "FiatPro FR:Homepage": 0.87,
     "FiatPro FR:Parcours": 0.96,
     "Jeep FR:Homepage": 0.91,
     "Jeep FR:Parcours": 0.94,
     "Lancia FR:Homepage": 0.92,
-    "Lancia FR:Parcours": 0.98,
+    "Lancia FR:Parcours": 0.97,
     "Peugeot FR:Homepage": 0.92,
     "Peugeot FR:Parcours": 1.02,
     "Abarth ES:Homepage": 0.87,
-    "Abarth ES:Parcours": 0.97,
+    "Abarth ES:Parcours": 0.96,
     "AlfaRomeo ES:Homepage": 0.9,
     "AlfaRomeo ES:Parcours": 1.01,
     "Citroen ES:Homepage": 0.86,
@@ -36340,17 +37048,17 @@
     "Opel ES:Parcours": 0.97,
     "Peugeot ES:Homepage": 0.87,
     "Peugeot ES:Parcours": 1.0,
-    "Abarth IT:Homepage": 0.95,
-    "Abarth IT:Parcours": 0.97,
+    "Abarth IT:Homepage": 0.94,
+    "Abarth IT:Parcours": 0.98,
     "AlfaRomeo IT:Homepage": 0.92,
     "AlfaRomeo IT:Parcours": 1.01,
-    "Citroen IT:Homepage": 0.89,
+    "Citroen IT:Homepage": 0.88,
     "Citroen IT:Parcours": 0.97,
-    "DS IT:Homepage": 0.89,
+    "DS IT:Homepage": 0.88,
     "DS IT:Parcours": 0.98,
     "Fiat IT:Homepage": 0.93,
     "Fiat IT:Parcours": 0.99,
-    "Jeep IT:Homepage": 0.91,
+    "Jeep IT:Homepage": 0.92,
     "Jeep IT:Parcours": 1.03,
     "Lancia IT:Homepage": 0.96,
     "Lancia IT:Parcours": 1.01,
@@ -36362,35 +37070,35 @@
     "AlfaRomeo DE:Parcours": 0.97,
     "Citroen DE:Homepage": 0.94,
     "Citroen DE:Parcours": 1.03,
-    "DS DE:Homepage": 0.87,
-    "DS DE:Parcours": 0.95,
-    "Opel DE:Homepage": 0.91,
+    "DS DE:Homepage": 0.88,
+    "DS DE:Parcours": 0.96,
+    "Opel DE:Homepage": 0.9,
     "Opel DE:Parcours": 0.99,
     "Peugeot DE:Homepage": 0.87,
     "Peugeot DE:Parcours": 1.0,
     "Spoticar DE:Homepage": 1.04,
     "Spoticar DE:Parcours": 0.93,
-    "Citroen AT:Homepage": 0.97,
+    "Citroen AT:Homepage": 0.95,
     "Citroen AT:Parcours": 1.01,
     "Opel AT:Homepage": 0.92,
     "Opel AT:Parcours": 0.97,
-    "Peugeot AT:Homepage": 0.93,
+    "Peugeot AT:Homepage": 0.92,
     "Peugeot AT:Parcours": 1.01,
     "Abarth BE:Homepage": 0.91,
     "Abarth BE:Parcours": 0.98,
     "AlfaRomeo BE:Homepage": 0.91,
     "AlfaRomeo BE:Parcours": 0.96,
-    "Citroen BE:Homepage": 0.9,
+    "Citroen BE:Homepage": 0.91,
     "Citroen BE:Parcours": 0.98,
     "DS BE:Homepage": 0.86,
     "DS BE:Parcours": 0.96,
     "Fiat BE:Homepage": 0.85,
-    "Fiat BE:Parcours": 0.91,
-    "FiatPro BE:Homepage": 0.91,
+    "Fiat BE:Parcours": 0.92,
+    "FiatPro BE:Homepage": 0.92,
     "FiatPro BE:Parcours": 1.01,
     "Jeep BE:Homepage": 0.91,
     "Jeep BE:Parcours": 0.94,
-    "Lancia BE:Homepage": 0.89,
+    "Lancia BE:Homepage": 0.88,
     "Lancia BE:Parcours": 0.99,
     "Opel BE:Homepage": 0.89,
     "Opel BE:Parcours": 0.99,
@@ -36406,8 +37114,8 @@
     "Citroen BE-NL:Parcours": 1.0,
     "DS BE-NL:Homepage": 0.84,
     "DS BE-NL:Parcours": 0.96,
-    "Fiat BE-NL:Homepage": 0.91,
-    "Fiat BE-NL:Parcours": 0.97,
+    "Fiat BE-NL:Homepage": 0.9,
+    "Fiat BE-NL:Parcours": 0.96,
     "FiatPro BE-NL:Homepage": 0.88,
     "FiatPro BE-NL:Parcours": 1.01,
     "Jeep BE-NL:Homepage": 0.88,
@@ -36420,9 +37128,9 @@
     "Peugeot BE-NL:Parcours": 0.99,
     "Leapmotor BE-NL:Homepage": 0.85,
     "Leapmotor BE-NL:Parcours": 0.96,
-    "AlfaRomeo PL:Homepage": 0.88,
+    "AlfaRomeo PL:Homepage": 0.89,
     "AlfaRomeo PL:Parcours": 0.97,
-    "Citroen PL:Homepage": 0.88,
+    "Citroen PL:Homepage": 0.87,
     "Citroen PL:Parcours": 0.96,
     "Fiat PL:Homepage": 0.89,
     "Fiat PL:Parcours": 0.94,
@@ -36432,9 +37140,9 @@
     "Opel PL:Parcours": 0.96,
     "Peugeot PL:Homepage": 0.89,
     "Peugeot PL:Parcours": 0.98,
-    "Abarth LU:Homepage": 0.93,
+    "Abarth LU:Homepage": 0.94,
     "Abarth LU:Parcours": 1.0,
-    "AlfaRomeo LU:Homepage": 0.9,
+    "AlfaRomeo LU:Homepage": 0.89,
     "AlfaRomeo LU:Parcours": 0.95,
     "Citroen LU:Homepage": 0.93,
     "Citroen LU:Parcours": 0.97,
@@ -36448,20 +37156,20 @@
     "Jeep LU:Parcours": 0.97,
     "Lancia LU:Homepage": 0.87,
     "Lancia LU:Parcours": 0.95,
-    "Opel LU:Homepage": 0.94,
-    "Opel LU:Parcours": 0.98,
+    "Opel LU:Homepage": 0.93,
+    "Opel LU:Parcours": 0.99,
     "Peugeot LU:Homepage": 0.93,
     "Peugeot LU:Parcours": 0.98,
-    "Leapmotor LU:Homepage": 0.88,
+    "Leapmotor LU:Homepage": 0.89,
     "Leapmotor LU:Parcours": 0.95,
     "DS UK:Homepage": 0.83,
     "DS UK:Parcours": 0.94,
-    "Ford FR:Homepage": 2.91,
+    "Ford FR:Homepage": 2.9,
     "Ford FR:Formulaire": 1.94,
     "Aramisauto:Homepage": 0.29,
-    "Peugeot FR:Immat": 17.76,
-    "Opel FR:Immat": 15.65,
+    "Peugeot FR:Immat": 17.77,
+    "Opel FR:Immat": 15.62,
     "DS FR:Immat": 16.8,
-    "Citroen FR:Immat": 15.35
+    "Citroen FR:Immat": 15.39
   }
 }
