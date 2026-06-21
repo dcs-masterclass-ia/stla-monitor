@@ -304,18 +304,36 @@ def init_github():
 _cycle_counter = [0]
 
 def push_chart_backup():
-    """Sauvegarde chart_data dans chart_data.json sur GitHub toutes les 20 cycles."""
+    """Sauvegarde chart_data dans chart_data.json sur GitHub — merge avec l'existant."""
     if not gh_repo:
         return
     try:
-        content = json.dumps({"chart_data": {k: v[-MAX_CHART:] for k, v in chart_data.items()}}, ensure_ascii=False)
         path = "chart_data.json"
+        new_cd = {k: v[-MAX_CHART:] for k, v in chart_data.items()}
+
+        # Charger l'existant sur GitHub et merger
         try:
-            existing = gh_repo.get_contents(path)
-            gh_repo.update_file(path, "chart_data backup", content, existing.sha)
+            existing_file = gh_repo.get_contents(path)
+            existing_data = json.loads(existing_file.decoded_content.decode("utf-8"))
+            old_cd = existing_data.get("chart_data", {})
+            merged = {}
+            for key in set(list(old_cd.keys()) + list(new_cd.keys())):
+                seen = set()
+                all_pts = []
+                for p in (old_cd.get(key, []) + new_cd.get(key, [])):
+                    if p["time"] not in seen:
+                        seen.add(p["time"])
+                        all_pts.append(p)
+                all_pts.sort(key=lambda p: p["time"])
+                merged[key] = all_pts[-MAX_CHART:]
+            content = json.dumps({"chart_data": merged}, ensure_ascii=False)
+            gh_repo.update_file(path, "chart_data backup", content, existing_file.sha)
+            total = sum(len(v) for v in merged.values())
         except Exception:
+            content = json.dumps({"chart_data": new_cd}, ensure_ascii=False)
             gh_repo.create_file(path, "chart_data backup", content)
-        log.info(f"[GitHub] chart_data backup : {len(chart_data)} clés")
+            total = sum(len(v) for v in new_cd.values())
+        log.info(f"[GitHub] chart_data backup : {total} points")
     except Exception as e:
         log.error(f"[GitHub] Erreur chart_data backup : {e}")
 
