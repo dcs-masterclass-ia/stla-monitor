@@ -1160,6 +1160,27 @@ function downloadReport(){
 // ── FETCH ──
 const CHART_BACKUP = "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/chart_data.json";
 
+const INCIDENTS_BASE = "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/incidents";
+
+async function loadIncidentsFromFolder() {
+  const all = [];
+  const today = new Date();
+  for(let i = 0; i < 7; i++) {
+    const d = new Date(today - i * 86400000);
+    const date = d.toISOString().slice(0,10);
+    try {
+      const r = await fetch(`https://api.github.com/repos/dcs-masterclass-ia/stla-monitor/contents/incidents/${date}`, {cache:"no-store"});
+      if(!r.ok) continue;
+      const files = await r.json();
+      for(const f of files) {
+        const r2 = await fetch(`${INCIDENTS_BASE}/${date}/${f.name}?t=${Date.now()}`, {cache:"no-store"});
+        if(r2.ok) { const inc = await r2.json(); all.push(...inc); }
+      }
+    } catch(e) {}
+  }
+  return all.sort((a,b) => a.time < b.time ? -1 : 1);
+}
+
 async function mergeChartBackup(nd) {
   // Si chart_data pauvre (<100 points total), charger le backup
   const pts = Object.values(nd.chart_data||{}).reduce((a,v)=>a+v.length,0);
@@ -1195,6 +1216,10 @@ async function fetchStatus(){
     let nd=await r.json();
     if(JSON.stringify(nd.updated_at)===JSON.stringify(data&&data.updated_at))return;
     nd = await mergeChartBackup(nd);
+    // Si history vide, charger depuis incidents/
+    if(!nd.history || !nd.history.length) {
+      nd.history = await loadIncidentsFromFolder();
+    }
     data=nd;
     document.getElementById("ts-label").textContent=""+data.updated_at.split(" ")[1];
     const tlm = document.getElementById("ts-label-main");
