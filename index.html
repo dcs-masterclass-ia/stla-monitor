@@ -163,21 +163,21 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .analyse-toggle{display:flex;align-items:center;gap:8px;padding:12px 16px;background:#fff;border-radius:var(--r);box-shadow:var(--shadow);cursor:pointer;font-size:12px;font-weight:800;color:var(--text-2);margin-top:12px;transition:background .15s;flex-shrink:0}
 .analyse-toggle:hover{background:#f8fafc}
 .analyse-section{margin-top:12px;flex-shrink:0}
-.analyse-row{display:grid;grid-template-columns:1fr 1fr 2fr;gap:12px}
-.analyse-card{background:#fff;border-radius:var(--r);padding:1rem 1.25rem;box-shadow:var(--shadow)}
+.analyse-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.analyse-card{background:#fff;border-radius:var(--r);padding:1rem 1.25rem;box-shadow:var(--shadow);min-width:0;overflow:hidden}
 .analyse-chart-wrap{position:relative;height:160px;margin:12px 0 8px}
 .analyse-legend{display:flex;flex-wrap:wrap;gap:8px;font-size:11px;font-weight:700}
 .analyse-legend-item{display:flex;align-items:center;gap:5px;color:var(--text-2)}
 .analyse-legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
 .heatmap-wrap{overflow-x:auto;padding-bottom:4px}
-.heatmap-label{font-size:9px;color:var(--text-3);font-weight:700;text-align:center;flex-shrink:0}
+.heatmap-label{font-size:9px;color:var(--text-3);font-weight:700;text-align:center;flex-shrink:0;width:18px}
 .heatmap-row-label{font-size:9px;color:var(--text-3);font-weight:700;width:24px;flex-shrink:0;line-height:18px}
 .heatmap-row{display:flex;align-items:center;gap:2px;margin-bottom:2px}
 .heatmap-cell{width:18px;height:18px;border-radius:3px;cursor:pointer;transition:transform .1s;flex-shrink:0}
 .heatmap-cell:hover{transform:scale(1.2)}
 .heatmap-labels{display:flex;gap:2px;margin-bottom:4px;padding-left:26px}
-.analyse-mttr{display:flex;gap:32px;padding:8px 0}
-.mttr-kpi{text-align:center}
+.analyse-mttr{display:flex;gap:24px;padding:8px 0;flex-wrap:wrap}
+.mttr-kpi{text-align:center;min-width:80px}
 .mttr-val{font-size:26px;font-weight:900;color:var(--text)}
 .mttr-lbl{font-size:11px;font-weight:600;color:var(--text-3);margin-top:2px}
 .mttr-sub{font-size:10px;color:var(--text-3);margin-top:1px}
@@ -461,15 +461,15 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
             <div class="analyse-chart-wrap"><canvas id="piePageChart"></canvas></div>
             <div class="analyse-legend" id="pie-page-legend"></div>
           </div>
-          <div class="analyse-card analyse-card-wide">
-            <div class="card-hed"><i data-lucide="grid" style="width:14px;height:14px;color:var(--text-3)"></i>Heatmap incidents par heure</div>
-            <div id="heatmap-container"></div>
-          </div>
-        </div>
-        <div class="analyse-row" style="margin-top:12px">
-          <div class="analyse-card analyse-card-wide">
+          <div class="analyse-card">
             <div class="card-hed"><i data-lucide="clock" style="width:14px;height:14px;color:var(--text-3)"></i>MTTR &amp; MTBF</div>
             <div class="analyse-mttr" id="analyse-mttr"></div>
+          </div>
+        </div>
+        <div style="margin-top:12px">
+          <div class="analyse-card">
+            <div class="card-hed"><i data-lucide="grid" style="width:14px;height:14px;color:var(--text-3)"></i>Heatmap incidents par heure</div>
+            <div id="heatmap-container"></div>
           </div>
         </div>
       </div>
