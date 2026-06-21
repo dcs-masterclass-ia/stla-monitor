@@ -977,19 +977,58 @@ def run():
             threading.Thread(target=push_chart_backup, daemon=True).start()
         time.sleep(CHECK_INTERVAL_SECONDS)
 
-# Ping Render toutes les 10 min pour éviter la mise en veille (plan free)
-_ping_counter = [0]
-def _ping_render():
+# ── WATCHDOG — Surveillance du Web Service Render ──
+_watchdog_failures = [0]
+_watchdog_down = [False]
+
+def watchdog_loop():
+    """Ping le Web Service toutes les 5 min — alerte Teams si KO."""
+    RENDER_CHECK_URL = "https://stla-monitor.onrender.com/"
+    CHECK_EVERY = 300   # 5 minutes
+    MAX_FAIL    = 2     # alerter après 2 échecs consécutifs
+
+    time.sleep(30)  # attendre que tout soit bien démarré
+    log.info("[Watchdog] Démarré — surveillance du Web Service toutes les 5 min")
+
     while True:
-        time.sleep(480)  # 8 minutes
         try:
-            requests.get("https://stla-monitor.onrender.com/status", timeout=10, verify=False)
-            log.info("[Render] Ping keepalive envoyé")
-        except Exception:
-            pass
+            r = requests.head(RENDER_CHECK_URL, timeout=15, verify=False)
+            ok = r.status_code in (200, 204, 301, 302)
+        except Exception as e:
+            ok = False
+
+        if ok:
+            if _watchdog_down[0]:
+                _watchdog_down[0] = False
+                _watchdog_failures[0] = 0
+                send_teams_alert_raw(
+                    "✅ UAS Monitoring — Web Service de nouveau en ligne\n"
+                    f"Le serveur Render répond correctement.\n"
+                    f"🕐 {datetime.now(TZ_PARIS).strftime('%d/%m/%Y %H:%M:%S')}"
+                )
+                log.info("[Watchdog] Recovery — service en ligne")
+            else:
+                _watchdog_failures[0] = 0
+                log.info("[Watchdog] OK")
+        else:
+            _watchdog_failures[0] += 1
+            log.warning(f"[Watchdog] Échec {_watchdog_failures[0]}/{MAX_FAIL}")
+            if _watchdog_failures[0] >= MAX_FAIL and not _watchdog_down[0]:
+                _watchdog_down[0] = True
+                send_teams_alert_raw(
+                    f"🚨 UAS Monitoring — Web Service KO\n"
+                    f"Le serveur Render ne répond plus après {_watchdog_failures[0]} tentatives.\n"
+                    f"URL : {RENDER_CHECK_URL}\n"
+                    f"🕐 {datetime.now(TZ_PARIS).strftime('%d/%m/%Y %H:%M:%S')}\n"
+                    f"Vérifiez les logs Render immédiatement."
+                )
+
+        time.sleep(CHECK_EVERY)
 
 if __name__ == "__main__":
     try:
+        # Lancer le watchdog dans un thread séparé
+        threading.Thread(target=watchdog_loop, daemon=True).start()
         run()
     except KeyboardInterrupt:
         log.info("Monitoring arrêté.")
