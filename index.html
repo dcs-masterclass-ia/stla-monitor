@@ -1965,11 +1965,87 @@ async function saveAlertConfig(id) {
 window.addEventListener("load",()=>{
   if(window.lucide)lucide.createIcons();
   buildNav();
-  fetchStatus();
-  setInterval(fetchStatus,2000);
+  initSSE();
   document.getElementById("admin-email") && document.getElementById("admin-email").addEventListener("keydown", e => { if(e.key==="Enter") document.getElementById("admin-pass").focus(); });
   document.getElementById("admin-pass") && document.getElementById("admin-pass").addEventListener("keydown", e => { if(e.key==="Enter") adminLogin(); });
 });
+
+// ── SSE — Server-Sent Events ──
+let _sseSource = null;
+let _sseFallbackTimer = null;
+let _sseRetryDelay = 2000;
+
+function initSSE() {
+  // Fermer l'ancienne connexion si elle existe
+  if(_sseSource) { _sseSource.close(); _sseSource = null; }
+  if(_sseFallbackTimer) { clearInterval(_sseFallbackTimer); _sseFallbackTimer = null; }
+
+  if(typeof EventSource === "undefined") {
+    // Navigateur ne supporte pas SSE — fallback polling
+    fetchStatus();
+    _sseFallbackTimer = setInterval(fetchStatus, 3000);
+    return;
+  }
+
+  try {
+    _sseSource = new EventSource(RENDER + "/../stream");
+    // Réessayer avec URL directe si ça échoue
+    _sseSource = new EventSource("https://stla-monitor.onrender.com/stream");
+
+    _sseSource.onopen = () => {
+      _sseRetryDelay = 2000;
+      document.getElementById("pulse").className = "pulse-dot";
+      log("[SSE] Connecté");
+    };
+
+    _sseSource.onmessage = async (e) => {
+      try {
+        let nd = JSON.parse(e.data);
+        nd = await mergeChartBackup(nd);
+        // Merger incidents depuis folder (cache 5min)
+        const folderInc = await loadIncidentsFromFolder();
+        if(folderInc.length) {
+          const seen = new Set((nd.history||[]).map(h=>`${h.time}|${h.brand}|${h.page}|${h.type}`));
+          folderInc.forEach(h => {
+            const k=`${h.time}|${h.brand}|${h.page}|${h.type}`;
+            if(!seen.has(k)){seen.add(k);(nd.history=nd.history||[]).push(h);}
+          });
+          nd.history.sort((a,b)=>a.time<b.time?-1:1);
+        }
+        data = nd;
+        const t = data.server_time || data.updated_at || "";
+        document.getElementById("ts-label").textContent = t.split(" ")[1] || "";
+        const tlm = document.getElementById("ts-label-main");
+        if(tlm) tlm.textContent = "MAJ " + (t.split(" ")[1] || "");
+        document.getElementById("sb-ts").textContent = t;
+        document.getElementById("pulse").className = "pulse-dot";
+        updateDots();
+        if(brand) render();
+        if(currentGroup==="synth") renderSynth();
+      } catch(err) {
+        console.warn("[SSE] Erreur parsing:", err);
+      }
+    };
+
+    _sseSource.onerror = () => {
+      document.getElementById("pulse").className = "pulse-dot dead";
+      _sseSource.close();
+      _sseSource = null;
+      // Retry avec backoff exponentiel (max 30s)
+      setTimeout(() => {
+        _sseRetryDelay = Math.min(_sseRetryDelay * 2, 30000);
+        initSSE();
+      }, _sseRetryDelay);
+    };
+
+  } catch(e) {
+    // Fallback polling si SSE échoue
+    fetchStatus();
+    _sseFallbackTimer = setInterval(fetchStatus, 3000);
+  }
+}
+
+function log(msg) { /* debug */ }
 </script>
 </body>
 </html>
