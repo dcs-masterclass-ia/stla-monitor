@@ -1197,30 +1197,31 @@ async function refreshIncidents() {
 setInterval(refreshIncidents, 300000);
 
 async function mergeChartBackup(nd) {
-  // Si chart_data pauvre (<100 points total), charger le backup
-  const pts = Object.values(nd.chart_data||{}).reduce((a,v)=>a+v.length,0);
-  if(pts < 5000) {
-    try {
-      const r = await fetch(CHART_BACKUP+"?t="+Date.now(), {cache:"no-store"});
-      if(r.ok) {
-        const backup = await r.json();
-        const bcd = backup.chart_data || {};
-        if(!nd.chart_data) nd.chart_data = {};
-        for(const key of Object.keys(bcd)) {
-          const cur = nd.chart_data[key] || [];
-          const bk = bcd[key] || [];
-          if(bk.length > cur.length) {
-            // Merger — dédupliquer par time
-            const seen = new Set(cur.map(p=>p.time));
-            const merged = [...cur];
-            bk.forEach(p => { if(!seen.has(p.time)) { seen.add(p.time); merged.push(p); }});
-            merged.sort((a,b) => a.time < b.time ? -1 : 1);
-            nd.chart_data[key] = merged;
-          }
+  // Toujours merger le backup pour récupérer l'historique ancien
+  // mais garder les points récents de Render
+  try {
+    const r = await fetch(CHART_BACKUP+"?t="+Date.now(), {cache:"no-store"});
+    if(r.ok) {
+      const backup = await r.json();
+      const bcd = backup.chart_data || {};
+      if(!nd.chart_data) nd.chart_data = {};
+      for(const key of Object.keys(bcd)) {
+        const cur = nd.chart_data[key] || [];
+        const bk = bcd[key] || [];
+        // Trouver le point le plus récent dans Render
+        const curLatest = cur.length ? cur[cur.length-1].time : "";
+        // N'ajouter du backup que les points PLUS ANCIENS que le plus récent de Render
+        const oldPts = bk.filter(p => p.time < curLatest);
+        if(oldPts.length > 0) {
+          const seen = new Set(cur.map(p=>p.time));
+          const merged = [...cur];
+          oldPts.forEach(p => { if(!seen.has(p.time)) { seen.add(p.time); merged.push(p); }});
+          merged.sort((a,b) => a.time < b.time ? -1 : 1);
+          nd.chart_data[key] = merged;
         }
       }
-    } catch(e) {}
-  }
+    }
+  } catch(e) {}
   return nd;
 }
 
