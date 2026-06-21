@@ -3360,7 +3360,660 @@
       }
     }
   },
-  "history": [],
+  "history": [
+    {
+      "time": "20/06/2026 13:05:29",
+      "brand": "Spoticar DE",
+      "page": "Parcours",
+      "type": "ko",
+      "detail": "Erreur : HTTPSConnectionPool(host='autoankauf.spoticar.de', port=443): Read timed out. (r",
+      "diagnostics": {
+        "brand": "Spoticar DE",
+        "page": "Parcours",
+        "error_type": "UNKNOWN"
+      },
+      "screenshot": null,
+      "is_reference": true
+    },
+    {
+      "time": "20/06/2026 13:41:30",
+      "brand": "Fiat PT",
+      "page": "Parcours",
+      "type": "ko",
+      "detail": "Erreur : HTTPSConnectionPool(host='www.retoma.fiat.pt', port=443): Read timed out. (read ",
+      "diagnostics": {
+        "brand": "Fiat PT",
+        "page": "Parcours",
+        "error_type": "UNKNOWN"
+      },
+      "screenshot": null,
+      "is_reference": true
+    },
+    {
+      "time": "20/06/2026 14:07:43",
+      "brand": "Ford FR",
+      "page": "Formulaire",
+      "type": "ko",
+      "detail": "Réponse très lente : 6.77s",
+      "diagnostics": {
+        "brand": "Ford FR",
+        "page": "Formulaire",
+        "dns_elapsed": 0.002,
+        "ip": "63.180.121.144",
+        "http_status": 200,
+        "elapsed_http": 6.77,
+        "elapsed_total": 6.77,
+        "redirect_count": 0,
+        "final_url": "https://www.ford-reprise.fr/form",
+        "headers": {
+          "server": "—",
+          "content-type": "text/html; charset=UTF-8",
+          "x-cache": "—",
+          "cf-ray": "—"
+        },
+        "error_type": "VERY_SLOW"
+      },
+      "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Formulaire_20260620_140845.png",
+      "is_reference": false
+    },
+    {
+      "time": "20/06/2026 14:07:43",
+      "brand": "Ford FR",
+      "page": "Homepage",
+      "type": "ko",
+      "detail": "Réponse très lente : 7.14s",
+      "diagnostics": {
+        "brand": "Ford FR",
+        "page": "Homepage",
+        "dns_elapsed": 0.09,
+        "ip": "63.180.121.144",
+        "http_status": 200,
+        "elapsed_http": 7.14,
+        "elapsed_total": 7.23,
+        "redirect_count": 0,
+        "final_url": "https://www.ford-reprise.fr/",
+        "headers": {
+          "server": "—",
+          "content-type": "text/html; charset=UTF-8",
+          "x-cache": "—",
+          "cf-ray": "—"
+        },
+        "error_type": "VERY_SLOW"
+      },
+      "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260620_140854.png",
+      "is_reference": false
+    },
+    {
+      "time": "20/06/2026 14:36:49",
+      "brand": "Fiat PT",
+      "page": "Parcours",
+      "type": "recovery",
+      "detail": "Retour en ligne",
+      "is_reference": true
+    },
+    {
+      "time": "20/06/2026 14:36:49",
+      "brand": "Opel AT",
+      "page": "Parcours",
+      "type": "recovery",
+      "detail": "Retour en ligne",
+      "is_reference": true
+    },
+    {
+      "time": "20/06/2026 14:36:49",
+      "brand": "Peugeot FR",
+      "page": "Immat",
+      "type": "recovery",
+      "detail": "Décodage immat rétabli"
+    },
+    {
+      "time": "20/06/2026 14:37:54",
+      "brand": "Fiat PT",
+      "page": "Parcours",
+      "type": "recovery",
+      "detail": "Retour en ligne",
+      "is_reference": true
+    },
+    {
+      "time": "20/06/2026 14:37:54",
+      "brand": "Ford FR",
+      "page": "Homepage",
+      "type": "ko",
+      "detail": "Pas de réponse après 8s",
+      "diagnostics": {
+        "brand": "Ford FR",
+        "page": "Homepage",
+        "dns_elapsed": 0.093,
+        "ip": "3.69.153.2",
+        "error_type": "TIMEOUT"
+      },
+      "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260620_143857.png",
+      "is_reference": false
+    },
+    {
+      "time": "20/06/2026 14:37:54",
+      "brand": "Ford FR",
+      "page": "Formulaire",
+      "type": "ko",
+      "detail": "Pas de réponse après 8s",
+      "diagnostics": {
+        "brand": "Ford FR",
+        "page": "Formulaire",
+        "dns_elapsed": 0.003,
+        "ip": "3.69.153.2",
+        "error_type": "TIMEOUT"
+      },
+      "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Formulaire_20260620_143939.png",
+      "is_reference": false
+    },
+    {
+      "time": "20/06/2026 14:37:54",
+      "brand": "Opel AT",
+      "page": "Parcours",
+      "type": "recovery",
+      "detail": "Retour en ligne",
+      "is_reference": true
+    },
+    {
+      "time": "20/06/2026 14:38:56",
+      "brand": "Fiat PT",
+      "page": "Parcours",
+      "type": "recovery",
+      "detail": "Retour en ligne",
+      "is_reference": true
+    },
+    {
+      "time": "20/06/2026 14:38:56",
+      "brand": "Opel AT",
+      "page": "Parcours",
+      "type": "recovery",
+      "detail": "Retour en ligne",
+      "is_reference": true
+    },
+    {
+      "time": "20/06/2026 14:38:56",
+      "brand": "Peugeot FR",
+      "page": "Immat",
+      "type": "recovery",
+      "detail": "Décodage immat rétabli"
+    },
+    {
+      "time": "20/06/2026 14:40:02",
+      "brand": "Fiat PT",
+      "page": "Parcours",
+      "type": "recovery",
+      "detail": "Retour en ligne",
+      "is_reference": true
+    },
+    {
+      "time": "20/06/2026 14:40:02",
+      "brand": "Opel AT",
+      "page": "Parcours",
+      "type": "recovery",
+      "detail": "Retour en ligne",
+      "is_reference": true
+    },
+    {
+      "time": "20/06/2026 14:40:02",
+      "brand": "Peugeot FR",
+      "page": "Immat",
+      "type": "recovery",
+      "detail": "Décodage immat rétabli"
+    },
+    {
+      "time": "20/06/2026 14:41:21",
+      "brand": "Fiat PT",
+      "page": "Parcours",
+      "type": "recovery",
+      "detail": "Retour en ligne",
+      "is_reference": true
+    },
+    {
+      "time": "20/06/2026 14:41:21",
+      "brand": "Opel AT",
+      "page": "Parcours",
+      "type": "recovery",
+      "detail": "Retour en ligne",
+      "is_reference": true
+    },
+    {
+      "time": "20/06/2026 14:41:21",
+      "brand": "Peugeot FR",
+      "page": "Immat",
+      "type": "recovery",
+      "detail": "Décodage immat rétabli"
+    },
+    {
+      "time": "20/06/2026 15:09:02",
+      "brand": "Ford FR",
+      "page": "Homepage",
+      "type": "ko",
+      "detail": "Pas de réponse après 8s",
+      "diagnostics": {
+        "brand": "Ford FR",
+        "page": "Homepage",
+        "dns_elapsed": 0.093,
+        "ip": "63.180.121.144",
+        "error_type": "TIMEOUT"
+      },
+      "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260620_151004.png",
+      "is_reference": false
+    },
+    {
+      "time": "20/06/2026 15:09:02",
+      "brand": "Ford FR",
+      "page": "Formulaire",
+      "type": "ko",
+      "detail": "Pas de réponse après 8s",
+      "diagnostics": {
+        "brand": "Ford FR",
+        "page": "Formulaire",
+        "dns_elapsed": 0.006,
+        "ip": "63.180.121.144",
+        "error_type": "TIMEOUT"
+      },
+      "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Formulaire_20260620_151025.png",
+      "is_reference": false
+    },
+    {
+      "time": "20/06/2026 15:43:06",
+      "brand": "Opel BE",
+      "page": "Parcours",
+      "type": "ko",
+      "detail": "Pas de réponse après 8s (TIMEOUT)",
+      "diagnostics": {
+        "brand": "Opel BE",
+        "page": "Parcours",
+        "error_type": "TCP_TIMEOUT"
+      },
+      "screenshot": null,
+      "is_reference": true
+    },
+    {
+      "time": "21/06/2026 00:21:18",
+      "brand": "Ford FR",
+      "page": "Homepage",
+      "type": "ko",
+      "detail": "Pas de réponse après 8s",
+      "diagnostics": {
+        "brand": "Ford FR",
+        "page": "Homepage",
+        "dns_elapsed": 0.177,
+        "ip": "51.102.168.47",
+        "error_type": "TIMEOUT"
+      },
+      "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260621_002221.png",
+      "is_reference": false
+    },
+    {
+      "time": "21/06/2026 00:51:58",
+      "brand": "Ford FR",
+      "page": "Homepage",
+      "type": "ko",
+      "detail": "Pas de réponse après 8s",
+      "diagnostics": {
+        "brand": "Ford FR",
+        "page": "Homepage",
+        "dns_elapsed": 0.09,
+        "ip": "3.69.153.2",
+        "error_type": "TIMEOUT"
+      },
+      "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260621_005259.png",
+      "is_reference": false
+    },
+    {
+      "time": "21/06/2026 00:51:58",
+      "brand": "Ford FR",
+      "page": "Formulaire",
+      "type": "ko",
+      "detail": "Pas de réponse après 8s",
+      "diagnostics": {
+        "brand": "Ford FR",
+        "page": "Formulaire",
+        "dns_elapsed": 0.042,
+        "ip": "3.69.153.2",
+        "error_type": "TIMEOUT"
+      },
+      "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Formulaire_20260621_005338.png",
+      "is_reference": false
+    },
+    {
+      "time": "21/06/2026 01:22:48",
+      "brand": "Ford FR",
+      "page": "Homepage",
+      "type": "ko",
+      "detail": "Pas de réponse après 8s",
+      "diagnostics": {
+        "brand": "Ford FR",
+        "page": "Homepage",
+        "dns_elapsed": 0.127,
+        "ip": "51.102.168.47",
+        "error_type": "TIMEOUT"
+      },
+      "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260621_012348.png",
+      "is_reference": false
+    },
+    {
+      "time": "21/06/2026 01:54:01",
+      "brand": "Ford FR",
+      "page": "Homepage",
+      "type": "ko",
+      "detail": "Pas de réponse après 8s",
+      "diagnostics": {
+        "brand": "Ford FR",
+        "page": "Homepage",
+        "dns_elapsed": 0.084,
+        "ip": "3.69.153.2",
+        "error_type": "TIMEOUT"
+      },
+      "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260621_015500.png",
+      "is_reference": false
+    },
+    {
+      "time": "21/06/2026 01:56:57",
+      "brand": "Ford FR",
+      "page": "Homepage",
+      "type": "recovery",
+      "detail": "Retour en ligne",
+      "is_reference": false
+    },
+    {
+      "time": "21/06/2026 02:27:31",
+      "brand": "Ford FR",
+      "page": "Formulaire",
+      "type": "recovery",
+      "detail": "Retour en ligne",
+      "is_reference": false
+    },
+    {
+      "time": "21/06/2026 02:27:31",
+      "brand": "Opel BE",
+      "page": "Parcours",
+      "type": "recovery",
+      "detail": "Retour en ligne",
+      "is_reference": true
+    },
+    {
+      "time": "21/06/2026 02:27:31",
+      "brand": "Spoticar DE",
+      "page": "Parcours",
+      "type": "recovery",
+      "detail": "Retour en ligne",
+      "is_reference": true
+    },
+    {
+      "time": "21/06/2026 02:28:40",
+      "brand": "Ford FR",
+      "page": "Formulaire",
+      "type": "recovery",
+      "detail": "Retour en ligne",
+      "is_reference": false
+    },
+    {
+      "time": "21/06/2026 02:28:40",
+      "brand": "Opel BE",
+      "page": "Parcours",
+      "type": "recovery",
+      "detail": "Retour en ligne",
+      "is_reference": true
+    },
+    {
+      "time": "21/06/2026 02:28:40",
+      "brand": "Spoticar DE",
+      "page": "Parcours",
+      "type": "recovery",
+      "detail": "Retour en ligne",
+      "is_reference": true
+    },
+    {
+      "time": "21/06/2026 02:29:39",
+      "brand": "Ford FR",
+      "page": "Formulaire",
+      "type": "recovery",
+      "detail": "Retour en ligne",
+      "is_reference": false
+    },
+    {
+      "time": "21/06/2026 02:29:39",
+      "brand": "Opel BE",
+      "page": "Parcours",
+      "type": "recovery",
+      "detail": "Retour en ligne",
+      "is_reference": true
+    },
+    {
+      "time": "21/06/2026 02:29:39",
+      "brand": "Spoticar DE",
+      "page": "Parcours",
+      "type": "recovery",
+      "detail": "Retour en ligne",
+      "is_reference": true
+    },
+    {
+      "time": "21/06/2026 02:30:55",
+      "brand": "Ford FR",
+      "page": "Formulaire",
+      "type": "recovery",
+      "detail": "Retour en ligne",
+      "is_reference": false
+    },
+    {
+      "time": "21/06/2026 02:30:55",
+      "brand": "Opel BE",
+      "page": "Parcours",
+      "type": "recovery",
+      "detail": "Retour en ligne",
+      "is_reference": true
+    },
+    {
+      "time": "21/06/2026 02:30:55",
+      "brand": "Spoticar DE",
+      "page": "Parcours",
+      "type": "recovery",
+      "detail": "Retour en ligne",
+      "is_reference": true
+    },
+    {
+      "time": "21/06/2026 04:59:22",
+      "brand": "Ford FR",
+      "page": "Formulaire",
+      "type": "ko",
+      "detail": "Pas de réponse après 8s",
+      "diagnostics": {
+        "brand": "Ford FR",
+        "page": "Formulaire",
+        "dns_elapsed": 0.056,
+        "ip": "51.102.168.47",
+        "error_type": "TIMEOUT"
+      },
+      "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Formulaire_20260621_050022.png",
+      "is_reference": false
+    },
+    {
+      "time": "21/06/2026 04:59:22",
+      "brand": "Ford FR",
+      "page": "Homepage",
+      "type": "ko",
+      "detail": "Pas de réponse après 8s",
+      "diagnostics": {
+        "brand": "Ford FR",
+        "page": "Homepage",
+        "dns_elapsed": 0.086,
+        "ip": "51.102.168.47",
+        "error_type": "TIMEOUT"
+      },
+      "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260621_050043.png",
+      "is_reference": false
+    },
+    {
+      "time": "21/06/2026 05:02:19",
+      "brand": "Ford FR",
+      "page": "Formulaire",
+      "type": "recovery",
+      "detail": "Retour en ligne",
+      "is_reference": false
+    },
+    {
+      "time": "21/06/2026 07:01:54",
+      "brand": "Ford FR",
+      "page": "Homepage",
+      "type": "ko",
+      "detail": "Pas de réponse après 8s",
+      "diagnostics": {
+        "brand": "Ford FR",
+        "page": "Homepage",
+        "dns_elapsed": 0.087,
+        "ip": "63.180.121.144",
+        "error_type": "TIMEOUT"
+      },
+      "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260621_070255.png",
+      "is_reference": false
+    },
+    {
+      "time": "21/06/2026 07:05:05",
+      "brand": "Ford FR",
+      "page": "Homepage",
+      "type": "recovery",
+      "detail": "Retour en ligne",
+      "is_reference": false
+    },
+    {
+      "time": "21/06/2026 07:16:35",
+      "brand": "Ford FR",
+      "page": "Formulaire",
+      "type": "ko",
+      "detail": "Réponse très lente : 7.96s",
+      "diagnostics": {
+        "brand": "Ford FR",
+        "page": "Formulaire",
+        "dns_elapsed": 0.016,
+        "ip": "51.102.168.47",
+        "http_status": 200,
+        "elapsed_http": 7.96,
+        "elapsed_total": 7.97,
+        "redirect_count": 0,
+        "final_url": "https://www.ford-reprise.fr/form",
+        "headers": {
+          "server": "—",
+          "content-type": "text/html; charset=UTF-8",
+          "x-cache": "—",
+          "cf-ray": "—"
+        },
+        "error_type": "VERY_SLOW"
+      },
+      "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Formulaire_20260621_071735.png",
+      "is_reference": false
+    },
+    {
+      "time": "21/06/2026 07:16:35",
+      "brand": "Ford FR",
+      "page": "Homepage",
+      "type": "ko",
+      "detail": "Pas de réponse après 8s",
+      "diagnostics": {
+        "brand": "Ford FR",
+        "page": "Homepage",
+        "dns_elapsed": 0.082,
+        "ip": "51.102.168.47",
+        "error_type": "TIMEOUT"
+      },
+      "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260621_071744.png",
+      "is_reference": false
+    },
+    {
+      "time": "21/06/2026 07:19:17",
+      "brand": "Ford FR",
+      "page": "Formulaire",
+      "type": "recovery",
+      "detail": "Retour en ligne",
+      "is_reference": false
+    },
+    {
+      "time": "21/06/2026 07:33:07",
+      "brand": "Ford FR",
+      "page": "Homepage",
+      "type": "ko",
+      "detail": "Pas de réponse après 8s",
+      "diagnostics": {
+        "brand": "Ford FR",
+        "page": "Homepage",
+        "dns_elapsed": 0.086,
+        "ip": "3.69.153.2",
+        "error_type": "TIMEOUT"
+      },
+      "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260621_073408.png",
+      "is_reference": false
+    },
+    {
+      "time": "21/06/2026 07:35:57",
+      "brand": "Ford FR",
+      "page": "Homepage",
+      "type": "recovery",
+      "detail": "Retour en ligne",
+      "is_reference": false
+    },
+    {
+      "time": "21/06/2026 11:51:20",
+      "brand": "Peugeot FR",
+      "page": "Immat",
+      "type": "ko",
+      "detail": "Erreur décodage immat : TimeoutError",
+      "diagnostics": {
+        "brand": "Peugeot FR",
+        "page": "Immat",
+        "error_type": "IMMAT_ERROR",
+        "error_detail": "Locator.click: Timeout 8000ms exceeded.\nCall log:\nwaiting for locator(\"#js-submit-plate\")\n  -   locator resolved to <button type=\"button\" id=\"js-submit-plate\" data-event-ca…>…</button>\n  - attempting "
+      },
+      "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Peugeot_FR_Immat_20260621_115310.png"
+    },
+    {
+      "time": "21/06/2026 11:53:53",
+      "brand": "Peugeot FR",
+      "page": "Immat",
+      "type": "recovery",
+      "detail": "Décodage immat rétabli"
+    },
+    {
+      "time": "21/06/2026 12:10:10",
+      "brand": "Ford FR",
+      "page": "Homepage",
+      "type": "ko",
+      "detail": "Pas de réponse après 8s",
+      "diagnostics": {
+        "brand": "Ford FR",
+        "page": "Homepage",
+        "dns_elapsed": 0.087,
+        "ip": "51.102.168.47",
+        "error_type": "TIMEOUT"
+      },
+      "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260621_121111.png",
+      "is_reference": false
+    },
+    {
+      "time": "21/06/2026 12:10:10",
+      "brand": "Ford FR",
+      "page": "Formulaire",
+      "type": "ko",
+      "detail": "Pas de réponse après 8s",
+      "diagnostics": {
+        "brand": "Ford FR",
+        "page": "Formulaire",
+        "dns_elapsed": 0.075,
+        "ip": "51.102.168.47",
+        "error_type": "TIMEOUT"
+      },
+      "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Formulaire_20260621_121132.png",
+      "is_reference": false
+    },
+    {
+      "time": "21/06/2026 12:13:01",
+      "brand": "Ford FR",
+      "page": "Formulaire",
+      "type": "recovery",
+      "detail": "Retour en ligne",
+      "is_reference": false
+    }
+  ],
   "chart_data": {
     "Opel PT:Homepage": [
       {
