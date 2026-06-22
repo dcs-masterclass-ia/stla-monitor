@@ -1756,8 +1756,7 @@ function initSSE() {
     _sseSource.onmessage = async (e) => {
       try {
         let nd = JSON.parse(e.data);
-        nd = await mergeChartBackup(nd);
-        // History vient directement de Render via SSE — pas besoin de GitHub
+        // History et chart_data viennent directement de Render via SSE
         data = nd;
         const t = data.server_time || data.updated_at || "";
         document.getElementById("ts-label").textContent = toParisTime(t);
