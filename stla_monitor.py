@@ -128,6 +128,8 @@ BRANDS = {
     "DS UK":        {"Homepage": "https://www.tradein.dsautomobiles.co.uk",      "Parcours": "https://www.tradein.dsautomobiles.co.uk/model"},
     # ── OEM ──
     "Ford FR":      {"Homepage": "https://www.ford-reprise.fr/",           "Formulaire": "https://www.ford-reprise.fr/form"},
+    "Ford FR PPR":  {"Homepage": "https://test-ppr-oem-site-factory.shakazoola.com/", "Formulaire": "https://test-ppr-oem-site-factory.shakazoola.com/form"},
+    "Motor ES":     {"Homepage": "https://tax.motor.es/?layout=iframe"},
     # ── RÉFÉRENCES ──
     "Aramisauto":   {"Homepage": "https://www.aramisauto.com/reprise/"},
 }
