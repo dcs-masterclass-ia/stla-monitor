@@ -863,6 +863,14 @@ function stats() {
 // ── RENDER ──
 function render() {
   if (!brand || !data) return;
+  const pages = Object.entries((data.statuses || {})[brand] || {});
+  if(!pages.length) {
+    document.getElementById("kpi-row").innerHTML = `<div style="padding:2rem;color:var(--text-3);font-size:13px;font-weight:600;text-align:center;grid-column:1/-1">En attente des premières données…<br><span style="font-size:11px;font-weight:400">Le prochain cycle (~3 min) mettra à jour ce tableau de bord</span></div>`;
+    document.getElementById("master-row").style.display = "none";
+    if(window.lucide) lucide.createIcons();
+    return;
+  }
+  document.getElementById("master-row").style.display = "";
   renderEP(); renderKPIs(); renderGauge(); renderChart(); renderMacro(); detectTrend(); renderHistory();
   if (window.lucide) lucide.createIcons();
 }
