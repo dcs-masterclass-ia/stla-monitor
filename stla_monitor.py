@@ -318,11 +318,23 @@ def init_github():
                 last_event = {}
                 for h in all_today:
                     k = f"{h.get('brand')}:{h.get('page')}"
-                    last_event[k] = h.get("type")
-                for k, etype in last_event.items():
+                    last_event[k] = h
+                for k, last_h in last_event.items():
+                    etype = last_h.get("type")
                     incident_active[k] = (etype == "ko")
                     if etype == "ko":
-                        log.info(f"[GitHub] Incident actif restauré : {k}")
+                        # Vérifier si une recovery a été envoyée dans les 10 dernières minutes
+                        ko_time = last_h.get("time","")
+                        now_dt = datetime.now(TZ_PARIS)
+                        try:
+                            ko_dt = datetime.strptime(ko_time, "%d/%m/%Y %H:%M:%S").replace(tzinfo=TZ_PARIS)
+                            if (now_dt - ko_dt).total_seconds() > 600:
+                                # KO vieux de plus de 10 min sans recovery → vraiment actif
+                                log.info(f"[GitHub] Incident actif restauré : {k} (KO à {ko_time})")
+                            else:
+                                log.info(f"[GitHub] KO récent restauré : {k} (KO à {ko_time})")
+                        except Exception:
+                            log.info(f"[GitHub] Incident actif restauré : {k}")
                 log.info(f"[GitHub] incident_active reconstruit : {sum(v for v in incident_active.values())} actifs")
 
                 # Réconciliation immédiate — vérifier les brands avec KO actif
@@ -330,6 +342,7 @@ def init_github():
                 if active_keys:
                     log.info(f"[Réconciliation] Vérification de {len(active_keys)} incidents actifs...")
                     now_r = datetime.now(TZ_PARIS).strftime("%d/%m/%Y %H:%M:%S")
+                    now_dt = datetime.now(TZ_PARIS)
                     for key in active_keys:
                         try:
                             parts = key.split(":")
@@ -340,6 +353,21 @@ def init_github():
                             url_r = BRANDS.get(brand_r, {}).get(page_r)
                             if not url_r:
                                 continue
+
+                            # Vérifier si une recovery a déjà été envoyée dans les 10 dernières minutes
+                            with history_lock:
+                                recent_recovery = any(
+                                    h.get("brand") == brand_r and
+                                    h.get("page") == page_r and
+                                    h.get("type") == "recovery" and
+                                    (now_dt - datetime.strptime(h.get("time","01/01/2000 00:00:00"), "%d/%m/%Y %H:%M:%S")).total_seconds() < 600
+                                    for h in history[-50:]
+                                )
+                            if recent_recovery:
+                                incident_active[key] = False
+                                log.info(f"[Réconciliation] Recovery récente détectée pour {key} — pas de doublon")
+                                continue
+
                             ok_r, reason_r, elapsed_r, details_r = check_url(brand_r, page_r, url_r)
                             if ok_r:
                                 incident_active[key] = False
@@ -481,29 +509,31 @@ def supabase_insert(incident):
         log.error(f"[Supabase] Exception : {e}")
 
 def archive_incident(incident):
-    """Archive un incident dans incidents/YYYY-MM-DD/Brand_Name.json sur GitHub"""
+    """Archive un incident dans incidents/YYYY-MM-DD/Brand_Name.json sur GitHub — avec déduplification."""
     if not gh_repo:
         return
     try:
         date = datetime.now(TZ_PARIS).strftime("%Y-%m-%d")
         brand_slug = incident["brand"].replace(" ", "_")
         path = f"incidents/{date}/{brand_slug}.json"
+        inc_key = f"{incident.get('time')}|{incident.get('page')}|{incident.get('type')}"
         try:
             existing = gh_repo.get_contents(path)
             data = json.loads(existing.decoded_content.decode("utf-8"))
+            # Dédupliquer — ne pas ajouter si déjà présent
+            existing_keys = {f"{h.get('time')}|{h.get('page')}|{h.get('type')}" for h in data}
+            if inc_key in existing_keys:
+                log.info(f"[Archive] Doublon ignoré : {inc_key}")
+                return
             data.append(incident)
             gh_repo.update_file(path, f"incident {brand_slug} {date}",
                                 json.dumps(data, ensure_ascii=False, indent=2), existing.sha)
         except Exception:
             gh_repo.create_file(path, f"incident {brand_slug} {date}",
                                 json.dumps([incident], ensure_ascii=False, indent=2))
-        log.info(f"[Archive] {incident['brand']} / {incident['page']} archivé")
+        log.info(f"[Archive] {incident['brand']} / {incident['page']} / {incident['type']} archivé")
     except Exception as e:
         log.error(f"[Archive] Erreur : {e}")
-    try:
-        requests.post(TEAMS_WEBHOOK, json={"text": message}, timeout=10, verify=False)
-    except Exception as e:
-        log.error(f"[Teams] Erreur alerte raw : {e}")
 
 def push_status(statuses, retry=3):
     if not gh_repo:
