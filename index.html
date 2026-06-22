@@ -1019,13 +1019,26 @@ function renderChart() {
 
   // Formatter les labels X selon le mode
   let labelsFmt;
-  let xTickLimit;
+  // Callback pour labels fixes selon le mode
+  let xTickCallback;
+
   if (currentPeriod === "live") {
-    labelsFmt = labels.map(t => (t||"").substring(11,16));
-    xTickLimit = 8;
+    // Labels HH:MM bruts pour le tooltip — on affiche les heures rondes + demi-heures
+    labelsFmt = labels.map(t => tsToParisHHMM(t));
+    xTickCallback = (val, idx) => {
+      const l = labelsFmt[idx] || "";
+      const [hh, mm] = l.split(":").map(Number);
+      // Afficher uniquement HH:00 et HH:30
+      return (mm === 0 || mm === 30) ? l : null;
+    };
   } else if (currentPeriod === "24h") {
-    labelsFmt = labels.map(t => (t||"").substring(11,16));
-    xTickLimit = 12;
+    labelsFmt = labels.map(t => tsToParisHHMM(t));
+    xTickCallback = (val, idx) => {
+      const l = labelsFmt[idx] || "";
+      const [hh, mm] = l.split(":").map(Number);
+      // Afficher uniquement les heures paires : 00h, 02h, 04h... 22h
+      return (mm === 0 && hh % 2 === 0) ? (String(hh).padStart(2,"0") + "h") : null;
+    };
   } else if (currentPeriod === "7j") {
     // Agrégé par heure — afficher jour + heure
     labelsFmt = labels.map(t => {
@@ -1034,14 +1047,20 @@ function renderChart() {
       const hour = t.substring(11,13) + "h";
       return day + " " + hour;
     });
-    xTickLimit = 14;
+    xTickCallback = (val, idx) => {
+      const l = labelsFmt[idx] || "";
+      // Afficher toutes les 6h (00h, 06h, 12h, 18h)
+      const hourMatch = l.match(/(\d{2})h$/);
+      if(!hourMatch) return null;
+      return parseInt(hourMatch[1]) % 6 === 0 ? l : null;
+    };
   } else if (currentPeriod === "30j") {
     // Agrégé par jour — afficher DD/MM
     labelsFmt = labels.map(t => { if(!t) return ""; const m=t.match(/(\d{2})\/(\d{2})/); return m?m[0]:""; });
-    xTickLimit = 10;
+    xTickCallback = (val, idx) => labelsFmt[idx] || null;
   } else {
-    labelsFmt = labels.map(t => (t||"").substring(11,16));
-    xTickLimit = 10;
+    labelsFmt = labels.map(t => tsToParisHHMM(t));
+    xTickCallback = (val, idx) => labelsFmt[idx] || null;
   }
 
   // Légende interactive avec toggle
@@ -1111,10 +1130,10 @@ function renderChart() {
         ticks:{
           font:{size:10,family:'Plus Jakarta Sans'},
           color:"#94a3b8",
-          maxTicksLimit: xTickLimit,
           maxRotation:0,
           minRotation:0,
-          callback: (val, idx) => labelsFmt[idx] || ""
+          autoSkip:false,
+          callback: xTickCallback
         }
       },
       y:{
