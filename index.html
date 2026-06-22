@@ -1485,9 +1485,9 @@ async function fetchStatus(){
     if(JSON.stringify(nd.updated_at)===JSON.stringify(data&&data.updated_at))return;
     nd = await mergeChartBackup(nd);
     data=nd;
-    document.getElementById("ts-label").textContent=""+(data.server_time||data.updated_at||"").split(" ")[1];
+    document.getElementById("ts-label").textContent=toParisTime(data.server_time||data.updated_at||"");
     const tlm = document.getElementById("ts-label-main");
-    if(tlm) tlm.textContent = "MAJ " + (data.server_time||data.updated_at||"").split(" ")[1];
+    if(tlm) tlm.textContent = toParisLabel(data.server_time||data.updated_at||"");
     document.getElementById("sb-ts").textContent=data.updated_at||"";
     document.getElementById("pulse").className="pulse-dot";
     updateDots();
@@ -1499,9 +1499,9 @@ async function fetchStatus(){
       if(JSON.stringify(nd.updated_at)===JSON.stringify(data&&data.updated_at))return;
       nd = await mergeChartBackup(nd);
       data=nd;
-      document.getElementById("ts-label").textContent=""+(data.updated_at||"").split(" ")[1];
+      document.getElementById("ts-label").textContent=toParisTime(data.updated_at||"");
       const tlm = document.getElementById("ts-label-main");
-      if(tlm) tlm.textContent = "MAJ " + (data.updated_at||"").split(" ")[1];
+      if(tlm) tlm.textContent = toParisLabel(data.updated_at||"");
       document.getElementById("sb-ts").textContent=data.updated_at||"";
       document.getElementById("pulse").className="pulse-dot";
       updateDots();if(brand)render(); if(currentGroup==="synth")renderSynth();
@@ -2043,6 +2043,23 @@ async function saveAlertConfig(id) {
 }
 
 // Vérif token au load
+
+function toParisTime(str) {
+  if(!str) return "";
+  // Parser DD/MM/YYYY HH:MM:SS
+  const m = str.match(/(\d{2})\/(\d{2})\/(\d{4})\s+(\d{2}):(\d{2}):(\d{2})/);
+  if(!m) return str;
+  const utcDate = new Date(Date.UTC(+m[3], +m[2]-1, +m[1], +m[4], +m[5], +m[6]));
+  return utcDate.toLocaleTimeString("fr-FR", {timeZone:"Europe/Paris", hour:"2-digit", minute:"2-digit", second:"2-digit"});
+}
+function toParisLabel(str) {
+  if(!str) return "";
+  const m = str.match(/(\d{2})\/(\d{2})\/(\d{4})\s+(\d{2}):(\d{2}):(\d{2})/);
+  if(!m) return str;
+  const utcDate = new Date(Date.UTC(+m[3], +m[2]-1, +m[1], +m[4], +m[5], +m[6]));
+  return "MAJ " + utcDate.toLocaleTimeString("fr-FR", {timeZone:"Europe/Paris", hour:"2-digit", minute:"2-digit"}) + " (Paris)";
+}
+
 window.addEventListener("load",()=>{
   if(window.lucide)lucide.createIcons();
   buildNav();
@@ -2086,9 +2103,9 @@ function initSSE() {
         // History vient directement de Render via SSE — pas besoin de GitHub
         data = nd;
         const t = data.server_time || data.updated_at || "";
-        document.getElementById("ts-label").textContent = t.split(" ")[1] || "";
+        document.getElementById("ts-label").textContent = toParisTime(t);
         const tlm = document.getElementById("ts-label-main");
-        if(tlm) tlm.textContent = "MAJ " + (t.split(" ")[1] || "");
+        if(tlm) tlm.textContent = toParisLabel(t);
         document.getElementById("sb-ts").textContent = t;
         document.getElementById("pulse").className = "pulse-dot";
         updateDots();
