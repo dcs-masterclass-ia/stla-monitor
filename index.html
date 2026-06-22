@@ -1020,54 +1020,97 @@ function renderChart() {
   }
 
   // ── Construire les ticks fixes selon le mode
-  // Retourne un tableau d'objets {idx, label} — idx = index dans tsArr
+  // Stratégie : pour chaque heure/slot cible, trouver l'index du point le plus proche
+  // Pas besoin que les données tombent pile sur HH:00
   function buildFixedTicks() {
+    if(!tsArr.length) return [];
     const ticks = [];
+
+    // Convertir tsArr en tableau de minutes depuis minuit (pour comparaison rapide)
+    const toMin = t => {
+      const hm = extractHHMM(t);
+      return hm ? hm.hh * 60 + hm.mm : -1;
+    };
+    // Trouver l'index le plus proche d'une heure cible (en minutes depuis minuit)
+    // en tenant compte du passage minuit avec un offset jour
+    const closestIdx = (targetMin) => {
+      let best = -1, bestDiff = Infinity;
+      tsArr.forEach((t, i) => {
+        const m = toMin(t);
+        if(m < 0) return;
+        const diff = Math.abs(m - targetMin);
+        if(diff < bestDiff) { bestDiff = diff; best = i; }
+      });
+      return bestDiff < 20 ? best : -1; // tolérance 20 min
+    };
+
     if(currentPeriod === "live") {
-      // Toutes les 30 min : HH:00 et HH:30
-      tsArr.forEach((t,i) => {
-        const hm = extractHHMM(t);
-        if(!hm) return;
-        if(hm.mm === 0 || hm.mm === 30) {
-          // Eviter doublons (si deux points tombent à HH:00 presque)
-          if(!ticks.length || ticks[ticks.length-1].label !== `${String(hm.hh).padStart(2,"0")}:${String(hm.mm).padStart(2,"0")}`) {
-            ticks.push({idx:i, label:`${String(hm.hh).padStart(2,"0")}:${String(hm.mm).padStart(2,"0")}`});
-          }
+      // Toutes les 30 min dans la fenêtre — trouver les slots HH:00 et HH:30
+      const firstMin = toMin(tsArr[0]);
+      const lastMin = toMin(tsArr[tsArr.length-1]);
+      // Gérer le passage minuit
+      let start = Math.ceil(firstMin / 30) * 30;
+      const slots = [];
+      for(let m = start; m <= lastMin + 30; m += 30) {
+        slots.push(m % (24*60));
+      }
+      const seen = new Set();
+      slots.forEach(targetMin => {
+        const hh = Math.floor(targetMin / 60) % 24;
+        const mm = targetMin % 60;
+        const label = `${String(hh).padStart(2,"0")}:${String(mm).padStart(2,"0")}`;
+        if(seen.has(label)) return;
+        // Trouver le point le plus proche de ce slot (tolérance 20 min)
+        let best = -1, bestDiff = Infinity;
+        tsArr.forEach((t, i) => {
+          const m = toMin(t);
+          if(m < 0) return;
+          const diff = Math.abs(m - targetMin);
+          if(diff < bestDiff) { bestDiff = diff; best = i; }
+        });
+        if(best >= 0 && bestDiff <= 20) {
+          seen.add(label);
+          ticks.push({idx: best, label});
         }
       });
     } else if(currentPeriod === "24h") {
-      // Toutes les 2h : 00h, 02h, 04h... 22h
+      // Toutes les 2h — slots 00h, 02h... 22h
       const seen = new Set();
-      tsArr.forEach((t,i) => {
-        const hm = extractHHMM(t);
-        if(!hm) return;
-        if(hm.mm === 0 && hm.hh % 2 === 0 && !seen.has(hm.hh)) {
-          seen.add(hm.hh);
-          ticks.push({idx:i, label:`${String(hm.hh).padStart(2,"0")}h`});
+      for(let hh = 0; hh < 24; hh += 2) {
+        const targetMin = hh * 60;
+        const label = `${String(hh).padStart(2,"0")}h`;
+        if(seen.has(label)) continue;
+        let best = -1, bestDiff = Infinity;
+        tsArr.forEach((t, i) => {
+          const m = toMin(t);
+          if(m < 0) return;
+          const diff = Math.abs(m - targetMin);
+          if(diff < bestDiff) { bestDiff = diff; best = i; }
+        });
+        if(best >= 0 && bestDiff <= 70) { // tolérance 70 min (intervalle = 120 min)
+          seen.add(label);
+          ticks.push({idx: best, label});
         }
-      });
+      }
     } else if(currentPeriod === "7j") {
       // Un label par jour — au premier point du jour
       const seen = new Set();
-      tsArr.forEach((t,i) => {
+      tsArr.forEach((t, i) => {
         const d = extractDate(t);
         if(!d) return;
-        const key = `${d.dd}/${d.mo}`;
-        if(!seen.has(key)) {
-          seen.add(key);
-          ticks.push({idx:i, label:key});
-        }
+        const key = `${String(d.dd).padStart(2,"0")}/${String(d.mo).padStart(2,"0")}`;
+        if(!seen.has(key)) { seen.add(key); ticks.push({idx: i, label: key}); }
       });
     } else if(currentPeriod === "30j") {
       // Un label tous les 5 jours
       const seen = new Set();
-      tsArr.forEach((t,i) => {
+      tsArr.forEach((t, i) => {
         const d = extractDate(t);
         if(!d) return;
         const key = `${String(d.dd).padStart(2,"0")}/${String(d.mo).padStart(2,"0")}`;
-        if(!seen.has(key) && (d.dd === 1 || d.dd % 5 === 0)) {
+        if(!seen.has(key) && (d.dd === 1 || d.dd % 5 === 1)) {
           seen.add(key);
-          ticks.push({idx:i, label:key});
+          ticks.push({idx: i, label: key});
         }
       });
     }
@@ -1075,8 +1118,8 @@ function renderChart() {
   }
 
   const fixedTicks = buildFixedTicks();
-  // Map idx→label pour le callback
-  const tickMap = new Map(fixedTicks.map(t=>[t.idx, t.label]));
+  // Map idx→label pour le callback Chart.js
+  const tickMap = new Map(fixedTicks.map(t => [t.idx, t.label]));
 
   // Tooltip title : heure exacte du point
   function tooltipTitle(items) {
