@@ -291,7 +291,38 @@ def init_github():
                 history.clear()
                 history.extend(merged[-MAX_HISTORY:])
                 log.info(f"[GitHub] Historique final : {len(history)} entrées")
-                # Reconstruire incident_active
+
+            # Reconstruire incident_active depuis les incidents/ du jour
+            try:
+                from datetime import datetime as _dt
+                today = _dt.now(TZ_PARIS).strftime("%Y-%m-%d")
+                today_url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/incidents/{today}"
+                today_req = urllib.request.Request(today_url, headers={
+                    "Authorization": f"token {GITHUB_TOKEN}",
+                    "Accept": "application/vnd.github.v3+json"
+                })
+                with urllib.request.urlopen(today_req, timeout=10) as r:
+                    files = json.loads(r.read())
+                all_today = []
+                for f in files:
+                    raw_url = f"https://raw.githubusercontent.com/{GITHUB_REPO}/main/incidents/{today}/{f['name']}"
+                    req2 = urllib.request.Request(raw_url, headers={"Authorization": f"token {GITHUB_TOKEN}"})
+                    with urllib.request.urlopen(req2, timeout=10) as r2:
+                        all_today.extend(json.loads(r2.read()))
+                all_today.sort(key=lambda h: h.get("time",""))
+                # Trouver le dernier événement par brand:page
+                last_event = {}
+                for h in all_today:
+                    k = f"{h.get('brand')}:{h.get('page')}"
+                    last_event[k] = h.get("type")
+                for k, etype in last_event.items():
+                    incident_active[k] = (etype == "ko")
+                    if etype == "ko":
+                        log.info(f"[GitHub] Incident actif restauré : {k}")
+                log.info(f"[GitHub] incident_active reconstruit : {sum(v for v in incident_active.values())} actifs")
+            except Exception as e:
+                log.warning(f"[GitHub] Reconstruction incident_active depuis history: {e}")
+                # Fallback sur history en mémoire
                 last_event = {}
                 for h in history:
                     k = f"{h.get('brand')}:{h.get('page')}"
@@ -299,9 +330,7 @@ def init_github():
                 for k, etype in last_event.items():
                     if etype == "ko":
                         incident_active[k] = True
-                        log.info(f"[GitHub] Incident actif restauré : {k}")
-            else:
-                log.info("[GitHub] Aucun historique trouvé")
+                        log.info(f"[GitHub] Incident actif restauré (fallback) : {k}")
         except Exception as e:
             log.error(f"[GitHub] Erreur chargement : {e}")
     except Exception as e:
