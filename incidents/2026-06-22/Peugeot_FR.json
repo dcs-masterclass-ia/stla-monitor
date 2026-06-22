@@ -19,5 +19,19 @@
     "page": "Immat",
     "type": "recovery",
     "detail": "Retour en ligne"
+  },
+  {
+    "time": "22/06/2026 16:58:21",
+    "brand": "Peugeot FR",
+    "page": "Immat",
+    "type": "ko",
+    "detail": "Erreur décodage immat : TimeoutError",
+    "diagnostics": {
+      "brand": "Peugeot FR",
+      "page": "Immat",
+      "error_type": "IMMAT_ERROR",
+      "error_detail": "Locator.click: Timeout 8000ms exceeded.\nCall log:\nwaiting for locator(\"#js-submit-plate\")\n  -   locator resolved to <button type=\"button\" id=\"js-submit-plate\" data-event-ca…>…</button>\n  - attempting "
+    },
+    "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Peugeot_FR_Immat_20260622_165941.png"
   }
 ]
