@@ -917,7 +917,8 @@ function renderChart() {
   // koTimes sur tout l'historique disponible (pas seulement la période filtrée)
   const allHist = (data.history||[]).filter(h=>h.brand===brand);
   const koH = allHist.filter(h=>h.type==="ko");
-  const koTimes = new Set(koH.map(h=>(h.time||"").substring(0,16))); // DD/MM/YYYY HH:MM
+  // Index des timestamps KO sous forme DD/MM/YYYY HH:MM
+  const koTimes = new Set(koH.map(h=>(h.time||"").substring(0,16)));
 
   const rawDs = pages.map(([page]) => filterPts((data.chart_data||{})[brand+":"+page]||[]));
   let masterT = rawDs.length > 0 ? rawDs[0].map(p=>p.time) : [];
@@ -930,18 +931,9 @@ function renderChart() {
 
   const datasets = pages.map(([page],i) => {
     const pts = (rawDs[i]||[]).filter((_,idx)=>sampled.has(idx));
-    const pointColors = pts.map(p => {
-      const prefix = (p.time||"").substring(0,16);
-      return koTimes.has(prefix) ? "#e11d48" : "transparent";
-    });
-    const pointSizes = pts.map(p => {
-      const prefix = (p.time||"").substring(0,16);
-      return koTimes.has(prefix) ? 7 : 0;
-    });
-    const pointBorders = pts.map(p => {
-      const prefix = (p.time||"").substring(0,16);
-      return koTimes.has(prefix) ? "#fff" : "transparent";
-    });
+    const pointColors = pts.map(() => "transparent");
+    const pointSizes = pts.map(() => 0);
+    const pointBorders = pts.map(() => "transparent");
     return {
       label: page,
       data: pts.map(p=>p.elapsed),
@@ -949,10 +941,7 @@ function renderChart() {
       borderColor: colors[i]||"#888",
       backgroundColor: "transparent",
       tension: 0.4,
-      _koSizes: pointSizes,
-      _koColors: pointColors,
-      _koBorders: pointBorders,
-      pointRadius: _showKO ? pointSizes : pointSizes.map(() => 0),
+      pointRadius: 0,
       pointBackgroundColor: pointColors,
       pointBorderColor: pointBorders,
       pointBorderWidth: 2,
@@ -965,6 +954,37 @@ function renderChart() {
   });
 
   const labels = datasets[0]?datasets[0]._t||[]:[];
+
+  // Dataset scatter dédié aux points KO — visible sur toutes les courbes
+  const koScatterData = [];
+  if(datasets[0]) {
+    datasets[0]._t.forEach((t, i) => {
+      const prefix = (t||"").substring(0,16);
+      if(koTimes.has(prefix)) {
+        // Ajouter un point pour chaque dataset (page) à ce timestamp
+        datasets.forEach((ds, di) => {
+          const val = ds.data[i];
+          if(val !== undefined) {
+            koScatterData.push({x: i, y: val, _ds: di});
+          }
+        });
+      }
+    });
+  }
+
+  const koDataset = {
+    label: "Incident KO",
+    data: koScatterData.map(p => p.y),
+    _koIndices: koScatterData.map(p => p.x),
+    type: "scatter",
+    pointRadius: _showKO ? koScatterData.map(() => 8) : koScatterData.map(() => 0),
+    pointBackgroundColor: "#e11d48",
+    pointBorderColor: "#fff",
+    pointBorderWidth: 2,
+    showLine: false,
+    order: 0,
+    hidden: !_showKO
+  };
 
   // Formatter les labels X selon le mode
   let labelsFmt;
@@ -1097,7 +1117,7 @@ function renderChart() {
     yAxisInst = new Chart(document.getElementById("yAxisChart"),{type:"line",data:{labels:labelsFmt,datasets:[]},options:yOpts});
   }
   if (!lineChart) {
-    lineChart = new Chart(container.querySelector("canvas"),{type:"line",data:{labels:labelsFmt,datasets},options:mOpts});
+    lineChart = new Chart(container.querySelector("canvas"),{type:"line",data:{labels:labelsFmt,datasets:[...datasets, koDataset]},options:mOpts});
     window._lineChart = lineChart;
     setTimeout(()=>scroll.scrollLeft=scroll.scrollWidth,100);
   } else {
@@ -1132,19 +1152,13 @@ function toggleKO() {
   _showKO = !_showKO;
   const chart = window._lineChart;
   if(!chart) return;
-  chart.data.datasets.forEach(ds => {
-    if(!ds._koSizes) return;
-    if(_showKO) {
-      // Restaurer les points KO originaux
-      ds.pointRadius = ds._koSizes;
-      ds.pointBackgroundColor = ds._koColors;
-      ds.pointBorderColor = ds._koBorders;
-    } else {
-      // Masquer tous les points KO
-      ds.pointRadius = ds._koSizes.map(() => 0);
-    }
-  });
-  chart.update("none");
+  // Le dataset KO est toujours le dernier
+  const koDs = chart.data.datasets[chart.data.datasets.length - 1];
+  if(koDs && koDs.label === "Incident KO") {
+    koDs.hidden = !_showKO;
+    koDs.pointRadius = koDs.pointRadius.map(() => _showKO ? 8 : 0);
+    chart.update("none");
+  }
   document.getElementById("leg-ko")?.classList.toggle("muted", !_showKO);
 }
 
