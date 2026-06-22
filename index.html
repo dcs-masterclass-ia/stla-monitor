@@ -1223,6 +1223,59 @@ function onChartClick(evt, elements) {
   if(found) found.scrollIntoView({behavior:"smooth", block:"center"});
 }
 
+function renderMacro() {
+  const hist = filterHist((data.history||[]).filter(h=>h.brand===brand&&h.type==="ko"));
+  const abs = new Array(24).fill(0);
+  hist.forEach(h=>{const t=parseDateStr(h.time);if(t)abs[t.getHours()]++;});
+  const now=new Date(),cur=now.getHours();
+  const labels=[],counts=[];
+  for(let i=23;i>=0;i--){let h=cur-i;if(h<0)h+=24;labels.push(h+"h");counts.push(abs[h]);}
+  const opts={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.raw+" incident(s)"}}},layout:{padding:{top:10}},scales:{x:{grid:{display:false},border:{display:false},ticks:{font:{size:10,family:'Plus Jakarta Sans'},color:"#94a3b8"}},y:{grid:{color:"rgba(0,0,0,0.03)"},border:{display:false},suggestedMax:5,ticks:{font:{size:10,family:'Plus Jakarta Sans'},color:"#94a3b8",stepSize:1,precision:0}}}};
+  if(!macroInst){macroInst=new Chart(document.getElementById("macroChart"),{type:"bar",data:{labels,datasets:[{data:counts,backgroundColor:"rgba(225,29,72,0.75)",hoverBackgroundColor:"rgba(225,29,72,1)",borderRadius:4,borderSkipped:false,barPercentage:.6}]},options:opts});}
+  else{macroInst.data.labels=labels;macroInst.data.datasets[0].data=counts;macroInst.update("none");}
+}
+
+function detectTrend() {
+  const pages = Object.keys((data.statuses||{})[brand]||{});
+  const el = document.getElementById("trend-callout");
+  for(const page of pages){
+    const pts = filterPts((data.chart_data||{})[brand+":"+page]||[]).slice(-10);
+    if(pts.length<6)continue;
+    const e=pts.slice(0,3).map(p=>p.elapsed).reduce((a,b)=>a+b,0)/3;
+    const l=pts.slice(-3).map(p=>p.elapsed).reduce((a,b)=>a+b,0)/3;
+    if(l>e*1.5&&l>1.5){el.style.display="block";document.getElementById("trend-body").textContent=page+" : Lenteur détectée ("+e.toFixed(2)+"s → "+l.toFixed(2)+"s). Risque de timeout.";if(window.lucide)lucide.createIcons();return;}
+  }
+  el.style.display="none";
+}
+
+function renderHistory(){
+  const hist=filterHist((data.history||[]).filter(h=>h.brand===brand));
+  document.getElementById("inc-count").textContent=hist.length?"("+hist.length+" evt)":"";
+  const el=document.getElementById("history");
+  if(!hist.length){
+    const msg = currentPeriod === "live"
+      ? '<div style="padding:1rem;text-align:center;color:var(--text-3);font-size:12px;font-weight:700">Aucun incident dans les 2 dernières heures 🎉<br><span style="font-weight:500;opacity:.7">Consultez la vue 24h pour l\'historique complet</span></div>'
+      : '<div style="padding:1rem;text-align:center;color:var(--text-3);font-size:12px;font-weight:700">Aucun incident 🎉</div>';
+    el.innerHTML = msg;
+    return;
+  }
+  el.innerHTML=[...hist].reverse().map((h,ri)=>{
+    const d=dur(hist,hist.length-1-ri);
+    const ongoing=h.type==="ko"&&d===null;
+    const hhmm=(h.time||"").substring(11,16);
+    const dateStr=(h.time||"").substring(0,5); // DD/MM
+    const timeLabel = dateStr + " " + hhmm;
+    return '<div class="inc-row '+(ongoing?"ongoing":"") +'" onclick="highlightChartPoint(\''+hhmm+'\', this)" style="cursor:pointer">'+
+      '<div class="inc-top"><div class="inc-title">'+h.page+'</div><div class="inc-time">'+timeLabel+'</div></div>'+
+      '<div class="inc-mid"><div class="inc-sub">'+h.detail+(h.diagnostics&&h.diagnostics.error_type?" ("+h.diagnostics.error_type+")":"")+'</div>'+
+      '<div class="inc-chip '+(h.type==="recovery"?"ok":"ko")+'">'+(h.type==="recovery"?"RESOLVED":ongoing?"CRITICAL":"FAILURE")+'</div></div>'+
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px">'+
+      '<div>'+(d?'<div class="inc-dur res"><i data-lucide="check" style="width:9px;height:9px"></i> '+d+'</div>':ongoing?'<div class="inc-dur">En cours</div>':'<div class="inc-dur" style="opacity:.5">-</div>')+'</div>'+
+      (h.screenshot?'<a href="'+h.screenshot+'" target="_blank" style="color:var(--text-3)"><i data-lucide="camera" style="width:11px;height:11px"></i></a>':'')+'</div></div>';
+  }).join("");
+  if(window.lucide)lucide.createIcons();
+}
+
 const SUPA_URL  = "https://vqkzrvwwtiktofkpmelt.supabase.co";
 const SUPA_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZxa3pydnd3dGlrdG9ma3BtZWx0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE5NDAzMDQsImV4cCI6MjA5NzUxNjMwNH0.5ylyy1Voq9vfLHNO7Jk8leTV55VO4bkXg7oGGC2BNLo";
 let adminToken = localStorage.getItem("admin_token") || null;
