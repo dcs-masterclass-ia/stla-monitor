@@ -320,6 +320,36 @@ def init_github():
                     if etype == "ko":
                         log.info(f"[GitHub] Incident actif restauré : {k}")
                 log.info(f"[GitHub] incident_active reconstruit : {sum(v for v in incident_active.values())} actifs")
+
+                # Réconciliation immédiate — vérifier les brands avec KO actif
+                active_keys = [k for k, v in incident_active.items() if v]
+                if active_keys:
+                    log.info(f"[Réconciliation] Vérification de {len(active_keys)} incidents actifs...")
+                    now_r = datetime.now(TZ_PARIS).strftime("%d/%m/%Y %H:%M:%S")
+                    for key in active_keys:
+                        try:
+                            parts = key.split(":")
+                            if len(parts) < 2:
+                                continue
+                            brand_r = parts[0]
+                            page_r = parts[1]
+                            url_r = BRANDS.get(brand_r, {}).get(page_r)
+                            if not url_r:
+                                continue
+                            ok_r, reason_r, elapsed_r, details_r = check_url(brand_r, page_r, url_r)
+                            if ok_r:
+                                incident_active[key] = False
+                                inc_r = {"time": now_r, "brand": brand_r, "page": page_r,
+                                        "type": "recovery", "detail": "Retour en ligne (réconciliation démarrage)"}
+                                with history_lock:
+                                    history.append(inc_r)
+                                threading.Thread(target=archive_incident, args=(inc_r,), daemon=True).start()
+                                send_teams_alert(brand_r, page_r, url_r, reason_r, is_recovery=True, details=details_r)
+                                log.info(f"[Réconciliation] ✅ Recovery envoyée : {key}")
+                            else:
+                                log.info(f"[Réconciliation] ❌ Toujours KO : {key}")
+                        except Exception as e:
+                            log.error(f"[Réconciliation] Erreur {key} : {e}")
             except Exception as e:
                 log.warning(f"[GitHub] Reconstruction incident_active depuis history: {e}")
                 # Fallback sur history en mémoire
