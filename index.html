@@ -1311,14 +1311,39 @@ function detectTrend() {
   el.style.display="none";
 }
 
-function dur(hist,idx){
-  const inc=hist[idx];if(inc.type!=="ko")return null;
-  for(let j=idx+1;j<hist.length;j++){
-    const h=hist[j];
-    if(h.type==="recovery"&&h.page===inc.page&&h.brand===inc.brand){
-      try{const t1=parseDateStr(inc.time),t2=parseDateStr(h.time);const d=Math.round((t2-t1)/1000);if(d>0&&d<86400){if(d<60)return d+"s";if(d<3600)return Math.floor(d/60)+"m "+(d%60)+"s";return Math.floor(d/3600)+"h "+Math.floor((d%3600)/60)+"m";}}catch(e){}break;
+function dur(hist, idx) {
+  const inc = hist[idx]; if(inc.type !== "ko") return null;
+  // Chercher recovery dans tout l'historique de la brand
+  const fullHist = (data.history || []).filter(h => h.brand === inc.brand);
+  const incTime = parseDateStr(inc.time);
+  for(const h of fullHist) {
+    if(h.type === "recovery" && h.page === inc.page) {
+      const recTime = parseDateStr(h.time);
+      if(recTime && incTime && recTime > incTime) {
+        try {
+          const d = Math.round((recTime - incTime) / 1000);
+          if(d > 0 && d < 86400) {
+            if(d < 60) return d + "s";
+            if(d < 3600) return Math.floor(d/60) + "m " + (d%60) + "s";
+            return Math.floor(d/3600) + "h " + Math.floor((d%3600)/60) + "m";
+          }
+        } catch(e) {}
+        break;
+      }
     }
-  }return null;
+  }
+  // Fallback: si statut actuel OK => résolu
+  const cs = (data.statuses || {})[inc.brand]?.[inc.page];
+  if(cs && cs.ok) {
+    const ct = parseDateStr(cs.checked_at);
+    if(ct && incTime && ct > incTime) {
+      const d = Math.round((ct - incTime) / 1000);
+      if(d < 60) return d + "s";
+      if(d < 3600) return Math.floor(d/60) + "m " + (d%60) + "s";
+      return Math.floor(d/3600) + "h " + Math.floor((d%3600)/60) + "m";
+    }
+  }
+  return null;
 }
 
 function renderHistory(){
