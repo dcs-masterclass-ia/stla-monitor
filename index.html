@@ -931,144 +931,166 @@ function renderChart() {
   const pages = Object.entries((data.statuses||{})[brand]||{});
   const meta = getBrandMeta(brand);
   const colors = meta.colors;
-  const hist = filterHist((data.history||[]).filter(h=>h.brand===brand));
-  // koTimes sur tout l'historique disponible (pas seulement la période filtrée)
+
+  // ── Historique KO (tout l'historique dispo, pas filtré par période)
   const allHist = (data.history||[]).filter(h=>h.brand===brand);
   const koH = allHist.filter(h=>h.type==="ko");
-  // Index des timestamps KO sous forme DD/MM/YYYY HH:MM
   const koTimes = new Set(koH.map(h=>(h.time||"").substring(0,16)));
+  const koTimesMs = koH.map(h=>{ const t=parseDateStr(h.time); return t?t.getTime():null; }).filter(Boolean);
 
+  // ── Données brutes filtrées par période
   const rawDs = pages.map(([page]) => filterPts((data.chart_data||{})[brand+":"+page]||[]));
   let masterT = rawDs.length > 0 ? rawDs[0].map(p=>p.time) : [];
+
+  // ── Sous-échantillonnage (max 600 pts) en préservant les points proches des KO
   let sampled = new Set();
   const MAX = 600;
-
-  // Pour chaque incident KO, trouver le point chart le plus proche (±5 min)
-  const koTimesMs = koH.map(h => {
-    const t = parseDateStr(h.time);
-    return t ? t.getTime() : null;
-  }).filter(Boolean);
-
   if (masterT.length > MAX) {
     const f = Math.ceil(masterT.length/MAX);
     masterT.forEach((t,i) => {
-      const pt = parseDateStr(t);
-      const ptMs = pt ? pt.getTime() : null;
-      // Garder si proche d'un KO (±5 min = 300000ms)
-      const nearKO = ptMs && koTimesMs.some(koMs => Math.abs(ptMs - koMs) <= 300000);
+      const ptMs = parseDateStr(t)?.getTime();
+      const nearKO = ptMs && koTimesMs.some(k=>Math.abs(ptMs-k)<=300000);
       if(nearKO || i%f===0 || i===masterT.length-1) sampled.add(i);
     });
-  } else masterT.forEach((_,i)=>sampled.add(i));
+  } else {
+    masterT.forEach((_,i)=>sampled.add(i));
+  }
 
+  // ── Construire les datasets — data = {x: index, y: elapsed}
+  // On stocke les vrais timestamps dans _tsArr pour les ticks et tooltips
   const datasets = pages.map(([page],i) => {
     const pts = (rawDs[i]||[]).filter((_,idx)=>sampled.has(idx));
-    const pointColors = pts.map(() => "transparent");
-    const pointSizes = pts.map(() => 0);
-    const pointBorders = pts.map(() => "transparent");
-    return {
+    const ds = {
       label: page,
-      data: pts.map(p=>p.elapsed),
-      _t: pts.map(p=>p.time),
+      data: pts.map((p,xi)=>({x:xi, y:p.elapsed})),
+      _tsArr: pts.map(p=>p.time),
       borderColor: colors[i]||"#888",
       backgroundColor: "transparent",
       tension: 0.4,
       pointRadius: 0,
-      pointBackgroundColor: pointColors,
-      pointBorderColor: pointBorders,
-      pointBorderWidth: 2,
       pointHoverRadius: 8,
       pointHoverBackgroundColor: "#e11d48",
       borderWidth: 1.5,
       fill: false,
-      order: 1
+      order: 1,
+      parsing: false
     };
-  });
-
-  const labels = datasets[0]?datasets[0]._t||[]:[];
-
-  // Points KO sur chaque dataset de ligne
-  datasets.forEach(ds => {
-    const koR = [], koC = [], koB = [];
-    ds._t.forEach(t => {
-      const prefix = (t||"").substring(0,16);
+    // Marquer les points KO
+    const koR=[], koC=[], koB=[];
+    pts.forEach(p => {
+      const prefix = (p.time||"").substring(0,16);
       const isKO = koTimes.has(prefix);
       koR.push(isKO && _showKO ? 8 : 0);
       koC.push(isKO ? "#e11d48" : "transparent");
       koB.push(isKO ? "#fff" : "transparent");
     });
-    ds._koR = koR;
-    ds._koC = koC;
-    ds._koB = koB;
-    ds.pointRadius = _showKO ? koR : koR.map(() => 0);
+    ds._koR = koR; ds._koC = koC; ds._koB = koB;
+    ds.pointRadius = _showKO ? koR : koR.map(()=>0);
     ds.pointBackgroundColor = koC;
     ds.pointBorderColor = koB;
     ds.pointBorderWidth = 2;
-    ds.pointHoverRadius = 10;
+    return ds;
   });
 
   // Dataset fantôme pour la légende KO
   const koDataset = {
-    label: "Incident KO",
-    data: [],
-    pointRadius: [],
-    backgroundColor: "#e11d48",
-    borderColor: "#e11d48",
-    showLine: false,
-    hidden: false
+    label:"Incident KO", data:[], pointRadius:[],
+    backgroundColor:"#e11d48", borderColor:"#e11d48",
+    showLine:false, hidden:false, parsing:false
   };
 
-  // Formatter les labels X selon le mode
-  let labelsFmt;
-  // Callback pour labels fixes selon le mode
-  let xTickCallback;
+  // ── Référence timestamps depuis le premier dataset
+  const tsArr = datasets[0]?datasets[0]._tsArr||[]:[];
+  const N = tsArr.length;
 
-  if (currentPeriod === "live") {
-    // Timestamps déjà en heure Paris — lire HH:MM directement
-    labelsFmt = labels.map(t => (t||"").substring(11,16));
-    xTickCallback = (val, idx) => {
-      const l = labelsFmt[idx] || "";
-      const parts = l.split(":");
-      if(parts.length < 2) return null;
-      const hh = parseInt(parts[0]), mm = parseInt(parts[1]);
-      // Afficher uniquement HH:00 et HH:30
-      return (mm === 0 || mm === 30) ? l : null;
-    };
-  } else if (currentPeriod === "24h") {
-    // Timestamps déjà en heure Paris — lire HH:MM directement
-    labelsFmt = labels.map(t => (t||"").substring(11,16));
-    xTickCallback = (val, idx) => {
-      const l = labelsFmt[idx] || "";
-      const parts = l.split(":");
-      if(parts.length < 2) return null;
-      const hh = parseInt(parts[0]), mm = parseInt(parts[1]);
-      // Afficher uniquement les heures paires : 00h, 02h, 04h... 22h
-      return (mm === 0 && hh % 2 === 0) ? (String(hh).padStart(2,"0") + "h") : null;
-    };
-  } else if (currentPeriod === "7j") {
-    // Agrégé par heure — afficher jour + heure (déjà en Paris)
-    labelsFmt = labels.map(t => {
-      if(!t) return "";
-      const day = t.substring(0,5); // DD/MM
-      const hour = t.substring(11,13) + "h";
-      return day + " " + hour;
-    });
-    xTickCallback = (val, idx) => {
-      const l = labelsFmt[idx] || "";
-      // Afficher toutes les 6h (00h, 06h, 12h, 18h)
-      const hourMatch = l.match(/(\d{2})h$/);
-      if(!hourMatch) return null;
-      return parseInt(hourMatch[1]) % 6 === 0 ? l : null;
-    };
-  } else if (currentPeriod === "30j") {
-    // Agrégé par jour — afficher DD/MM
-    labelsFmt = labels.map(t => { if(!t) return ""; const m=t.match(/(\d{2})\/(\d{2})/); return m?m[0]:""; });
-    xTickCallback = (val, idx) => labelsFmt[idx] || null;
-  } else {
-    labelsFmt = labels.map(t => (t||"").substring(11,16));
-    xTickCallback = (val, idx) => labelsFmt[idx] || null;
+  // ── Convertir un timestamp stocké "DD/MM/YYYY HH:MM:SS" en Date (déjà heure Paris)
+  // parseDateStr() interprète le string correctement
+  // On utilise directement les heures/minutes extraites du string (pas de conversion UTC)
+  function extractHHMM(t) {
+    if(!t) return null;
+    const m = t.match(/\d{2}\/\d{2}\/\d{4}\s+(\d{2}):(\d{2})/);
+    if(!m) return null;
+    return {hh:parseInt(m[1]), mm:parseInt(m[2])};
+  }
+  function extractDate(t) {
+    if(!t) return null;
+    const m = t.match(/(\d{2})\/(\d{2})\/(\d{4})/);
+    if(!m) return null;
+    return {dd:parseInt(m[1]), mo:parseInt(m[2]), yyyy:parseInt(m[3])};
   }
 
-  // Légende interactive avec toggle
+  // ── Construire les ticks fixes selon le mode
+  // Retourne un tableau d'objets {idx, label} — idx = index dans tsArr
+  function buildFixedTicks() {
+    const ticks = [];
+    if(currentPeriod === "live") {
+      // Toutes les 30 min : HH:00 et HH:30
+      tsArr.forEach((t,i) => {
+        const hm = extractHHMM(t);
+        if(!hm) return;
+        if(hm.mm === 0 || hm.mm === 30) {
+          // Eviter doublons (si deux points tombent à HH:00 presque)
+          if(!ticks.length || ticks[ticks.length-1].label !== `${String(hm.hh).padStart(2,"0")}:${String(hm.mm).padStart(2,"0")}`) {
+            ticks.push({idx:i, label:`${String(hm.hh).padStart(2,"0")}:${String(hm.mm).padStart(2,"0")}`});
+          }
+        }
+      });
+    } else if(currentPeriod === "24h") {
+      // Toutes les 2h : 00h, 02h, 04h... 22h
+      const seen = new Set();
+      tsArr.forEach((t,i) => {
+        const hm = extractHHMM(t);
+        if(!hm) return;
+        if(hm.mm === 0 && hm.hh % 2 === 0 && !seen.has(hm.hh)) {
+          seen.add(hm.hh);
+          ticks.push({idx:i, label:`${String(hm.hh).padStart(2,"0")}h`});
+        }
+      });
+    } else if(currentPeriod === "7j") {
+      // Un label par jour — au premier point du jour
+      const seen = new Set();
+      tsArr.forEach((t,i) => {
+        const d = extractDate(t);
+        if(!d) return;
+        const key = `${d.dd}/${d.mo}`;
+        if(!seen.has(key)) {
+          seen.add(key);
+          ticks.push({idx:i, label:key});
+        }
+      });
+    } else if(currentPeriod === "30j") {
+      // Un label tous les 5 jours
+      const seen = new Set();
+      tsArr.forEach((t,i) => {
+        const d = extractDate(t);
+        if(!d) return;
+        const key = `${String(d.dd).padStart(2,"0")}/${String(d.mo).padStart(2,"0")}`;
+        if(!seen.has(key) && (d.dd === 1 || d.dd % 5 === 0)) {
+          seen.add(key);
+          ticks.push({idx:i, label:key});
+        }
+      });
+    }
+    return ticks;
+  }
+
+  const fixedTicks = buildFixedTicks();
+  // Map idx→label pour le callback
+  const tickMap = new Map(fixedTicks.map(t=>[t.idx, t.label]));
+
+  // Tooltip title : heure exacte du point
+  function tooltipTitle(items) {
+    const idx = items[0].dataIndex;
+    const t = tsArr[idx];
+    if(!t) return "";
+    if(currentPeriod === "live" || currentPeriod === "24h") {
+      return (t||"").substring(11,16); // HH:MM
+    } else {
+      return (t||"").substring(0,5) + " " + (t||"").substring(11,16); // DD/MM HH:MM
+    }
+  }
+
+  // ── Légende
   const legendEl = document.getElementById("legend");
   legendEl.innerHTML = "";
   datasets.forEach((ds,i)=>{
@@ -1087,23 +1109,15 @@ function renderChart() {
   koLeg.onclick = () => toggleKO();
   legendEl.appendChild(koLeg);
 
+  // ── Largeur container
   const scroll = document.getElementById("chart-scroll");
   const container = document.getElementById("chart-container");
-
-  // Largeur du container adaptée au mode
-  // Direct/24h : 20px/point, 7j : fixe scroll, 30j : fixe scroll
-  let pxPerPt;
-  if (currentPeriod === "live")       pxPerPt = 12;
-  else if (currentPeriod === "24h")   pxPerPt = 8;
-  else if (currentPeriod === "7j")    pxPerPt = 6;
-  else                                pxPerPt = 4;
-
-  const w = Math.max(scroll.clientWidth, labelsFmt.length * pxPerPt);
+  let pxPerPt = currentPeriod==="live"?12:currentPeriod==="24h"?8:currentPeriod==="7j"?6:4;
+  const w = Math.max(scroll.clientWidth, N * pxPerPt);
   container.style.width = w + "px";
   const isEnd = scroll.scrollLeft + scroll.clientWidth >= scroll.scrollWidth - 20;
 
-  const yOpts = {responsive:true,maintainAspectRatio:false,animation:{duration:0},interaction:{mode:null},plugins:{legend:{display:false},tooltip:{enabled:false}},layout:{padding:{top:10,bottom:8}},scales:{x:{grid:{display:false},border:{display:false},ticks:{color:"transparent"}},y:{max:8,min:0,grid:{color:"rgba(0,0,0,0.04)"},border:{display:false},ticks:{stepSize:2,font:{size:11,family:'Plus Jakarta Sans'},color:"#94a3b8",callback:v=>v+"s"}}}};
-
+  // ── Options chart
   const mOpts = {
     responsive:true,
     maintainAspectRatio:false,
@@ -1122,50 +1136,61 @@ function renderChart() {
         padding:10,
         displayColors:true,
         callbacks:{
-          title: items => labelsFmt[items[0].dataIndex] || "",
-          label: item => ` ${item.dataset.label}: ${item.raw}s`
+          title: tooltipTitle,
+          label: item => ` ${item.dataset.label}: ${item.raw && item.raw.y !== undefined ? item.raw.y : item.raw}s`
         }
       }
     },
     layout:{padding:{top:10,bottom:0}},
     scales:{
       x:{
+        type:"linear",
         grid:{display:false},
         border:{display:false},
+        min:0,
+        max:Math.max(N-1,1),
         ticks:{
           font:{size:10,family:'Plus Jakarta Sans'},
           color:"#94a3b8",
           maxRotation:0,
           minRotation:0,
           autoSkip:false,
-          callback: xTickCallback
+          includeBounds:false,
+          callback:(val)=> tickMap.has(Math.round(val)) ? tickMap.get(Math.round(val)) : null
         }
       },
       y:{
         position:"left",
         grid:{color:"rgba(0,0,0,0.04)"},
         border:{display:false},
-        max:8,min:0,
-        ticks:{display:true,stepSize:2,font:{size:11,family:'Plus Jakarta Sans'},color:"#94a3b8",callback:v=>v+"s"}
+        max:8, min:0,
+        ticks:{
+          display:true,
+          stepSize:2,
+          font:{size:11,family:'Plus Jakarta Sans'},
+          color:"#94a3b8",
+          callback:v=>v+"s"
+        }
       }
     },
-    onClick: (evt, elements) => onChartClick(evt, elements)
+    onClick:(evt,elements)=>onChartClick(evt,elements)
   };
 
-  if (!yAxisInst) {
-    yAxisInst = new Chart(document.getElementById("yAxisChart"),{type:"line",data:{labels:labelsFmt,datasets:[]},options:yOpts});
-  }
   if (!lineChart) {
-    lineChart = new Chart(container.querySelector("canvas"),{type:"line",data:{labels:labelsFmt,datasets:[...datasets, koDataset]},options:mOpts});
+    lineChart = new Chart(container.querySelector("canvas"),{
+      type:"line",
+      data:{datasets:[...datasets, koDataset]},
+      options:mOpts
+    });
     window._lineChart = lineChart;
     setTimeout(()=>scroll.scrollLeft=scroll.scrollWidth,100);
   } else {
-    lineChart.data.labels=labelsFmt;
     lineChart.data.datasets=[...datasets, koDataset];
+    lineChart.options = mOpts;
     lineChart.update("none");
     window._lineChart = lineChart;
     if(isEnd) setTimeout(()=>scroll.scrollLeft=scroll.scrollWidth,50);
-  initBrush();
+    initBrush();
   }
 }
 
@@ -1222,11 +1247,13 @@ function toggleChartLine(idx) {
 
 function applyZoomSlider(val) {
   const chart = window._lineChart;
-  if(!chart || !chart.data.labels || !chart.data.labels.length) return;
+  if(!chart) return;
+  // Trouver le nombre de points via le premier dataset réel
+  const ds0 = chart.data.datasets && chart.data.datasets.find(d=>d.data&&d.data.length>0);
+  const total = ds0 ? ds0.data.length : 0;
+  if(!total) return;
   const pct = parseInt(val) / 100;
-  const total = chart.data.labels.length;
   const startIdx = Math.floor(total * (1 - pct));
-  // Modifier directement les limites de l'axe X sans re-render
   chart.options.scales.x.min = startIdx;
   chart.options.scales.x.max = total - 1;
   chart.update("none");
@@ -1570,16 +1597,16 @@ async function fetchStatus(){
 
 function highlightChartPoint(hhmm, el) {
   if(!lineChart) return;
-  let idx = lineChart.data.labels.findIndex(l => l === hhmm);
-  if(idx === -1) {
-    const [h,m] = hhmm.split(":").map(Number);
-    const incMin = h*60+m;
-    let minDiff = Infinity;
-    lineChart.data.labels.forEach((l,i) => {
-      const p = (l||"").split(":").map(Number);
-      if(p.length>=2){ const d=Math.abs(p[0]*60+p[1]-incMin); if(d<minDiff){minDiff=d;idx=i;} }
-    });
-  }
+  // Chercher l'index via _tsArr du premier dataset
+  const ds0 = lineChart.data.datasets && lineChart.data.datasets.find(d=>d._tsArr&&d._tsArr.length);
+  const tsArr = ds0 ? ds0._tsArr : [];
+  const [incH, incM] = hhmm.split(":").map(Number);
+  const incMin = incH*60+incM;
+  let idx = -1, minDiff = Infinity;
+  tsArr.forEach((t,i) => {
+    const hm = (t||"").substring(11,16).split(":").map(Number);
+    if(hm.length>=2){ const d=Math.abs(hm[0]*60+hm[1]-incMin); if(d<minDiff){minDiff=d;idx=i;} }
+  });
   if(idx === -1) return;
 
   // Highlight inc-row
@@ -1606,9 +1633,11 @@ function highlightChartPoint(hhmm, el) {
 function onChartClick(evt, elements) {
   if(!elements.length) return;
   const idx = elements[0].index;
-  const t = lineChart.data.labels[idx];
+  // Récupérer le timestamp depuis _tsArr du premier dataset
+  const ds0 = lineChart.data.datasets && lineChart.data.datasets.find(d=>d._tsArr&&d._tsArr.length);
+  const t = ds0 ? ds0._tsArr[idx] : null;
   if(!t) return;
-  const hhmm = (t||"").slice(-5);
+  const hhmm = (t||"").substring(11,16);
   const incRows = document.querySelectorAll(".inc-row");
   incRows.forEach(row => row.classList.remove("highlighted"));
   let found = null;
