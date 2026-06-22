@@ -1,0 +1,30 @@
+[
+  {
+    "time": "23/06/2026 00:10:05",
+    "brand": "Ford FR PPR",
+    "page": "Homepage",
+    "type": "ko",
+    "detail": "Erreur serveur HTTP 503",
+    "diagnostics": {
+      "brand": "Ford FR PPR",
+      "page": "Homepage",
+      "dns_elapsed": 0.023,
+      "ip": "3.123.191.139",
+      "http_status": 503,
+      "elapsed_http": 0.67,
+      "elapsed_total": 0.7,
+      "redirect_count": 0,
+      "final_url": "https://test-ppr-oem-site-factory.shakazoola.com/",
+      "headers": {
+        "server": "awselb/2.0",
+        "content-type": "text/html",
+        "x-cache": "—",
+        "cf-ray": "—"
+      },
+      "error_type": "HTTP_503",
+      "body_preview": "<html>\r\n<head><title>503 Service Temporarily Unavailable</title></head>\r\n<body>\r\n<center><h1>503 Service Temporarily Unavailable</h1></center>\r\n</body>\r\n</html>\r\n<!-- a padding to disable MSIE and Chrome friendly error page -->\r\n<!-- a padding to disable MSIE and Chrome friendly error page -->\r\n<!--"
+    },
+    "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_PPR_Homepage_20260623_001104.png",
+    "is_reference": false
+  }
+]
