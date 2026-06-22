@@ -1093,23 +1093,7 @@ function renderChart() {
         ticks:{display:true,stepSize:1,font:{size:11,family:'Plus Jakarta Sans'},color:"#94a3b8",callback:v=>v+"s"}
       }
     },
-    onClick: (evt, elements) => {
-      if(!elements.length) return;
-      const idx = elements[0].index;
-      const t = labels[idx];
-      if(!t) return;
-      const hhmm = t.substring(11,16);
-      // Trouver l'incident correspondant dans le flux
-      const incRows = document.querySelectorAll(".inc-row");
-      incRows.forEach(row => row.classList.remove("highlighted"));
-      incRows.forEach(row => {
-        const timeEl = row.querySelector(".inc-time");
-        if(timeEl && timeEl.textContent.trim() === hhmm) {
-          row.classList.add("highlighted");
-          row.scrollIntoView({behavior:"smooth", block:"center"});
-        }
-      });
-    }
+    onClick: (evt, elements) => onChartClick(evt, elements)
   };
 
   if (!yAxisInst) {
@@ -1525,26 +1509,69 @@ async function fetchStatus(){
   }
 }
 
-function highlightChartPoint(hhmm) {
+function highlightChartPoint(timeStr) {
   if(!lineChart) return;
-  // Trouver l'index du label correspondant
-  const idx = lineChart.data.labels.findIndex(l => l === hhmm);
+  // timeStr peut être HH:MM ou DD/MM HH:MM — on cherche par substring
+  const hhmm = timeStr.length >= 5 ? timeStr.slice(-5) : timeStr;
+  const idx = lineChart.data.labels.findIndex(l => (l||"").endsWith(hhmm));
   if(idx === -1) return;
-  // Highlight toutes les inc-rows
+
+  // Highlight la inc-row correspondante
   document.querySelectorAll(".inc-row").forEach(r => r.classList.remove("highlighted"));
-  event.currentTarget && event.currentTarget.classList.add("highlighted");
+  event?.currentTarget?.classList.add("highlighted");
+
   // Scroll le graph vers ce point
   const scroll = document.getElementById("chart-scroll");
   const container = document.getElementById("chart-container");
-  const ratio = idx / (lineChart.data.labels.length - 1);
-  const targetX = ratio * container.scrollWidth - scroll.clientWidth / 2;
-  scroll.scrollTo({left: Math.max(0, targetX), behavior: "smooth"});
-  // Activer le tooltip Chart.js sur ce point
+  const meta = lineChart.getDatasetMeta(0);
+  if(meta?.data?.[idx]) {
+    const ptX = meta.data[idx].x;
+    scroll.scrollTo({left: Math.max(0, ptX - scroll.clientWidth / 2), behavior: "smooth"});
+  }
+
+  // Tooltip sur ce point
   lineChart.tooltip.setActiveElements(
     lineChart.data.datasets.map((_, di) => ({datasetIndex: di, index: idx})),
     {x: 0, y: 0}
   );
-  lineChart.update("none");
+
+  // Agrandir le point KO temporairement
+  lineChart.data.datasets.forEach(ds => {
+    if(!ds._koR) return;
+    const prev = [...ds.pointRadius];
+    ds.pointRadius = ds._koR.map((r,i) => i === idx && r > 0 ? 14 : (ds._showKO === false ? 0 : r));
+  });
+
+  lineChart.update();
+
+  // Remettre à la normale après 2s
+  setTimeout(() => {
+    lineChart.data.datasets.forEach(ds => {
+      if(ds._koR) ds.pointRadius = _showKO ? [...ds._koR] : ds._koR.map(() => 0);
+    });
+    lineChart.tooltip.setActiveElements([], {x:0,y:0});
+    lineChart.update("none");
+  }, 2000);
+}
+
+// Clic sur un point rouge → scroll vers l'incident
+function onChartClick(evt, elements) {
+  if(!elements.length) return;
+  const idx = elements[0].index;
+  const t = lineChart.data.labels[idx];
+  if(!t) return;
+  const hhmm = (t||"").slice(-5);
+  const incRows = document.querySelectorAll(".inc-row");
+  incRows.forEach(row => row.classList.remove("highlighted"));
+  let found = null;
+  incRows.forEach(row => {
+    const timeEl = row.querySelector(".inc-time");
+    if(timeEl && timeEl.textContent.trim().endsWith(hhmm)) {
+      row.classList.add("highlighted");
+      if(!found) found = row;
+    }
+  });
+  if(found) found.scrollIntoView({behavior:"smooth", block:"center"});
 }
 const SUPA_URL  = "https://vqkzrvwwtiktofkpmelt.supabase.co";
 const SUPA_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZxa3pydnd3dGlrdG9ma3BtZWx0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE5NDAzMDQsImV4cCI6MjA5NzUxNjMwNH0.5ylyy1Voq9vfLHNO7Jk8leTV55VO4bkXg7oGGC2BNLo";
