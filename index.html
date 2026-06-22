@@ -738,6 +738,9 @@ function selectBrand(b) {
       old.parentNode.replaceChild(newCanvas, old);
     }
   });
+  // Reset brush flag
+  const chartContainer = document.getElementById("chart-container");
+  if(chartContainer) delete chartContainer._brushInit;
   if (data) render();
 }
 
@@ -1155,31 +1158,30 @@ function initBrush() {
   const container = document.getElementById("chart-container");
   const overlay = document.getElementById("brush-overlay");
   if(!container || !overlay) return;
-  // Supprimer anciens listeners en remplaçant le container
-  const newContainer = container.cloneNode(true);
-  container.parentNode.replaceChild(newContainer, container);
-  const newOverlay = document.getElementById("brush-overlay");
+
+  // Supprimer anciens listeners via flag
+  if(container._brushInit) return;
+  container._brushInit = true;
 
   let dragging = false, startX = 0;
 
-  newContainer.addEventListener("mousedown", e => {
+  container.addEventListener("mousedown", e => {
     if(e.button !== 0) return;
     dragging = true; startX = e.offsetX;
-    if(newOverlay) { newOverlay.style.display="block"; newOverlay.style.left=startX+"px"; newOverlay.style.width="0px"; }
+    overlay.style.display="block"; overlay.style.left=startX+"px"; overlay.style.width="0px";
     e.preventDefault();
   });
 
-  newContainer.addEventListener("mousemove", e => {
-    if(!dragging || !newOverlay) return;
+  container.addEventListener("mousemove", e => {
+    if(!dragging) return;
     const w = e.offsetX - startX;
-    if(w >= 0) { newOverlay.style.left=startX+"px"; newOverlay.style.width=w+"px"; }
-    else { newOverlay.style.left=e.offsetX+"px"; newOverlay.style.width=(-w)+"px"; }
+    if(w >= 0) { overlay.style.left=startX+"px"; overlay.style.width=w+"px"; }
+    else { overlay.style.left=e.offsetX+"px"; overlay.style.width=(-w)+"px"; }
   });
 
-  newContainer.addEventListener("mouseup", e => {
+  container.addEventListener("mouseup", e => {
     if(!dragging) return;
-    dragging = false;
-    if(newOverlay) newOverlay.style.display="none";
+    dragging = false; overlay.style.display="none";
     const x1 = Math.min(startX, e.offsetX), x2 = Math.max(startX, e.offsetX);
     if(x2 - x1 < 20) return;
     const chart = window._lineChart;
@@ -1197,8 +1199,8 @@ function initBrush() {
     if(btn) btn.style.display = "inline-block";
   });
 
-  newContainer.addEventListener("mouseleave", () => {
-    if(dragging) { dragging=false; if(newOverlay) newOverlay.style.display="none"; }
+  container.addEventListener("mouseleave", () => {
+    if(dragging) { dragging=false; overlay.style.display="none"; }
   });
 }
 
