@@ -1559,11 +1559,14 @@ function highlightChartPoint(timeStr) {
     scroll.scrollTo({left: Math.max(0, ptX - scroll.clientWidth / 2), behavior:"smooth"});
   }
 
-  // Tooltip
-  lineChart.tooltip.setActiveElements(
-    lineChart.data.datasets.map((_, di) => ({datasetIndex: di, index: idx})),
-    {x:0, y:0}
-  );
+  // Tooltip — exclure le dataset KO fantôme (dernier)
+  const tooltipDatasets = lineChart.data.datasets
+    .map((_, di) => ({datasetIndex: di, index: idx}))
+    .filter(({datasetIndex}) => {
+      const ds = lineChart.data.datasets[datasetIndex];
+      return ds.data && ds.data[idx] !== undefined;
+    });
+  lineChart.tooltip.setActiveElements(tooltipDatasets, {x:0, y:0});
   lineChart.update("none");
 }
 
