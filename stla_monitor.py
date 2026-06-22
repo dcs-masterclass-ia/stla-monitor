@@ -1006,6 +1006,8 @@ def run():
                                 threading.Thread(target=supabase_insert, args=(inc,), daemon=True).start()
                                 if brand not in REFERENCE_BRANDS:
                                     send_teams_alert(brand, page, url, reason, is_recovery=True, details=details)
+                                # Push immédiat vers Render pour mise à jour dashboard
+                                threading.Thread(target=push_to_render, args=(statuses,), daemon=True).start()
                         else:
                             if not incident_active.get(key):
                                 incident_active[key] = True
@@ -1020,6 +1022,8 @@ def run():
                                 with history_lock: history.append(inc)
                                 threading.Thread(target=archive_incident, args=(inc,), daemon=True).start()
                                 threading.Thread(target=supabase_insert, args=(inc,), daemon=True).start()
+                                # Push immédiat vers Render pour mise à jour dashboard
+                                threading.Thread(target=push_to_render, args=(statuses,), daemon=True).start()
                     except TimeoutError:
                         task = futures[future]
                         brand, page, url = task
@@ -1067,6 +1071,7 @@ def run():
                         threading.Thread(target=archive_incident, args=(inc_i,), daemon=True).start()
                         threading.Thread(target=supabase_insert, args=(inc_i,), daemon=True).start()
                         send_teams_alert(brand, "Immat", homepage_url, reason_i, is_recovery=True, details=details_i)
+                        threading.Thread(target=push_to_render, args=(statuses,), daemon=True).start()
                 else:
                     if not incident_active.get(key_i):
                         incident_active[key_i] = True
@@ -1078,6 +1083,7 @@ def run():
                         with history_lock: history.append(inc_i)
                         threading.Thread(target=archive_incident, args=(inc_i,), daemon=True).start()
                         threading.Thread(target=supabase_insert, args=(inc_i,), daemon=True).start()
+                        threading.Thread(target=push_to_render, args=(statuses,), daemon=True).start()
     
             push_status(statuses)
             threading.Thread(target=push_to_render, args=(statuses,), daemon=True).start()
