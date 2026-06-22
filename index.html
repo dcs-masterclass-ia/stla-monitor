@@ -1023,24 +1023,29 @@ function renderChart() {
   let xTickCallback;
 
   if (currentPeriod === "live") {
-    // Labels HH:MM bruts pour le tooltip — on affiche les heures rondes + demi-heures
-    labelsFmt = labels.map(t => tsToParisHHMM(t));
+    // Timestamps déjà en heure Paris — lire HH:MM directement
+    labelsFmt = labels.map(t => (t||"").substring(11,16));
     xTickCallback = (val, idx) => {
       const l = labelsFmt[idx] || "";
-      const [hh, mm] = l.split(":").map(Number);
+      const parts = l.split(":");
+      if(parts.length < 2) return null;
+      const hh = parseInt(parts[0]), mm = parseInt(parts[1]);
       // Afficher uniquement HH:00 et HH:30
       return (mm === 0 || mm === 30) ? l : null;
     };
   } else if (currentPeriod === "24h") {
-    labelsFmt = labels.map(t => tsToParisHHMM(t));
+    // Timestamps déjà en heure Paris — lire HH:MM directement
+    labelsFmt = labels.map(t => (t||"").substring(11,16));
     xTickCallback = (val, idx) => {
       const l = labelsFmt[idx] || "";
-      const [hh, mm] = l.split(":").map(Number);
+      const parts = l.split(":");
+      if(parts.length < 2) return null;
+      const hh = parseInt(parts[0]), mm = parseInt(parts[1]);
       // Afficher uniquement les heures paires : 00h, 02h, 04h... 22h
       return (mm === 0 && hh % 2 === 0) ? (String(hh).padStart(2,"0") + "h") : null;
     };
   } else if (currentPeriod === "7j") {
-    // Agrégé par heure — afficher jour + heure
+    // Agrégé par heure — afficher jour + heure (déjà en Paris)
     labelsFmt = labels.map(t => {
       if(!t) return "";
       const day = t.substring(0,5); // DD/MM
@@ -1059,7 +1064,7 @@ function renderChart() {
     labelsFmt = labels.map(t => { if(!t) return ""; const m=t.match(/(\d{2})\/(\d{2})/); return m?m[0]:""; });
     xTickCallback = (val, idx) => labelsFmt[idx] || null;
   } else {
-    labelsFmt = labels.map(t => tsToParisHHMM(t));
+    labelsFmt = labels.map(t => (t||"").substring(11,16));
     xTickCallback = (val, idx) => labelsFmt[idx] || null;
   }
 
