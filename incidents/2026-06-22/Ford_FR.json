@@ -155,5 +155,32 @@
     "page": "Homepage",
     "type": "recovery",
     "detail": "Retour en ligne (recovery automatique)"
+  },
+  {
+    "time": "22/06/2026 11:44:30",
+    "brand": "Ford FR",
+    "page": "Formulaire",
+    "type": "ko",
+    "detail": "Réponse très lente : 6.96s",
+    "diagnostics": {
+      "brand": "Ford FR",
+      "page": "Formulaire",
+      "dns_elapsed": 0.037,
+      "ip": "63.180.121.144",
+      "http_status": 200,
+      "elapsed_http": 6.96,
+      "elapsed_total": 7.0,
+      "redirect_count": 0,
+      "final_url": "https://www.ford-reprise.fr/form",
+      "headers": {
+        "server": "—",
+        "content-type": "text/html; charset=UTF-8",
+        "x-cache": "—",
+        "cf-ray": "—"
+      },
+      "error_type": "VERY_SLOW"
+    },
+    "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Formulaire_20260622_114529.png",
+    "is_reference": false
   }
 ]
