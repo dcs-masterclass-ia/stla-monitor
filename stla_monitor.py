@@ -197,7 +197,6 @@ incident_active = {}
 history = []
 history_lock = threading.Lock()
 chart_data = {}
-statuses = {}
 
 for brand, urls in BRANDS.items():
     for page in urls:
@@ -926,6 +925,7 @@ def run():
 
     while True:
         try:
+            statuses = {}
             now = datetime.now(TZ_PARIS).strftime("%d/%m/%Y %H:%M:%S")
             now_short = datetime.now(TZ_PARIS).strftime("%H:%M:%S")
     
