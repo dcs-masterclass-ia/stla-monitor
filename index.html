@@ -433,13 +433,8 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
           <div class="card-hed">
             <i data-lucide="zap" style="width:16px;height:16px;color:var(--text-3)"></i>
             Télémétrie & Alertes
-            <div style="display:flex;align-items:center;gap:10px;margin-left:auto">
-              <i data-lucide="zoom-in" style="width:14px;height:14px;color:var(--text-3);flex-shrink:0"></i>
-              <input type="range" id="zoom-slider" min="10" max="100" value="100"
-                style="width:80px;accent-color:#6366f1;cursor:pointer"
-                oninput="applyZoomSlider(this.value)"
-                title="Zoom">
-              <button class="zoom-reset" id="zoom-reset" onclick="resetZoom()" style="display:none">✕ Reset</button>
+            <div style="display:flex;align-items:center;gap:8px;margin-left:auto">
+              <button class="zoom-reset" id="zoom-reset" onclick="resetZoom()" style="display:none">✕ Réinitialiser</button>
               <span class="card-hed-sub">ms / temps</span>
             </div>
           </div>
@@ -536,6 +531,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
 <script>
 const RENDER = "https://stla-monitor.onrender.com/status";
 const RAW    = "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/status.json";
@@ -749,7 +745,12 @@ function setPeriod(btn, p) {
   currentPeriod = p;
   document.querySelectorAll(".period-btn").forEach(b => b.classList.remove("on"));
   btn.classList.add("on");
-  if (data) render();
+  // Refresh auto toutes les 30s en mode Direct pour faire glisser la fenêtre
+  if(_liveRefreshTimer) { clearInterval(_liveRefreshTimer); _liveRefreshTimer = null; }
+  if(p === "live") {
+    _liveRefreshTimer = setInterval(() => { if(brand && data) renderChart(); }, 30000);
+  }
+  if(data) render();
 }
 
 // ── HELPERS ──
@@ -940,42 +941,35 @@ function tsToParisLabel(t) {
 
 function renderChart() {
   const pages = Object.entries((data.statuses||{})[brand]||{});
-  const meta = getBrandMeta(brand);
-  const colors = meta.colors;
-  const hist = filterHist((data.history||[]).filter(h=>h.brand===brand));
-  // koTimes sur tout l'historique disponible (pas seulement la période filtrée)
+  if(!pages.length) return;
+
+  const scroll = document.getElementById("chart-scroll");
+  const container = document.getElementById("chart-container");
+  if(!scroll || !container) return;
+
+  // ── Données ──
   const allHist = (data.history||[]).filter(h=>h.brand===brand);
   const koH = allHist.filter(h=>h.type==="ko");
-  // Index des timestamps KO sous forme DD/MM/YYYY HH:MM
-  const koTimes = new Set(koH.map(h=>(h.time||"").substring(0,16)));
+  // Set de timestamps KO sous forme DD/MM/YYYY HH:MM
+  const koSet = new Set(koH.map(h=>(h.time||"").substring(0,16)));
 
+  const colors = ["#3b82f6","#22c55e","#f59e0b","#a855f7"];
   const rawDs = pages.map(([page]) => filterPts((data.chart_data||{})[brand+":"+page]||[]));
-  let masterT = rawDs.length > 0 ? rawDs[0].map(p=>p.time) : [];
+
+  // Sampling — garder tous les points proches d'un KO
+  let masterT = rawDs[0] ? rawDs[0].map(p=>p.time) : [];
   let sampled = new Set();
   const MAX = 600;
-
-  // Pour chaque incident KO, trouver le point chart le plus proche (±5 min)
-  const koTimesMs = koH.map(h => {
-    const t = parseDateStr(h.time);
-    return t ? t.getTime() : null;
-  }).filter(Boolean);
-
-  if (masterT.length > MAX) {
+  if(masterT.length > MAX) {
     const f = Math.ceil(masterT.length/MAX);
     masterT.forEach((t,i) => {
-      const pt = parseDateStr(t);
-      const ptMs = pt ? pt.getTime() : null;
-      // Garder si proche d'un KO (±5 min = 300000ms)
-      const nearKO = ptMs && koTimesMs.some(koMs => Math.abs(ptMs - koMs) <= 300000);
-      if(nearKO || i%f===0 || i===masterT.length-1) sampled.add(i);
+      const prefix = (t||"").substring(0,16);
+      if(koSet.has(prefix) || i%f===0 || i===masterT.length-1) sampled.add(i);
     });
   } else masterT.forEach((_,i)=>sampled.add(i));
 
-  const datasets = pages.map(([page],i) => {
+  const datasets = pages.map(([page], i) => {
     const pts = (rawDs[i]||[]).filter((_,idx)=>sampled.has(idx));
-    const pointColors = pts.map(() => "transparent");
-    const pointSizes = pts.map(() => 0);
-    const pointBorders = pts.map(() => "transparent");
     return {
       label: page,
       data: pts.map(p=>p.elapsed),
@@ -984,81 +978,128 @@ function renderChart() {
       backgroundColor: "transparent",
       tension: 0.4,
       pointRadius: 0,
-      pointBackgroundColor: pointColors,
-      pointBorderColor: pointBorders,
-      pointBorderWidth: 2,
-      pointHoverRadius: 8,
-      pointHoverBackgroundColor: "#e11d48",
-      borderWidth: 1.5,
-      fill: false,
-      order: 1
+      pointHoverRadius: 6,
+      borderWidth: 2,
+      fill: false
     };
   });
 
-  const labels = datasets[0]?datasets[0]._t||[]:[];
+  if(!datasets[0] || !datasets[0].data.length) return;
 
-  // Points KO sur chaque dataset de ligne
-  datasets.forEach(ds => {
-    const koR = [], koC = [], koB = [];
-    ds._t.forEach(t => {
-      const prefix = (t||"").substring(0,16);
-      const isKO = koTimes.has(prefix);
-      koR.push(isKO && _showKO ? 8 : 0);
-      koC.push(isKO ? "#e11d48" : "transparent");
-      koB.push(isKO ? "#fff" : "transparent");
-    });
-    ds._koR = koR;
-    ds._koC = koC;
-    ds._koB = koB;
-    ds.pointRadius = _showKO ? koR : koR.map(() => 0);
-    ds.pointBackgroundColor = koC;
-    ds.pointBorderColor = koB;
-    ds.pointBorderWidth = 2;
-    ds.pointHoverRadius = 10;
+  // Labels X en heure Paris
+  const labels = datasets[0]._t;
+  const labelsFmt = labels.map(t => {
+    if(!t) return "";
+    const m = t.match(/(\d{2})\/(\d{2})\/(\d{4})\s+(\d{2}):(\d{2})/);
+    if(!m) return t.substring(11,16);
+    // Les timestamps sont déjà en heure Paris (le script utilise TZ_PARIS)
+    return m[4]+":"+m[5];
   });
 
-  // Dataset fantôme pour la légende KO
-  const koDataset = {
-    label: "Incident KO",
-    data: [],
-    pointRadius: [],
-    backgroundColor: "#e11d48",
-    borderColor: "#e11d48",
-    showLine: false,
-    hidden: false
+  // Largeur container selon nombre de points
+  const pxPt = currentPeriod==="live" ? 14 : currentPeriod==="24h" ? 8 : 5;
+  const w = Math.max(scroll.clientWidth, labelsFmt.length * pxPt);
+  container.style.width = w+"px";
+  const isEnd = scroll.scrollLeft + scroll.clientWidth >= scroll.scrollWidth - 30;
+
+  // Annotations KO — lignes verticales rouges
+  const annotations = {};
+  koH.forEach((ko, idx) => {
+    const koHHMM = (ko.time||"").substring(11,16);
+    const labelIdx = labelsFmt.findIndex(l => l === koHHMM);
+    if(labelIdx === -1) return;
+    annotations["ko"+idx] = {
+      type: "line",
+      xMin: labelIdx,
+      xMax: labelIdx,
+      borderColor: "#e11d48",
+      borderWidth: 1.5,
+      borderDash: [4,3],
+      label: {
+        display: false,
+        content: "KO " + koHHMM,
+        color: "#e11d48",
+        font: {size: 9, weight: "bold"}
+      }
+    };
+  });
+
+  // Options Chart.js
+  const tickLimit = currentPeriod==="live" ? 6 : currentPeriod==="24h" ? 12 : 8;
+  const mOpts = {
+    responsive: true,
+    maintainAspectRatio: false,
+    animation: false,
+    interaction: {mode:"index", intersect:false},
+    plugins: {
+      legend: {display:false},
+      tooltip: {
+        backgroundColor: "#1e293b",
+        titleColor: "#f8fafc",
+        bodyColor: "#94a3b8",
+        borderColor: "#334155",
+        borderWidth: 1,
+        padding: 10,
+        callbacks: {
+          title: items => {
+            const idx = items[0]?.dataIndex;
+            return labels[idx] ? (labels[idx]||"").substring(0,16) : "";
+          },
+          label: item => ` ${item.dataset.label}: ${item.raw}s`
+        }
+      },
+      annotation: {annotations}
+    },
+    scales: {
+      x: {
+        grid: {display:false},
+        border: {display:false},
+        ticks: {
+          font: {size:10, family:"Plus Jakarta Sans"},
+          color: "#94a3b8",
+          maxTicksLimit: tickLimit,
+          maxRotation: 0,
+          minRotation: 0,
+          callback: (val, idx) => labelsFmt[idx]||""
+        }
+      },
+      y: {
+        position: "left",
+        min: 0,
+        max: 8,
+        grid: {color:"rgba(0,0,0,0.04)"},
+        border: {display:false},
+        ticks: {
+          font: {size:10, family:"Plus Jakarta Sans"},
+          color: "#94a3b8",
+          stepSize: 2,
+          callback: v => v+"s"
+        }
+      }
+    },
+    onClick: (evt, elements) => onChartClick(evt, elements)
   };
 
-  // Formatter les labels X selon le mode
-  let labelsFmt;
-  let xTickLimit;
-  if (currentPeriod === "live") {
-    labelsFmt = labels.map(t => (t||"").substring(11,16));
-    xTickLimit = 8;
-  } else if (currentPeriod === "24h") {
-    labelsFmt = labels.map(t => (t||"").substring(11,16));
-    xTickLimit = 12;
-  } else if (currentPeriod === "7j") {
-    // Agrégé par heure — afficher jour + heure
-    labelsFmt = labels.map(t => {
-      if(!t) return "";
-      const day = t.substring(0,5); // DD/MM
-      const hour = t.substring(11,13) + "h";
-      return day + " " + hour;
-    });
-    xTickLimit = 14;
-  } else if (currentPeriod === "30j") {
-    // Agrégé par jour — afficher DD/MM
-    labelsFmt = labels.map(t => { if(!t) return ""; const m=t.match(/(\d{2})\/(\d{2})/); return m?m[0]:""; });
-    xTickLimit = 10;
+  // Créer ou mettre à jour le chart
+  if(!lineChart) {
+    const lCanvas = container.querySelector("canvas");
+    if(!lCanvas) return;
+    lineChart = new Chart(lCanvas, {type:"line", data:{labels:labelsFmt, datasets}, options:mOpts});
+    window._lineChart = lineChart;
+    setTimeout(()=>scroll.scrollLeft=scroll.scrollWidth, 100);
   } else {
-    labelsFmt = labels.map(t => (t||"").substring(11,16));
-    xTickLimit = 10;
+    lineChart.data.labels = labelsFmt;
+    lineChart.data.datasets = datasets;
+    lineChart.options = mOpts;
+    lineChart.update("none");
+    window._lineChart = lineChart;
+    if(isEnd) setTimeout(()=>scroll.scrollLeft=scroll.scrollWidth, 50);
   }
 
-  // Légende interactive avec toggle
+  // Légende
   const legendEl = document.getElementById("legend");
   legendEl.innerHTML = "";
-  datasets.forEach((ds,i)=>{
+  datasets.forEach((ds, i) => {
     const div = document.createElement("div");
     div.className = "leg";
     div.dataset.idx = i;
@@ -1066,103 +1107,19 @@ function renderChart() {
     div.onclick = () => toggleChartLine(i);
     legendEl.appendChild(div);
   });
-  const koLeg = document.createElement("div");
-  koLeg.className = "leg";
-  koLeg.id = "leg-ko";
-  if(!_showKO) koLeg.classList.add("muted");
-  koLeg.innerHTML = `<span class="leg-pip" style="background:#e11d48;border-radius:50%;width:9px;height:9px"></span>Incident KO`;
-  koLeg.onclick = () => toggleKO();
-  legendEl.appendChild(koLeg);
+  // Légende KO — ligne pointillée rouge
+  const koDiv = document.createElement("div");
+  koDiv.className = "leg";
+  koDiv.innerHTML = `<span style="display:inline-block;width:20px;height:2px;background:repeating-linear-gradient(90deg,#e11d48 0,#e11d48 4px,transparent 4px,transparent 8px);vertical-align:middle;margin-right:4px"></span>Incident KO`;
+  legendEl.appendChild(koDiv);
 
-  const scroll = document.getElementById("chart-scroll");
-  const container = document.getElementById("chart-container");
-
-  // Largeur du container adaptée au mode
-  // Direct/24h : 20px/point, 7j : fixe scroll, 30j : fixe scroll
-  let pxPerPt;
-  if (currentPeriod === "live")       pxPerPt = 12;
-  else if (currentPeriod === "24h")   pxPerPt = 8;
-  else if (currentPeriod === "7j")    pxPerPt = 6;
-  else                                pxPerPt = 4;
-
-  const w = Math.max(scroll.clientWidth, labelsFmt.length * pxPerPt);
-  container.style.width = w + "px";
-  const isEnd = scroll.scrollLeft + scroll.clientWidth >= scroll.scrollWidth - 20;
-
-  const yOpts = {responsive:true,maintainAspectRatio:false,animation:{duration:0},interaction:{mode:null},plugins:{legend:{display:false},tooltip:{enabled:false}},layout:{padding:{top:10,bottom:8}},scales:{x:{grid:{display:false},border:{display:false},ticks:{color:"transparent"}},y:{max:8,min:0,grid:{color:"rgba(0,0,0,0.04)"},border:{display:false},ticks:{stepSize:2,font:{size:11,family:'Plus Jakarta Sans'},color:"#94a3b8",callback:v=>v+"s"}}}};
-
-  const mOpts = {
-    responsive:true,
-    maintainAspectRatio:false,
-    animation:{duration:200},
-    interaction:{mode:"index",intersect:false},
-    plugins:{
-      legend:{display:false},
-      tooltip:{
-        backgroundColor:"#fff",
-        borderColor:"#e2e8f0",
-        borderWidth:1,
-        titleColor:"#0f172a",
-        bodyColor:"#475569",
-        titleFont:{family:'Plus Jakarta Sans',weight:'700',size:11},
-        bodyFont:{family:'Plus Jakarta Sans',size:11},
-        padding:10,
-        displayColors:true,
-        callbacks:{
-          title: items => labelsFmt[items[0].dataIndex] || "",
-          label: item => ` ${item.dataset.label}: ${item.raw}s`
-        }
-      }
-    },
-    layout:{padding:{top:10,bottom:0}},
-    scales:{
-      x:{
-        grid:{display:false},
-        border:{display:false},
-        ticks:{
-          font:{size:10,family:'Plus Jakarta Sans'},
-          color:"#94a3b8",
-          maxTicksLimit: xTickLimit,
-          maxRotation:0,
-          minRotation:0,
-          callback: (val, idx) => labelsFmt[idx] || ""
-        }
-      },
-      y:{
-        position:"left",
-        grid:{color:"rgba(0,0,0,0.04)"},
-        border:{display:false},
-        max:8,min:0,
-        ticks:{display:true,stepSize:2,font:{size:11,family:'Plus Jakarta Sans'},color:"#94a3b8",callback:v=>v+"s"}
-      }
-    },
-    onClick: (evt, elements) => onChartClick(evt, elements)
-  };
-
-  if (!yAxisInst) {
-    const yCanvas = document.getElementById("yAxisChart");
-    if(yCanvas) yAxisInst = new Chart(yCanvas,{type:"line",data:{labels:labelsFmt,datasets:[]},options:yOpts});
-  }
-  if (!lineChart) {
-    const lCanvas = container.querySelector("canvas");
-    if(!lCanvas) return;
-    lineChart = new Chart(lCanvas,{type:"line",data:{labels:labelsFmt,datasets:[...datasets, koDataset]},options:mOpts});
-    window._lineChart = lineChart;
-    setTimeout(()=>scroll.scrollLeft=scroll.scrollWidth,100);
-  } else {
-    lineChart.data.labels=labelsFmt;
-    lineChart.data.datasets=[...datasets, koDataset];
-    lineChart.update("none");
-    window._lineChart = lineChart;
-    if(isEnd) setTimeout(()=>scroll.scrollLeft=scroll.scrollWidth,50);
   initBrush();
-  }
 }
 
 // ── CHART INTERACTIVITÉ ──
 let _hiddenLines = new Set();
-let _showKO = true;
 let _zoomRange = null;
+let _liveRefreshTimer = null;
 
 function toggleChartLine(idx) {
   const chart = window._lineChart;
@@ -1178,59 +1135,12 @@ function toggleChartLine(idx) {
   document.querySelectorAll(".leg[data-idx]").forEach(el => {
     el.classList.toggle("muted", _hiddenLines.has(parseInt(el.dataset.idx)));
   });
-}
-
-function toggleKO() {
-  _showKO = !_showKO;
-  const chart = window._lineChart;
-  if(!chart) return;
-  chart.data.datasets.forEach(ds => {
-    if(!ds._koR) return;
-    ds.pointRadius = _showKO ? [...ds._koR] : ds._koR.map(() => 0);
-    ds.pointBackgroundColor = _showKO ? ds._koC : ds._koC.map(() => "transparent");
-    ds.pointBorderColor = _showKO ? ds._koB : ds._koB.map(() => "transparent");
-  });
-  chart.update();
-  document.getElementById("leg-ko")?.classList.toggle("muted", !_showKO);
-}
-
-function toggleChartLine(idx) {
-  const chart = window._lineChart;
-  if(!chart) return;
-  if(_hiddenLines.has(idx)) {
-    _hiddenLines.delete(idx);
-    chart.data.datasets[idx].hidden = false;
-  } else {
-    _hiddenLines.add(idx);
-    chart.data.datasets[idx].hidden = true;
-  }
-  chart.update("none");
-  document.querySelectorAll(".leg[data-idx]").forEach(el => {
-    el.classList.toggle("muted", _hiddenLines.has(parseInt(el.dataset.idx)));
-  });
-}
-
-function applyZoomSlider(val) {
-  const chart = window._lineChart;
-  if(!chart || !chart.data.labels || !chart.data.labels.length) return;
-  const pct = parseInt(val) / 100;
-  const total = chart.data.labels.length;
-  const startIdx = Math.floor(total * (1 - pct));
-  // Modifier directement les limites de l'axe X sans re-render
-  chart.options.scales.x.min = startIdx;
-  chart.options.scales.x.max = total - 1;
-  chart.update("none");
-  const btn = document.getElementById("zoom-reset");
-  if(btn) btn.style.display = pct < 0.99 ? "inline-block" : "none";
 }
 
 function resetZoom() {
   _zoomRange = null;
   const btn = document.getElementById("zoom-reset");
   if(btn) btn.style.display = "none";
-  const slider = document.getElementById("zoom-slider");
-  if(slider) slider.value = 100;
-  // Réinitialiser les limites de l'axe
   const chart = window._lineChart;
   if(chart) {
     chart.options.scales.x.min = undefined;
@@ -1239,391 +1149,67 @@ function resetZoom() {
   }
 }
 
+function applyZoomSlider(val) {} // no-op — slider supprimé
+
 function initBrush() {
   const container = document.getElementById("chart-container");
   const overlay = document.getElementById("brush-overlay");
   if(!container || !overlay) return;
+  // Supprimer anciens listeners en remplaçant le container
+  const newContainer = container.cloneNode(true);
+  container.parentNode.replaceChild(newContainer, container);
+  const newOverlay = document.getElementById("brush-overlay");
+
   let dragging = false, startX = 0;
 
-  container.addEventListener("mousedown", e => {
+  newContainer.addEventListener("mousedown", e => {
     if(e.button !== 0) return;
     dragging = true; startX = e.offsetX;
-    overlay.style.display = "block";
-    overlay.style.left = startX + "px"; overlay.style.width = "0px";
+    if(newOverlay) { newOverlay.style.display="block"; newOverlay.style.left=startX+"px"; newOverlay.style.width="0px"; }
     e.preventDefault();
   });
-  container.addEventListener("mousemove", e => {
-    if(!dragging) return;
+
+  newContainer.addEventListener("mousemove", e => {
+    if(!dragging || !newOverlay) return;
     const w = e.offsetX - startX;
-    if(w >= 0) { overlay.style.left = startX + "px"; overlay.style.width = w + "px"; }
-    else { overlay.style.left = e.offsetX + "px"; overlay.style.width = (-w) + "px"; }
+    if(w >= 0) { newOverlay.style.left=startX+"px"; newOverlay.style.width=w+"px"; }
+    else { newOverlay.style.left=e.offsetX+"px"; newOverlay.style.width=(-w)+"px"; }
   });
-  container.addEventListener("mouseup", e => {
+
+  newContainer.addEventListener("mouseup", e => {
     if(!dragging) return;
-    dragging = false; overlay.style.display = "none";
+    dragging = false;
+    if(newOverlay) newOverlay.style.display="none";
     const x1 = Math.min(startX, e.offsetX), x2 = Math.max(startX, e.offsetX);
     if(x2 - x1 < 20) return;
     const chart = window._lineChart;
     if(!chart) return;
     const meta = chart.getDatasetMeta(0);
-    if(!meta || !meta.data.length) return;
-    const pts = meta.data;
-    let i1 = 0, i2 = pts.length - 1;
-    for(let i=0;i<pts.length;i++) { if(pts[i].x >= x1) { i1=i; break; } }
-    for(let i=pts.length-1;i>=0;i--) { if(pts[i].x <= x2) { i2=i; break; } }
-    if(i2 - i1 < 3) return;
-    // Appliquer directement sur l'axe
+    if(!meta?.data?.length) return;
+    let i1=0, i2=meta.data.length-1;
+    for(let i=0;i<meta.data.length;i++) { if(meta.data[i].x>=x1){i1=i;break;} }
+    for(let i=meta.data.length-1;i>=0;i--) { if(meta.data[i].x<=x2){i2=i;break;} }
+    if(i2-i1 < 3) return;
     chart.options.scales.x.min = i1;
     chart.options.scales.x.max = i2;
     chart.update("none");
-    // Mettre à jour le slider
-    const total = pts.length;
-    const pct = Math.round((i2 - i1) / total * 100);
-    const slider = document.getElementById("zoom-slider");
-    if(slider) slider.value = pct;
     const btn = document.getElementById("zoom-reset");
     if(btn) btn.style.display = "inline-block";
   });
-  container.addEventListener("mouseleave", () => {
-    if(dragging) { dragging = false; overlay.style.display = "none"; }
+
+  newContainer.addEventListener("mouseleave", () => {
+    if(dragging) { dragging=false; if(newOverlay) newOverlay.style.display="none"; }
   });
 }
 
-function renderMacro() {
-  const hist = filterHist((data.history||[]).filter(h=>h.brand===brand&&h.type==="ko"));
-  const abs = new Array(24).fill(0);
-  hist.forEach(h=>{const t=parseDateStr(h.time);if(t)abs[t.getHours()]++;});
-  const now=new Date(),cur=now.getHours();
-  const labels=[],counts=[];
-  for(let i=23;i>=0;i--){let h=cur-i;if(h<0)h+=24;labels.push(h+"h");counts.push(abs[h]);}
-  const opts={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.raw+" incident(s)"}}},layout:{padding:{top:10}},scales:{x:{grid:{display:false},border:{display:false},ticks:{font:{size:10,family:'Plus Jakarta Sans'},color:"#94a3b8"}},y:{grid:{color:"rgba(0,0,0,0.03)"},border:{display:false},suggestedMax:5,ticks:{font:{size:10,family:'Plus Jakarta Sans'},color:"#94a3b8",stepSize:1,precision:0}}}};
-  if(!macroInst){macroInst=new Chart(document.getElementById("macroChart"),{type:"bar",data:{labels,datasets:[{data:counts,backgroundColor:"rgba(225,29,72,0.75)",hoverBackgroundColor:"rgba(225,29,72,1)",borderRadius:4,borderSkipped:false,barPercentage:.6}]},options:opts});}
-  else{macroInst.data.labels=labels;macroInst.data.datasets[0].data=counts;macroInst.update("none");}
-}
-
-function detectTrend() {
-  const pages = Object.keys((data.statuses||{})[brand]||{});
-  const el = document.getElementById("trend-callout");
-  for(const page of pages){
-    const pts = filterPts((data.chart_data||{})[brand+":"+page]||[]).slice(-10);
-    if(pts.length<6)continue;
-    const e=pts.slice(0,3).map(p=>p.elapsed).reduce((a,b)=>a+b,0)/3;
-    const l=pts.slice(-3).map(p=>p.elapsed).reduce((a,b)=>a+b,0)/3;
-    if(l>e*1.5&&l>1.5){el.style.display="block";document.getElementById("trend-body").textContent=page+" : Lenteur détectée ("+e.toFixed(2)+"s → "+l.toFixed(2)+"s). Risque de timeout.";if(window.lucide)lucide.createIcons();return;}
-  }
-  el.style.display="none";
-}
-
-function dur(hist, idx) {
-  const inc = hist[idx]; if(inc.type !== "ko") return null;
-  // Chercher recovery dans tout l'historique de la brand
-  const fullHist = (data.history || []).filter(h => h.brand === inc.brand);
-  const incTime = parseDateStr(inc.time);
-  for(const h of fullHist) {
-    if(h.type === "recovery" && h.page === inc.page) {
-      const recTime = parseDateStr(h.time);
-      if(recTime && incTime && recTime > incTime) {
-        try {
-          const d = Math.round((recTime - incTime) / 1000);
-          if(d > 0 && d < 86400) {
-            if(d < 60) return d + "s";
-            if(d < 3600) return Math.floor(d/60) + "m " + (d%60) + "s";
-            return Math.floor(d/3600) + "h " + Math.floor((d%3600)/60) + "m";
-          }
-        } catch(e) {}
-        break;
-      }
-    }
-  }
-  // Fallback: si statut actuel OK => résolu
-  const cs = (data.statuses || {})[inc.brand]?.[inc.page];
-  if(cs && cs.ok) {
-    const ct = parseDateStr(cs.checked_at);
-    if(ct && incTime && ct > incTime) {
-      const d = Math.round((ct - incTime) / 1000);
-      if(d < 60) return d + "s";
-      if(d < 3600) return Math.floor(d/60) + "m " + (d%60) + "s";
-      return Math.floor(d/3600) + "h " + Math.floor((d%3600)/60) + "m";
-    }
-  }
-  return null;
-}
-
-function renderHistory(){
-  const hist=filterHist((data.history||[]).filter(h=>h.brand===brand));
-  document.getElementById("inc-count").textContent=hist.length?"("+hist.length+" evt)":"";
-  const el=document.getElementById("history");
-  if(!hist.length){
-    const msg = currentPeriod === "live"
-      ? '<div style="padding:1rem;text-align:center;color:var(--text-3);font-size:12px;font-weight:700">Aucun incident dans les 2 dernières heures 🎉<br><span style="font-weight:500;opacity:.7">Consultez la vue 24h pour l\'historique complet</span></div>'
-      : '<div style="padding:1rem;text-align:center;color:var(--text-3);font-size:12px;font-weight:700">Aucun incident 🎉</div>';
-    el.innerHTML = msg;
-    return;
-  }
-  el.innerHTML=[...hist].reverse().map((h,ri)=>{
-    const d=dur(hist,hist.length-1-ri);
-    const ongoing=h.type==="ko"&&d===null;
-    const hhmm=(h.time||"").substring(11,16);
-    const dateStr=(h.time||"").substring(0,5); // DD/MM
-    const timeLabel = dateStr + " " + hhmm;
-    return '<div class="inc-row '+(ongoing?"ongoing":"") +'" onclick="highlightChartPoint(\''+hhmm+'\', this)" style="cursor:pointer">'+
-      '<div class="inc-top"><div class="inc-title">'+h.page+'</div><div class="inc-time">'+timeLabel+'</div></div>'+
-      '<div class="inc-mid"><div class="inc-sub">'+h.detail+(h.diagnostics&&h.diagnostics.error_type?" ("+h.diagnostics.error_type+")":"")+'</div>'+
-      '<div class="inc-chip '+(h.type==="recovery"?"ok":"ko")+'">'+(h.type==="recovery"?"RESOLVED":ongoing?"CRITICAL":"FAILURE")+'</div></div>'+
-      '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px">'+
-      '<div>'+(d?'<div class="inc-dur res"><i data-lucide="check" style="width:9px;height:9px"></i> '+d+'</div>':ongoing?'<div class="inc-dur">En cours</div>':'<div class="inc-dur" style="opacity:.5">-</div>')+'</div>'+
-      (h.screenshot?'<a href="'+h.screenshot+'" target="_blank" style="color:var(--text-3)"><i data-lucide="camera" style="width:11px;height:11px"></i></a>':'')+'</div></div>';
-  }).join("");
-  if(window.lucide)lucide.createIcons();
-}
-
-function renderSynth() {
-  if(!data) return;
-  const el = document.getElementById("synth-list");
-  const cutoff = new Date(Date.now() - 86400000);
-  const hist24 = (data.history||[]).filter(h => { const t=parseDateStr(h.time); return t && t>=cutoff; });
-
-  // Collecter tous les brands monitorés
-  const allBrands = [];
-  ["stla","oem","ref"].forEach(g => {
-    Object.values(SITE_TREE[g]||{}).forEach(c => c.brands.forEach(b => { if(!allBrands.includes(b)) allBrands.push(b); }));
-  });
-
-  // Pour chaque brand : statut actuel + incidents 24h
-  const rows = allBrands.map(b => {
-    const statuses = data.statuses && data.statuses[b] ? data.statuses[b] : {};
-    const pages = Object.keys(statuses);
-    const koPages = pages.filter(p => statuses[p] && !statuses[p].ok);
-    const isKO = koPages.length > 0;
-    const inc24 = hist24.filter(h => h.brand === b && h.type === "ko").length;
-
-    // Dernier incident KO en cours
-    let detail = "";
-    if(isKO) {
-      const lastKO = [...hist24].reverse().find(h => h.brand===b && h.type==="ko" && koPages.includes(h.page));
-      if(lastKO) {
-        const t = (lastKO.time||"").substring(11,16);
-        detail = koPages.join(", ") + " KO depuis " + t;
-      } else {
-        detail = koPages.join(", ") + " KO";
-      }
-    }
-    return { brand: b, isKO, detail, inc24 };
-  });
-
-  // Trier : KO en premier, puis par nb incidents
-  rows.sort((a,b) => { if(a.isKO && !b.isKO) return -1; if(!a.isKO && b.isKO) return 1; return b.inc24 - a.inc24; });
-
-  // KPIs
-  const nbKO = rows.filter(r => r.isKO).length;
-  const nbOK = rows.filter(r => !r.isKO).length;
-  const nbInc = hist24.filter(h => h.type==="ko").length;
-  document.getElementById("synth-kpi-ko").textContent = nbKO;
-  document.getElementById("synth-kpi-ok").textContent = nbOK;
-  document.getElementById("synth-kpi-inc").textContent = nbInc;
-
-  // Badge sidebar
-  const badge = document.getElementById("synth-ko-badge");
-  if(nbKO > 0) { badge.textContent = nbKO; badge.classList.add("visible"); }
-  else { badge.classList.remove("visible"); }
-
-  if(!rows.length) { el.innerHTML='<div class="synth-empty">Aucune donnée</div>'; return; }
-
-  el.innerHTML = rows.map(r => `
-    <div class="synth-row" onclick="goToBrand('${r.brand}')">
-      <span class="synth-row-status ${r.isKO?'ko':'ok'}"></span>
-      <span class="synth-row-brand">${r.brand}</span>
-      <span class="synth-row-detail ${r.isKO?'ko':''}">${r.isKO ? r.detail : '✓ Opérationnel'}</span>
-      <span class="synth-row-count">${r.inc24 ? r.inc24+' incident'+(r.inc24>1?'s':'') : ''}</span>
-      <i data-lucide="chevron-right" style="width:14px;height:14px" class="synth-row-arrow"></i>
-    </div>`).join("");
-  if(window.lucide) lucide.createIcons();
-}
-
-let synthFilter = "all";
-function setSynthFilter(f, btn) {
-  synthFilter = f;
-  document.querySelectorAll(".synth-filter").forEach(b => b.classList.remove("on"));
-  btn.classList.add("on");
-  renderSynth();
-}
-
-function goToBrand(b) {
-  let targetGroup = null;
-  ["stla","oem","ref"].forEach(g => {
-    if(SITE_TREE[g] && Object.values(SITE_TREE[g]).some(c => c.brands && c.brands.includes(b)))
-      targetGroup = g;
-  });
-  if(!targetGroup) return;
-  currentGroup = targetGroup;
-  ["stla","oem","ref","synth"].forEach(x => {
-    const t = document.getElementById("tab-"+x);
-    if(t) t.classList.toggle("on", x === targetGroup);
-  });
-  document.getElementById("synth-view").classList.remove("active");
-  buildNav();
-  selectBrand(b);
-  setTimeout(() => {
-    const flux = document.getElementById("history");
-    if(flux) flux.scrollIntoView({behavior:"smooth"});
-  }, 300);
-}
-
-function downloadReport(){
-  if(!data||!brand)return;
-  const hist=filterHist((data.history||[]).filter(h=>h.brand===brand));
-  const rows=[["Date","Page","Type","Détail","Durée","Erreur","IP"]];
-  hist.forEach((h,i)=>{const d=h.type==="ko"?dur(hist,i):"";rows.push([h.time||"",h.page||"",h.type||"",h.detail||"",d||"",h.diagnostics&&h.diagnostics.error_type||"",h.diagnostics&&h.diagnostics.ip||""]);});
-  const csv=rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(",")).join("\n");
-  const blob=new Blob([csv],{type:"text/csv;charset=utf-8;"});
-  const url=URL.createObjectURL(blob);const a=document.createElement("a");
-  a.href=url;a.download="noc_"+brand.replace(/ /g,"_")+"_"+new Date().toISOString().slice(0,10)+".csv";a.click();URL.revokeObjectURL(url);
-}
-
-// ── FETCH ──
-const CHART_BACKUP = "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/chart_data.json";
-
-const INCIDENTS_BASE = "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/incidents";
-
-let _incidentsCacheTime = 0;
-let _incidentsCache = [];
-
-async function loadIncidentsFromFolder() {
-  if(Date.now() - _incidentsCacheTime < 300000 && _incidentsCache.length) return _incidentsCache;
-  const all = [];
-  const today = new Date();
-  for(let i = 0; i < 2; i++) { // seulement 2 jours pour limiter les appels API
-    const d = new Date(today - i * 86400000);
-    const date = d.toISOString().slice(0,10);
-    try {
-      const r = await fetch(`https://api.github.com/repos/dcs-masterclass-ia/stla-monitor/contents/incidents/${date}`, {cache:"no-store"});
-      if(!r.ok) continue;
-      const files = await r.json();
-      for(const f of files) {
-        const r2 = await fetch(`${INCIDENTS_BASE}/${date}/${f.name}`, {cache:"no-store"});
-        if(r2.ok) { const inc = await r2.json(); all.push(...inc); }
-      }
-    } catch(e) {}
-  }
-  _incidentsCache = all.sort((a,b) => a.time < b.time ? -1 : 1);
-  _incidentsCacheTime = Date.now();
-  return _incidentsCache;
-}
-
-// Rafraîchir les incidents en arrière-plan toutes les 5 min
-async function refreshIncidents() {
-  _incidentsCacheTime = 0; // force reload
-  await loadIncidentsFromFolder();
-  if(brand && data) renderHistory();
-}
-setInterval(refreshIncidents, 300000);
-
-// Cache chart backup
-let _chartBackupCache = null;
-let _chartBackupTs = 0;
-
-async function loadChartBackup() {
-  if(_chartBackupCache && Date.now() - _chartBackupTs < 300000) return _chartBackupCache;
-  try {
-    const r = await fetch(CHART_BACKUP+"?t="+Date.now(), {cache:"no-store"});
-    if(r.ok) {
-      const b = await r.json();
-      _chartBackupCache = b.chart_data || {};
-      _chartBackupTs = Date.now();
-    }
-  } catch(e) {}
-  return _chartBackupCache || {};
-}
-
-async function mergeChartBackup(nd) {
-  const bcd = await loadChartBackup();
-  if(!nd.chart_data) nd.chart_data = {};
-  for(const key of Object.keys(bcd)) {
-    const cur = nd.chart_data[key] || [];
-    const bk = bcd[key] || [];
-    // Merger : backup pour l'historique + Render pour le temps réel
-    const seen = new Set(cur.map(p=>p.time));
-    const merged = [...cur];
-    bk.forEach(p => { if(!seen.has(p.time)) { seen.add(p.time); merged.push(p); }});
-    merged.sort((a,b) => a.time < b.time ? -1 : 1);
-    nd.chart_data[key] = merged;
-  }
-  return nd;
-}
-
-async function fetchStatus(){
-  try{
-    let r=await fetch(RENDER+"?t="+Date.now(),{cache:"no-store"});
-    if(!r.ok)throw new Error();
-    let nd=await r.json();
-    if(JSON.stringify(nd.updated_at)===JSON.stringify(data&&data.updated_at))return;
-    nd = await mergeChartBackup(nd);
-    data=nd;
-    document.getElementById("ts-label").textContent=toParisTime(data.server_time||data.updated_at||"");
-    const tlm = document.getElementById("ts-label-main");
-    if(tlm) tlm.textContent = toParisLabel(data.server_time||data.updated_at||"");
-    document.getElementById("sb-ts").textContent=toParisDateTime(data.server_time||data.updated_at||"");
-    document.getElementById("pulse").className="pulse-dot";
-    updateDots();
-    if(brand)render(); if(currentGroup==="synth")renderSynth();
-  }catch(e){
-    try{
-      const r2=await fetch(RAW+"?t="+Date.now(),{cache:"no-store"});if(!r2.ok)throw new Error();
-      let nd=await r2.json();
-      if(JSON.stringify(nd.updated_at)===JSON.stringify(data&&data.updated_at))return;
-      nd = await mergeChartBackup(nd);
-      data=nd;
-      document.getElementById("ts-label").textContent=toParisTime(data.updated_at||"");
-      const tlm = document.getElementById("ts-label-main");
-      if(tlm) tlm.textContent = toParisLabel(data.updated_at||"");
-      document.getElementById("sb-ts").textContent=toParisDateTime(data.server_time||data.updated_at||"");
-      document.getElementById("pulse").className="pulse-dot";
-      updateDots();if(brand)render(); if(currentGroup==="synth")renderSynth();
-    }catch(e2){document.getElementById("pulse").className="pulse-dot dead";}
-  }
-}
-
-function highlightChartPoint(hhmm, el) {
-  if(!lineChart) return;
-  let idx = lineChart.data.labels.findIndex(l => l === hhmm);
-  if(idx === -1) {
-    const [h,m] = hhmm.split(":").map(Number);
-    const incMin = h*60+m;
-    let minDiff = Infinity;
-    lineChart.data.labels.forEach((l,i) => {
-      const p = (l||"").split(":").map(Number);
-      if(p.length>=2){ const d=Math.abs(p[0]*60+p[1]-incMin); if(d<minDiff){minDiff=d;idx=i;} }
-    });
-  }
-  if(idx === -1) return;
-
-  // Highlight inc-row
-  document.querySelectorAll(".inc-row").forEach(r => r.classList.remove("highlighted"));
-  if(el) el.classList.add("highlighted");
-
-  // Scroll vers le point
-  const scroll = document.getElementById("chart-scroll");
-  const meta = lineChart.getDatasetMeta(0);
-  if(meta?.data?.[idx]) {
-    scroll.scrollTo({left: Math.max(0, meta.data[idx].x - scroll.clientWidth/2), behavior:"smooth"});
-  }
-
-  // Tooltip
-  const activeEls = [];
-  lineChart.data.datasets.forEach((ds,di) => {
-    if(ds.data && ds.data[idx] !== undefined) activeEls.push({datasetIndex:di, index:idx});
-  });
-  if(activeEls.length) lineChart.tooltip.setActiveElements(activeEls, {x:0,y:0});
-  lineChart.update("none");
-}
-
-// Clic sur un point rouge → scroll vers l'incident
 function onChartClick(evt, elements) {
   if(!elements.length) return;
   const idx = elements[0].index;
-  const t = lineChart.data.labels[idx];
-  if(!t) return;
-  const hhmm = (t||"").slice(-5);
+  const chart = window._lineChart;
+  if(!chart) return;
+  const label = chart.data.labels[idx];
+  if(!label) return;
+  const hhmm = (label||"").slice(-5);
   const incRows = document.querySelectorAll(".inc-row");
   incRows.forEach(row => row.classList.remove("highlighted"));
   let found = null;
@@ -1636,6 +1222,7 @@ function onChartClick(evt, elements) {
   });
   if(found) found.scrollIntoView({behavior:"smooth", block:"center"});
 }
+
 const SUPA_URL  = "https://vqkzrvwwtiktofkpmelt.supabase.co";
 const SUPA_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZxa3pydnd3dGlrdG9ma3BtZWx0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE5NDAzMDQsImV4cCI6MjA5NzUxNjMwNH0.5ylyy1Voq9vfLHNO7Jk8leTV55VO4bkXg7oGGC2BNLo";
 let adminToken = localStorage.getItem("admin_token") || null;
