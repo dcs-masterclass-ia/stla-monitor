@@ -734,7 +734,7 @@ function selectBrand(b) {
   if (macroInst) { macroInst.destroy(); macroInst = null; }
   window._lineChart = null;
   // Recréer les canvas proprement
-  ['lineChart','gaugeChart','macroChart'].forEach(id => {
+  ['lineChart','yAxisChart','gaugeChart','macroChart'].forEach(id => {
     const old = document.getElementById(id);
     if (old) {
       const newCanvas = document.createElement('canvas');
@@ -1140,10 +1140,13 @@ function renderChart() {
   };
 
   if (!yAxisInst) {
-    yAxisInst = new Chart(document.getElementById("yAxisChart"),{type:"line",data:{labels:labelsFmt,datasets:[]},options:yOpts});
+    const yCanvas = document.getElementById("yAxisChart");
+    if(yCanvas) yAxisInst = new Chart(yCanvas,{type:"line",data:{labels:labelsFmt,datasets:[]},options:yOpts});
   }
   if (!lineChart) {
-    lineChart = new Chart(container.querySelector("canvas"),{type:"line",data:{labels:labelsFmt,datasets:[...datasets, koDataset]},options:mOpts});
+    const lCanvas = container.querySelector("canvas");
+    if(!lCanvas) return;
+    lineChart = new Chart(lCanvas,{type:"line",data:{labels:labelsFmt,datasets:[...datasets, koDataset]},options:mOpts});
     window._lineChart = lineChart;
     setTimeout(()=>scroll.scrollLeft=scroll.scrollWidth,100);
   } else {
