@@ -909,6 +909,24 @@ function renderGauge() {
   }
 }
 
+
+function tsToParisHHMM(t) {
+  if(!t) return "";
+  const m = t.match(/(\d{2})\/(\d{2})\/(\d{4})\s+(\d{2}):(\d{2})/);
+  if(!m) return t.substring(11,16)||"";
+  const utc = new Date(Date.UTC(+m[3],+m[2]-1,+m[1],+m[4],+m[5]));
+  return utc.toLocaleTimeString("fr-FR",{timeZone:"Europe/Paris",hour:"2-digit",minute:"2-digit"});
+}
+function tsToParisLabel(t) {
+  if(!t) return "";
+  const m = t.match(/(\d{2})\/(\d{2})\/(\d{4})\s+(\d{2}):(\d{2})/);
+  if(!m) return t.substring(0,5)||"";
+  const utc = new Date(Date.UTC(+m[3],+m[2]-1,+m[1],+m[4],+m[5]));
+  const day = utc.toLocaleDateString("fr-FR",{timeZone:"Europe/Paris",day:"2-digit",month:"2-digit"});
+  const hhmm = utc.toLocaleTimeString("fr-FR",{timeZone:"Europe/Paris",hour:"2-digit",minute:"2-digit"});
+  return day+" "+hhmm;
+}
+
 function renderChart() {
   const pages = Object.entries((data.statuses||{})[brand]||{});
   const meta = getBrandMeta(brand);
@@ -1003,10 +1021,10 @@ function renderChart() {
   let labelsFmt;
   let xTickLimit;
   if (currentPeriod === "live") {
-    labelsFmt = labels.map(t => (t||"").substring(11,16));
+    labelsFmt = labels.map(t => tsToParisHHMM(t));
     xTickLimit = 8;
   } else if (currentPeriod === "24h") {
-    labelsFmt = labels.map(t => (t||"").substring(11,16));
+    labelsFmt = labels.map(t => tsToParisHHMM(t));
     xTickLimit = 12;
   } else if (currentPeriod === "7j") {
     // Agrégé par heure — afficher jour + heure
@@ -1019,10 +1037,10 @@ function renderChart() {
     xTickLimit = 14;
   } else if (currentPeriod === "30j") {
     // Agrégé par jour — afficher DD/MM
-    labelsFmt = labels.map(t => t ? t.substring(0,5) : "");
+    labelsFmt = labels.map(t => { if(!t) return ""; const m=t.match(/(\d{2})\/(\d{2})/); return m?m[0]:""; });
     xTickLimit = 10;
   } else {
-    labelsFmt = labels.map(t => (t||"").substring(11,16));
+    labelsFmt = labels.map(t => tsToParisHHMM(t));
     xTickLimit = 10;
   }
 
