@@ -965,7 +965,9 @@ function renderChart() {
       koB.push(isKO ? "#fff" : "transparent");
     });
     ds._koR = koR;
-    ds.pointRadius = koR;
+    ds._koC = koC;
+    ds._koB = koB;
+    ds.pointRadius = _showKO ? koR : koR.map(() => 0);
     ds.pointBackgroundColor = koC;
     ds.pointBorderColor = koB;
     ds.pointBorderWidth = 2;
@@ -1151,9 +1153,11 @@ function toggleKO() {
   if(!chart) return;
   chart.data.datasets.forEach(ds => {
     if(!ds._koR) return;
-    ds.pointRadius = ds._koR.map(r => _showKO ? r : 0);
+    ds.pointRadius = _showKO ? [...ds._koR] : ds._koR.map(() => 0);
+    ds.pointBackgroundColor = _showKO ? ds._koC : ds._koC.map(() => "transparent");
+    ds.pointBorderColor = _showKO ? ds._koB : ds._koB.map(() => "transparent");
   });
-  chart.update("none");
+  chart.update();
   document.getElementById("leg-ko")?.classList.toggle("muted", !_showKO);
 }
 
