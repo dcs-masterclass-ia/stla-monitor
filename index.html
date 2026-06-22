@@ -955,35 +955,33 @@ function renderChart() {
 
   const labels = datasets[0]?datasets[0]._t||[]:[];
 
-  // Dataset scatter dédié aux points KO — visible sur toutes les courbes
-  const koScatterData = [];
-  if(datasets[0]) {
-    datasets[0]._t.forEach((t, i) => {
+  // Points KO sur chaque dataset de ligne
+  datasets.forEach(ds => {
+    const koR = [], koC = [], koB = [];
+    ds._t.forEach(t => {
       const prefix = (t||"").substring(0,16);
-      if(koTimes.has(prefix)) {
-        // Ajouter un point pour chaque dataset (page) à ce timestamp
-        datasets.forEach((ds, di) => {
-          const val = ds.data[i];
-          if(val !== undefined) {
-            koScatterData.push({x: i, y: val, _ds: di});
-          }
-        });
-      }
+      const isKO = koTimes.has(prefix);
+      koR.push(isKO && _showKO ? 8 : 0);
+      koC.push(isKO ? "#e11d48" : "transparent");
+      koB.push(isKO ? "#fff" : "transparent");
     });
-  }
+    ds._koR = koR;
+    ds.pointRadius = koR;
+    ds.pointBackgroundColor = koC;
+    ds.pointBorderColor = koB;
+    ds.pointBorderWidth = 2;
+    ds.pointHoverRadius = 10;
+  });
 
+  // Dataset fantôme pour la légende KO
   const koDataset = {
     label: "Incident KO",
-    data: koScatterData.map(p => p.y),
-    _koIndices: koScatterData.map(p => p.x),
-    type: "scatter",
-    pointRadius: _showKO ? koScatterData.map(() => 8) : koScatterData.map(() => 0),
-    pointBackgroundColor: "#e11d48",
-    pointBorderColor: "#fff",
-    pointBorderWidth: 2,
+    data: [],
+    pointRadius: [],
+    backgroundColor: "#e11d48",
+    borderColor: "#e11d48",
     showLine: false,
-    order: 0,
-    hidden: !_showKO
+    hidden: false
   };
 
   // Formatter les labels X selon le mode
@@ -1152,13 +1150,11 @@ function toggleKO() {
   _showKO = !_showKO;
   const chart = window._lineChart;
   if(!chart) return;
-  // Le dataset KO est toujours le dernier
-  const koDs = chart.data.datasets[chart.data.datasets.length - 1];
-  if(koDs && koDs.label === "Incident KO") {
-    koDs.hidden = !_showKO;
-    koDs.pointRadius = koDs.pointRadius.map(() => _showKO ? 8 : 0);
-    chart.update("none");
-  }
+  chart.data.datasets.forEach(ds => {
+    if(!ds._koR) return;
+    ds.pointRadius = ds._koR.map(r => _showKO ? r : 0);
+  });
+  chart.update("none");
   document.getElementById("leg-ko")?.classList.toggle("muted", !_showKO);
 }
 
