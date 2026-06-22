@@ -197,6 +197,7 @@ incident_active = {}
 history = []
 history_lock = threading.Lock()
 chart_data = {}
+statuses = {}
 
 for brand, urls in BRANDS.items():
     for page in urls:
