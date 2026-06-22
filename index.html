@@ -759,27 +759,32 @@ function setPeriod(btn, p) {
 // ── HELPERS ──
 function filterPts(pts) {
   if (!pts || !pts.length) return [];
-  let cutoff;
-  if (currentPeriod === "live")       cutoff = Date.now() - 2 * 3600000;
-  else if (currentPeriod === "24h")   cutoff = Date.now() - 24 * 3600000;
-  else if (currentPeriod === "7j")    cutoff = Date.now() - 7 * 86400000;
-  else if (currentPeriod === "30j")   cutoff = Date.now() - 30 * 86400000;
-  else                                cutoff = Date.now() - 24 * 3600000;
+
+  // Heure Paris actuelle — les timestamps sont stockés en heure Paris
+  // parseDateStr retourne un objet Date en UTC, donc on doit compenser
+  const nowParis = new Date(new Date().toLocaleString("en-US", {timeZone:"Europe/Paris"}));
+
+  let cutoffParis;
+  if (currentPeriod === "live")       cutoffParis = new Date(nowParis - 2 * 3600000);
+  else if (currentPeriod === "24h")   cutoffParis = new Date(nowParis - 24 * 3600000);
+  else if (currentPeriod === "7j")    cutoffParis = new Date(nowParis - 7 * 86400000);
+  else if (currentPeriod === "30j")   cutoffParis = new Date(nowParis - 30 * 86400000);
+  else                                cutoffParis = new Date(nowParis - 24 * 3600000);
 
   const filtered = pts.filter(p => {
     const t = parseDateStr(p.time);
-    return t && t.getTime() >= cutoff;
+    return t && t >= cutoffParis;
   });
-  const src = filtered.length >= 5 ? filtered : pts.slice(-(currentPeriod==="30j"?14400:currentPeriod==="7j"?3360:480));
 
-  // Agréger selon le mode pour réduire les points
+  if (filtered.length < 3) {
+    const n = currentPeriod === "30j" ? 14400 : currentPeriod === "7j" ? 3360 : currentPeriod === "24h" ? 480 : 40;
+    return pts.slice(-n);
+  }
+
   if (currentPeriod === "7j") {
-    // Agréger par heure — moyenne des elapsed
     const buckets = {};
-    src.forEach(p => {
-      const t = parseDateStr(p.time);
-      if(!t) return;
-      const key = p.time.substring(0,5) + " " + p.time.substring(11,13) + ":00:00"; // DD/MM/YYYY HH:00:00
+    filtered.forEach(p => {
+      const key = p.time.substring(0,5) + " " + p.time.substring(11,13) + ":00:00";
       if(!buckets[key]) buckets[key] = [];
       buckets[key].push(p.elapsed);
     });
@@ -787,10 +792,9 @@ function filterPts(pts) {
       time, elapsed: Math.round(vals.reduce((a,b)=>a+b,0)/vals.length * 100)/100
     }));
   } else if (currentPeriod === "30j") {
-    // Agréger par jour
     const buckets = {};
-    src.forEach(p => {
-      const key = p.time.substring(0,10) + " 12:00:00"; // DD/MM/YYYY 12:00:00
+    filtered.forEach(p => {
+      const key = p.time.substring(0,10) + " 12:00:00";
       if(!buckets[key]) buckets[key] = [];
       buckets[key].push(p.elapsed);
     });
@@ -798,7 +802,7 @@ function filterPts(pts) {
       time, elapsed: Math.round(vals.reduce((a,b)=>a+b,0)/vals.length * 100)/100
     }));
   }
-  return src;
+  return filtered;
 }
 function filterHist(hist) {
   if (!hist || !hist.length) return [];
@@ -1084,9 +1088,17 @@ function renderChart() {
   };
 
   // Créer ou mettre à jour le chart
+  const lCanvas = container.querySelector("canvas");
+  if(!lCanvas) return;
+
+  // Vérifier que le lineChart existant est sur le bon canvas
+  if(lineChart && lineChart.canvas !== lCanvas) {
+    lineChart.destroy();
+    lineChart = null;
+    window._lineChart = null;
+  }
+
   if(!lineChart) {
-    const lCanvas = container.querySelector("canvas");
-    if(!lCanvas) return;
     lineChart = new Chart(lCanvas, {type:"line", data:{labels:labelsFmt, datasets}, options:mOpts});
     window._lineChart = lineChart;
     setTimeout(()=>scroll.scrollLeft=scroll.scrollWidth, 100);
