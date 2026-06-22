@@ -1060,7 +1060,7 @@ function renderChart() {
   container.style.width = w + "px";
   const isEnd = scroll.scrollLeft + scroll.clientWidth >= scroll.scrollWidth - 20;
 
-  const yOpts = {responsive:true,maintainAspectRatio:false,animation:{duration:0},interaction:{mode:null},plugins:{legend:{display:false},tooltip:{enabled:false}},layout:{padding:{top:10,bottom:8}},scales:{x:{grid:{display:false},border:{display:false},ticks:{color:"transparent"}},y:{max:4,min:0,grid:{color:"rgba(0,0,0,0.04)"},border:{display:false},ticks:{stepSize:1,font:{size:11,family:'Plus Jakarta Sans'},color:"#94a3b8",callback:v=>v+"s"}}}};
+  const yOpts = {responsive:true,maintainAspectRatio:false,animation:{duration:0},interaction:{mode:null},plugins:{legend:{display:false},tooltip:{enabled:false}},layout:{padding:{top:10,bottom:8}},scales:{x:{grid:{display:false},border:{display:false},ticks:{color:"transparent"}},y:{max:8,min:0,grid:{color:"rgba(0,0,0,0.04)"},border:{display:false},ticks:{stepSize:2,font:{size:11,family:'Plus Jakarta Sans'},color:"#94a3b8",callback:v=>v+"s"}}}};
 
   const mOpts = {
     responsive:true,
@@ -1103,8 +1103,8 @@ function renderChart() {
         position:"left",
         grid:{color:"rgba(0,0,0,0.04)"},
         border:{display:false},
-        max:4,min:0,
-        ticks:{display:true,stepSize:1,font:{size:11,family:'Plus Jakarta Sans'},color:"#94a3b8",callback:v=>v+"s"}
+        max:8,min:0,
+        ticks:{display:true,stepSize:2,font:{size:11,family:'Plus Jakarta Sans'},color:"#94a3b8",callback:v=>v+"s"}
       }
     },
     onClick: (evt, elements) => onChartClick(evt, elements)
