@@ -529,5 +529,32 @@
     "page": "Homepage",
     "type": "recovery",
     "detail": "Retour en ligne (réconciliation démarrage)"
+  },
+  {
+    "time": "22/06/2026 17:49:33",
+    "brand": "Ford FR",
+    "page": "Homepage",
+    "type": "ko",
+    "detail": "Réponse très lente : 4.38s",
+    "diagnostics": {
+      "brand": "Ford FR",
+      "page": "Homepage",
+      "dns_elapsed": 0.089,
+      "ip": "63.180.121.144",
+      "http_status": 200,
+      "elapsed_http": 4.38,
+      "elapsed_total": 4.47,
+      "redirect_count": 0,
+      "final_url": "https://www.ford-reprise.fr/",
+      "headers": {
+        "server": "—",
+        "content-type": "text/html; charset=UTF-8",
+        "x-cache": "—",
+        "cf-ray": "—"
+      },
+      "error_type": "VERY_SLOW"
+    },
+    "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260622_175032.png",
+    "is_reference": false
   }
 ]
