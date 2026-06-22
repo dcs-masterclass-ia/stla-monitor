@@ -1125,5 +1125,32 @@
     },
     "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_PPR_Formulaire_20260622_144104.png",
     "is_reference": false
+  },
+  {
+    "time": "22/06/2026 14:39:59",
+    "brand": "Ford FR PPR",
+    "page": "Homepage",
+    "type": "ko",
+    "detail": "Réponse très lente : 7.1s",
+    "diagnostics": {
+      "brand": "Ford FR PPR",
+      "page": "Homepage",
+      "dns_elapsed": 0.015,
+      "ip": "3.121.134.128",
+      "http_status": 200,
+      "elapsed_http": 7.1,
+      "elapsed_total": 7.11,
+      "redirect_count": 0,
+      "final_url": "https://test-ppr-oem-site-factory.shakazoola.com/",
+      "headers": {
+        "server": "—",
+        "content-type": "text/html; charset=UTF-8",
+        "x-cache": "—",
+        "cf-ray": "—"
+      },
+      "error_type": "VERY_SLOW"
+    },
+    "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_PPR_Homepage_20260622_144117.png",
+    "is_reference": false
   }
 ]
