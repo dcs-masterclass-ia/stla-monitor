@@ -1248,6 +1248,75 @@ function detectTrend() {
   el.style.display="none";
 }
 
+function dur(hist, idx) {
+  const inc = hist[idx]; if(inc.type !== "ko") return null;
+  // Chercher recovery dans tout l'historique de la brand
+  const fullHist = (data.history || []).filter(h => h.brand === inc.brand);
+  const incTime = parseDateStr(inc.time);
+  for(const h of fullHist) {
+    if(h.type === "recovery" && h.page === inc.page) {
+      const recTime = parseDateStr(h.time);
+      if(recTime && incTime && recTime > incTime) {
+        try {
+          const d = Math.round((recTime - incTime) / 1000);
+          if(d > 0 && d < 86400) {
+            if(d < 60) return d + "s";
+            if(d < 3600) return Math.floor(d/60) + "m " + (d%60) + "s";
+            return Math.floor(d/3600) + "h " + Math.floor((d%3600)/60) + "m";
+          }
+        } catch(e) {}
+        break;
+      }
+    }
+  }
+  // Fallback: si statut actuel OK => résolu
+  const cs = (data.statuses || {})[inc.brand]?.[inc.page];
+  if(cs && cs.ok) {
+    const ct = parseDateStr(cs.checked_at);
+    if(ct && incTime && ct > incTime) {
+      const d = Math.round((ct - incTime) / 1000);
+      if(d < 60) return d + "s";
+      if(d < 3600) return Math.floor(d/60) + "m " + (d%60) + "s";
+      return Math.floor(d/3600) + "h " + Math.floor((d%3600)/60) + "m";
+    }
+  }
+  return null;
+}
+
+function highlightChartPoint(hhmm, el) {
+  if(!lineChart) return;
+  let idx = lineChart.data.labels.findIndex(l => l === hhmm);
+  if(idx === -1) {
+    const [h,m] = hhmm.split(":").map(Number);
+    const incMin = h*60+m;
+    let minDiff = Infinity;
+    lineChart.data.labels.forEach((l,i) => {
+      const p = (l||"").split(":").map(Number);
+      if(p.length>=2){ const d=Math.abs(p[0]*60+p[1]-incMin); if(d<minDiff){minDiff=d;idx=i;} }
+    });
+  }
+  if(idx === -1) return;
+
+  // Highlight inc-row
+  document.querySelectorAll(".inc-row").forEach(r => r.classList.remove("highlighted"));
+  if(el) el.classList.add("highlighted");
+
+  // Scroll vers le point
+  const scroll = document.getElementById("chart-scroll");
+  const meta = lineChart.getDatasetMeta(0);
+  if(meta?.data?.[idx]) {
+    scroll.scrollTo({left: Math.max(0, meta.data[idx].x - scroll.clientWidth/2), behavior:"smooth"});
+  }
+
+  // Tooltip
+  const activeEls = [];
+  lineChart.data.datasets.forEach((ds,di) => {
+    if(ds.data && ds.data[idx] !== undefined) activeEls.push({datasetIndex:di, index:idx});
+  });
+  if(activeEls.length) lineChart.tooltip.setActiveElements(activeEls, {x:0,y:0});
+  lineChart.update("none");
+}
+
 function renderHistory(){
   const hist=filterHist((data.history||[]).filter(h=>h.brand===brand));
   document.getElementById("inc-count").textContent=hist.length?"("+hist.length+" evt)":"";
