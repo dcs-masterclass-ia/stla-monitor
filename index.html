@@ -1296,7 +1296,7 @@ function renderHistory(){
     const hhmm=(h.time||"").substring(11,16);
     const dateStr=(h.time||"").substring(0,5); // DD/MM
     const timeLabel = dateStr + " " + hhmm;
-    return '<div class="inc-row '+(ongoing?"ongoing":"") +'" onclick="highlightChartPoint(\''+hhmm+'\')" style="cursor:pointer">'+
+    return '<div class="inc-row '+(ongoing?"ongoing":"") +'" onclick="highlightChartPoint(\''+timeLabel+'\')" style="cursor:pointer">'+
       '<div class="inc-top"><div class="inc-title">'+h.page+'</div><div class="inc-time">'+timeLabel+'</div></div>'+
       '<div class="inc-mid"><div class="inc-sub">'+h.detail+(h.diagnostics&&h.diagnostics.error_type?" ("+h.diagnostics.error_type+")":"")+'</div>'+
       '<div class="inc-chip '+(h.type==="recovery"?"ok":"ko")+'">'+(h.type==="recovery"?"RESOLVED":ongoing?"CRITICAL":"FAILURE")+'</div></div>'+
@@ -1515,47 +1515,29 @@ async function fetchStatus(){
 
 function highlightChartPoint(timeStr) {
   if(!lineChart) return;
-  // timeStr peut être HH:MM ou DD/MM HH:MM — on cherche par substring
-  const hhmm = timeStr.length >= 5 ? timeStr.slice(-5) : timeStr;
+  const hhmm = (timeStr||"").slice(-5); // toujours HH:MM en fin
+  // Chercher dans les labels
   const idx = lineChart.data.labels.findIndex(l => (l||"").endsWith(hhmm));
   if(idx === -1) return;
 
-  // Highlight la inc-row correspondante
+  // Highlight la inc-row
   document.querySelectorAll(".inc-row").forEach(r => r.classList.remove("highlighted"));
   event?.currentTarget?.classList.add("highlighted");
 
   // Scroll le graph vers ce point
   const scroll = document.getElementById("chart-scroll");
-  const container = document.getElementById("chart-container");
   const meta = lineChart.getDatasetMeta(0);
   if(meta?.data?.[idx]) {
     const ptX = meta.data[idx].x;
-    scroll.scrollTo({left: Math.max(0, ptX - scroll.clientWidth / 2), behavior: "smooth"});
+    scroll.scrollTo({left: Math.max(0, ptX - scroll.clientWidth / 2), behavior:"smooth"});
   }
 
-  // Tooltip sur ce point
+  // Tooltip
   lineChart.tooltip.setActiveElements(
     lineChart.data.datasets.map((_, di) => ({datasetIndex: di, index: idx})),
-    {x: 0, y: 0}
+    {x:0, y:0}
   );
-
-  // Agrandir le point KO temporairement
-  lineChart.data.datasets.forEach(ds => {
-    if(!ds._koR) return;
-    const prev = [...ds.pointRadius];
-    ds.pointRadius = ds._koR.map((r,i) => i === idx && r > 0 ? 14 : (ds._showKO === false ? 0 : r));
-  });
-
-  lineChart.update();
-
-  // Remettre à la normale après 2s
-  setTimeout(() => {
-    lineChart.data.datasets.forEach(ds => {
-      if(ds._koR) ds.pointRadius = _showKO ? [...ds._koR] : ds._koR.map(() => 0);
-    });
-    lineChart.tooltip.setActiveElements([], {x:0,y:0});
-    lineChart.update("none");
-  }, 2000);
+  lineChart.update("none");
 }
 
 // Clic sur un point rouge → scroll vers l'incident
