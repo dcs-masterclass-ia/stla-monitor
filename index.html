@@ -924,9 +924,22 @@ function renderChart() {
   let masterT = rawDs.length > 0 ? rawDs[0].map(p=>p.time) : [];
   let sampled = new Set();
   const MAX = 600;
+
+  // Pour chaque incident KO, trouver le point chart le plus proche (±5 min)
+  const koTimesMs = koH.map(h => {
+    const t = parseDateStr(h.time);
+    return t ? t.getTime() : null;
+  }).filter(Boolean);
+
   if (masterT.length > MAX) {
     const f = Math.ceil(masterT.length/MAX);
-    masterT.forEach((t,i) => { const prefix=(t||"").substring(0,16); if(koTimes.has(prefix)||i%f===0||i===masterT.length-1) sampled.add(i); });
+    masterT.forEach((t,i) => {
+      const pt = parseDateStr(t);
+      const ptMs = pt ? pt.getTime() : null;
+      // Garder si proche d'un KO (±5 min = 300000ms)
+      const nearKO = ptMs && koTimesMs.some(koMs => Math.abs(ptMs - koMs) <= 300000);
+      if(nearKO || i%f===0 || i===masterT.length-1) sampled.add(i);
+    });
   } else masterT.forEach((_,i)=>sampled.add(i));
 
   const datasets = pages.map(([page],i) => {
@@ -1515,9 +1528,23 @@ async function fetchStatus(){
 
 function highlightChartPoint(timeStr) {
   if(!lineChart) return;
-  const hhmm = (timeStr||"").slice(-5); // toujours HH:MM en fin
-  // Chercher dans les labels
-  const idx = lineChart.data.labels.findIndex(l => (l||"").endsWith(hhmm));
+  const hhmm = (timeStr||"").slice(-5);
+  // Chercher d'abord un match exact
+  let idx = lineChart.data.labels.findIndex(l => (l||"").endsWith(hhmm));
+  // Sinon chercher le point le plus proche en temps
+  if(idx === -1) {
+    const incT = parseDateStr(timeStr.length > 5 ? timeStr : "01/01/2000 " + timeStr);
+    if(incT) {
+      let minDiff = Infinity;
+      lineChart.data.labels.forEach((l, i) => {
+        const pt = parseDateStr("01/01/2000 " + l);
+        if(pt) {
+          const diff = Math.abs(pt.getTime() - incT.getTime());
+          if(diff < minDiff) { minDiff = diff; idx = i; }
+        }
+      });
+    }
+  }
   if(idx === -1) return;
 
   // Highlight la inc-row
