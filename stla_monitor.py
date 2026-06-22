@@ -924,120 +924,137 @@ def run():
     log.info("═" * 60)
 
     while True:
-        statuses = {}
-        now = datetime.now(TZ_PARIS).strftime("%d/%m/%Y %H:%M:%S")
-        now_short = datetime.now(TZ_PARIS).strftime("%H:%M:%S")
-
-        # Construire la liste de toutes les tâches à exécuter
-        tasks = []
-        for brand, urls in BRANDS.items():
-            statuses[brand] = {}
-            for page, url in urls.items():
-                tasks.append((brand, page, url))
-
-        def check_task(task):
-            brand, page, url = task
-            if brand in REFERENCE_BRANDS:
-                return brand, page, url, check_url_playwright(brand, page, url)
-            else:
-                return brand, page, url, check_url(brand, page, url)
-
-        # Exécuter en parallèle — max 10 workers simultanés
-        with ThreadPoolExecutor(max_workers=3) as executor:
-            futures = {executor.submit(check_task, t): t for t in tasks}
-            for future in as_completed(futures):
-                try:
-                    brand, page, url, (ok, reason, elapsed, details) = future.result()
-                    key = f"{brand}:{page}"
-
-                    chart_data[key].append({"time": now, "elapsed": elapsed})
-                    if len(chart_data[key]) > MAX_CHART:
-                        chart_data[key].pop(0)
-
-                    statuses[brand][page] = {
-                        "ok": ok, "reason": reason, "elapsed": elapsed,
-                        "checked_at": now, "url": url, "details": details
-                    }
-
-                    icon = "✅" if ok else "❌"
-                    log.info(f"[{brand}][{page}] {icon} {reason}")
-
-                    if ok:
-                        if incident_active.get(key):
-                            incident_active[key] = False
-                            inc = {"time": now, "brand": brand, "page": page,
-                                "type": "recovery", "detail": "Retour en ligne",
-                                "is_reference": brand in REFERENCE_BRANDS}
-                            with history_lock: history.append(inc)
-                            threading.Thread(target=archive_incident, args=(inc,), daemon=True).start()
-                            threading.Thread(target=supabase_insert, args=(inc,), daemon=True).start()
-                            if brand not in REFERENCE_BRANDS:
-                                send_teams_alert(brand, page, url, reason, is_recovery=True, details=details)
-                    else:
+        try:
+            now = datetime.now(TZ_PARIS).strftime("%d/%m/%Y %H:%M:%S")
+            now_short = datetime.now(TZ_PARIS).strftime("%H:%M:%S")
+    
+            # Construire la liste de toutes les tâches à exécuter
+            tasks = []
+            for brand, urls in BRANDS.items():
+                statuses[brand] = {}
+                for page, url in urls.items():
+                    tasks.append((brand, page, url))
+    
+            def check_task(task):
+                brand, page, url = task
+                if brand in REFERENCE_BRANDS:
+                    return brand, page, url, check_url_playwright(brand, page, url)
+                else:
+                    return brand, page, url, check_url(brand, page, url)
+    
+            # Exécuter en parallèle — max 10 workers simultanés
+            with ThreadPoolExecutor(max_workers=3) as executor:
+                futures = {executor.submit(check_task, t): t for t in tasks}
+                for future in as_completed(futures, timeout=120):
+                    try:
+                        brand, page, url, (ok, reason, elapsed, details) = future.result(timeout=20)
+                        key = f"{brand}:{page}"
+    
+                        chart_data[key].append({"time": now, "elapsed": elapsed})
+                        if len(chart_data[key]) > MAX_CHART:
+                            chart_data[key].pop(0)
+    
+                        statuses[brand][page] = {
+                            "ok": ok, "reason": reason, "elapsed": elapsed,
+                            "checked_at": now, "url": url, "details": details
+                        }
+    
+                        icon = "✅" if ok else "❌"
+                        log.info(f"[{brand}][{page}] {icon} {reason}")
+    
+                        if ok:
+                            if incident_active.get(key):
+                                incident_active[key] = False
+                                inc = {"time": now, "brand": brand, "page": page,
+                                    "type": "recovery", "detail": "Retour en ligne",
+                                    "is_reference": brand in REFERENCE_BRANDS}
+                                with history_lock: history.append(inc)
+                                threading.Thread(target=archive_incident, args=(inc,), daemon=True).start()
+                                threading.Thread(target=supabase_insert, args=(inc,), daemon=True).start()
+                                if brand not in REFERENCE_BRANDS:
+                                    send_teams_alert(brand, page, url, reason, is_recovery=True, details=details)
+                        else:
+                            if not incident_active.get(key):
+                                incident_active[key] = True
+                                screenshot_url = None
+                                if brand not in REFERENCE_BRANDS:
+                                    screenshot_url = take_screenshot(brand, page, url)
+                                    send_teams_alert(brand, page, url, reason, details=details, screenshot_url=screenshot_url)
+                                inc = {"time": now, "brand": brand, "page": page,
+                                    "type": "ko", "detail": reason, "diagnostics": details,
+                                    "screenshot": screenshot_url,
+                                    "is_reference": brand in REFERENCE_BRANDS}
+                                with history_lock: history.append(inc)
+                                threading.Thread(target=archive_incident, args=(inc,), daemon=True).start()
+                                threading.Thread(target=supabase_insert, args=(inc,), daemon=True).start()
+                    except TimeoutError:
+                        task = futures[future]
+                        brand, page, url = task
+                        log.error(f"[{brand}][{page}] TIMEOUT — check bloqué >20s, marqué KO")
+                        key = f"{brand}:{page}"
+                        now_t = datetime.now(TZ_PARIS).strftime("%d/%m/%Y %H:%M:%S")
+                        chart_data[key].append({"time": now_t, "elapsed": 8.0})
+                        if len(chart_data[key]) > MAX_CHART:
+                            chart_data[key].pop(0)
                         if not incident_active.get(key):
                             incident_active[key] = True
-                            screenshot_url = None
-                            if brand not in REFERENCE_BRANDS:
-                                screenshot_url = take_screenshot(brand, page, url)
-                                send_teams_alert(brand, page, url, reason, details=details, screenshot_url=screenshot_url)
-                            inc = {"time": now, "brand": brand, "page": page,
-                                "type": "ko", "detail": reason, "diagnostics": details,
-                                "screenshot": screenshot_url,
-                                "is_reference": brand in REFERENCE_BRANDS}
+                            inc = {"time": now_t, "brand": brand, "page": page,
+                                   "type": "ko", "detail": "Timeout interne >20s"}
                             with history_lock: history.append(inc)
                             threading.Thread(target=archive_incident, args=(inc,), daemon=True).start()
-                            threading.Thread(target=supabase_insert, args=(inc,), daemon=True).start()
-                except Exception as e:
-                    log.error(f"Erreur task : {e}")
-
-        # ── CHECK IMMAT FR ──
-        for brand in FR_BRANDS:
-            if f"{brand}:Immat" not in chart_data:
-                chart_data[f"{brand}:Immat"] = []
-            if brand not in statuses:
-                continue
-            homepage_url = BRANDS[brand].get("Homepage")
-            if not homepage_url:
-                continue
-            ok_i, reason_i, elapsed_i, details_i = check_immat_fr(brand, homepage_url)
-            key_i = f"{brand}:Immat"
-            statuses[brand]["Immat"] = {
-                "ok": ok_i, "reason": reason_i, "elapsed": elapsed_i,
-                "checked_at": now, "url": homepage_url, "details": details_i
-            }
-            chart_data[key_i].append({"time": now, "elapsed": elapsed_i})
-            if len(chart_data[key_i]) > MAX_CHART:
-                chart_data[key_i].pop(0)
-            icon_i = "✅" if ok_i else "❌"
-            log.info(f"[{brand}][Immat] {icon_i} {reason_i}")
-            if ok_i:
-                if incident_active.get(key_i):
-                    incident_active[key_i] = False
-                    inc_i = {"time": now, "brand": brand, "page": "Immat",
-                        "type": "recovery", "detail": "Décodage immat rétabli"}
-                    with history_lock: history.append(inc_i)
-                    threading.Thread(target=archive_incident, args=(inc_i,), daemon=True).start()
-                    threading.Thread(target=supabase_insert, args=(inc_i,), daemon=True).start()
-                    send_teams_alert(brand, "Immat", homepage_url, reason_i, is_recovery=True, details=details_i)
-            else:
-                if not incident_active.get(key_i):
-                    incident_active[key_i] = True
-                    screenshot_url = take_screenshot(brand, "Immat", homepage_url)
-                    send_teams_alert(brand, "Immat", homepage_url, reason_i, details=details_i, screenshot_url=screenshot_url)
-                    inc_i = {"time": now, "brand": brand, "page": "Immat",
-                        "type": "ko", "detail": reason_i, "diagnostics": details_i,
-                        "screenshot": screenshot_url}
-                    with history_lock: history.append(inc_i)
-                    threading.Thread(target=archive_incident, args=(inc_i,), daemon=True).start()
-                    threading.Thread(target=supabase_insert, args=(inc_i,), daemon=True).start()
-
-        push_status(statuses)
-        threading.Thread(target=push_to_render, args=(statuses,), daemon=True).start()
-        # Backup chart_data toutes les 20 cycles (~60min)
-        _cycle_counter[0] = _cycle_counter[0] + 1
-        if _cycle_counter[0] % 5 == 0:
-            threading.Thread(target=push_chart_backup, daemon=True).start()
-        time.sleep(CHECK_INTERVAL_SECONDS)
+                    except Exception as e:
+                        log.error(f"Erreur task : {e}")
+    
+            # ── CHECK IMMAT FR ──
+            for brand in FR_BRANDS:
+                if f"{brand}:Immat" not in chart_data:
+                    chart_data[f"{brand}:Immat"] = []
+                if brand not in statuses:
+                    continue
+                homepage_url = BRANDS[brand].get("Homepage")
+                if not homepage_url:
+                    continue
+                ok_i, reason_i, elapsed_i, details_i = check_immat_fr(brand, homepage_url)
+                key_i = f"{brand}:Immat"
+                statuses[brand]["Immat"] = {
+                    "ok": ok_i, "reason": reason_i, "elapsed": elapsed_i,
+                    "checked_at": now, "url": homepage_url, "details": details_i
+                }
+                chart_data[key_i].append({"time": now, "elapsed": elapsed_i})
+                if len(chart_data[key_i]) > MAX_CHART:
+                    chart_data[key_i].pop(0)
+                icon_i = "✅" if ok_i else "❌"
+                log.info(f"[{brand}][Immat] {icon_i} {reason_i}")
+                if ok_i:
+                    if incident_active.get(key_i):
+                        incident_active[key_i] = False
+                        inc_i = {"time": now, "brand": brand, "page": "Immat",
+                            "type": "recovery", "detail": "Décodage immat rétabli"}
+                        with history_lock: history.append(inc_i)
+                        threading.Thread(target=archive_incident, args=(inc_i,), daemon=True).start()
+                        threading.Thread(target=supabase_insert, args=(inc_i,), daemon=True).start()
+                        send_teams_alert(brand, "Immat", homepage_url, reason_i, is_recovery=True, details=details_i)
+                else:
+                    if not incident_active.get(key_i):
+                        incident_active[key_i] = True
+                        screenshot_url = take_screenshot(brand, "Immat", homepage_url)
+                        send_teams_alert(brand, "Immat", homepage_url, reason_i, details=details_i, screenshot_url=screenshot_url)
+                        inc_i = {"time": now, "brand": brand, "page": "Immat",
+                            "type": "ko", "detail": reason_i, "diagnostics": details_i,
+                            "screenshot": screenshot_url}
+                        with history_lock: history.append(inc_i)
+                        threading.Thread(target=archive_incident, args=(inc_i,), daemon=True).start()
+                        threading.Thread(target=supabase_insert, args=(inc_i,), daemon=True).start()
+    
+            push_status(statuses)
+            threading.Thread(target=push_to_render, args=(statuses,), daemon=True).start()
+            # Backup chart_data toutes les 20 cycles (~60min)
+            _cycle_counter[0] = _cycle_counter[0] + 1
+            if _cycle_counter[0] % 5 == 0:
+                threading.Thread(target=push_chart_backup, daemon=True).start()
+            time.sleep(CHECK_INTERVAL_SECONDS)
+        except Exception as _cycle_err:
+            log.error(f"[Cycle] Erreur non catchée — script continue : {_cycle_err}")
 
 # ── WATCHDOG — Surveillance du Web Service Render ──
 _watchdog_failures = [0]
