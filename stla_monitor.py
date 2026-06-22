@@ -354,13 +354,13 @@ def init_github():
                             if not url_r:
                                 continue
 
-                            # Vérifier si une recovery a déjà été envoyée dans les 10 dernières minutes
+                            # Vérifier si une recovery existe dans les 10 dernières minutes
                             with history_lock:
                                 recent_recovery = any(
                                     h.get("brand") == brand_r and
                                     h.get("page") == page_r and
                                     h.get("type") == "recovery" and
-                                    (now_dt - datetime.strptime(h.get("time","01/01/2000 00:00:00"), "%d/%m/%Y %H:%M:%S")).total_seconds() < 600
+                                    (now_dt - datetime.strptime(h.get("time","01/01/2000 00:00:00"), "%d/%m/%Y %H:%M:%S").replace(tzinfo=TZ_PARIS)).total_seconds() < 600
                                     for h in history[-50:]
                                 )
                             if recent_recovery:
