@@ -199,6 +199,7 @@ incident_active = {}
 history = []
 history_lock = threading.Lock()
 chart_data = {}
+persistent_statuses = {}  # Accumule les statuts de toutes les brands sur tous les cycles
 
 for brand, urls in BRANDS.items():
     for page in urls:
@@ -1007,7 +1008,8 @@ def run():
                                 if brand not in REFERENCE_BRANDS:
                                     send_teams_alert(brand, page, url, reason, is_recovery=True, details=details)
                                 # Push immédiat vers Render pour mise à jour dashboard
-                                threading.Thread(target=push_to_render, args=(statuses,), daemon=True).start()
+                                persistent_statuses.update(statuses)
+                                threading.Thread(target=push_to_render, args=(persistent_statuses,), daemon=True).start()
                         else:
                             if not incident_active.get(key):
                                 incident_active[key] = True
@@ -1023,7 +1025,8 @@ def run():
                                 threading.Thread(target=archive_incident, args=(inc,), daemon=True).start()
                                 threading.Thread(target=supabase_insert, args=(inc,), daemon=True).start()
                                 # Push immédiat vers Render pour mise à jour dashboard
-                                threading.Thread(target=push_to_render, args=(statuses,), daemon=True).start()
+                                persistent_statuses.update(statuses)
+                                threading.Thread(target=push_to_render, args=(persistent_statuses,), daemon=True).start()
                     except TimeoutError:
                         task = futures[future]
                         brand, page, url = task
@@ -1085,8 +1088,10 @@ def run():
                         threading.Thread(target=supabase_insert, args=(inc_i,), daemon=True).start()
                         threading.Thread(target=push_to_render, args=(statuses,), daemon=True).start()
     
-            push_status(statuses)
-            threading.Thread(target=push_to_render, args=(statuses,), daemon=True).start()
+            # Merger avec les statuts persistants pour inclure toutes les brands
+            persistent_statuses.update(statuses)
+            push_status(persistent_statuses)
+            threading.Thread(target=push_to_render, args=(persistent_statuses,), daemon=True).start()
             # Backup chart_data toutes les 20 cycles (~60min)
             _cycle_counter[0] = _cycle_counter[0] + 1
             if _cycle_counter[0] % 5 == 0:
