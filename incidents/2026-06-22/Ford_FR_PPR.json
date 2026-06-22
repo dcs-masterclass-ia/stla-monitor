@@ -2247,5 +2247,32 @@
     "page": "Formulaire",
     "type": "recovery",
     "detail": "Retour en ligne (réconciliation démarrage)"
+  },
+  {
+    "time": "22/06/2026 17:14:50",
+    "brand": "Ford FR PPR",
+    "page": "Homepage",
+    "type": "ko",
+    "detail": "Réponse très lente : 4.4s",
+    "diagnostics": {
+      "brand": "Ford FR PPR",
+      "page": "Homepage",
+      "dns_elapsed": 0.182,
+      "ip": "3.121.134.128",
+      "http_status": 200,
+      "elapsed_http": 4.4,
+      "elapsed_total": 4.58,
+      "redirect_count": 0,
+      "final_url": "https://test-ppr-oem-site-factory.shakazoola.com/",
+      "headers": {
+        "server": "—",
+        "content-type": "text/html; charset=UTF-8",
+        "x-cache": "—",
+        "cf-ray": "—"
+      },
+      "error_type": "VERY_SLOW"
+    },
+    "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_PPR_Homepage_20260622_171551.png",
+    "is_reference": false
   }
 ]
