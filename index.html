@@ -874,7 +874,7 @@ function render() {
   const pages = Object.entries((data.statuses || {})[brand] || {});
   const masterRow = document.getElementById("master-row");
   if(!pages.length) {
-    document.getElementById("kpi-row").innerHTML = `<div style="padding:2rem;color:var(--text-3);font-size:13px;font-weight:600;text-align:center;grid-column:1/-1">En attente des premières données…<br><span style="font-size:11px;font-weight:400">Le prochain cycle (~3 min) mettra à jour ce tableau de bord</span></div>`;
+    const kpiRow = document.getElementById("kpi-row"); if(kpiRow) kpiRow.innerHTML = `<div style="padding:2rem;color:var(--text-3);font-size:13px;font-weight:600;text-align:center;grid-column:1/-1">En attente des premières données…<br><span style="font-size:11px;font-weight:400">Le prochain cycle (~3 min) mettra à jour ce tableau de bord</span></div>`;
     if(masterRow) masterRow.style.display = "none";
     if(window.lucide) lucide.createIcons();
     return;
@@ -1013,21 +1013,23 @@ function renderChart() {
   const annotations = {};
   koH.forEach((ko, idx) => {
     const koHHMM = (ko.time||"").substring(11,16);
-    const labelIdx = labelsFmt.findIndex(l => l === koHHMM);
-    if(labelIdx === -1) return;
+    // Chercher le label le plus proche
+    let bestIdx = -1, bestDiff = Infinity;
+    const [kh, km] = koHHMM.split(":").map(Number);
+    const koMin = kh*60+km;
+    labelsFmt.forEach((l, i) => {
+      const [lh, lm] = (l||"").split(":").map(Number);
+      const diff = Math.abs(lh*60+lm - koMin);
+      if(diff < bestDiff) { bestDiff = diff; bestIdx = i; }
+    });
+    if(bestIdx === -1 || bestDiff > 10) return; // plus de 10 min d'écart → ignorer
     annotations["ko"+idx] = {
       type: "line",
-      xMin: labelIdx,
-      xMax: labelIdx,
+      xMin: labelsFmt[bestIdx],
+      xMax: labelsFmt[bestIdx],
       borderColor: "#e11d48",
-      borderWidth: 1.5,
-      borderDash: [4,3],
-      label: {
-        display: false,
-        content: "KO " + koHHMM,
-        color: "#e11d48",
-        font: {size: 9, weight: "bold"}
-      }
+      borderWidth: 2,
+      borderDash: [4,3]
     };
   });
 
