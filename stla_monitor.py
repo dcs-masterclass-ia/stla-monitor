@@ -348,6 +348,7 @@ def init_github():
                                 with history_lock:
                                     history.append(inc_r)
                                 threading.Thread(target=archive_incident, args=(inc_r,), daemon=True).start()
+                                threading.Thread(target=supabase_insert, args=(inc_r,), daemon=True).start()
                                 send_teams_alert(brand_r, page_r, url_r, reason_r, is_recovery=True, details=details_r)
                                 log.info(f"[Réconciliation] ✅ Recovery envoyée : {key}")
                             else:
@@ -439,7 +440,6 @@ def supabase_insert(incident):
     """Insère un incident dans Supabase pour historique long terme."""
     try:
         from datetime import datetime as dt
-        # Parser le time depuis le format dd/mm/yyyy HH:MM:SS
         t_str = incident.get("time", "")
         try:
             t_parsed = dt.strptime(t_str, "%d/%m/%Y %H:%M:%S")
@@ -452,10 +452,14 @@ def supabase_insert(incident):
             "page": incident.get("page"),
             "type": incident.get("type"),
             "detail": incident.get("detail"),
-            "diagnostics": incident.get("diagnostics"),
-            "screenshot_url": incident.get("screenshot"),
             "time": t_iso,
         }
+        # Ajouter diagnostics seulement si non None
+        if incident.get("diagnostics"):
+            payload["diagnostics"] = incident.get("diagnostics")
+        if incident.get("screenshot"):
+            payload["screenshot_url"] = incident.get("screenshot")
+
         resp = requests.post(
             f"{SUPABASE_URL}/rest/v1/incidents",
             json=payload,
@@ -469,10 +473,11 @@ def supabase_insert(incident):
             verify=False
         )
         if resp.status_code in (200, 201):
-            log.info(f"[Supabase] Incident inséré : {incident.get('brand')} / {incident.get('page')} / {incident.get('type')}")
+            log.info(f"[Supabase] ✅ Inséré : {incident.get('brand')} / {incident.get('page')} / {incident.get('type')}")
         else:
-            log.error(f"[Supabase] Erreur insert : {resp.status_code} {resp.text}")
+            log.error(f"[Supabase] ❌ Erreur {resp.status_code} : {resp.text[:200]}")
     except Exception as e:
+        log.error(f"[Supabase] Exception : {e}")
         log.error(f"[Supabase] Exception : {e}")
 
 def archive_incident(incident):
