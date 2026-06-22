@@ -1309,7 +1309,7 @@ function renderHistory(){
     const hhmm=(h.time||"").substring(11,16);
     const dateStr=(h.time||"").substring(0,5); // DD/MM
     const timeLabel = dateStr + " " + hhmm;
-    return '<div class="inc-row '+(ongoing?"ongoing":"") +'" onclick="highlightChartPoint(\''+timeLabel+'\')" style="cursor:pointer">'+
+    return '<div class="inc-row '+(ongoing?"ongoing":"") +'" onclick="highlightChartPoint(\''+hhmm+'\')" style="cursor:pointer">'+
       '<div class="inc-top"><div class="inc-title">'+h.page+'</div><div class="inc-time">'+timeLabel+'</div></div>'+
       '<div class="inc-mid"><div class="inc-sub">'+h.detail+(h.diagnostics&&h.diagnostics.error_type?" ("+h.diagnostics.error_type+")":"")+'</div>'+
       '<div class="inc-chip '+(h.type==="recovery"?"ok":"ko")+'">'+(h.type==="recovery"?"RESOLVED":ongoing?"CRITICAL":"FAILURE")+'</div></div>'+
@@ -1526,47 +1526,38 @@ async function fetchStatus(){
   }
 }
 
-function highlightChartPoint(timeStr) {
+function highlightChartPoint(hhmm) {
   if(!lineChart) return;
-  const hhmm = (timeStr||"").slice(-5);
-  // Chercher d'abord un match exact
-  let idx = lineChart.data.labels.findIndex(l => (l||"").endsWith(hhmm));
-  // Sinon chercher le point le plus proche en temps
+  // Chercher exact puis plus proche
+  let idx = lineChart.data.labels.findIndex(l => l === hhmm);
   if(idx === -1) {
-    const incT = parseDateStr(timeStr.length > 5 ? timeStr : "01/01/2000 " + timeStr);
-    if(incT) {
-      let minDiff = Infinity;
-      lineChart.data.labels.forEach((l, i) => {
-        const pt = parseDateStr("01/01/2000 " + l);
-        if(pt) {
-          const diff = Math.abs(pt.getTime() - incT.getTime());
-          if(diff < minDiff) { minDiff = diff; idx = i; }
-        }
-      });
-    }
+    const [h,m] = hhmm.split(":").map(Number);
+    const incMin = h*60+m;
+    let minDiff = Infinity;
+    lineChart.data.labels.forEach((l,i) => {
+      const p = (l||"").split(":").map(Number);
+      if(p.length>=2){ const d=Math.abs(p[0]*60+p[1]-incMin); if(d<minDiff){minDiff=d;idx=i;} }
+    });
   }
   if(idx === -1) return;
 
-  // Highlight la inc-row
+  // Highlight inc-row
   document.querySelectorAll(".inc-row").forEach(r => r.classList.remove("highlighted"));
-  event?.currentTarget?.classList.add("highlighted");
+  if(event?.currentTarget) event.currentTarget.classList.add("highlighted");
 
-  // Scroll le graph vers ce point
+  // Scroll vers le point
   const scroll = document.getElementById("chart-scroll");
   const meta = lineChart.getDatasetMeta(0);
   if(meta?.data?.[idx]) {
-    const ptX = meta.data[idx].x;
-    scroll.scrollTo({left: Math.max(0, ptX - scroll.clientWidth / 2), behavior:"smooth"});
+    scroll.scrollTo({left: Math.max(0, meta.data[idx].x - scroll.clientWidth/2), behavior:"smooth"});
   }
 
-  // Tooltip — exclure le dataset KO fantôme (dernier)
-  const tooltipDatasets = lineChart.data.datasets
-    .map((_, di) => ({datasetIndex: di, index: idx}))
-    .filter(({datasetIndex}) => {
-      const ds = lineChart.data.datasets[datasetIndex];
-      return ds.data && ds.data[idx] !== undefined;
-    });
-  lineChart.tooltip.setActiveElements(tooltipDatasets, {x:0, y:0});
+  // Tooltip
+  const activeEls = [];
+  lineChart.data.datasets.forEach((ds,di) => {
+    if(ds.data && ds.data[idx] !== undefined) activeEls.push({datasetIndex:di, index:idx});
+  });
+  if(activeEls.length) lineChart.tooltip.setActiveElements(activeEls, {x:0,y:0});
   lineChart.update("none");
 }
 
