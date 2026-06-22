@@ -1309,7 +1309,7 @@ function renderHistory(){
     const hhmm=(h.time||"").substring(11,16);
     const dateStr=(h.time||"").substring(0,5); // DD/MM
     const timeLabel = dateStr + " " + hhmm;
-    return '<div class="inc-row '+(ongoing?"ongoing":"") +'" onclick="highlightChartPoint(\''+hhmm+'\')" style="cursor:pointer">'+
+    return '<div class="inc-row '+(ongoing?"ongoing":"") +'" onclick="highlightChartPoint(\''+hhmm+'\', this)" style="cursor:pointer">'+
       '<div class="inc-top"><div class="inc-title">'+h.page+'</div><div class="inc-time">'+timeLabel+'</div></div>'+
       '<div class="inc-mid"><div class="inc-sub">'+h.detail+(h.diagnostics&&h.diagnostics.error_type?" ("+h.diagnostics.error_type+")":"")+'</div>'+
       '<div class="inc-chip '+(h.type==="recovery"?"ok":"ko")+'">'+(h.type==="recovery"?"RESOLVED":ongoing?"CRITICAL":"FAILURE")+'</div></div>'+
@@ -1526,9 +1526,8 @@ async function fetchStatus(){
   }
 }
 
-function highlightChartPoint(hhmm) {
+function highlightChartPoint(hhmm, el) {
   if(!lineChart) return;
-  // Chercher exact puis plus proche
   let idx = lineChart.data.labels.findIndex(l => l === hhmm);
   if(idx === -1) {
     const [h,m] = hhmm.split(":").map(Number);
@@ -1543,7 +1542,7 @@ function highlightChartPoint(hhmm) {
 
   // Highlight inc-row
   document.querySelectorAll(".inc-row").forEach(r => r.classList.remove("highlighted"));
-  if(event?.currentTarget) event.currentTarget.classList.add("highlighted");
+  if(el) el.classList.add("highlighted");
 
   // Scroll vers le point
   const scroll = document.getElementById("chart-scroll");
