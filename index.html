@@ -1009,29 +1009,23 @@ function renderChart() {
   container.style.width = w+"px";
   const isEnd = scroll.scrollLeft + scroll.clientWidth >= scroll.scrollWidth - 30;
 
-  // Annotations KO — lignes verticales rouges
-  const annotations = {};
-  koH.forEach((ko, idx) => {
-    const koHHMM = (ko.time||"").substring(11,16);
-    // Chercher le label le plus proche
-    let bestIdx = -1, bestDiff = Infinity;
-    const [kh, km] = koHHMM.split(":").map(Number);
-    const koMin = kh*60+km;
-    labelsFmt.forEach((l, i) => {
-      const [lh, lm] = (l||"").split(":").map(Number);
-      const diff = Math.abs(lh*60+lm - koMin);
-      if(diff < bestDiff) { bestDiff = diff; bestIdx = i; }
+  // Points KO — billes rouges sur chaque dataset
+  datasets.forEach(ds => {
+    const koR = [], koC = [], koB = [];
+    ds._t.forEach(t => {
+      const prefix = (t||"").substring(0,16);
+      const isKO = koSet.has(prefix);
+      koR.push(isKO ? 8 : 0);
+      koC.push(isKO ? "#e11d48" : "transparent");
+      koB.push(isKO ? "#fff" : "transparent");
     });
-    if(bestIdx === -1 || bestDiff > 10) return; // plus de 10 min d'écart → ignorer
-    annotations["ko"+idx] = {
-      type: "line",
-      xMin: labelsFmt[bestIdx],
-      xMax: labelsFmt[bestIdx],
-      borderColor: "#e11d48",
-      borderWidth: 2,
-      borderDash: [4,3]
-    };
+    ds.pointRadius = koR;
+    ds.pointBackgroundColor = koC;
+    ds.pointBorderColor = koB;
+    ds.pointBorderWidth = 2;
   });
+
+  const annotations = {};
 
   // Options Chart.js
   const tickLimit = currentPeriod==="live" ? 6 : currentPeriod==="24h" ? 12 : 8;
@@ -1127,7 +1121,7 @@ function renderChart() {
   // Légende KO — ligne pointillée rouge
   const koDiv = document.createElement("div");
   koDiv.className = "leg";
-  koDiv.innerHTML = `<span style="display:inline-block;width:20px;height:2px;background:repeating-linear-gradient(90deg,#e11d48 0,#e11d48 4px,transparent 4px,transparent 8px);vertical-align:middle;margin-right:4px"></span>Incident KO`;
+  koDiv.innerHTML = `<span class="leg-pip" style="background:#e11d48;border-radius:50%;width:9px;height:9px;flex-shrink:0"></span>Incident KO`;
   legendEl.appendChild(koDiv);
 
   initBrush();
