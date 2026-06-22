@@ -1021,10 +1021,10 @@ function renderChart() {
   let labelsFmt;
   let xTickLimit;
   if (currentPeriod === "live") {
-    labelsFmt = labels.map(t => tsToParisHHMM(t));
+    labelsFmt = labels.map(t => (t||"").substring(11,16));
     xTickLimit = 8;
   } else if (currentPeriod === "24h") {
-    labelsFmt = labels.map(t => tsToParisHHMM(t));
+    labelsFmt = labels.map(t => (t||"").substring(11,16));
     xTickLimit = 12;
   } else if (currentPeriod === "7j") {
     // Agrégé par heure — afficher jour + heure
@@ -1040,7 +1040,7 @@ function renderChart() {
     labelsFmt = labels.map(t => { if(!t) return ""; const m=t.match(/(\d{2})\/(\d{2})/); return m?m[0]:""; });
     xTickLimit = 10;
   } else {
-    labelsFmt = labels.map(t => tsToParisHHMM(t));
+    labelsFmt = labels.map(t => (t||"").substring(11,16));
     xTickLimit = 10;
   }
 
