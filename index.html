@@ -1129,9 +1129,28 @@
             });
             const fmt = m => !m?"—":m<60?Math.round(m)+"m":(m/60).toFixed(1)+"h";
             document.getElementById("analyse-mttr").innerHTML = `
-                <div><div class="text-3xl font-black text-slate-900">${fmt(mttrCount?mttrTotal/mttrCount:0)}</div><div class="text-[10px] font-bold text-slate-400 uppercase">MTTR</div></div>
-                <div><div class="text-3xl font-black text-brandBlue">${kos.length}</div><div class="text-[10px] font-bold text-slate-400 uppercase">Alertes</div></div>
-                <div><div class="text-3xl font-black text-green-500">${mttrCount}</div><div class="text-[10px] font-bold text-slate-400 uppercase">Résolus</div></div>
+                <div class="flex flex-col gap-1">
+                    <div class="w-8 h-1 rounded bg-slate-800 mb-2"></div>
+                    <div class="text-2xl font-black text-slate-900">${fmt(mttrCount?mttrTotal/mttrCount:0)}</div>
+                    <div class="text-[10px] font-black text-slate-700 uppercase tracking-wider">MTTR</div>
+                    <div class="text-[10px] text-slate-400 font-semibold">Temps moyen de résolution</div>
+                </div>
+                <div class="flex flex-col gap-1">
+                    <div class="w-8 h-1 rounded bg-slate-800 mb-2"></div>
+                    <div class="text-2xl font-black text-slate-900">${fmt(mtbfCount?mtbfTotal/mtbfCount:0)}</div>
+                    <div class="text-[10px] font-black text-slate-700 uppercase tracking-wider">MTBF</div>
+                    <div class="text-[10px] text-slate-400 font-semibold">Temps moyen entre incidents</div>
+                </div>
+                <div class="flex flex-col gap-1">
+                    <div class="text-2xl font-black text-slate-900">${kos.length}</div>
+                    <div class="text-[10px] font-black text-slate-700 uppercase tracking-wider">Incidents</div>
+                    <div class="text-[10px] text-slate-400 font-semibold">Sur la période</div>
+                </div>
+                <div class="flex flex-col gap-1">
+                    <div class="text-2xl font-black text-green-500">${mttrCount}</div>
+                    <div class="text-[10px] font-black text-slate-700 uppercase tracking-wider">Résolus</div>
+                    <div class="text-[10px] text-slate-400 font-semibold">Avec recovery détecté</div>
+                </div>
             `;
 
             const m = Array.from({length:7},()=>new Array(24).fill(0));
