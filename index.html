@@ -1190,10 +1190,7 @@ function selectBrand(b) {
   // Reset brush flag
   const chartContainer = document.getElementById("chart-container");
   if(chartContainer) delete chartContainer._brushInit;
-  if (data) {
-    switchGroup("synth");
-    render();
-  }
+  if (data) render();
 }
 
 function setPeriod(btn, p) {
@@ -2617,6 +2614,10 @@ function initSSE() {
         document.getElementById("sb-ts").textContent = toParisDateTime(t);
         document.getElementById("pulse").className = "pulse-dot";
         updateDots();
+        if(!window._initialGroupSet) {
+          window._initialGroupSet = true;
+          switchGroup("synth");
+        }
         if(brand) render();
         if(currentGroup==="synth") renderSynth();
       } catch(err) {
