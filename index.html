@@ -319,9 +319,17 @@
                             <div class="grid grid-cols-2 gap-y-6 gap-x-4" id="analyse-mttr"></div>
                         </div>
                     </div>
-                    <div class="glass-panel rounded-card p-6 shadow-glass overflow-hidden border-none">
-                        <h3 class="text-xs font-black text-slate-500 uppercase tracking-widest mb-4">Heatmap (Jour / Heure)</h3>
-                        <div id="heatmap-container" class="overflow-x-auto pb-2"></div>
+                    <div class="grid grid-cols-3 gap-6">
+                        <div class="col-span-2 glass-panel rounded-card p-6 shadow-glass overflow-hidden border-none">
+                            <h3 class="text-xs font-black text-slate-500 uppercase tracking-widest mb-4">Heatmap (Jour / Heure)</h3>
+                            <div id="heatmap-container" class="overflow-x-auto pb-2"></div>
+                        </div>
+                        <div class="glass-panel rounded-card p-6 shadow-glass border-none flex flex-col" id="risk-panel">
+                            <h3 class="text-xs font-black text-slate-500 uppercase tracking-widest mb-5">Prédiction de Risque</h3>
+                            <div class="flex flex-col items-center justify-center flex-1 gap-4" id="risk-content">
+                                <div class="text-slate-300 text-xs font-bold">Chargement...</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -959,6 +967,47 @@
             }).join("");
         }
 
+        function renderRisk() {
+            const el = document.getElementById("risk-content");
+            if(!el || !data || !brand) return;
+            const now = Date.now();
+            const hist2h = (data.history||[]).filter(h => { if(h.brand!==brand||h.type!=="ko") return false; const t=parseDateStr(h.time); return t&&(now-t.getTime())<7200000; });
+            const inc2h = hist2h.length;
+            const pages = Object.keys((data.statuses||{})[brand]||{});
+            let trendScore = 0;
+            pages.forEach(page => { const pts=filterPts((data.chart_data||{})[brand+":"+page]||[]); if(pts.length<10) return; const rec=pts.slice(-5).map(p=>p.elapsed).reduce((a,b)=>a+b,0)/5; const bef=pts.slice(-10,-5).map(p=>p.elapsed).reduce((a,b)=>a+b,0)/5; if(bef>0) trendScore+=(rec-bef)/bef; });
+            if(pages.length) trendScore/=pages.length;
+            const hasOngoing = (data.statuses||{})[brand] && Object.values(data.statuses[brand]).some(s=>!s.ok);
+            let score = Math.min(Math.round(Math.min(inc2h*15,40) + Math.min(Math.max(trendScore*60,0),35) + (hasOngoing?25:0)), 100);
+            const level = score>=75?"Critique":score>=50?"Élevé":score>=25?"Modéré":"Faible";
+            const color = score>=75?"#ef4444":score>=50?"#f97316":score>=25?"#f59e0b":"#22c55e";
+            const bgColor = score>=75?"#fef2f2":score>=50?"#fff7ed":score>=25?"#fffbeb":"#f0fdf4";
+            const icon = score>=75?"alert-octagon":score>=50?"alert-triangle":score>=25?"info":"check-circle-2";
+            const lines = [];
+            if(hasOngoing) lines.push("Incident actif détecté.");
+            if(inc2h>0) lines.push(`${inc2h} alerte${inc2h>1?"s":""} sur 2h.`);
+            if(trendScore>0.2) lines.push(`Réponse en hausse de ${Math.round(trendScore*100)}%.`);
+            else if(trendScore<-0.1) lines.push("Temps de réponse en amélioration.");
+            if(!lines.length) lines.push("Aucun signal de dégradation.");
+            const C=2*Math.PI*36, dash=C*(1-score/100);
+            el.innerHTML = `
+                <div class="relative w-28 h-28 flex-shrink-0">
+                    <svg viewBox="0 0 80 80" class="w-full h-full -rotate-90">
+                        <circle cx="40" cy="40" r="36" fill="none" stroke="#f1f5f9" stroke-width="8"/>
+                        <circle cx="40" cy="40" r="36" fill="none" stroke="${color}" stroke-width="8" stroke-dasharray="${C}" stroke-dashoffset="${dash}" stroke-linecap="round" style="transition:stroke-dashoffset .6s ease"/>
+                    </svg>
+                    <div class="absolute inset-0 flex flex-col items-center justify-center">
+                        <span class="text-2xl font-black" style="color:${color}">${score}</span>
+                        <span class="text-[9px] font-bold text-slate-400">/ 100</span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 px-4 py-2 rounded-xl font-black text-sm" style="background:${bgColor};color:${color}">
+                    <i data-lucide="${icon}" class="w-4 h-4 flex-shrink-0"></i>${level}
+                </div>
+                <div class="flex flex-col gap-1.5 w-full">${lines.map(l=>`<div class="flex items-start gap-2 text-[11px] font-semibold text-slate-500"><span class="w-1 h-1 rounded-full mt-1.5 flex-shrink-0" style="background:${color}"></span>${l}</div>`).join("")}</div>`;
+            if(window.lucide) lucide.createIcons();
+        }
+
         function renderMacro() {
             const hist = filterHist((data.history||[]).filter(h=>h.brand===brand&&h.type==="ko"));
             const abs = new Array(24).fill(0);
@@ -1155,6 +1204,8 @@
                     <div class="text-[10px] text-slate-400 font-semibold">Avec recovery détecté</div>
                 </div>
             `;
+
+            renderRisk();
 
             const m = Array.from({length:7},()=>new Array(24).fill(0));
             kos.forEach(h=>{const t=parseDateStr(h.time); if(t) m[(t.getDay()+6)%7][t.getHours()]++;});
