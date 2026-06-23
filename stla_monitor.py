@@ -151,7 +151,7 @@ REFERENCE_BRANDS = {
     "DS UK",
 }
 
-TEAMS_WEBHOOK_URL = "https://default64661b8d1758459ca270b19fe3578e.a7.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/c3181d4e41694cfebd1c7502d219b6a9/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=l0lFm8uGc6kFwT73IzDPQBdNut4ZWgNsaXHosdDEh18"
+TEAMS_WEBHOOK_URL = os.environ.get("TEAMS_WEBHOOK_URL") or os.environ.get("TEAMS_WEBHOOK") or "https://default64661b8d1758459ca270b19fe3578e.a7.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/c3181d4e41694cfebd1c7502d219b6a9/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=l0lFm8uGc6kFwT73IzDPQBdNut4ZWgNsaXHosdDEh18"
 
 SUPABASE_URL = "https://vqkzrvwwtiktofkpmelt.supabase.co"
 SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZxa3pydnd3dGlrdG9ma3BtZWx0Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4MTk0MDMwNCwiZXhwIjoyMDk3NTE2MzA0fQ.gav2bMIzDp8Fv7BS1pigxnQUCBAaJ4sxN0eFF8I5tcY"
@@ -465,7 +465,7 @@ def archive_incident(incident):
     except Exception as e:
         log.error(f"[Archive] Erreur : {e}")
     try:
-        requests.post(TEAMS_WEBHOOK, json={"text": message}, timeout=10, verify=False)
+        requests.post(TEAMS_WEBHOOK_URL, json={"text": message}, timeout=10, verify=False)
     except Exception as e:
         log.error(f"[Teams] Erreur alerte raw : {e}")
 
