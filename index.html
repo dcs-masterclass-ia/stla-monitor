@@ -29,18 +29,20 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 @keyframes fl2{0%,100%{transform:translate(0,0)}50%{transform:translate(-30px,40px)}}
 
 /* ── SHELL ── */
-.shell{display:grid;grid-template-columns:280px 1fr;height:100vh;position:relative;z-index:1;overflow:hidden}
+.shell{display:grid;grid-template-columns:280px 1fr;height:100vh;overflow:hidden;transition:grid-template-columns .3s cubic-bezier(.4,0,.2,1)}
+.shell.sb-closed{grid-template-columns:0px 1fr}
 
 /* ── SIDEBAR ── */
-.sidebar{background:#fff;display:flex;flex-direction:column;overflow:hidden;box-shadow:3px 0 20px rgba(0,0,0,0.04);transition:transform .3s ease;position:relative;z-index:10}
-.sidebar.collapsed{transform:translateX(-100%);position:absolute;height:100%}
+.sidebar{background:#fff;display:flex;flex-direction:column;overflow:hidden;box-shadow:3px 0 20px rgba(0,0,0,0.04);transition:transform .3s cubic-bezier(.4,0,.2,1);min-width:280px}
+.shell.sb-closed .sidebar{transform:translateX(-100%)}
 .sb-head{padding:1.5rem 1.25rem 1rem;flex-shrink:0}
-/* Bouton toggle — flottant, indépendant de la sidebar */
-.sb-toggle-btn{position:fixed;top:18px;left:292px;z-index:200;width:28px;height:28px;border-radius:8px;border:none;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.15);color:#6366f1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:left .3s ease}
-.sb-toggle-btn.collapsed{left:12px}
-.sb-toggle-btn:hover{background:#f0f4ff}
-.sb-logo{display:flex;align-items:center;gap:10px;margin-bottom:1.25rem}
-.sb-logo-text{font-size:17px;font-weight:900;letter-spacing:-.05em;color:var(--text)}
+.sb-open-btn{position:fixed;top:50%;left:0;transform:translateY(-50%);z-index:200;width:24px;height:48px;border-radius:0 10px 10px 0;border:none;background:#fff;box-shadow:3px 0 12px rgba(0,0,0,.12);color:#6366f1;cursor:pointer;display:none;align-items:center;justify-content:center;padding:0}
+.shell.sb-closed .sb-open-btn{display:flex}
+.sb-open-btn:hover{background:#f0f4ff}
+.sb-close-btn{width:28px;height:28px;border-radius:8px;border:none;background:var(--accent-light);color:var(--accent);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-left:auto}
+.sb-close-btn:hover{background:#e0e7ff}
+.sb-logo{display:flex;align-items:center;gap:10px;margin-bottom:1rem}
+.sb-logo-text{font-size:17px;font-weight:900;letter-spacing:-.05em;color:var(--text);flex:1}
 .sb-logo-chip{font-size:9px;font-weight:800;background:var(--accent);color:#fff;padding:3px 7px;border-radius:7px}
 .sb-status{display:flex;align-items:center;gap:6px;font-size:10px;font-weight:600;color:var(--text-2);background:var(--accent-light);padding:7px 12px;border-radius:10px}
 .pulse-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s ease-in-out infinite;flex-shrink:0}
@@ -362,18 +364,20 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 @keyframes fl2{0%,100%{transform:translate(0,0)}50%{transform:translate(-30px,40px)}}
 
 /* ── SHELL ── */
-.shell{display:grid;grid-template-columns:280px 1fr;height:100vh;position:relative;z-index:1;overflow:hidden}
+.shell{display:grid;grid-template-columns:280px 1fr;height:100vh;overflow:hidden;transition:grid-template-columns .3s cubic-bezier(.4,0,.2,1)}
+.shell.sb-closed{grid-template-columns:0px 1fr}
 
 /* ── SIDEBAR ── */
-.sidebar{background:#fff;display:flex;flex-direction:column;overflow:hidden;box-shadow:3px 0 20px rgba(0,0,0,0.04);transition:transform .3s ease;position:relative;z-index:10}
-.sidebar.collapsed{transform:translateX(-100%);position:absolute;height:100%}
+.sidebar{background:#fff;display:flex;flex-direction:column;overflow:hidden;box-shadow:3px 0 20px rgba(0,0,0,0.04);transition:transform .3s cubic-bezier(.4,0,.2,1);min-width:280px}
+.shell.sb-closed .sidebar{transform:translateX(-100%)}
 .sb-head{padding:1.5rem 1.25rem 1rem;flex-shrink:0}
-/* Bouton toggle — flottant, indépendant de la sidebar */
-.sb-toggle-btn{position:fixed;top:18px;left:292px;z-index:200;width:28px;height:28px;border-radius:8px;border:none;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.15);color:#6366f1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:left .3s ease}
-.sb-toggle-btn.collapsed{left:12px}
-.sb-toggle-btn:hover{background:#f0f4ff}
-.sb-logo{display:flex;align-items:center;gap:10px;margin-bottom:1.25rem}
-.sb-logo-text{font-size:17px;font-weight:900;letter-spacing:-.05em;color:var(--text)}
+.sb-open-btn{position:fixed;top:50%;left:0;transform:translateY(-50%);z-index:200;width:24px;height:48px;border-radius:0 10px 10px 0;border:none;background:#fff;box-shadow:3px 0 12px rgba(0,0,0,.12);color:#6366f1;cursor:pointer;display:none;align-items:center;justify-content:center;padding:0}
+.shell.sb-closed .sb-open-btn{display:flex}
+.sb-open-btn:hover{background:#f0f4ff}
+.sb-close-btn{width:28px;height:28px;border-radius:8px;border:none;background:var(--accent-light);color:var(--accent);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-left:auto}
+.sb-close-btn:hover{background:#e0e7ff}
+.sb-logo{display:flex;align-items:center;gap:10px;margin-bottom:1rem}
+.sb-logo-text{font-size:17px;font-weight:900;letter-spacing:-.05em;color:var(--text);flex:1}
 .sb-logo-chip{font-size:9px;font-weight:800;background:var(--accent);color:#fff;padding:3px 7px;border-radius:7px}
 .sb-status{display:flex;align-items:center;gap:6px;font-size:10px;font-weight:600;color:var(--text-2);background:var(--accent-light);padding:7px 12px;border-radius:10px}
 .pulse-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s ease-in-out infinite;flex-shrink:0}
@@ -717,9 +721,9 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 <div class="blob b1"></div><div class="blob b2"></div>
 <div class="shell">
 
-<!-- Bouton toggle sidebar — flottant, toujours visible -->
-<button class="sb-toggle-btn" id="sb-toggle-btn" onclick="toggleSidebar()">
-  <i data-lucide="chevrons-left" style="width:14px;height:14px" id="sb-toggle-icon"></i>
+<!-- Bouton pour rouvrir la sidebar quand fermée -->
+<button class="sb-open-btn" onclick="toggleSidebar()" title="Ouvrir le menu">
+  <i data-lucide="chevron-right" style="width:14px;height:14px"></i>
 </button>
 
 <!-- ── SIDEBAR ── -->
@@ -729,6 +733,9 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
       <i data-lucide="activity" style="width:22px;height:22px;color:var(--text)"></i>
       <span class="sb-logo-text">UAS Monitoring</span>
     </div>
+    <button class="sb-close-btn" onclick="toggleSidebar()" title="Fermer le menu">
+      <i data-lucide="chevron-left" style="width:14px;height:14px"></i>
+    </button>
     <div class="sb-status">
       <i data-lucide="wifi" style="width:12px;height:12px;color:var(--green)" id="pulse"></i>
       <span id="ts-label">Connexion...</span>
@@ -1153,15 +1160,8 @@ function toggleCountry(btn) {
 
 
 function toggleSidebar() {
-  const sidebar = document.getElementById("sidebar");
-  const btn = document.getElementById("sb-toggle-btn");
-  const icon = document.getElementById("sb-toggle-icon");
-  const isCollapsed = sidebar.classList.toggle("collapsed");
-  if(btn) btn.classList.toggle("collapsed", isCollapsed);
-  if(icon) {
-    icon.setAttribute("data-lucide", isCollapsed ? "chevrons-right" : "chevrons-left");
-    if(window.lucide) lucide.createIcons();
-  }
+  document.querySelector(".shell").classList.toggle("sb-closed");
+  if(window.lucide) lucide.createIcons();
 }
 
 function switchGroup(g) {
