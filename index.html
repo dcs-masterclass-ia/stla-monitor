@@ -183,7 +183,8 @@
                             <i data-lucide="map-pin" class="w-4 h-4 text-brandBlue"></i>
                             <span class="text-sm font-black text-slate-900">Statut par Pays</span>
                         </div>
-                        <div id="synth-countries" class="flex flex-col gap-0"></div>
+                        <div id="synth-countries" class="flex flex-col gap-0 overflow-hidden" style="max-height:220px"></div>
+                        <button onclick="this.previousElementSibling.style.maxHeight=this.previousElementSibling.style.maxHeight?'':null;this.textContent=this.previousElementSibling.style.maxHeight===''?'Voir moins ↑':'Voir plus ↓'" class="text-[10px] font-bold text-brandBlue mt-2 text-left border-none bg-transparent cursor-pointer hover:underline">Voir plus ↓</button>
                     </div>
 
                     <!-- Top brands KO -->
@@ -1275,6 +1276,8 @@
                 _synthMacroChart=new Chart(mc,{type:"bar",data:{labels:mL,datasets:[{data:mC,backgroundColor:"rgba(107,124,147,0.55)",hoverBackgroundColor:"#6b7c93",borderRadius:3,barPercentage:0.7}]},options:{responsive:true,maintainAspectRatio:false,animation:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},border:{display:false},ticks:{font:{size:9,family:"Plus Jakarta Sans"},color:"#94a3b8",maxTicksLimit:8}},y:{grid:{color:"#f8fafc"},border:{display:false},suggestedMax:3,ticks:{font:{size:9},color:"#94a3b8",stepSize:1,precision:0}}}}});
             }
 
+            // ── Graphiques — setTimeout pour attendre affichage du DOM
+            setTimeout(() => {
             // ── Donut répartition statuts parc
             const allPts = allTabBrands.flatMap(b =>
                 Object.keys(statuses[b]||{}).flatMap(page =>
@@ -1321,6 +1324,7 @@
                     </div>`;
                 }).join("");
             }
+            }, 50); // fin setTimeout graphiques
 
             lucide.createIcons();
         }
