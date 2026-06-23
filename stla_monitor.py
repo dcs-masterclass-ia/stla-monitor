@@ -136,11 +136,8 @@ BRANDS = {
 }
 
 REFERENCE_BRANDS = {
-    "Aramisauto",  # Seul vrai site de référence — pas d'alerte Teams
-}
-
-PLAYWRIGHT_BRANDS = {
-    # Sites bloqués par WAF — nécessitent Playwright pour le check
+    "Aramisauto",
+    # Sites bloqués par WAF — nécessitent Playwright
     "Abarth PT", "AlfaRomeo PT", "Citroen PT", "DS PT", "Fiat PT", "FiatPro PT", "Jeep PT", "Peugeot PT", "Opel PT",
     "Abarth ES", "AlfaRomeo ES", "Citroen ES", "DS ES", "Fiat ES", "FiatPro ES", "Jeep ES", "Opel ES", "Peugeot ES",
     "Abarth IT", "AlfaRomeo IT", "Citroen IT", "DS IT", "Fiat IT", "Jeep IT", "Lancia IT", "Opel IT", "Peugeot IT",
@@ -150,8 +147,8 @@ PLAYWRIGHT_BRANDS = {
     "Abarth BE-NL", "AlfaRomeo BE-NL", "Citroen BE-NL", "DS BE-NL", "Fiat BE-NL", "FiatPro BE-NL", "Jeep BE-NL", "Lancia BE-NL", "Opel BE-NL", "Peugeot BE-NL", "Leapmotor BE-NL",
     "AlfaRomeo PL", "Citroen PL", "Fiat PL", "Jeep PL", "Opel PL", "Peugeot PL",
     "Abarth LU", "AlfaRomeo LU", "Citroen LU", "DS LU", "Fiat LU", "FiatPro LU", "Jeep LU", "Lancia LU", "Opel LU", "Peugeot LU", "Leapmotor LU",
+    "Opel FR", "AlfaRomeo FR", "Citroen FR", "DS FR", "Fiat FR", "FiatPro FR", "Jeep FR", "Lancia FR", "Peugeot FR",
     "DS UK",
-    # Les brands FR utilisent requests + WAF 403 = OK
 }
 
 TEAMS_WEBHOOK_URL = "https://default64661b8d1758459ca270b19fe3578e.a7.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/c3181d4e41694cfebd1c7502d219b6a9/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=l0lFm8uGc6kFwT73IzDPQBdNut4ZWgNsaXHosdDEh18"
@@ -203,7 +200,6 @@ incident_active = {}
 history = []
 history_lock = threading.Lock()
 chart_data = {}
-persistent_statuses = {}  # Accumule les statuts de toutes les brands sur tous les cycles
 
 for brand, urls in BRANDS.items():
     for page in urls:
@@ -321,101 +317,12 @@ def init_github():
                 last_event = {}
                 for h in all_today:
                     k = f"{h.get('brand')}:{h.get('page')}"
-                    last_event[k] = h
-                for k, last_h in last_event.items():
-                    etype = last_h.get("type")
+                    last_event[k] = h.get("type")
+                for k, etype in last_event.items():
                     incident_active[k] = (etype == "ko")
                     if etype == "ko":
-                        # Vérifier si une recovery a été envoyée dans les 10 dernières minutes
-                        ko_time = last_h.get("time","")
-                        now_dt = datetime.now(TZ_PARIS)
-                        try:
-                            ko_dt = datetime.strptime(ko_time, "%d/%m/%Y %H:%M:%S").replace(tzinfo=TZ_PARIS)
-                            if (now_dt - ko_dt).total_seconds() > 600:
-                                # KO vieux de plus de 10 min sans recovery → vraiment actif
-                                log.info(f"[GitHub] Incident actif restauré : {k} (KO à {ko_time})")
-                            else:
-                                log.info(f"[GitHub] KO récent restauré : {k} (KO à {ko_time})")
-                        except Exception:
-                            log.info(f"[GitHub] Incident actif restauré : {k}")
+                        log.info(f"[GitHub] Incident actif restauré : {k}")
                 log.info(f"[GitHub] incident_active reconstruit : {sum(v for v in incident_active.values())} actifs")
-
-                # Réconciliation immédiate — uniquement les KO des 2 dernières heures
-                now_dt = datetime.now(TZ_PARIS)
-                active_keys = []
-                for k, v in incident_active.items():
-                    if not v:
-                        continue
-                    # Trouver le timestamp du KO
-                    brand_k, page_k = k.split(":", 1) if ":" in k else (k, "")
-                    last_ko = next(
-                        (h for h in reversed(history)
-                         if h.get("brand") == brand_k and h.get("page") == page_k and h.get("type") == "ko"),
-                        None
-                    )
-                    if last_ko:
-                        try:
-                            ko_dt = datetime.strptime(last_ko.get("time",""), "%d/%m/%Y %H:%M:%S").replace(tzinfo=TZ_PARIS)
-                            if (now_dt - ko_dt).total_seconds() < 7200:  # moins de 2h
-                                active_keys.append(k)
-                            else:
-                                log.info(f"[Réconciliation] KO trop ancien ignoré : {k} (il y a {int((now_dt-ko_dt).total_seconds()/3600)}h)")
-                                incident_active[k] = False  # Reset silencieux
-                        except Exception:
-                            active_keys.append(k)
-                    else:
-                        incident_active[k] = False
-                if active_keys:
-                    log.info(f"[Réconciliation] Vérification de {len(active_keys)} incidents actifs...")
-                    now_r = datetime.now(TZ_PARIS).strftime("%d/%m/%Y %H:%M:%S")
-                    now_dt = datetime.now(TZ_PARIS)
-                    for key in active_keys:
-                        try:
-                            parts = key.split(":")
-                            if len(parts) < 2:
-                                continue
-                            brand_r = parts[0]
-                            page_r = parts[1]
-
-                            # Ignorer les brands Playwright — trop lent au démarrage
-                            # Elles seront réconciliées au premier cycle normal
-                            if brand_r in PLAYWRIGHT_BRANDS:
-                                log.info(f"[Réconciliation] Playwright ignoré au démarrage : {key}")
-                                continue
-
-                            url_r = BRANDS.get(brand_r, {}).get(page_r)
-                            if not url_r:
-                                continue
-
-                            # Vérifier si une recovery existe dans les 10 dernières minutes
-                            with history_lock:
-                                recent_recovery = any(
-                                    h.get("brand") == brand_r and
-                                    h.get("page") == page_r and
-                                    h.get("type") == "recovery" and
-                                    (now_dt - datetime.strptime(h.get("time","01/01/2000 00:00:00"), "%d/%m/%Y %H:%M:%S").replace(tzinfo=TZ_PARIS)).total_seconds() < 600
-                                    for h in history[-50:]
-                                )
-                            if recent_recovery:
-                                incident_active[key] = False
-                                log.info(f"[Réconciliation] Recovery récente détectée pour {key} — pas de doublon")
-                                continue
-
-                            ok_r, reason_r, elapsed_r, details_r = check_url(brand_r, page_r, url_r)
-                            if ok_r:
-                                incident_active[key] = False
-                                inc_r = {"time": now_r, "brand": brand_r, "page": page_r,
-                                        "type": "recovery", "detail": "Retour en ligne (réconciliation démarrage)"}
-                                with history_lock:
-                                    history.append(inc_r)
-                                threading.Thread(target=archive_incident, args=(inc_r,), daemon=True).start()
-                                threading.Thread(target=supabase_insert, args=(inc_r,), daemon=True).start()
-                                send_teams_alert(brand_r, page_r, url_r, reason_r, is_recovery=True, details=details_r)
-                                log.info(f"[Réconciliation] ✅ Recovery envoyée : {key}")
-                            else:
-                                log.info(f"[Réconciliation] ❌ Toujours KO : {key}")
-                        except Exception as e:
-                            log.error(f"[Réconciliation] Erreur {key} : {e}")
             except Exception as e:
                 log.warning(f"[GitHub] Reconstruction incident_active depuis history: {e}")
                 # Fallback sur history en mémoire
@@ -501,6 +408,7 @@ def supabase_insert(incident):
     """Insère un incident dans Supabase pour historique long terme."""
     try:
         from datetime import datetime as dt
+        # Parser le time depuis le format dd/mm/yyyy HH:MM:SS
         t_str = incident.get("time", "")
         try:
             t_parsed = dt.strptime(t_str, "%d/%m/%Y %H:%M:%S")
@@ -513,14 +421,10 @@ def supabase_insert(incident):
             "page": incident.get("page"),
             "type": incident.get("type"),
             "detail": incident.get("detail"),
+            "diagnostics": incident.get("diagnostics"),
+            "screenshot_url": incident.get("screenshot"),
             "time": t_iso,
         }
-        # Ajouter diagnostics seulement si non None
-        if incident.get("diagnostics"):
-            payload["diagnostics"] = incident.get("diagnostics")
-        if incident.get("screenshot"):
-            payload["screenshot_url"] = incident.get("screenshot")
-
         resp = requests.post(
             f"{SUPABASE_URL}/rest/v1/incidents",
             json=payload,
@@ -534,39 +438,36 @@ def supabase_insert(incident):
             verify=False
         )
         if resp.status_code in (200, 201):
-            log.info(f"[Supabase] ✅ Inséré : {incident.get('brand')} / {incident.get('page')} / {incident.get('type')}")
+            log.info(f"[Supabase] Incident inséré : {incident.get('brand')} / {incident.get('page')} / {incident.get('type')}")
         else:
-            log.error(f"[Supabase] ❌ Erreur {resp.status_code} : {resp.text[:200]}")
+            log.error(f"[Supabase] Erreur insert : {resp.status_code} {resp.text}")
     except Exception as e:
-        log.error(f"[Supabase] Exception : {e}")
         log.error(f"[Supabase] Exception : {e}")
 
 def archive_incident(incident):
-    """Archive un incident dans incidents/YYYY-MM-DD/Brand_Name.json sur GitHub — avec déduplification."""
+    """Archive un incident dans incidents/YYYY-MM-DD/Brand_Name.json sur GitHub"""
     if not gh_repo:
         return
     try:
         date = datetime.now(TZ_PARIS).strftime("%Y-%m-%d")
         brand_slug = incident["brand"].replace(" ", "_")
         path = f"incidents/{date}/{brand_slug}.json"
-        inc_key = f"{incident.get('time')}|{incident.get('page')}|{incident.get('type')}"
         try:
             existing = gh_repo.get_contents(path)
             data = json.loads(existing.decoded_content.decode("utf-8"))
-            # Dédupliquer — ne pas ajouter si déjà présent
-            existing_keys = {f"{h.get('time')}|{h.get('page')}|{h.get('type')}" for h in data}
-            if inc_key in existing_keys:
-                log.info(f"[Archive] Doublon ignoré : {inc_key}")
-                return
             data.append(incident)
             gh_repo.update_file(path, f"incident {brand_slug} {date}",
                                 json.dumps(data, ensure_ascii=False, indent=2), existing.sha)
         except Exception:
             gh_repo.create_file(path, f"incident {brand_slug} {date}",
                                 json.dumps([incident], ensure_ascii=False, indent=2))
-        log.info(f"[Archive] {incident['brand']} / {incident['page']} / {incident['type']} archivé")
+        log.info(f"[Archive] {incident['brand']} / {incident['page']} archivé")
     except Exception as e:
         log.error(f"[Archive] Erreur : {e}")
+    try:
+        requests.post(TEAMS_WEBHOOK, json={"text": message}, timeout=10, verify=False)
+    except Exception as e:
+        log.error(f"[Teams] Erreur alerte raw : {e}")
 
 def push_status(statuses, retry=3):
     if not gh_repo:
@@ -863,7 +764,6 @@ def check_url(brand, page, url):
             details["error_type"] = "TOO_MANY_REDIRECTS"
             return False, f"Trop de redirections ({len(response.history)})", elapsed_total, details
         if response.status_code == 403:
-            # 403 = site protégé par WAF mais opérationnel
             details["error_type"] = "WAF_PROTECTED"
             return True, f"OK (WAF 403) en {elapsed_http}s", elapsed_total, details
         if 400 <= response.status_code < 500:
@@ -1031,7 +931,6 @@ def run():
 
     while True:
         try:
-            statuses = {}
             now = datetime.now(TZ_PARIS).strftime("%d/%m/%Y %H:%M:%S")
             now_short = datetime.now(TZ_PARIS).strftime("%H:%M:%S")
     
@@ -1044,7 +943,7 @@ def run():
     
             def check_task(task):
                 brand, page, url = task
-                if brand in PLAYWRIGHT_BRANDS:
+                if brand in REFERENCE_BRANDS:
                     return brand, page, url, check_url_playwright(brand, page, url)
                 else:
                     return brand, page, url, check_url(brand, page, url)
@@ -1080,9 +979,6 @@ def run():
                                 threading.Thread(target=supabase_insert, args=(inc,), daemon=True).start()
                                 if brand not in REFERENCE_BRANDS:
                                     send_teams_alert(brand, page, url, reason, is_recovery=True, details=details)
-                                # Push immédiat vers Render pour mise à jour dashboard
-                                persistent_statuses.update(statuses)
-                                threading.Thread(target=push_to_render, args=(persistent_statuses,), daemon=True).start()
                         else:
                             if not incident_active.get(key):
                                 incident_active[key] = True
@@ -1097,9 +993,6 @@ def run():
                                 with history_lock: history.append(inc)
                                 threading.Thread(target=archive_incident, args=(inc,), daemon=True).start()
                                 threading.Thread(target=supabase_insert, args=(inc,), daemon=True).start()
-                                # Push immédiat vers Render pour mise à jour dashboard
-                                persistent_statuses.update(statuses)
-                                threading.Thread(target=push_to_render, args=(persistent_statuses,), daemon=True).start()
                     except TimeoutError:
                         task = futures[future]
                         brand, page, url = task
@@ -1147,7 +1040,6 @@ def run():
                         threading.Thread(target=archive_incident, args=(inc_i,), daemon=True).start()
                         threading.Thread(target=supabase_insert, args=(inc_i,), daemon=True).start()
                         send_teams_alert(brand, "Immat", homepage_url, reason_i, is_recovery=True, details=details_i)
-                        threading.Thread(target=push_to_render, args=(statuses,), daemon=True).start()
                 else:
                     if not incident_active.get(key_i):
                         incident_active[key_i] = True
@@ -1159,12 +1051,9 @@ def run():
                         with history_lock: history.append(inc_i)
                         threading.Thread(target=archive_incident, args=(inc_i,), daemon=True).start()
                         threading.Thread(target=supabase_insert, args=(inc_i,), daemon=True).start()
-                        threading.Thread(target=push_to_render, args=(statuses,), daemon=True).start()
     
-            # Merger avec les statuts persistants pour inclure toutes les brands
-            persistent_statuses.update(statuses)
-            push_status(persistent_statuses)
-            threading.Thread(target=push_to_render, args=(persistent_statuses,), daemon=True).start()
+            push_status(statuses)
+            threading.Thread(target=push_to_render, args=(statuses,), daemon=True).start()
             # Backup chart_data toutes les 20 cycles (~60min)
             _cycle_counter[0] = _cycle_counter[0] + 1
             if _cycle_counter[0] % 5 == 0:
