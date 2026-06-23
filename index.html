@@ -1418,6 +1418,69 @@ function renderHistory(){
   if(window.lucide)lucide.createIcons();
 }
 
+function renderSynth() {
+  if(!data) return;
+  const el = document.getElementById("synth-list");
+  const cutoff = new Date(Date.now() - 86400000);
+  const hist24 = (data.history||[]).filter(h => { const t=parseDateStr(h.time); return t && t>=cutoff; });
+
+  // Collecter tous les brands monitorés
+  const allBrands = [];
+  ["stla","oem","ref"].forEach(g => {
+    Object.values(SITE_TREE[g]||{}).forEach(c => c.brands.forEach(b => { if(!allBrands.includes(b)) allBrands.push(b); }));
+  });
+
+  // Pour chaque brand : statut actuel + incidents 24h
+  const rows = allBrands.map(b => {
+    const statuses = data.statuses && data.statuses[b] ? data.statuses[b] : {};
+    const pages = Object.keys(statuses);
+    const koPages = pages.filter(p => statuses[p] && !statuses[p].ok);
+    const isKO = koPages.length > 0;
+    const inc24 = hist24.filter(h => h.brand === b && h.type === "ko").length;
+
+    // Dernier incident KO en cours
+    let detail = "";
+    if(isKO) {
+      const lastKO = [...hist24].reverse().find(h => h.brand===b && h.type==="ko" && koPages.includes(h.page));
+      if(lastKO) {
+        const t = (lastKO.time||"").substring(11,16);
+        detail = koPages.join(", ") + " KO depuis " + t;
+      } else {
+        detail = koPages.join(", ") + " KO";
+      }
+    }
+    return { brand: b, isKO, detail, inc24 };
+  });
+
+  // Trier : KO en premier, puis par nb incidents
+  rows.sort((a,b) => { if(a.isKO && !b.isKO) return -1; if(!a.isKO && b.isKO) return 1; return b.inc24 - a.inc24; });
+
+  // KPIs
+  const nbKO = rows.filter(r => r.isKO).length;
+  const nbOK = rows.filter(r => !r.isKO).length;
+  const nbInc = hist24.filter(h => h.type==="ko").length;
+  document.getElementById("synth-kpi-ko").textContent = nbKO;
+  document.getElementById("synth-kpi-ok").textContent = nbOK;
+  document.getElementById("synth-kpi-inc").textContent = nbInc;
+
+  // Badge sidebar
+  const badge = document.getElementById("synth-ko-badge");
+  if(nbKO > 0) { badge.textContent = nbKO; badge.classList.add("visible"); }
+  else { badge.classList.remove("visible"); }
+
+  if(!rows.length) { el.innerHTML='<div class="synth-empty">Aucune donnée</div>'; return; }
+
+  el.innerHTML = rows.map(r => `
+    <div class="synth-row" onclick="goToBrand('${r.brand}')">
+      <span class="synth-row-status ${r.isKO?'ko':'ok'}"></span>
+      <span class="synth-row-brand">${r.brand}</span>
+      <span class="synth-row-detail ${r.isKO?'ko':''}">${r.isKO ? r.detail : '✓ Opérationnel'}</span>
+      <span class="synth-row-count">${r.inc24 ? r.inc24+' incident'+(r.inc24>1?'s':'') : ''}</span>
+      <i data-lucide="chevron-right" style="width:14px;height:14px" class="synth-row-arrow"></i>
+    </div>`).join("");
+  if(window.lucide) lucide.createIcons();
+}
+
 const SUPA_URL  = "https://vqkzrvwwtiktofkpmelt.supabase.co";
 const SUPA_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZxa3pydnd3dGlrdG9ma3BtZWx0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE5NDAzMDQsImV4cCI6MjA5NzUxNjMwNH0.5ylyy1Voq9vfLHNO7Jk8leTV55VO4bkXg7oGGC2BNLo";
 let adminToken = localStorage.getItem("admin_token") || null;
@@ -1441,7 +1504,7 @@ async function adminLogin() {
   try {
     const r = await fetch(`${SUPA_URL}/auth/v1/token?grant_type=password`, {
       method: "POST",
-      headers: {"apikey": SUPA_ANON, "Content-Type": "application/json"},
+      headers: {"apikey": SUPA_ANON, "Authorization": `Bearer ${SUPA_ANON}`, "Content-Type": "application/json"},
       body: JSON.stringify({email, password: pass})
     });
     const d = await r.json();
