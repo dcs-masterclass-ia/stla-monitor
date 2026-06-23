@@ -862,31 +862,59 @@ def check_immat_fr(brand, homepage_url):
             pg.goto(homepage_url, timeout=15000, wait_until="domcontentloaded")
             pg.wait_for_timeout(2000)
 
-            # 2. Fermer la CMP — deux sélecteurs selon la marque
-            # Groupe PSA (Opel, Citroën, DS, Peugeot) : a#_psaihm_continue_without_accepting
-            # Groupe STLA (Alfa, Fiat, Jeep, Abarth, Lancia) : button#decline-text
+            # 2. Fermer la CMP — plusieurs tentatives avec différents sélecteurs
             STLA_CMP_BRANDS = {"AlfaRomeo FR", "Fiat FR", "FiatPro FR", "Jeep FR", "Abarth FR", "Lancia FR"}
             try:
                 if brand in STLA_CMP_BRANDS:
-                    # STLA (Alfa, Fiat, Jeep, Abarth, Lancia) → Tout accepter
                     cmp = pg.locator("button#acceptAllBtn")
                 else:
-                    # PSA (Opel, Citroën, DS, Peugeot) → Continuer sans accepter
-                    cmp = pg.locator("a#_psaihm_continue_without_accepting")
-                cmp.wait_for(timeout=5000, state="visible")
-                cmp.click()
-                pg.wait_for_timeout(1500)
-                log.info(f"[{brand}][Immat] CMP fermée")
+                    # PSA — essayer plusieurs sélecteurs
+                    for selector in [
+                        "a#_psaihm_continue_without_accepting",
+                        "button#_psaihm_continue_without_accepting",
+                        "#didomi-notice-disagree-button",
+                        "button[id*='refuse']",
+                        "button[id*='decline']",
+                        "button[id*='reject']",
+                        "#onetrust-reject-all-handler",
+                    ]:
+                        try:
+                            cmp = pg.locator(selector)
+                            cmp.wait_for(timeout=2000, state="visible")
+                            cmp.click()
+                            pg.wait_for_timeout(1500)
+                            log.info(f"[{brand}][Immat] CMP fermée via {selector}")
+                            break
+                        except Exception:
+                            continue
+                    else:
+                        raise Exception("Aucun sélecteur CMP trouvé")
+                if brand in STLA_CMP_BRANDS:
+                    cmp.wait_for(timeout=5000, state="visible")
+                    cmp.click()
+                    pg.wait_for_timeout(1500)
+                    log.info(f"[{brand}][Immat] CMP fermée")
             except Exception:
-                pass
+                # Forcer la fermeture via JS si les sélecteurs échouent
+                try:
+                    pg.evaluate("document.querySelector('[id*=\"cookie\"], [id*=\"consent\"], [id*=\"banner\"], [class*=\"cookie\"]')?.remove()")
+                    pg.evaluate("document.querySelector('#didomi-popup, #onetrust-banner-sdk, .cmp-root')?.remove()")
+                    pg.wait_for_timeout(500)
+                    log.info(f"[{brand}][Immat] CMP supprimée via JS")
+                except Exception:
+                    pass
 
             # 3. Saisir l'immat
             pg.wait_for_selector("#registration", timeout=10000)
             pg.fill("#registration", IMMAT_FR)
             pg.wait_for_timeout(500)
 
-            # 4. Cliquer le bouton d'estimation
-            pg.locator("#js-submit-plate").click(timeout=8000)
+            # 4. Cliquer le bouton d'estimation — force=True pour bypasser les overlays
+            try:
+                pg.locator("#js-submit-plate").click(timeout=8000, force=True)
+            except Exception:
+                # Fallback via JavaScript
+                pg.evaluate("document.querySelector('#js-submit-plate')?.click()")
             pg.wait_for_timeout(3000)
 
             # 5. Vérifier l'URL résultante
