@@ -366,20 +366,20 @@
 
         const SITE_TREE = {
             stla: {
-                "PT": { flag:"🇵🇹", brands:["Opel PT","Abarth PT","AlfaRomeo PT","Citroen PT","DS PT","Fiat PT","FiatPro PT","Jeep PT","Peugeot PT"] },
-                "FR": { flag:"🇫🇷", brands:["Opel FR","AlfaRomeo FR","Citroen FR","DS FR","Fiat FR","FiatPro FR","Jeep FR","Lancia FR","Peugeot FR"] },
-                "ES": { flag:"🇪🇸", brands:["Abarth ES","AlfaRomeo ES","Citroen ES","DS ES","Fiat ES","FiatPro ES","Jeep ES","Opel ES","Peugeot ES"] },
-                "IT": { flag:"🇮🇹", brands:["Abarth IT","AlfaRomeo IT","Citroen IT","DS IT","Fiat IT","Jeep IT","Lancia IT","Opel IT","Peugeot IT"] },
-                "DE": { flag:"🇩🇪", brands:["AlfaRomeo DE","Citroen DE","DS DE","Opel DE","Peugeot DE","Spoticar DE"] },
-                "AT": { flag:"🇦🇹", brands:["Citroen AT","Opel AT","Peugeot AT"] },
-                "BE": { flag:"🇧🇪", brands:["Abarth BE","AlfaRomeo BE","Citroen BE","DS BE","Fiat BE","FiatPro BE","Jeep BE","Lancia BE","Opel BE","Peugeot BE","Leapmotor BE"] },
-                "BE-NL": { flag:"🇧🇪", brands:["Abarth BE-NL","AlfaRomeo BE-NL","Citroen BE-NL","DS BE-NL","Fiat BE-NL","FiatPro BE-NL","Jeep BE-NL","Lancia BE-NL","Opel BE-NL","Peugeot BE-NL","Leapmotor BE-NL"] },
-                "PL": { flag:"🇵🇱", brands:["AlfaRomeo PL","Citroen PL","Fiat PL","Jeep PL","Opel PL","Peugeot PL"] },
-                "LU": { flag:"🇱🇺", brands:["Abarth LU","AlfaRomeo LU","Citroen LU","DS LU","Fiat LU","FiatPro LU","Jeep LU","Lancia LU","Opel LU","Peugeot LU","Leapmotor LU"] },
-                "UK": { flag:"🇬🇧", brands:["DS UK"] },
+                "PT": { flag:"PT", brands:["Opel PT","Abarth PT","AlfaRomeo PT","Citroen PT","DS PT","Fiat PT","FiatPro PT","Jeep PT","Peugeot PT"] },
+                "FR": { flag:"FR", brands:["Opel FR","AlfaRomeo FR","Citroen FR","DS FR","Fiat FR","FiatPro FR","Jeep FR","Lancia FR","Peugeot FR"] },
+                "ES": { flag:"ES", brands:["Abarth ES","AlfaRomeo ES","Citroen ES","DS ES","Fiat ES","FiatPro ES","Jeep ES","Opel ES","Peugeot ES"] },
+                "IT": { flag:"IT", brands:["Abarth IT","AlfaRomeo IT","Citroen IT","DS IT","Fiat IT","Jeep IT","Lancia IT","Opel IT","Peugeot IT"] },
+                "DE": { flag:"DE", brands:["AlfaRomeo DE","Citroen DE","DS DE","Opel DE","Peugeot DE","Spoticar DE"] },
+                "AT": { flag:"AT", brands:["Citroen AT","Opel AT","Peugeot AT"] },
+                "BE": { flag:"BE", brands:["Abarth BE","AlfaRomeo BE","Citroen BE","DS BE","Fiat BE","FiatPro BE","Jeep BE","Lancia BE","Opel BE","Peugeot BE","Leapmotor BE"] },
+                "BE-NL": { flag:"BE", brands:["Abarth BE-NL","AlfaRomeo BE-NL","Citroen BE-NL","DS BE-NL","Fiat BE-NL","FiatPro BE-NL","Jeep BE-NL","Lancia BE-NL","Opel BE-NL","Peugeot BE-NL","Leapmotor BE-NL"] },
+                "PL": { flag:"PL", brands:["AlfaRomeo PL","Citroen PL","Fiat PL","Jeep PL","Opel PL","Peugeot PL"] },
+                "LU": { flag:"LU", brands:["Abarth LU","AlfaRomeo LU","Citroen LU","DS LU","Fiat LU","FiatPro LU","Jeep LU","Lancia LU","Opel LU","Peugeot LU","Leapmotor LU"] },
+                "UK": { flag:"UK", brands:["DS UK"] },
             },
-            oem: { "OEM": { flag:"🏭", brands:["Ford FR", "Ford FR PPR", "Motor ES"] } },
-            ref: { "Référence": { flag:"📊", brands:["Aramisauto"] } }
+            oem: { "OEM": { flag:"OEM", brands:["Ford FR", "Ford FR PPR", "Motor ES"] } },
+            ref: { "Référence": { flag:"REF", brands:["Aramisauto"] } }
         };
 
         const BRAND_META = {
@@ -471,7 +471,7 @@
                 <div class="flex flex-col gap-1">
                     <button onclick="toggleSbCountry(this,'${country}')" class="sb-c-btn flex items-center justify-between px-4 py-2 w-full text-slate-700 hover:bg-slate-50 rounded-xl font-bold text-sm transition-all border-none ${isOpen?'open':''}">
                         <div class="flex items-center gap-2">
-                            <span class="text-base">${info.flag}</span> ${country}
+                            <span class="inline-flex items-center justify-center w-7 h-5 rounded text-[9px] font-black bg-slate-100 text-slate-500 tracking-wide flex-shrink-0">${info.flag}</span> ${country}
                             ${hasKO ? '<span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse ml-1"></span>' : ''}
                         </div>
                         <i data-lucide="${isOpen?'chevron-down':'chevron-right'}" class="w-4 h-4 text-slate-400 chevron"></i>
