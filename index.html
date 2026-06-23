@@ -889,56 +889,55 @@ function render() {
 }
 
 function renderBanner() {
+  const el = document.getElementById("incident-banner");
+  if(!el) return;
+
+  const pages = Object.entries((data.statuses||{})[brand]||{});
+  const koPages = pages.filter(([,s]) => !s.ok);
 
   if(!koPages.length) {
     el.style.display = "none";
     el.innerHTML = "";
-    // Effacer le timer si existant
     if(el._timer) { clearInterval(el._timer); el._timer = null; }
     return;
   }
 
-  // Trouver le début du KO depuis l'historique
   const hist = (data.history||[]).filter(h=>h.brand===brand);
-  const now = new Date();
 
   const lines = koPages.map(([page, s]) => {
-    // Chercher le premier KO actif dans l'historique
     let koStart = null;
     const pageEvents = hist.filter(h=>h.page===page).sort((a,b)=>a.time<b.time?1:-1);
     for(const h of pageEvents) {
-      if(h.type === "ko") { koStart = parseDateStr(h.time); break; }
-      if(h.type === "recovery") break;
+      if(h.type==="ko") { koStart = parseDateStr(h.time); break; }
+      if(h.type==="recovery") break;
     }
-    // Fallback sur checked_at
     if(!koStart) koStart = parseDateStr(s.checked_at);
-
-    const dur = koStart ? Math.floor((now - koStart)/1000) : 0;
-    const durStr = dur < 60 ? dur+"s" : dur < 3600 ? Math.floor(dur/60)+"m "+( dur%60)+"s" : Math.floor(dur/3600)+"h "+Math.floor((dur%3600)/60)+"m";
-    return `<div class="inc-banner" data-page="${page}" data-start="${koStart?.getTime()||0}">
+    const dur = koStart ? Math.floor((Date.now()-koStart.getTime())/1000) : 0;
+    const fmt = d => d<60?d+"s":d<3600?Math.floor(d/60)+"m "+(d%60)+"s":Math.floor(d/3600)+"h "+Math.floor((d%3600)/60)+"m";
+    return `<div class="inc-banner" data-page="${page}" data-start="${koStart?koStart.getTime():0}">
       <div class="inc-banner-dot"></div>
-      <div class="inc-banner-text"><strong>${page}</strong> — ${s.reason||"KO"}</div>
-      <div class="inc-banner-dur" id="banner-dur-${page.replace(/\s/g,'_')}">⏱ ${durStr}</div>
+      <div class="inc-banner-text"><strong>${page}</strong> — ${(s.reason||"KO").substring(0,60)}</div>
+      <div class="inc-banner-dur" id="banner-dur-${page.replace(/\s/g,'_')}">⏱ ${fmt(dur)}</div>
     </div>`;
   }).join("");
 
   el.style.display = "block";
   el.innerHTML = lines;
 
-  // Timer pour mettre à jour la durée en temps réel
   if(el._timer) clearInterval(el._timer);
   el._timer = setInterval(() => {
-    document.querySelectorAll("[data-start]").forEach(row => {
+    document.querySelectorAll("#incident-banner [data-start]").forEach(row => {
       const start = parseInt(row.dataset.start);
       if(!start) return;
       const page = row.dataset.page;
-      const dur = Math.floor((Date.now() - start)/1000);
-      const durStr = dur < 60 ? dur+"s" : dur < 3600 ? Math.floor(dur/60)+"m "+(dur%60)+"s" : Math.floor(dur/3600)+"h "+Math.floor((dur%3600)/60)+"m";
+      const dur = Math.floor((Date.now()-start)/1000);
+      const fmt = d => d<60?d+"s":d<3600?Math.floor(d/60)+"m "+(d%60)+"s":Math.floor(d/3600)+"h "+Math.floor((d%3600)/60)+"m";
       const el2 = document.getElementById("banner-dur-"+page.replace(/\s/g,'_'));
-      if(el2) el2.textContent = "⏱ " + durStr;
+      if(el2) el2.textContent = "⏱ " + fmt(dur);
     });
   }, 1000);
 }
+
 
 function renderEP() {
   const pages = Object.entries((data.statuses || {})[brand] || {});
