@@ -150,8 +150,8 @@ PLAYWRIGHT_BRANDS = {
     "Abarth BE-NL", "AlfaRomeo BE-NL", "Citroen BE-NL", "DS BE-NL", "Fiat BE-NL", "FiatPro BE-NL", "Jeep BE-NL", "Lancia BE-NL", "Opel BE-NL", "Peugeot BE-NL", "Leapmotor BE-NL",
     "AlfaRomeo PL", "Citroen PL", "Fiat PL", "Jeep PL", "Opel PL", "Peugeot PL",
     "Abarth LU", "AlfaRomeo LU", "Citroen LU", "DS LU", "Fiat LU", "FiatPro LU", "Jeep LU", "Lancia LU", "Opel LU", "Peugeot LU", "Leapmotor LU",
-    "Opel FR", "AlfaRomeo FR", "Citroen FR", "DS FR", "Fiat FR", "FiatPro FR", "Jeep FR", "Lancia FR", "Peugeot FR",
     "DS UK",
+    # Les brands FR utilisent requests + WAF 403 = OK
 }
 
 TEAMS_WEBHOOK_URL = "https://default64661b8d1758459ca270b19fe3578e.a7.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/c3181d4e41694cfebd1c7502d219b6a9/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=l0lFm8uGc6kFwT73IzDPQBdNut4ZWgNsaXHosdDEh18"
@@ -862,6 +862,10 @@ def check_url(brand, page, url):
         if len(response.history) > 5:
             details["error_type"] = "TOO_MANY_REDIRECTS"
             return False, f"Trop de redirections ({len(response.history)})", elapsed_total, details
+        if response.status_code == 403:
+            # 403 = site protégé par WAF mais opérationnel
+            details["error_type"] = "WAF_PROTECTED"
+            return True, f"OK (WAF 403) en {elapsed_http}s", elapsed_total, details
         if 400 <= response.status_code < 500:
             details["error_type"] = f"HTTP_{response.status_code}"
             details["body_preview"] = response.text[:300].strip()
