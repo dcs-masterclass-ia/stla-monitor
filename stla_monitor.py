@@ -136,8 +136,11 @@ BRANDS = {
 }
 
 REFERENCE_BRANDS = {
-    "Aramisauto",
-    # Sites bloqués par WAF — nécessitent Playwright
+    "Aramisauto",  # Seul vrai site de référence — pas d'alerte Teams
+}
+
+PLAYWRIGHT_BRANDS = {
+    # Sites bloqués par WAF — nécessitent Playwright pour le check
     "Abarth PT", "AlfaRomeo PT", "Citroen PT", "DS PT", "Fiat PT", "FiatPro PT", "Jeep PT", "Peugeot PT", "Opel PT",
     "Abarth ES", "AlfaRomeo ES", "Citroen ES", "DS ES", "Fiat ES", "FiatPro ES", "Jeep ES", "Opel ES", "Peugeot ES",
     "Abarth IT", "AlfaRomeo IT", "Citroen IT", "DS IT", "Fiat IT", "Jeep IT", "Lancia IT", "Opel IT", "Peugeot IT",
@@ -1007,7 +1010,7 @@ def run():
     
             def check_task(task):
                 brand, page, url = task
-                if brand in REFERENCE_BRANDS:
+                if brand in PLAYWRIGHT_BRANDS:
                     return brand, page, url, check_url_playwright(brand, page, url)
                 else:
                     return brand, page, url, check_url(brand, page, url)
