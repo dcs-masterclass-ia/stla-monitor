@@ -962,22 +962,15 @@
     "is_reference": true
   },
   {
-    "time": "23/06/2026 20:03:22",
+    "time": "23/06/2026 20:06:12",
     "brand": "Ford FR PPR",
     "page": "Homepage",
     "type": "ko",
-    "detail": "Très lent (4.9s)",
+    "detail": "Erreur : HTTPSConnectionPool(host='test-ppr-oem-site-factory.shakazoola.com', port=443): ",
     "diagnostics": {
       "brand": "Ford FR PPR",
       "page": "Homepage",
-      "http_status": 200,
-      "elapsed_http": 4.9,
-      "ip": [
-        "63.183.24.161",
-        0.001,
-        null
-      ],
-      "error_type": "VERY_SLOW"
+      "error_type": "UNKNOWN"
     },
     "screenshot": null,
     "is_reference": true
