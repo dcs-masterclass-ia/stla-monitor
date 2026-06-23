@@ -1065,21 +1065,19 @@ function renderChart() {
   const isEnd = scroll.scrollLeft + scroll.clientWidth >= scroll.scrollWidth - 30;
 
   // Points KO — billes rouges sur chaque dataset
-  // Convertir les KO en minutes depuis minuit pour comparaison rapide
-  const koMinutes = koH.map(ko => {
-    const t = (ko.time||"").substring(11,16);
-    const [h,m] = t.split(":").map(Number);
-    return h*60+m;
-  });
+  // Convertir les KO en timestamps complets pour comparaison exacte
+  const koTimestamps = koH.map(ko => {
+    const t = parseDateStr(ko.time);
+    return t ? t.getTime() : null;
+  }).filter(Boolean);
 
   datasets.forEach(ds => {
     const koR = [], koC = [], koB = [];
     ds._t.forEach(t => {
-      const hhmm = (t||"").substring(11,16);
-      const [th, tm] = hhmm.split(":").map(Number);
-      const ptMin = th*60+tm;
-      // KO si un incident KO est dans les ±5 minutes
-      const isKO = koMinutes.some(km => Math.abs(ptMin - km) <= 5);
+      const pt = parseDateStr(t);
+      const ptMs = pt ? pt.getTime() : null;
+      // KO si un incident KO est dans les ±5 minutes ET même jour
+      const isKO = ptMs && koTimestamps.some(koMs => Math.abs(ptMs - koMs) <= 300000);
       koR.push(isKO ? 8 : 0);
       koC.push(isKO ? "#e11d48" : "transparent");
       koB.push(isKO ? "#fff" : "transparent");
