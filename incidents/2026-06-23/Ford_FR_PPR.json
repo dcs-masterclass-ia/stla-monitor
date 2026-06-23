@@ -718,11 +718,30 @@
     "is_reference": false
   },
   {
-    "time": "23/06/2026 16:46:05",
+    "time": "23/06/2026 16:46:33",
     "brand": "Ford FR PPR",
-    "page": "Homepage",
-    "type": "recovery",
-    "detail": "Retour en ligne",
+    "page": "Formulaire",
+    "type": "ko",
+    "detail": "Réponse très lente : 4.01s",
+    "diagnostics": {
+      "brand": "Ford FR PPR",
+      "page": "Formulaire",
+      "dns_elapsed": 0.003,
+      "ip": "3.123.191.139",
+      "http_status": 200,
+      "elapsed_http": 4.01,
+      "elapsed_total": 4.01,
+      "redirect_count": 0,
+      "final_url": "https://test-ppr-oem-site-factory.shakazoola.com/fr/form",
+      "headers": {
+        "server": "—",
+        "content-type": "text/html; charset=UTF-8",
+        "x-cache": "—",
+        "cf-ray": "—"
+      },
+      "error_type": "VERY_SLOW"
+    },
+    "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_PPR_Formulaire_20260623_164657.png",
     "is_reference": false
   }
 ]
