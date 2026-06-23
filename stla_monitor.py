@@ -376,6 +376,13 @@ def init_github():
                                 continue
                             brand_r = parts[0]
                             page_r = parts[1]
+
+                            # Ignorer les brands Playwright — trop lent au démarrage
+                            # Elles seront réconciliées au premier cycle normal
+                            if brand_r in PLAYWRIGHT_BRANDS:
+                                log.info(f"[Réconciliation] Playwright ignoré au démarrage : {key}")
+                                continue
+
                             url_r = BRANDS.get(brand_r, {}).get(page_r)
                             if not url_r:
                                 continue
