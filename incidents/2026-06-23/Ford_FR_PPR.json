@@ -1168,11 +1168,24 @@
     "is_reference": true
   },
   {
-    "time": "23/06/2026 22:37:30",
+    "time": "23/06/2026 22:39:15",
     "brand": "Ford FR PPR",
     "page": "Homepage",
-    "type": "recovery",
-    "detail": "Retour en ligne",
+    "type": "ko",
+    "detail": "Très lent (6.07s)",
+    "diagnostics": {
+      "brand": "Ford FR PPR",
+      "page": "Homepage",
+      "http_status": 200,
+      "elapsed_http": 6.07,
+      "ip": [
+        "63.183.24.161",
+        0.004,
+        null
+      ],
+      "error_type": "VERY_SLOW"
+    },
+    "screenshot": null,
     "is_reference": true
   }
 ]
