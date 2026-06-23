@@ -340,8 +340,31 @@ def init_github():
                             log.info(f"[GitHub] Incident actif restauré : {k}")
                 log.info(f"[GitHub] incident_active reconstruit : {sum(v for v in incident_active.values())} actifs")
 
-                # Réconciliation immédiate — vérifier les brands avec KO actif
-                active_keys = [k for k, v in incident_active.items() if v]
+                # Réconciliation immédiate — uniquement les KO des 2 dernières heures
+                now_dt = datetime.now(TZ_PARIS)
+                active_keys = []
+                for k, v in incident_active.items():
+                    if not v:
+                        continue
+                    # Trouver le timestamp du KO
+                    brand_k, page_k = k.split(":", 1) if ":" in k else (k, "")
+                    last_ko = next(
+                        (h for h in reversed(history)
+                         if h.get("brand") == brand_k and h.get("page") == page_k and h.get("type") == "ko"),
+                        None
+                    )
+                    if last_ko:
+                        try:
+                            ko_dt = datetime.strptime(last_ko.get("time",""), "%d/%m/%Y %H:%M:%S").replace(tzinfo=TZ_PARIS)
+                            if (now_dt - ko_dt).total_seconds() < 7200:  # moins de 2h
+                                active_keys.append(k)
+                            else:
+                                log.info(f"[Réconciliation] KO trop ancien ignoré : {k} (il y a {int((now_dt-ko_dt).total_seconds()/3600)}h)")
+                                incident_active[k] = False  # Reset silencieux
+                        except Exception:
+                            active_keys.append(k)
+                    else:
+                        incident_active[k] = False
                 if active_keys:
                     log.info(f"[Réconciliation] Vérification de {len(active_keys)} incidents actifs...")
                     now_r = datetime.now(TZ_PARIS).strftime("%d/%m/%Y %H:%M:%S")
