@@ -139,20 +139,43 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .feed{overflow-y:auto;flex:1;min-height:0}
 .feed::-webkit-scrollbar{width:3px}
 .feed::-webkit-scrollbar-thumb{background:#e2e8f0;border-radius:10px}
-.inc-row{display:flex;flex-direction:column;gap:5px;padding:11px;background:var(--accent-light);border-radius:14px;margin-bottom:7px;transition:all .2s}
-.inc-row:hover{background:#fff;box-shadow:var(--shadow);transform:translateX(3px)}
+.inc-row{display:grid;grid-template-columns:48px 1fr;position:relative;cursor:pointer}
+.inc-row:hover .tl-right{background:#fafbff}
+.inc-row.highlighted .tl-right{background:#f0f4ff}
+.inc-row.ongoing .tl-page{color:var(--red)}
 .inc-banner{display:flex;align-items:center;gap:12px;padding:10px 20px;background:#fff1f2;border-bottom:2px solid #fecdd3;flex-shrink:0}
 .inc-banner-dot{width:10px;height:10px;border-radius:50%;background:#e11d48;flex-shrink:0;animation:alertPulse 1.5s infinite}
 .inc-banner-text{font-size:12px;font-weight:700;color:#9f1239;flex:1}
 .inc-banner-dur{font-size:11px;font-weight:800;color:#e11d48;font-variant-numeric:tabular-nums;margin-left:auto;white-space:nowrap}
 @keyframes alertPulse{0%{box-shadow:0 0 0 0 rgba(225,29,72,.4)}70%{box-shadow:0 0 0 8px rgba(225,29,72,0)}100%{box-shadow:0 0 0 0 rgba(225,29,72,0)}}
-.inc-top{display:flex;justify-content:space-between;align-items:flex-start}
-.inc-time{font-size:9px;color:var(--text-3);font-weight:800}
-.inc-title{font-size:11px;font-weight:800;color:var(--text);line-height:1.2}
+.tl-left{display:flex;flex-direction:column;align-items:center;padding:12px 0 0}
+.tl-time{font-size:9px;font-weight:700;color:#94a3b8;letter-spacing:.02em}
+.tl-line{width:2px;flex:1;margin-top:5px;min-height:16px}
+.tl-line.ko{background:linear-gradient(#fca5a5,#fca5a533)}
+.tl-line.ok{background:linear-gradient(#86efac,#86efac33)}
+.tl-line.warn{background:linear-gradient(#fcd34d,#fcd34d33)}
+.tl-line.muted{background:#f1f5f9}
+.tl-right{padding:10px 14px 10px 6px;border-bottom:1px solid #f8fafc;transition:background .15s}
+.tl-row1{display:flex;align-items:center;gap:6px;margin-bottom:3px}
+.tl-icon{width:14px;height:14px;flex-shrink:0}
+.tl-page{font-size:12px;font-weight:800;color:#0f172a;flex:1}
+.tl-badge{font-size:9px;font-weight:800;padding:2px 7px;border-radius:20px;text-transform:uppercase;letter-spacing:.04em}
+.tl-badge.ko{background:#fef2f2;color:#ef4444}
+.tl-badge.ok{background:#f0fdf4;color:#22c55e}
+.tl-badge.warn{background:#fffbeb;color:#f59e0b}
+.tl-badge.ongoing{background:#fef2f2;color:#ef4444;animation:alertPulse 1.5s infinite}
+.tl-label{font-size:11px;color:#475569;margin-bottom:4px;padding-left:20px}
+.tl-footer{display:flex;align-items:center;gap:8px;padding-left:20px}
+.tl-dur{display:inline-flex;align-items:center;gap:3px;font-size:9px;font-weight:700;padding:2px 6px;border-radius:5px}
+.tl-dur.ko{color:#ef4444;background:#fef2f2}
+.tl-dur.ok{color:#22c55e;background:#f0fdf4}
+.tl-details{margin-top:6px;padding:8px 10px;background:#f8fafc;border-radius:8px;margin-left:20px;display:none}
+.tl-details.open{display:block}
+.tl-detail-row{display:flex;justify-content:space-between;padding:2px 0}
+.tl-detail-key{font-size:9px;color:#94a3b8;font-weight:600}
+.tl-detail-val{font-size:9px;font-weight:700;color:#475569;font-family:monospace}
 .inc-chip{padding:2px 7px;border-radius:6px;font-size:9px;font-weight:900;text-transform:uppercase}
 .inc-chip.ok{background:var(--green-bg);color:var(--green)}.inc-chip.ko{background:#fecdd3;color:var(--red)}
-.inc-mid{display:flex;align-items:center;justify-content:space-between;margin-top:2px}
-.inc-sub{font-size:10px;font-weight:600;color:var(--text-2)}
 .inc-dur{font-size:9px;color:var(--red);font-weight:800;display:inline-flex;align-items:center;gap:3px;background:var(--red-bg);padding:2px 5px;border-radius:5px}
 .inc-dur.res{color:var(--green);background:var(--green-bg)}
 
@@ -1406,6 +1429,14 @@ function normalizeReason(reason, errorType) {
   return reason.length > 40 ? reason.substring(0,40)+"…" : reason;
 }
 
+function get_incident_level_js(reason, errorType) {
+  const r = (reason||"").toLowerCase();
+  if(r.includes("timeout")||r.includes("pas de réponse")||r.includes("inaccessible")) return "ko";
+  if(r.includes("500")||r.includes("502")||r.includes("503")||r.includes("504")) return "ko";
+  if(r.includes("lente")||r.includes("dégradé")) return "warn";
+  return "ko";
+}
+
 function getErrorCode(h) {
   const d = h.diagnostics || {};
   if(d.http_status) return d.http_status;
@@ -1425,34 +1456,63 @@ function renderHistory(){
     el.innerHTML = msg;
     return;
   }
+  // Icônes SVG inline pour la timeline
+  const iconKO = `<svg class="tl-icon" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`;
+  const iconOK = `<svg class="tl-icon" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`;
+  const iconWarn = `<svg class="tl-icon" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`;
+
   el.innerHTML=[...hist].reverse().map((h,ri)=>{
     const d=dur(hist,hist.length-1-ri);
     const ongoing=h.type==="ko"&&d===null;
     const isRecovery=h.type==="recovery";
     const hhmm=(h.time||"").substring(11,16);
     const dateStr=(h.time||"").substring(0,5);
-    const timeLabel = dateStr + " " + hhmm;
     const label = isRecovery ? "Rétabli" : normalizeReason(h.detail, h.diagnostics?.error_type);
+    const level = isRecovery ? "ok" : get_incident_level_js(h.detail, h.diagnostics?.error_type);
     const code = getErrorCode(h);
     const ip = h.diagnostics?.ip;
     const elapsed = h.diagnostics?.elapsed_http;
-    const uid = "inc_"+ri;
-    const badge = isRecovery
-      ? '<span class="inc-chip ok">RÉSOLU</span>'
-      : ongoing ? '<span class="inc-chip ko">EN COURS</span>'
-      : '<span class="inc-chip ko" style="opacity:.7">RÉSOLU</span>';
-    const durEl = d ? `<div class="inc-dur res"><i data-lucide="check" style="width:9px;height:9px"></i> ${d}</div>`
-      : ongoing ? '<div class="inc-dur">En cours</div>' : '';
-    const extraItems = [];
-    if(code) extraItems.push(`<span style="background:#f1f5f9;border-radius:4px;padding:1px 6px;font-size:9px;font-weight:800;color:#475569">HTTP ${code}</span>`);
-    if(elapsed) extraItems.push(`<span style="font-size:10px;color:#94a3b8">⏱ ${elapsed}s</span>`);
-    if(ip && ip!=="—" && ip!==null) extraItems.push(`<span style="font-size:10px;color:#94a3b8">${ip}</span>`);
-    const extraHtml = extraItems.length ? `<div id="${uid}_d" style="display:none;flex-wrap:wrap;gap:5px;margin-top:5px;padding-top:5px;border-top:1px solid #f1f5f9">${extraItems.join("")}${h.screenshot?`<a href="${h.screenshot}" target="_blank" style="font-size:9px;color:#6366f1">📷 Capture</a>`:""}</div><button onclick="event.stopPropagation();const el=document.getElementById('${uid}_d');el.style.display=el.style.display==='none'?'flex':'none';this.textContent=this.textContent==='+ détails'?'− moins':'+ détails'" style="background:none;border:none;font-size:9px;color:#94a3b8;cursor:pointer;margin-top:2px;padding:0">+ détails</button>` : '';
-    return `<div class="inc-row ${ongoing?"ongoing":""}" onclick="highlightChartPoint('${hhmm}', this)" style="cursor:pointer">
-      <div class="inc-top"><div class="inc-title">${h.page}</div><div class="inc-time">${timeLabel}</div></div>
-      <div class="inc-mid"><div class="inc-sub" style="font-weight:600;color:${isRecovery?"var(--green)":"#1e293b"}">${label}</div>${badge}</div>
-      ${durEl?`<div style="margin-top:3px">${durEl}</div>`:""}
-      ${extraHtml}
+    const uid = "tl_"+ri;
+
+    // Couleur du trait
+    const lineClass = isRecovery ? "ok" : (ongoing ? "ko" : "muted");
+
+    // Icône
+    const icon = isRecovery ? iconOK : (level==="warn" ? iconWarn : iconKO);
+
+    // Badge
+    const badgeClass = isRecovery ? "ok" : (ongoing ? "ongoing" : (level==="warn" ? "warn" : "ko"));
+    const badgeLabel = isRecovery ? "Résolu" : (ongoing ? "En cours" : "Résolu");
+
+    // Durée
+    const durHtml = d
+      ? `<div class="tl-dur ok"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Résolu en ${d}</div>`
+      : ongoing
+        ? `<div class="tl-dur ko"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>En cours</div>`
+        : "";
+
+    // Détails
+    const detailRows = [];
+    if(code) detailRows.push(`<div class="tl-detail-row"><span class="tl-detail-key">Code HTTP</span><span class="tl-detail-val">${code}</span></div>`);
+    if(elapsed) detailRows.push(`<div class="tl-detail-row"><span class="tl-detail-key">Réponse</span><span class="tl-detail-val">${elapsed}s</span></div>`);
+    if(ip && ip!=="—") detailRows.push(`<div class="tl-detail-row"><span class="tl-detail-key">IP</span><span class="tl-detail-val">${ip}</span></div>`);
+    if(h.url||h.diagnostics?.final_url) detailRows.push(`<div class="tl-detail-row"><span class="tl-detail-key">URL</span><span class="tl-detail-val" style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${(h.url||h.diagnostics?.final_url||"").replace(/https?:\/\//,"")}</span></div>`);
+
+    const detailsHtml = detailRows.length ? `
+      <div class="tl-details" id="${uid}_d">${detailRows.join("")}${h.screenshot?`<div class="tl-detail-row"><span class="tl-detail-key">Capture</span><a href="${h.screenshot}" target="_blank" style="font-size:9px;color:#6366f1">Voir →</a></div>`:""}</div>
+      <button onclick="event.stopPropagation();const e=document.getElementById('${uid}_d');e.classList.toggle('open');this.textContent=e.classList.contains('open')?'− moins':'+ détails'" style="background:none;border:none;font-size:9px;color:#94a3b8;cursor:pointer;padding:2px 0 0 20px">+ détails</button>` : "";
+
+    return `<div class="inc-row ${ongoing?"ongoing":""}" onclick="highlightChartPoint('${hhmm}', this)">
+      <div class="tl-left">
+        <div class="tl-time">${hhmm}</div>
+        <div class="tl-line ${lineClass}"></div>
+      </div>
+      <div class="tl-right">
+        <div class="tl-row1">${icon}<span class="tl-page">${h.page}</span><span class="tl-badge ${badgeClass}">${badgeLabel}</span></div>
+        <div class="tl-label">${label}${code&&!isRecovery?` · <span style="font-weight:700">${code}</span>`:""}</div>
+        <div class="tl-footer">${durHtml}</div>
+        ${detailsHtml}
+      </div>
     </div>`;
   }).join("");
   if(window.lucide)lucide.createIcons();
