@@ -750,11 +750,30 @@
     "is_reference": false
   },
   {
-    "time": "23/06/2026 17:00:12",
+    "time": "23/06/2026 17:00:44",
     "brand": "Ford FR PPR",
     "page": "Homepage",
-    "type": "recovery",
-    "detail": "Retour en ligne",
+    "type": "ko",
+    "detail": "Réponse très lente : 4.7s",
+    "diagnostics": {
+      "brand": "Ford FR PPR",
+      "page": "Homepage",
+      "dns_elapsed": 0.006,
+      "ip": "3.123.191.139",
+      "http_status": 200,
+      "elapsed_http": 4.7,
+      "elapsed_total": 4.71,
+      "redirect_count": 0,
+      "final_url": "https://test-ppr-oem-site-factory.shakazoola.com/fr",
+      "headers": {
+        "server": "—",
+        "content-type": "text/html; charset=UTF-8",
+        "x-cache": "—",
+        "cf-ray": "—"
+      },
+      "error_type": "VERY_SLOW"
+    },
+    "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_PPR_Homepage_20260623_170103.png",
     "is_reference": false
   }
 ]
