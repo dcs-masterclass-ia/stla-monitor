@@ -29,16 +29,22 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 @keyframes fl2{0%,100%{transform:translate(0,0)}50%{transform:translate(-30px,40px)}}
 
 /* ── SHELL ── */
-.shell{display:grid;grid-template-columns:280px 1fr;height:100vh;position:relative;z-index:1;overflow:hidden}
-.shell.collapsed{grid-template-columns:0px 1fr}
+.shell{display:grid;grid-template-columns:280px 1fr;height:100vh;position:relative;z-index:1;overflow:hidden;transition:grid-template-columns .3s ease}
+.shell.collapsed{grid-template-columns:48px 1fr}
 
 /* ── SIDEBAR ── */
-.sidebar{background:#fff;display:flex;flex-direction:column;overflow:hidden;box-shadow:3px 0 20px rgba(0,0,0,0.04);transition:transform .25s ease,width .25s ease;width:280px}
-.shell.collapsed .sidebar{transform:translateX(-280px);width:0;box-shadow:none}
-.sb-head{padding:1.5rem 1.25rem 1rem;flex-shrink:0;display:flex;flex-direction:column;gap:10px}
-.sb-toggle{position:fixed;top:16px;left:16px;z-index:100;width:36px;height:36px;border-radius:10px;border:none;background:#fff;color:var(--accent);cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 12px rgba(0,0,0,.12);transition:left .25s ease}
-.shell:not(.collapsed) .sb-toggle{left:248px}
-.sb-toggle:hover{background:var(--accent-light)}
+.sidebar{background:#fff;display:flex;flex-direction:column;overflow:hidden;box-shadow:3px 0 20px rgba(0,0,0,0.04)}
+.sb-head{padding:1.5rem 1.25rem 1rem;flex-shrink:0}
+.sb-toggle{width:32px;height:32px;border-radius:8px;border:none;background:var(--accent-light);color:var(--accent);cursor:pointer;display:flex;align-items:center;justify-content:center;margin-left:auto;flex-shrink:0}
+.sb-toggle:hover{background:#e0e7ff}
+/* Collapsed — tout masqué sauf le toggle */
+.shell.collapsed .sb-logo-text,.shell.collapsed .sb-logo-chip,
+.shell.collapsed .sb-status,.shell.collapsed .sb-tabs,
+.shell.collapsed .sb-search,.shell.collapsed .sb-nav,
+.shell.collapsed .sb-synth-btn,.shell.collapsed .sb-ts{display:none!important}
+.shell.collapsed .sb-head{padding:10px 8px;align-items:center;justify-content:center}
+.shell.collapsed .sb-logo{display:none}
+.shell.collapsed .sb-toggle{margin:0 auto}
 .sb-logo{display:flex;align-items:center;gap:10px;margin-bottom:1.25rem}
 .sb-logo-text{font-size:17px;font-weight:900;letter-spacing:-.05em;color:var(--text)}
 .sb-logo-chip{font-size:9px;font-weight:800;background:var(--accent);color:#fff;padding:3px 7px;border-radius:7px}
@@ -362,16 +368,22 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 @keyframes fl2{0%,100%{transform:translate(0,0)}50%{transform:translate(-30px,40px)}}
 
 /* ── SHELL ── */
-.shell{display:grid;grid-template-columns:280px 1fr;height:100vh;position:relative;z-index:1;overflow:hidden}
-.shell.collapsed{grid-template-columns:0px 1fr}
+.shell{display:grid;grid-template-columns:280px 1fr;height:100vh;position:relative;z-index:1;overflow:hidden;transition:grid-template-columns .3s ease}
+.shell.collapsed{grid-template-columns:48px 1fr}
 
 /* ── SIDEBAR ── */
-.sidebar{background:#fff;display:flex;flex-direction:column;overflow:hidden;box-shadow:3px 0 20px rgba(0,0,0,0.04);transition:transform .25s ease,width .25s ease;width:280px}
-.shell.collapsed .sidebar{transform:translateX(-280px);width:0;box-shadow:none}
-.sb-head{padding:1.5rem 1.25rem 1rem;flex-shrink:0;display:flex;flex-direction:column;gap:10px}
-.sb-toggle{position:fixed;top:16px;left:16px;z-index:100;width:36px;height:36px;border-radius:10px;border:none;background:#fff;color:var(--accent);cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 12px rgba(0,0,0,.12);transition:left .25s ease}
-.shell:not(.collapsed) .sb-toggle{left:248px}
-.sb-toggle:hover{background:var(--accent-light)}
+.sidebar{background:#fff;display:flex;flex-direction:column;overflow:hidden;box-shadow:3px 0 20px rgba(0,0,0,0.04)}
+.sb-head{padding:1.5rem 1.25rem 1rem;flex-shrink:0}
+.sb-toggle{width:32px;height:32px;border-radius:8px;border:none;background:var(--accent-light);color:var(--accent);cursor:pointer;display:flex;align-items:center;justify-content:center;margin-left:auto;flex-shrink:0}
+.sb-toggle:hover{background:#e0e7ff}
+/* Collapsed — tout masqué sauf le toggle */
+.shell.collapsed .sb-logo-text,.shell.collapsed .sb-logo-chip,
+.shell.collapsed .sb-status,.shell.collapsed .sb-tabs,
+.shell.collapsed .sb-search,.shell.collapsed .sb-nav,
+.shell.collapsed .sb-synth-btn,.shell.collapsed .sb-ts{display:none!important}
+.shell.collapsed .sb-head{padding:10px 8px;align-items:center;justify-content:center}
+.shell.collapsed .sb-logo{display:none}
+.shell.collapsed .sb-toggle{margin:0 auto}
 .sb-logo{display:flex;align-items:center;gap:10px;margin-bottom:1.25rem}
 .sb-logo-text{font-size:17px;font-weight:900;letter-spacing:-.05em;color:var(--text)}
 .sb-logo-chip{font-size:9px;font-weight:800;background:var(--accent);color:#fff;padding:3px 7px;border-radius:7px}
@@ -715,7 +727,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 </head>
 <body>
 <div class="blob b1"></div><div class="blob b2"></div>
-<div class="shell collapsed">
+<div class="shell">
 
 <!-- ── SIDEBAR ── -->
 <aside class="sidebar">
