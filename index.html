@@ -1390,6 +1390,30 @@ function highlightChartPoint(hhmm, el) {
   lineChart.update("none");
 }
 
+
+function normalizeReason(reason, errorType) {
+  if(!reason) return "Erreur inconnue";
+  const r = reason.toLowerCase();
+  if(r.includes("timeout") || r.includes("pas de réponse") || r.includes("inaccessible")) return "Site inaccessible";
+  if(r.includes("500") || r.includes("erreur serveur")) return "Erreur serveur interne";
+  if(r.includes("502") || r.includes("503") || r.includes("504")) return "Service indisponible";
+  if(r.includes("403") || r.includes("waf") || r.includes("filtrage")) return "Accès refusé";
+  if(r.includes("404")) return "Page introuvable";
+  if(r.includes("dns")) return "Erreur DNS";
+  if(r.includes("lente") || r.includes("slow")) return "Site dégradé";
+  if(r.includes("immat") || r.includes("décodage")) return "Estimation inaccessible";
+  if(r.includes("retour") || r.includes("rétabli") || r.includes("ok (")) return "Rétabli";
+  return reason.length > 40 ? reason.substring(0,40)+"…" : reason;
+}
+
+function getErrorCode(h) {
+  const d = h.diagnostics || {};
+  if(d.http_status) return d.http_status;
+  const et = d.error_type || "";
+  const m = et.match(/HTTP_(\d+)/);
+  return m ? m[1] : null;
+}
+
 function renderHistory(){
   const hist=filterHist((data.history||[]).filter(h=>h.brand===brand));
   document.getElementById("inc-count").textContent=hist.length?"("+hist.length+" evt)":"";
@@ -1404,16 +1428,32 @@ function renderHistory(){
   el.innerHTML=[...hist].reverse().map((h,ri)=>{
     const d=dur(hist,hist.length-1-ri);
     const ongoing=h.type==="ko"&&d===null;
+    const isRecovery=h.type==="recovery";
     const hhmm=(h.time||"").substring(11,16);
-    const dateStr=(h.time||"").substring(0,5); // DD/MM
+    const dateStr=(h.time||"").substring(0,5);
     const timeLabel = dateStr + " " + hhmm;
-    return '<div class="inc-row '+(ongoing?"ongoing":"") +'" onclick="highlightChartPoint(\''+hhmm+'\', this)" style="cursor:pointer">'+
-      '<div class="inc-top"><div class="inc-title">'+h.page+'</div><div class="inc-time">'+timeLabel+'</div></div>'+
-      '<div class="inc-mid"><div class="inc-sub">'+h.detail+(h.diagnostics&&h.diagnostics.error_type?" ("+h.diagnostics.error_type+")":"")+'</div>'+
-      '<div class="inc-chip '+(h.type==="recovery"?"ok":"ko")+'">'+(h.type==="recovery"?"RESOLVED":ongoing?"CRITICAL":"FAILURE")+'</div></div>'+
-      '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px">'+
-      '<div>'+(d?'<div class="inc-dur res"><i data-lucide="check" style="width:9px;height:9px"></i> '+d+'</div>':ongoing?'<div class="inc-dur">En cours</div>':'<div class="inc-dur" style="opacity:.5">-</div>')+'</div>'+
-      (h.screenshot?'<a href="'+h.screenshot+'" target="_blank" style="color:var(--text-3)"><i data-lucide="camera" style="width:11px;height:11px"></i></a>':'')+'</div></div>';
+    const label = isRecovery ? "Rétabli" : normalizeReason(h.detail, h.diagnostics?.error_type);
+    const code = getErrorCode(h);
+    const ip = h.diagnostics?.ip;
+    const elapsed = h.diagnostics?.elapsed_http;
+    const uid = "inc_"+ri;
+    const badge = isRecovery
+      ? '<span class="inc-chip ok">RÉSOLU</span>'
+      : ongoing ? '<span class="inc-chip ko">EN COURS</span>'
+      : '<span class="inc-chip ko" style="opacity:.7">RÉSOLU</span>';
+    const durEl = d ? `<div class="inc-dur res"><i data-lucide="check" style="width:9px;height:9px"></i> ${d}</div>`
+      : ongoing ? '<div class="inc-dur">En cours</div>' : '';
+    const extraItems = [];
+    if(code) extraItems.push(`<span style="background:#f1f5f9;border-radius:4px;padding:1px 6px;font-size:9px;font-weight:800;color:#475569">HTTP ${code}</span>`);
+    if(elapsed) extraItems.push(`<span style="font-size:10px;color:#94a3b8">⏱ ${elapsed}s</span>`);
+    if(ip && ip!=="—" && ip!==null) extraItems.push(`<span style="font-size:10px;color:#94a3b8">${ip}</span>`);
+    const extraHtml = extraItems.length ? `<div id="${uid}_d" style="display:none;flex-wrap:wrap;gap:5px;margin-top:5px;padding-top:5px;border-top:1px solid #f1f5f9">${extraItems.join("")}${h.screenshot?`<a href="${h.screenshot}" target="_blank" style="font-size:9px;color:#6366f1">📷 Capture</a>`:""}</div><button onclick="event.stopPropagation();const el=document.getElementById('${uid}_d');el.style.display=el.style.display==='none'?'flex':'none';this.textContent=this.textContent==='+ détails'?'− moins':'+ détails'" style="background:none;border:none;font-size:9px;color:#94a3b8;cursor:pointer;margin-top:2px;padding:0">+ détails</button>` : '';
+    return `<div class="inc-row ${ongoing?"ongoing":""}" onclick="highlightChartPoint('${hhmm}', this)" style="cursor:pointer">
+      <div class="inc-top"><div class="inc-title">${h.page}</div><div class="inc-time">${timeLabel}</div></div>
+      <div class="inc-mid"><div class="inc-sub" style="font-weight:600;color:${isRecovery?"var(--green)":"#1e293b"}">${label}</div>${badge}</div>
+      ${durEl?`<div style="margin-top:3px">${durEl}</div>`:""}
+      ${extraHtml}
+    </div>`;
   }).join("");
   if(window.lucide)lucide.createIcons();
 }
