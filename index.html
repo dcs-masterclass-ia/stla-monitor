@@ -1273,15 +1273,16 @@
             const mc=document.getElementById("synth-macro-chart");
             if(mc){
                 if(_synthMacroChart){_synthMacroChart.destroy();_synthMacroChart=null;}
-                _synthMacroChart=new Chart(mc,{type:"bar",data:{labels:mL,datasets:[{data:mC,backgroundColor:"rgba(107,124,147,0.55)",hoverBackgroundColor:"#6b7c93",borderRadius:3,barPercentage:0.7}]},options:{responsive:true,maintainAspectRatio:false,animation:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},border:{display:false},ticks:{font:{size:9,family:"Plus Jakarta Sans"},color:"#94a3b8",maxTicksLimit:8}},y:{grid:{color:"#f8fafc"},border:{display:false},suggestedMax:3,ticks:{font:{size:9},color:"#94a3b8",stepSize:1,precision:0}}}}});
+                _synthMacroChart=new Chart(mc,{type:"bar",data:{labels:mL,datasets:[{data:mC,backgroundColor:"rgba(107,124,147,0.55)",hoverBackgroundColor:"#6b7c93",borderRadius:3,barPercentage:0.7}]},options:{responsive:false,maintainAspectRatio:false,animation:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},border:{display:false},ticks:{font:{size:9,family:"Plus Jakarta Sans"},color:"#94a3b8",maxTicksLimit:8}},y:{grid:{color:"#f8fafc"},border:{display:false},suggestedMax:3,ticks:{font:{size:9},color:"#94a3b8",stepSize:1,precision:0}}}}});
             }
 
-            // ── Graphiques statistiques
-            // ── Donut répartition statuts parc
+            // ── Graphiques statistiques (données 24h indépendantes de currentPeriod)
+            const cutoff24 = Date.now() - 86400000;
             const allPts = allTabBrands.flatMap(b =>
-                Object.keys(statuses[b]||{}).flatMap(page =>
-                    filterPts((data.chart_data||{})[b+":"+page]||[])
-                )
+                Object.keys(statuses[b]||{}).flatMap(page => {
+                    const pts = (data.chart_data||{})[b+":"+page]||[];
+                    return pts.filter(p => { const t=parseDateStr(p.time); return t&&t.getTime()>=cutoff24; });
+                })
             );
             const totalPts = allPts.length;
             const lentPts = allPts.filter(p=>p.elapsed>=4).length;
@@ -1293,7 +1294,7 @@
                 window._synthDonutChart = new Chart(donutCanvas, {
                     type:"doughnut",
                     data:{labels:["OK","Lent (≥4s)","KO"],datasets:[{data:[okPts,lentPts,koPts],backgroundColor:["#22c55e","#f59e0b","#ef4444"],borderWidth:0}]},
-                    options:{responsive:true,maintainAspectRatio:false,cutout:"65%",animation:false,plugins:{legend:{display:false}}}
+                    options:{responsive:false,maintainAspectRatio:false,cutout:"65%",animation:false,plugins:{legend:{display:false}}}
                 });
                 document.getElementById("synth-donut-legend").innerHTML = [
                     {label:"OK",val:okPts,color:"#22c55e"},
