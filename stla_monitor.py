@@ -616,14 +616,44 @@ def take_screenshot(brand, page, url):
 # ALERTE TEAMS
 # ─────────────────────────────────────────────
 
+
+# ── NORMALISATION DES LABELS D'INCIDENT ──
+def normalize_reason(reason: str, error_type: str = None) -> str:
+    """Convertit les raisons techniques en labels lisibles."""
+    if not reason:
+        return "Erreur inconnue"
+    r = reason.lower()
+    if "timeout" in r or "pas de réponse" in r or "inaccessible" in r:
+        return "Site inaccessible"
+    if "500" in r or "erreur serveur" in r:
+        return "Erreur serveur interne"
+    if "502" in r or "503" in r or "504" in r:
+        return "Service indisponible"
+    if "403" in r or "accès refusé" in r or "waf" in r.lower():
+        return "Accès refusé (filtrage réseau)"
+    if "404" in r:
+        return "Page introuvable"
+    if "301" in r or "302" in r or "redirect" in r:
+        return "Redirection incorrecte"
+    if "dns" in r:
+        return "Erreur DNS"
+    if "très lente" in r or "slow" in r:
+        return "Site dégradé (lenteur)"
+    if "immat" in r or "décodage" in r:
+        return "Formulaire estimation inaccessible"
+    if "retour en ligne" in r or "rétabli" in r:
+        return "Rétabli"
+    return reason
+
 def send_teams_alert(brand, page, url, reason, is_recovery=False, details=None, screenshot_url=None):
     now_str = datetime.now(TZ_PARIS).strftime("%d/%m/%Y %H:%M:%S")
     emoji = "✅" if is_recovery else "🚨"
+    label = normalize_reason(reason) if not is_recovery else "Rétabli"
     title = f"{emoji} {brand} — {page} {'est de nouveau en ligne' if is_recovery else 'est KO'}"
 
     lines = [
         f"🌐 **URL** : {url}",
-        f"⚠️ **Statut** : {'Retour en ligne' if is_recovery else reason}",
+        f"⚠️ **Statut** : {label}",
         f"🕐 **Heure** : {now_str}",
     ]
 
