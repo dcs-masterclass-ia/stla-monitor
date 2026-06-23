@@ -405,6 +405,39 @@ def push_chart_backup():
     except Exception as e:
         log.error(f"[GitHub] Erreur chart_data backup : {e}")
 
+def get_paused_brands():
+    """Récupère les brands en pause depuis Supabase."""
+    try:
+        import urllib.request
+        now_iso = datetime.now(TZ_PARIS).isoformat()
+        url = f"{SUPABASE_URL}/rest/v1/brand_pauses?select=brand,paused_until"
+        req = urllib.request.Request(url, headers={
+            "apikey": SUPABASE_KEY,
+            "Authorization": f"Bearer {SUPABASE_KEY}",
+            "Content-Type": "application/json"
+        })
+        with urllib.request.urlopen(req, timeout=5) as r:
+            rows = json.loads(r.read())
+        paused = {}
+        for row in rows:
+            brand_name = row["brand"]
+            until = row["paused_until"]
+            if until is None:
+                # Pause permanente
+                paused[brand_name] = None
+            else:
+                # Pause temporaire — vérifier si encore active
+                from datetime import datetime as _dt
+                until_dt = _dt.fromisoformat(until.replace("Z", "+00:00"))
+                until_paris = until_dt.astimezone(TZ_PARIS)
+                if until_paris > datetime.now(TZ_PARIS):
+                    paused[brand_name] = until_paris
+                # Sinon la pause est expirée — on ignore
+        return paused
+    except Exception as e:
+        log.warning(f"[Pause] Erreur lecture Supabase : {e}")
+        return {}
+
 def supabase_insert(incident):
     """Insère un incident dans Supabase pour historique long terme."""
     try:
@@ -1036,23 +1069,41 @@ def run():
             now_short = datetime.now(TZ_PARIS).strftime("%H:%M:%S")
     
             # Construire la liste de toutes les tâches à exécuter
-            # Ford FR PPR : uniquement entre 08h00 et 20h00 heure Paris
+            # Charger les pauses depuis Supabase toutes les 5 cycles
+            if not hasattr(get_paused_brands, '_cycle'):
+                get_paused_brands._cycle = 0
+            get_paused_brands._cycle += 1
+            if get_paused_brands._cycle % 5 == 1:
+                get_paused_brands._cache = get_paused_brands()
+            _paused_brands = getattr(get_paused_brands, '_cache', {})
+
+            # Ford FR PPR : plage horaire 08h-20h Paris
             _hour_paris = datetime.now(TZ_PARIS).hour
             _ppr_active = 8 <= _hour_paris < 20
 
             tasks = []
             for brand, urls in BRANDS.items():
                 statuses[brand] = {}
-                for page, url in urls.items():
-                    if brand == "Ford FR PPR" and not _ppr_active:
-                        # Hors plage horaire — marquer OK neutre sans alerter
+                now_ts = datetime.now(TZ_PARIS).strftime("%d/%m/%Y %H:%M:%S")
+
+                # Pause Supabase active ?
+                if brand in _paused_brands:
+                    until = _paused_brands[brand]
+                    reason = "En pause" if until is None else f"En pause jusqu'à {until.strftime('%H:%M')}"
+                    log.info(f"[Pause] {brand} — {reason}")
+                    for page, url in urls.items():
                         statuses[brand][page] = {
-                            "ok": True,
-                            "reason": "Hors plage horaire (08h-20h)",
-                            "elapsed": 0,
-                            "checked_at": datetime.now(TZ_PARIS).strftime("%d/%m/%Y %H:%M:%S"),
-                            "url": url,
-                            "details": {}
+                            "ok": True, "reason": reason, "elapsed": 0,
+                            "checked_at": now_ts, "url": url, "details": {}
+                        }
+                    continue
+
+                for page, url in urls.items():
+                    # Ford FR PPR hors plage horaire
+                    if brand == "Ford FR PPR" and not _ppr_active:
+                        statuses[brand][page] = {
+                            "ok": True, "reason": "Hors plage horaire (08h-20h)",
+                            "elapsed": 0, "checked_at": now_ts, "url": url, "details": {}
                         }
                         continue
                     tasks.append((brand, page, url))
