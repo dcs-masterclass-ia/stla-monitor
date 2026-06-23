@@ -807,11 +807,17 @@
 
         function renderEP() {
             const pages = Object.entries((data.statuses || {})[brand] || {});
-            document.getElementById("ep-row").innerHTML = pages.map(([page, s]) =>
-                `<span class="flex items-center gap-1.5 px-3 py-1 bg-white rounded-xl shadow-sm text-[10px] font-black uppercase tracking-wider text-slate-600 border-none">
-                    <span class="w-1.5 h-1.5 rounded-full ${s.ok?'bg-green-500':'bg-red-500 animate-pulse'}"></span>${page}
-                </span>`
-            ).join("");
+            document.getElementById("ep-row").innerHTML = pages.map(([page, s]) => {
+                const url = s.url || (s.details && s.details.final_url) || null;
+                return url
+                    ? `<a href="${url}" target="_blank" rel="noopener" class="flex items-center gap-1.5 px-3 py-1 bg-white rounded-xl shadow-sm text-[10px] font-black uppercase tracking-wider text-slate-600 hover:text-brandBlue hover:shadow-md transition-all cursor-pointer" style="text-decoration:none">
+                        <span class="w-1.5 h-1.5 rounded-full ${s.ok?'bg-green-500':'bg-red-500 animate-pulse'}"></span>${page}
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="w-2.5 h-2.5 opacity-40"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                    </a>`
+                    : `<span class="flex items-center gap-1.5 px-3 py-1 bg-white rounded-xl shadow-sm text-[10px] font-black uppercase tracking-wider text-slate-600 border-none">
+                        <span class="w-1.5 h-1.5 rounded-full ${s.ok?'bg-green-500':'bg-red-500 animate-pulse'}"></span>${page}
+                    </span>`;
+            }).join("");
         }
 
         function renderKPIs() {
