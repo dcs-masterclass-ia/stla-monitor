@@ -13,6 +13,7 @@ from datetime import datetime
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import Response, StreamingResponse
+import requests
 import uvicorn
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
@@ -262,6 +263,80 @@ async def push_brand(request: Request):
             return {"ok": True, "commit": resp["commit"]["sha"][:8]}
     except Exception as e:
         return {"ok": False, "error": str(e)}
+
+@app.post("/pause-brand")
+async def pause_brand(request: Request):
+    """Met une brand en pause dans Supabase."""
+    try:
+        body = await request.json()
+        brand_name = body.get("brand")
+        duration = body.get("duration")  # "1h", "2h", "permanent"
+        reason = body.get("reason", "Manuel")
+
+        if not brand_name:
+            return {"ok": False, "error": "brand manquant"}
+
+        from datetime import datetime as _dt, timedelta
+        from zoneinfo import ZoneInfo
+        TZ = ZoneInfo("Europe/Paris")
+
+        if duration == "permanent":
+            paused_until = None
+        else:
+            hours = int(duration.replace("h", ""))
+            paused_until = (_dt.now(TZ) + timedelta(hours=hours)).isoformat()
+
+        # Upsert dans Supabase
+        payload = {"brand": brand_name, "paused_until": paused_until, "reason": reason}
+        r = requests.post(
+            f"{SUPABASE_URL}/rest/v1/brand_pauses",
+            json=payload,
+            headers={
+                "apikey": SUPABASE_KEY,
+                "Authorization": f"Bearer {SUPABASE_KEY}",
+                "Content-Type": "application/json",
+                "Prefer": "resolution=merge-duplicates"
+            }
+        )
+        log.info(f"[Pause] {brand_name} mise en pause ({duration}) — status {r.status_code}")
+        return {"ok": True, "brand": brand_name, "paused_until": paused_until}
+    except Exception as e:
+        log.error(f"[Pause] Erreur : {e}")
+        return {"ok": False, "error": str(e)}
+
+@app.post("/resume-brand")
+async def resume_brand(request: Request):
+    """Réactive une brand en pause."""
+    try:
+        body = await request.json()
+        brand_name = body.get("brand")
+        if not brand_name:
+            return {"ok": False, "error": "brand manquant"}
+
+        r = requests.delete(
+            f"{SUPABASE_URL}/rest/v1/brand_pauses?brand=eq.{brand_name}",
+            headers={
+                "apikey": SUPABASE_KEY,
+                "Authorization": f"Bearer {SUPABASE_KEY}"
+            }
+        )
+        log.info(f"[Pause] {brand_name} réactivée — status {r.status_code}")
+        return {"ok": True, "brand": brand_name}
+    except Exception as e:
+        log.error(f"[Pause] Erreur : {e}")
+        return {"ok": False, "error": str(e)}
+
+@app.get("/pauses")
+async def get_pauses():
+    """Retourne toutes les pauses actives."""
+    try:
+        r = requests.get(
+            f"{SUPABASE_URL}/rest/v1/brand_pauses?select=brand,paused_until,reason,created_at",
+            headers={"apikey": SUPABASE_KEY, "Authorization": f"Bearer {SUPABASE_KEY}"}
+        )
+        return r.json()
+    except Exception as e:
+        return {"error": str(e)}
 
 @app.get("/")
 async def root():
