@@ -141,7 +141,10 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .feed::-webkit-scrollbar-thumb{background:#e2e8f0;border-radius:10px}
 .inc-row{display:flex;flex-direction:column;gap:5px;padding:11px;background:var(--accent-light);border-radius:14px;margin-bottom:7px;transition:all .2s}
 .inc-row:hover{background:#fff;box-shadow:var(--shadow);transform:translateX(3px)}
-.inc-row.ongoing{background:var(--red-bg);animation:alertPulse 2s infinite}
+.inc-banner{display:flex;align-items:center;gap:12px;padding:10px 20px;background:#fff1f2;border-bottom:2px solid #fecdd3;flex-shrink:0}
+.inc-banner-dot{width:10px;height:10px;border-radius:50%;background:#e11d48;flex-shrink:0;animation:alertPulse 1.5s infinite}
+.inc-banner-text{font-size:12px;font-weight:700;color:#9f1239;flex:1}
+.inc-banner-dur{font-size:11px;font-weight:800;color:#e11d48;font-variant-numeric:tabular-nums;margin-left:auto;white-space:nowrap}
 @keyframes alertPulse{0%{box-shadow:0 0 0 0 rgba(225,29,72,.4)}70%{box-shadow:0 0 0 8px rgba(225,29,72,0)}100%{box-shadow:0 0 0 0 rgba(225,29,72,0)}}
 .inc-top{display:flex;justify-content:space-between;align-items:flex-start}
 .inc-time{font-size:9px;color:var(--text-3);font-weight:800}
@@ -369,6 +372,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
   </div>
 
   <div id="dash" style="display:none;flex-direction:column;flex:1;overflow:hidden">
+    <div id="incident-banner" style="display:none"></div>
     <div class="topbar">
       <div class="topbar-left">
         <img id="brand-logo" class="brand-logo" src="" alt="" style="display:none">
@@ -880,8 +884,60 @@ function render() {
     return;
   }
   if(masterRow) masterRow.style.display = "";
-  renderEP(); renderKPIs(); renderGauge(); renderChart(); renderMacro(); detectTrend(); renderHistory();
+  renderBanner(); renderEP(); renderKPIs(); renderGauge(); renderChart(); renderMacro(); detectTrend(); renderHistory();
   if (window.lucide) lucide.createIcons();
+}
+
+function renderBanner() {
+
+  if(!koPages.length) {
+    el.style.display = "none";
+    el.innerHTML = "";
+    // Effacer le timer si existant
+    if(el._timer) { clearInterval(el._timer); el._timer = null; }
+    return;
+  }
+
+  // Trouver le début du KO depuis l'historique
+  const hist = (data.history||[]).filter(h=>h.brand===brand);
+  const now = new Date();
+
+  const lines = koPages.map(([page, s]) => {
+    // Chercher le premier KO actif dans l'historique
+    let koStart = null;
+    const pageEvents = hist.filter(h=>h.page===page).sort((a,b)=>a.time<b.time?1:-1);
+    for(const h of pageEvents) {
+      if(h.type === "ko") { koStart = parseDateStr(h.time); break; }
+      if(h.type === "recovery") break;
+    }
+    // Fallback sur checked_at
+    if(!koStart) koStart = parseDateStr(s.checked_at);
+
+    const dur = koStart ? Math.floor((now - koStart)/1000) : 0;
+    const durStr = dur < 60 ? dur+"s" : dur < 3600 ? Math.floor(dur/60)+"m "+( dur%60)+"s" : Math.floor(dur/3600)+"h "+Math.floor((dur%3600)/60)+"m";
+    return `<div class="inc-banner" data-page="${page}" data-start="${koStart?.getTime()||0}">
+      <div class="inc-banner-dot"></div>
+      <div class="inc-banner-text"><strong>${page}</strong> — ${s.reason||"KO"}</div>
+      <div class="inc-banner-dur" id="banner-dur-${page.replace(/\s/g,'_')}">⏱ ${durStr}</div>
+    </div>`;
+  }).join("");
+
+  el.style.display = "block";
+  el.innerHTML = lines;
+
+  // Timer pour mettre à jour la durée en temps réel
+  if(el._timer) clearInterval(el._timer);
+  el._timer = setInterval(() => {
+    document.querySelectorAll("[data-start]").forEach(row => {
+      const start = parseInt(row.dataset.start);
+      if(!start) return;
+      const page = row.dataset.page;
+      const dur = Math.floor((Date.now() - start)/1000);
+      const durStr = dur < 60 ? dur+"s" : dur < 3600 ? Math.floor(dur/60)+"m "+(dur%60)+"s" : Math.floor(dur/3600)+"h "+Math.floor((dur%3600)/60)+"m";
+      const el2 = document.getElementById("banner-dur-"+page.replace(/\s/g,'_'));
+      if(el2) el2.textContent = "⏱ " + durStr;
+    });
+  }, 1000);
 }
 
 function renderEP() {
