@@ -1036,10 +1036,25 @@ def run():
             now_short = datetime.now(TZ_PARIS).strftime("%H:%M:%S")
     
             # Construire la liste de toutes les tâches à exécuter
+            # Ford FR PPR : uniquement entre 08h00 et 20h00 heure Paris
+            _hour_paris = datetime.now(TZ_PARIS).hour
+            _ppr_active = 8 <= _hour_paris < 20
+
             tasks = []
             for brand, urls in BRANDS.items():
                 statuses[brand] = {}
                 for page, url in urls.items():
+                    if brand == "Ford FR PPR" and not _ppr_active:
+                        # Hors plage horaire — marquer OK neutre sans alerter
+                        statuses[brand][page] = {
+                            "ok": True,
+                            "reason": "Hors plage horaire (08h-20h)",
+                            "elapsed": 0,
+                            "checked_at": datetime.now(TZ_PARIS).strftime("%d/%m/%Y %H:%M:%S"),
+                            "url": url,
+                            "details": {}
+                        }
+                        continue
                     tasks.append((brand, page, url))
     
             def check_task(task):
