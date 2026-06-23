@@ -763,9 +763,6 @@ def check_url(brand, page, url):
         if len(response.history) > 5:
             details["error_type"] = "TOO_MANY_REDIRECTS"
             return False, f"Trop de redirections ({len(response.history)})", elapsed_total, details
-        if response.status_code == 403:
-            details["error_type"] = "WAF_PROTECTED"
-            return True, f"OK (WAF 403) en {elapsed_http}s", elapsed_total, details
         if 400 <= response.status_code < 500:
             details["error_type"] = f"HTTP_{response.status_code}"
             details["body_preview"] = response.text[:300].strip()
