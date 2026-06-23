@@ -220,8 +220,8 @@
                             <span class="text-sm font-black text-slate-900">Incidents / Heure</span>
                             <span class="text-[10px] font-semibold text-slate-400 ml-auto">24h</span>
                         </div>
-                        <div class="flex-1 relative" style="height:130px">
-                            <canvas id="synth-macro-chart"></canvas>
+                        <div style="height:130px;position:relative">
+                            <canvas id="synth-macro-chart" style="height:130px"></canvas>
                         </div>
                     </div>
 
@@ -232,8 +232,8 @@
                             <span class="text-sm font-black text-slate-900">Répartition Statuts</span>
                         </div>
                         <div class="flex items-center gap-4 flex-1">
-                            <div class="relative flex-shrink-0" style="width:120px;height:120px">
-                                <canvas id="synth-donut-chart"></canvas>
+                            <div style="width:120px;height:120px;position:relative;flex-shrink:0">
+                                <canvas id="synth-donut-chart" width="120" height="120"></canvas>
                             </div>
                             <div class="flex flex-col gap-2" id="synth-donut-legend"></div>
                         </div>
@@ -245,7 +245,7 @@
                             <i data-lucide="activity" class="w-4 h-4 text-brandBlue"></i>
                             <span class="text-sm font-black text-slate-900">Uptime par Pays</span>
                         </div>
-                        <div class="flex flex-col gap-2 flex-1" id="synth-uptime-bars"></div>
+                        <div class="flex flex-col gap-2" id="synth-uptime-bars" style="min-height:120px"></div>
                     </div>
                 </div>
 
@@ -1276,8 +1276,7 @@
                 _synthMacroChart=new Chart(mc,{type:"bar",data:{labels:mL,datasets:[{data:mC,backgroundColor:"rgba(107,124,147,0.55)",hoverBackgroundColor:"#6b7c93",borderRadius:3,barPercentage:0.7}]},options:{responsive:true,maintainAspectRatio:false,animation:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},border:{display:false},ticks:{font:{size:9,family:"Plus Jakarta Sans"},color:"#94a3b8",maxTicksLimit:8}},y:{grid:{color:"#f8fafc"},border:{display:false},suggestedMax:3,ticks:{font:{size:9},color:"#94a3b8",stepSize:1,precision:0}}}}});
             }
 
-            // ── Graphiques — setTimeout pour attendre affichage du DOM
-            setTimeout(() => {
+            // ── Graphiques statistiques
             // ── Donut répartition statuts parc
             const allPts = allTabBrands.flatMap(b =>
                 Object.keys(statuses[b]||{}).flatMap(page =>
@@ -1324,7 +1323,6 @@
                     </div>`;
                 }).join("");
             }
-            }, 50); // fin setTimeout graphiques
 
             lucide.createIcons();
         }
