@@ -122,13 +122,13 @@
             <p class="text-sm">Naviguez dans le menu pour accéder au détail</p>
         </div>
 
-        <div id="synth-view" class="flex-1 flex-col overflow-hidden hidden">
+        <div id="synth-view" class="flex-1 flex-col overflow-y-auto hidden">
 
-            <!-- Header compact -->
-            <header class="px-6 pt-5 pb-3 flex items-center justify-between flex-shrink-0">
+            <!-- Header -->
+            <header class="px-8 pt-6 pb-4 flex items-center justify-between flex-shrink-0">
                 <div>
-                    <h2 class="text-xl font-black tracking-tight text-slate-900">Vue Synthèse</h2>
-                    <p class="text-[10px] font-semibold text-slate-400 mt-0.5" id="synth-subtitle">—</p>
+                    <h2 class="text-2xl font-black tracking-tight text-slate-900">Vue Synthèse</h2>
+                    <p class="text-[11px] font-semibold text-slate-400 mt-0.5" id="synth-subtitle">—</p>
                 </div>
                 <div class="flex bg-white/60 backdrop-blur-md p-1 rounded-xl shadow-sm border-none gap-1">
                     <button id="synth-tab-stla" onclick="setSynthTab('stla')" class="px-4 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-white shadow-sm transition-all border-none">STLA</button>
@@ -136,86 +136,103 @@
                 </div>
             </header>
 
-            <!-- Body 3 colonnes -->
-            <div class="px-6 pb-5 flex-1 flex gap-4 min-h-0 overflow-hidden">
+            <div class="px-8 pb-8 flex flex-col gap-5">
 
-                <!-- COL GAUCHE : chiffres + pays + top KO -->
-                <div class="w-56 flex-shrink-0 flex flex-col gap-3 overflow-y-auto">
-
-                    <!-- KPIs empilés -->
-                    <div class="glass-panel rounded-2xl p-4 shadow-glass flex flex-col gap-3">
+                <!-- ROW 1 : 4 KPI cards -->
+                <div class="grid grid-cols-4 gap-4">
+                    <div class="glass-panel rounded-card p-5 shadow-glass flex flex-col gap-2">
                         <div class="flex items-center justify-between">
-                            <div>
-                                <div class="text-[10px] font-black text-slate-400 uppercase tracking-wider">En ligne</div>
-                                <div class="text-2xl font-black text-green-500" id="synth-kpi-ok">—</div>
-                                <div class="text-[10px] font-semibold text-slate-400" id="synth-kpi-ok-sub"></div>
-                            </div>
-                            <div class="text-right">
-                                <div class="text-[10px] font-black text-slate-400 uppercase tracking-wider">En alerte</div>
-                                <div class="text-2xl font-black text-red-500" id="synth-kpi-ko">—</div>
-                                <div class="text-[10px] font-semibold text-red-400" id="synth-kpi-ko-sub"></div>
-                            </div>
+                            <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">En ligne</span>
+                            <i data-lucide="check-circle-2" class="w-4 h-4 text-green-400"></i>
                         </div>
-                        <div class="h-px bg-slate-100"></div>
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <div class="text-[10px] font-black text-slate-400 uppercase tracking-wider">Uptime</div>
-                                <div class="text-xl font-black text-slate-900" id="synth-kpi-uptime">—</div>
-                            </div>
-                            <div class="text-right">
-                                <div class="text-[10px] font-black text-slate-400 uppercase tracking-wider">Incidents</div>
-                                <div class="text-xl font-black text-brandBlue" id="synth-kpi-inc">—</div>
-                                <div class="text-[10px] font-semibold text-slate-400" id="synth-kpi-inc-sub"></div>
-                            </div>
-                        </div>
+                        <div class="text-4xl font-black text-green-500" id="synth-kpi-ok">—</div>
+                        <div class="text-[11px] font-semibold text-slate-400" id="synth-kpi-ok-sub"></div>
                     </div>
+                    <div class="glass-panel rounded-card p-5 shadow-glass flex flex-col gap-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">En alerte</span>
+                            <i data-lucide="alert-triangle" class="w-4 h-4 text-red-400"></i>
+                        </div>
+                        <div class="text-4xl font-black text-red-500" id="synth-kpi-ko">—</div>
+                        <div class="text-[11px] font-semibold text-red-400" id="synth-kpi-ko-sub"></div>
+                    </div>
+                    <div class="glass-panel rounded-card p-5 shadow-glass flex flex-col gap-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Uptime parc</span>
+                            <i data-lucide="activity" class="w-4 h-4 text-brandBlue"></i>
+                        </div>
+                        <div class="text-4xl font-black text-slate-900" id="synth-kpi-uptime">—</div>
+                        <div class="text-[11px] font-semibold text-slate-400" id="synth-kpi-uptime-sub">Disponibilité globale</div>
+                    </div>
+                    <div class="glass-panel rounded-card p-5 shadow-glass flex flex-col gap-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Incidents 24h</span>
+                            <i data-lucide="siren" class="w-4 h-4 text-orange-400"></i>
+                        </div>
+                        <div class="text-4xl font-black text-brandBlue" id="synth-kpi-inc">—</div>
+                        <div class="text-[11px] font-semibold text-slate-400" id="synth-kpi-inc-sub"></div>
+                    </div>
+                </div>
+
+                <!-- ROW 2 : Statut pays | Top KO | Flux incidents -->
+                <div class="grid grid-cols-3 gap-4">
 
                     <!-- Statut par pays -->
-                    <div class="glass-panel rounded-2xl p-4 shadow-glass flex flex-col gap-0.5">
-                        <div class="text-[10px] font-black text-slate-400 uppercase tracking-wider mb-2">Statut par Pays</div>
+                    <div class="glass-panel rounded-card p-6 shadow-glass flex flex-col gap-1">
+                        <div class="flex items-center gap-2 mb-4">
+                            <i data-lucide="map-pin" class="w-4 h-4 text-brandBlue"></i>
+                            <span class="text-sm font-black text-slate-900">Statut par Pays</span>
+                        </div>
                         <div id="synth-countries" class="flex flex-col gap-0"></div>
                     </div>
 
-                    <!-- Top brands touchées -->
-                    <div class="glass-panel rounded-2xl p-4 shadow-glass flex flex-col">
-                        <div class="text-[10px] font-black text-slate-400 uppercase tracking-wider mb-3">Top KO (24h)</div>
-                        <div id="synth-top-brands" class="flex flex-col gap-2"></div>
+                    <!-- Top brands KO -->
+                    <div class="glass-panel rounded-card p-6 shadow-glass flex flex-col">
+                        <div class="flex items-center gap-2 mb-4">
+                            <i data-lucide="trending-down" class="w-4 h-4 text-red-500"></i>
+                            <span class="text-sm font-black text-slate-900">Top Incidents 24h</span>
+                        </div>
+                        <div id="synth-top-brands" class="flex flex-col gap-3"></div>
                     </div>
 
-                </div>
-
-                <!-- COL CENTRALE : flux temps réel -->
-                <div class="w-64 flex-shrink-0 flex flex-col gap-3 min-h-0">
-                    <div class="glass-panel rounded-2xl p-4 shadow-glass flex flex-col flex-1 min-h-0">
-                        <div class="flex items-center justify-between mb-3 flex-shrink-0">
-                            <div class="text-[10px] font-black text-slate-400 uppercase tracking-wider flex items-center gap-2">
-                                Flux Temps Réel
-                                <span class="text-[9px] font-black bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded-full" id="synth-inc-count"></span>
+                    <!-- Flux incidents -->
+                    <div class="glass-panel rounded-card p-6 shadow-glass flex flex-col" style="max-height:340px">
+                        <div class="flex items-center justify-between mb-4 flex-shrink-0">
+                            <div class="flex items-center gap-2">
+                                <i data-lucide="alert-triangle" class="w-4 h-4 text-red-500"></i>
+                                <span class="text-sm font-black text-slate-900">Flux Global</span>
+                                <span class="text-[10px] font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full" id="synth-inc-count"></span>
                             </div>
                             <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span>
                         </div>
                         <div class="flex-1 overflow-y-auto flex flex-col gap-0 min-h-0" id="synth-incidents"></div>
                     </div>
+                </div>
 
-                    <!-- Macro chart -->
-                    <div class="glass-panel rounded-2xl p-4 shadow-glass flex flex-col flex-shrink-0">
-                        <div class="text-[10px] font-black text-slate-400 uppercase tracking-wider mb-2">Incidents / Heure (24h)</div>
-                        <div style="height:80px;position:relative">
+                <!-- ROW 3 : Brands grid + Macro chart -->
+                <div class="grid grid-cols-3 gap-4">
+
+                    <!-- Macro chart (1 col) -->
+                    <div class="glass-panel rounded-card p-6 shadow-glass flex flex-col">
+                        <div class="flex items-center gap-2 mb-4">
+                            <i data-lucide="bar-chart-2" class="w-4 h-4 text-brandBlue"></i>
+                            <span class="text-sm font-black text-slate-900">Incidents / Heure</span>
+                        </div>
+                        <div class="flex-1 relative" style="height:120px">
                             <canvas id="synth-macro-chart"></canvas>
                         </div>
                     </div>
-                </div>
 
-                <!-- COL DROITE : grille brands dense -->
-                <div class="flex-1 min-w-0 flex flex-col min-h-0">
-                    <div class="glass-panel rounded-2xl p-4 shadow-glass flex flex-col flex-1 min-h-0">
-                        <div class="flex items-center justify-between mb-3 flex-shrink-0">
-                            <div class="text-[10px] font-black text-slate-400 uppercase tracking-wider">Toutes les Brands</div>
-                            <span class="text-[10px] font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full" id="synth-brands-count"></span>
+                    <!-- Brands grid (2 cols) -->
+                    <div class="col-span-2 glass-panel rounded-card p-6 shadow-glass flex flex-col">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center gap-2">
+                                <i data-lucide="layout-grid" class="w-4 h-4 text-brandBlue"></i>
+                                <span class="text-sm font-black text-slate-900">Toutes les Brands</span>
+                            </div>
+                            <span class="text-[10px] font-bold text-slate-400 bg-slate-100 px-2 py-1 rounded-lg" id="synth-brands-count"></span>
                         </div>
-                        <div class="flex-1 overflow-y-auto min-h-0">
-                            <div class="grid grid-cols-3 xl:grid-cols-4 gap-1.5" id="synth-brands"></div>
-                        </div>
+                        <div class="grid grid-cols-4 xl:grid-cols-5 gap-2" id="synth-brands"></div>
                     </div>
                 </div>
 
@@ -1115,75 +1132,80 @@
             const tree = SITE_TREE[tab] || {};
             const allTabBrands = Object.values(tree).flatMap(g => g.brands||[]);
 
-            // ── KPIs
+            // KPIs
             const koBrands = allTabBrands.filter(b => Object.values(statuses[b]||{}).some(s=>!s.ok));
             const okBrands = allTabBrands.filter(b => Object.values(statuses[b]||{}).every(s=>s.ok));
             const upPct = allTabBrands.length ? Math.round((okBrands.length/allTabBrands.length)*1000)/10 : 100;
             const todayKO = hist24.filter(h=>h.type==="ko").length;
 
             document.getElementById("synth-kpi-ok").textContent = okBrands.length;
-            document.getElementById("synth-kpi-ok-sub").textContent = `/ ${allTabBrands.length}`;
+            document.getElementById("synth-kpi-ok-sub").textContent = `sur ${allTabBrands.length} monitorées`;
             document.getElementById("synth-kpi-ko").textContent = koBrands.length;
-            document.getElementById("synth-kpi-ko-sub").textContent = koBrands.length ? "action requise" : "tout OK";
+            document.getElementById("synth-kpi-ko-sub").textContent = koBrands.length ? "action requise" : "tout est OK";
             document.getElementById("synth-kpi-uptime").textContent = upPct+"%";
             document.getElementById("synth-kpi-inc").textContent = todayKO;
-            document.getElementById("synth-kpi-inc-sub").textContent = "24h";
-            document.getElementById("synth-subtitle").textContent = `${allTabBrands.length} brands · mis à jour en temps réel`;
+            document.getElementById("synth-kpi-inc-sub").textContent = "Sur les dernières 24h";
+            document.getElementById("synth-subtitle").textContent = `${allTabBrands.length} brands surveillées · temps réel`;
 
-            // ── Incidents par brand
             const incPerBrand = {};
             hist24.filter(h=>h.type==="ko").forEach(h => { incPerBrand[h.brand]=(incPerBrand[h.brand]||0)+1; });
 
-            // ── Statut par pays — compact
+            // Statut par pays
             document.getElementById("synth-countries").innerHTML = Object.entries(tree).map(([code, group]) => {
                 const brands = group.brands||[];
                 const ko = brands.filter(b=>Object.values(statuses[b]||{}).some(s=>!s.ok)).length;
                 const pct = brands.length ? Math.round((brands.length-ko)/brands.length*100) : 100;
-                return `<div class="flex items-center gap-2 py-1.5 border-b border-slate-50 last:border-0">
-                    <span class="inline-flex items-center justify-center w-7 h-4 rounded text-[8px] font-black bg-slate-100 text-slate-500 flex-shrink-0">${group.flag}</span>
+                return `<div class="flex items-center gap-3 py-2.5 border-b border-slate-50 last:border-0">
+                    <span class="inline-flex items-center justify-center w-8 h-5 rounded text-[9px] font-black bg-slate-100 text-slate-500 flex-shrink-0">${group.flag}</span>
                     <div class="flex-1 min-w-0">
-                        <div class="flex items-center justify-between mb-0.5">
-                            <span class="text-[10px] font-bold text-slate-700 truncate">${code}</span>
-                            <span class="text-[9px] font-black ${ko?'text-red-500':'text-green-500'} ml-1 flex-shrink-0">${ko?ko+' KO':'OK'}</span>
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="text-xs font-bold text-slate-800">${code}</span>
+                            <span class="text-[10px] font-black ${ko?'text-red-500':'text-green-500'}">${ko?ko+' KO':'OK'}</span>
                         </div>
-                        <div class="w-full bg-slate-100 rounded-full h-1">
-                            <div class="h-1 rounded-full ${ko?'bg-red-400':'bg-green-400'}" style="width:${pct}%"></div>
+                        <div class="w-full bg-slate-100 rounded-full h-1.5">
+                            <div class="h-1.5 rounded-full transition-all ${ko?'bg-red-400':'bg-green-400'}" style="width:${pct}%"></div>
                         </div>
                     </div>
+                    <span class="text-[9px] font-bold text-slate-400 flex-shrink-0">${brands.length}</span>
                 </div>`;
             }).join("");
 
-            // ── Top brands KO
+            // Top brands KO
             const topBrands = [...allTabBrands]
                 .map(b => ({b, inc:incPerBrand[b]||0, isKO:Object.values(statuses[b]||{}).some(s=>!s.ok)}))
-                .filter(x=>x.inc>0).sort((a,b)=>b.inc-a.inc).slice(0,5);
+                .filter(x=>x.inc>0).sort((a,b)=>b.inc-a.inc).slice(0,6);
             const maxInc = topBrands[0]?.inc||1;
             document.getElementById("synth-top-brands").innerHTML = topBrands.length
-                ? topBrands.map(({b,inc,isKO})=>`
-                    <div class="flex items-center gap-2 cursor-pointer hover:opacity-75 transition-opacity" onclick="selectBrand('${b}')">
-                        <span class="w-1.5 h-1.5 rounded-full flex-shrink-0 ${isKO?'bg-red-500':'bg-orange-400'}"></span>
+                ? topBrands.map(({b,inc,isKO},i)=>`
+                    <div class="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity" onclick="selectBrand('${b}')">
+                        <span class="text-[10px] font-black text-slate-400 w-4 flex-shrink-0">${i+1}</span>
+                        <span class="w-2 h-2 rounded-full flex-shrink-0 ${isKO?'bg-red-500 animate-pulse':'bg-orange-400'}"></span>
                         <div class="flex-1 min-w-0">
-                            <div class="flex items-center justify-between mb-0.5">
-                                <span class="text-[10px] font-black text-slate-800 truncate">${b}</span>
-                                <span class="text-[9px] font-black text-orange-500 ml-1 flex-shrink-0">${inc}</span>
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="text-xs font-black text-slate-900 truncate">${b}</span>
+                                <span class="text-[10px] font-black ${isKO?'text-red-500':'text-orange-500'} ml-2 flex-shrink-0">${inc} inc.</span>
                             </div>
-                            <div class="w-full bg-slate-100 rounded-full h-1">
-                                <div class="h-1 rounded-full bg-orange-400" style="width:${Math.round(inc/maxInc*100)}%"></div>
+                            <div class="w-full bg-slate-100 rounded-full h-1.5">
+                                <div class="h-1.5 rounded-full ${isKO?'bg-red-400':'bg-orange-400'}" style="width:${Math.round(inc/maxInc*100)}%"></div>
                             </div>
                         </div>
-                    </div>`).join("")
-                : `<div class="text-[10px] font-bold text-slate-300 text-center py-2">Aucun incident 🎉</div>`;
+                    </div>`)
+                .join("")
+                : `<div class="flex flex-col items-center justify-center py-8 gap-2 text-slate-300">
+                    <i data-lucide="check-circle-2" class="w-8 h-8"></i>
+                    <span class="text-xs font-bold">Aucun incident 🎉</span>
+                   </div>`;
 
-            // ── Flux temps réel
+            // Flux global
             const incCount = document.getElementById("synth-inc-count");
             if(incCount) incCount.textContent = hist24.length ? hist24.length+" evt" : "";
-            const recentInc = [...hist24].reverse().slice(0,50);
+            const recentInc = [...hist24].reverse().slice(0,40);
             document.getElementById("synth-incidents").innerHTML = recentInc.length
                 ? recentInc.map(h => {
                     const isRec = h.type==="recovery";
                     const hhmm = (h.time||"").substring(11,16);
                     const date = (h.time||"").substring(0,5);
-                    return `<div class="flex items-start gap-2 py-2 border-b border-slate-50 last:border-0 cursor-pointer hover:bg-slate-50/60 rounded-lg px-1 transition-colors" onclick="selectBrand('${h.brand}')">
+                    return `<div class="flex items-start gap-2.5 py-2 border-b border-slate-50 last:border-0 cursor-pointer hover:bg-slate-50 rounded-lg px-1 transition-colors" onclick="selectBrand('${h.brand}')">
                         <span class="mt-0.5 flex-shrink-0 ${isRec?'text-green-400':'text-red-400'}">
                             ${isRec
                                 ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="w-3.5 h-3.5"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`
@@ -1192,25 +1214,27 @@
                         </span>
                         <div class="flex-1 min-w-0">
                             <div class="flex items-center justify-between gap-1">
-                                <span class="text-[10px] font-black text-slate-900 truncate">${h.brand}</span>
+                                <span class="text-[11px] font-black text-slate-900 truncate">${h.brand}</span>
                                 <span class="text-[9px] font-bold text-slate-400 flex-shrink-0">${date} ${hhmm}</span>
                             </div>
-                            <p class="text-[9px] font-semibold ${isRec?'text-slate-400':'text-red-500'} truncate">${h.page} · ${isRec?'Rétabli':normalizeReason(h.detail)}</p>
+                            <p class="text-[10px] font-semibold ${isRec?'text-slate-400':'text-red-500'} truncate">${h.page} · ${isRec?'Rétabli':normalizeReason(h.detail)}</p>
                         </div>
                     </div>`;
                 }).join("")
-                : `<div class="flex-1 flex items-center justify-center text-[10px] font-bold text-slate-300">Aucun incident 🎉</div>`;
+                : `<div class="flex-1 flex flex-col items-center justify-center gap-2 text-slate-300 py-8">
+                    <i data-lucide="check-circle-2" class="w-8 h-8"></i>
+                    <span class="text-xs font-bold text-slate-400">Aucun incident 🎉</span>
+                   </div>`;
 
-            // ── Grille brands dense
+            // Brands grid dense
             const sortedBrands = [...allTabBrands].sort((a,b)=>{
                 const aKO=Object.values(statuses[a]||{}).some(s=>!s.ok);
                 const bKO=Object.values(statuses[b]||{}).some(s=>!s.ok);
                 if(aKO&&!bKO) return -1; if(!aKO&&bKO) return 1;
                 return (incPerBrand[b]||0)-(incPerBrand[a]||0);
             });
-            const brandsCount = document.getElementById("synth-brands-count");
-            if(brandsCount) brandsCount.textContent = `${koBrands.length} KO · ${okBrands.length} OK`;
-
+            const bc = document.getElementById("synth-brands-count");
+            if(bc) bc.textContent = `${koBrands.length} KO · ${okBrands.length} OK`;
             document.getElementById("synth-brands").innerHTML = sortedBrands.map(b => {
                 const isKO = Object.values(statuses[b]||{}).some(s=>!s.ok);
                 const pages = Object.entries(statuses[b]||{});
@@ -1219,28 +1243,24 @@
                 return `<button onclick="selectBrand('${b}')" class="p-2.5 rounded-xl border-none text-left transition-all flex flex-col gap-1 ${isKO?'bg-red-50 hover:bg-red-100':'bg-slate-50 hover:bg-slate-100'}">
                     <div class="flex items-center gap-1.5">
                         <span class="w-1.5 h-1.5 rounded-full flex-shrink-0 ${isKO?'bg-red-500 animate-pulse':'bg-green-500'}"></span>
-                        <span class="text-[10px] font-black text-slate-900 truncate leading-tight">${b}</span>
+                        <span class="text-[10px] font-black text-slate-900 truncate">${b}</span>
                     </div>
-                    <div class="flex items-center justify-between gap-1">
-                        <span class="text-[9px] font-bold ${isKO?'text-red-500':'text-slate-400'}">${avgResp?avgResp+'s':'—'}</span>
+                    <div class="flex items-center justify-between">
+                        <span class="text-[9px] font-semibold ${isKO?'text-red-400':'text-slate-400'}">${avgResp?avgResp+'s':'—'}</span>
                         ${inc?`<span class="text-[8px] font-black text-orange-500">${inc}↑</span>`:''}
                     </div>
                 </button>`;
             }).join("");
 
-            // ── Macro chart global
+            // Macro chart
             const abs = new Array(24).fill(0);
             hist24.filter(h=>h.type==="ko").forEach(h=>{const t=parseDateStr(h.time);if(t)abs[t.getHours()]++;});
-            const now=new Date(), cur=now.getHours(), mLabels=[], mCounts=[];
-            for(let i=23;i>=0;i--){let h=cur-i;if(h<0)h+=24;mLabels.push(h+"h");mCounts.push(abs[h]);}
-            const mc = document.getElementById("synth-macro-chart");
+            const now=new Date(), cur=now.getHours(), mL=[], mC=[];
+            for(let i=23;i>=0;i--){let h=cur-i;if(h<0)h+=24;mL.push(h+"h");mC.push(abs[h]);}
+            const mc=document.getElementById("synth-macro-chart");
             if(mc){
                 if(_synthMacroChart){_synthMacroChart.destroy();_synthMacroChart=null;}
-                _synthMacroChart = new Chart(mc,{
-                    type:"bar",
-                    data:{labels:mLabels,datasets:[{data:mCounts,backgroundColor:"rgba(107,124,147,0.55)",hoverBackgroundColor:"#6b7c93",borderRadius:2,barPercentage:0.7}]},
-                    options:{responsive:true,maintainAspectRatio:false,animation:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},border:{display:false},ticks:{font:{size:8,family:"Plus Jakarta Sans"},color:"#94a3b8",maxTicksLimit:8}},y:{grid:{color:"#f8fafc"},border:{display:false},suggestedMax:3,ticks:{font:{size:8},color:"#94a3b8",stepSize:1,precision:0}}}}
-                });
+                _synthMacroChart=new Chart(mc,{type:"bar",data:{labels:mL,datasets:[{data:mC,backgroundColor:"rgba(107,124,147,0.55)",hoverBackgroundColor:"#6b7c93",borderRadius:3,barPercentage:0.7}]},options:{responsive:true,maintainAspectRatio:false,animation:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},border:{display:false},ticks:{font:{size:9,family:"Plus Jakarta Sans"},color:"#94a3b8",maxTicksLimit:8}},y:{grid:{color:"#f8fafc"},border:{display:false},suggestedMax:3,ticks:{font:{size:9},color:"#94a3b8",stepSize:1,precision:0}}}}});
             }
             lucide.createIcons();
         }
