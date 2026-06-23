@@ -251,8 +251,8 @@
                     <div id="trend-body" class="text-xs font-bold text-orange-900"></div>
                 </div>
 
-                <div class="flex flex-col xl:flex-row gap-6 flex-shrink-0" id="master-row">
-                    <div class="glass-panel rounded-card p-8 shadow-glass flex-1 min-w-0 flex flex-col border-none">
+                <div class="flex flex-col xl:flex-row gap-6 flex-shrink-0" id="master-row" style="min-height:0;max-height:520px">
+                    <div class="glass-panel rounded-card p-8 shadow-glass flex-1 min-w-0 flex flex-col border-none min-h-0">
                         <div class="flex items-center justify-between mb-6 flex-shrink-0">
                             <h3 class="text-sm font-black text-slate-900 tracking-tight flex items-center gap-2">
                                 <i data-lucide="bar-chart-2" class="w-4 h-4 text-brandBlue"></i> Télémétrie & Temps de réponse
@@ -262,7 +262,7 @@
                                 <span class="px-2.5 py-1 bg-slate-100 text-slate-500 rounded-lg text-[10px] font-black border-none">ms / temps</span>
                             </div>
                         </div>
-                        <div class="relative w-full overflow-hidden">
+                        <div class="relative w-full overflow-hidden flex-1 min-h-0">
                             <div class="overflow-x-auto overflow-y-hidden relative h-[280px]" id="chart-scroll">
                                 <div class="h-full relative min-w-full" id="chart-container">
                                     <canvas id="lineChart"></canvas>
@@ -273,8 +273,8 @@
                         <div class="flex flex-wrap gap-3 mt-4 flex-shrink-0" id="legend"></div>
                     </div>
 
-                    <div class="glass-panel rounded-card p-6 w-full xl:w-[380px] shadow-glass flex flex-col flex-shrink-0 border-none">
-                        <div class="flex items-center justify-between mb-6">
+                    <div class="glass-panel rounded-card p-6 w-full xl:w-[380px] shadow-glass flex flex-col flex-shrink-0 border-none" style="max-height:520px">
+                        <div class="flex items-center justify-between mb-6 flex-shrink-0">
                             <h3 class="text-sm font-black text-slate-900 tracking-tight flex items-center gap-2">
                                 <i data-lucide="siren" class="w-4 h-4 text-red-500"></i> Flux d'incidents
                             </h3>
@@ -283,7 +283,7 @@
                                 <button onclick="downloadReport()" class="p-1.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg transition-colors border-none"><i data-lucide="download" class="w-3.5 h-3.5"></i></button>
                             </div>
                         </div>
-                        <div class="flex-1 overflow-y-auto pr-2 flex flex-col gap-3" id="history"></div>
+                        <div class="flex-1 overflow-y-auto pr-2 flex flex-col gap-3 min-h-0" id="history"></div>
                     </div>
                 </div>
 
