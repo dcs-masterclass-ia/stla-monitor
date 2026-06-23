@@ -405,12 +405,7 @@
                     </div>
                 </div>
 
-                <button onclick="toggleAnalyse()" class="w-full flex items-center justify-between p-5 glass-panel shadow-sm hover:shadow-glass rounded-2xl transition-all text-slate-700 font-black text-sm flex-shrink-0 border-none">
-                    <div class="flex items-center gap-2"><i data-lucide="pie-chart" class="w-4 h-4"></i> Analytique Approfondie</div>
-                    <i data-lucide="chevron-down" id="analyse-chevron" class="w-5 h-5 transition-transform"></i>
-                </button>
-
-                <div id="analyse-section" class="hidden flex-col gap-6 flex-shrink-0">
+                <div id="analyse-section" class="flex flex-col gap-6 flex-shrink-0">
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div class="glass-panel rounded-card p-6 shadow-glass flex flex-col border-none">
                             <h3 class="text-xs font-black text-slate-500 uppercase tracking-widest mb-4">Statuts</h3>
@@ -799,7 +794,7 @@
                 return;
             }
             renderBanner(); renderEP(); renderKPIs(); renderGauge(); renderChart(); renderMacro(); detectTrend(); renderHistory();
-            if(analyseOpen) renderAnalyse();
+            renderAnalyse();
             lucide.createIcons();
         }
 
@@ -954,8 +949,8 @@
                     <span class="w-8 h-0.5 rounded-full flex-shrink-0" style="background:${meta.colors[i%meta.colors.length]}"></span>
                     <span class="text-[11px] font-bold text-slate-600 group-hover:text-slate-900">${ds.label}</span>
                 </div>`).join("") + `
-                <div class="flex items-center gap-2 px-3 py-1.5">
-                    <span class="w-2.5 h-2.5 rounded-full bg-red-500 flex-shrink-0"></span>
+                <div class="flex items-center gap-2 px-3 py-1.5 rounded-full hover:bg-slate-100 transition-colors cursor-pointer" id="leg-ko-btn" onclick="toggleKO()">
+                    <span class="w-2.5 h-2.5 rounded-full bg-red-500 flex-shrink-0" id="leg-ko-dot"></span>
                     <span class="text-[11px] font-bold text-slate-500">Incident KO</span>
                 </div>`;
             
@@ -963,6 +958,21 @@
         }
 
         let _hiddenLines = new Set();
+        let _showKO = true;
+        function toggleKO() {
+            _showKO = !_showKO;
+            const btn = document.getElementById("leg-ko-btn");
+            const dot = document.getElementById("leg-ko-dot");
+            if(btn) btn.style.opacity = _showKO ? "1" : "0.3";
+            if(!lineChart) return;
+            lineChart.data.datasets.forEach(ds => {
+                if(!ds._koR) return;
+                ds.pointRadius = _showKO ? [...ds._koR] : ds._koR.map(()=>0);
+                ds.pointBackgroundColor = _showKO ? ds._koC : ds._koC.map(()=>"transparent");
+                ds.pointBorderColor = _showKO ? ds._koB : ds._koB.map(()=>"transparent");
+            });
+            lineChart.update("none");
+        }
         function toggleChartLine(idx) {
             if(!lineChart) return;
             const ds = lineChart.data.datasets[idx];
@@ -1344,19 +1354,7 @@
             lucide.createIcons();
         }
         // ── ANALYSE AVANCÉE ──
-        function toggleAnalyse() {
-            analyseOpen = !analyseOpen;
-            const el = document.getElementById("analyse-section");
-            const chev = document.getElementById("analyse-chevron");
-            if(analyseOpen) {
-                el.classList.remove("hidden"); el.classList.add("flex");
-                chev.style.transform = "rotate(180deg)";
-                renderAnalyse();
-            } else {
-                el.classList.add("hidden"); el.classList.remove("flex");
-                chev.style.transform = "rotate(0deg)";
-            }
-        }
+        function toggleAnalyse() { /* section toujours visible */ }
 
         function renderAnalyse() {
             if(!data || !brand) return;
