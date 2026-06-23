@@ -618,38 +618,54 @@ def take_screenshot(brand, page, url):
 
 
 # ── NORMALISATION DES LABELS D'INCIDENT ──
+def get_incident_level(reason: str, error_type: str = None) -> str:
+    """Retourne le niveau d'incident : KO, INACCESSIBLE, DÉGRADÉ."""
+    r = (reason or "").lower()
+    et = (error_type or "").lower()
+    if "timeout" in r or "pas de réponse" in r or "tcp" in et or "inaccessible" in r:
+        return "INACCESSIBLE"
+    if any(x in r for x in ["500","502","503","504","erreur serveur","service indisponible"]):
+        return "KO"
+    if any(x in r for x in ["404","403","400","401"]):
+        return "KO"
+    if "lente" in r or "slow" in et:
+        return "DÉGRADÉ"
+    if "dns" in r or "dns" in et:
+        return "INACCESSIBLE"
+    return "KO"
+
 def normalize_reason(reason: str, error_type: str = None) -> str:
     """Convertit les raisons techniques en labels lisibles."""
     if not reason:
         return "Erreur inconnue"
     r = reason.lower()
-    if "timeout" in r or "pas de réponse" in r or "inaccessible" in r:
-        return "Site inaccessible"
-    if "500" in r or "erreur serveur" in r:
-        return "Erreur serveur interne"
-    if "502" in r or "503" in r or "504" in r:
-        return "Service indisponible"
-    if "403" in r or "accès refusé" in r or "waf" in r.lower():
-        return "Accès refusé (filtrage réseau)"
-    if "404" in r:
-        return "Page introuvable"
-    if "301" in r or "302" in r or "redirect" in r:
-        return "Redirection incorrecte"
-    if "dns" in r:
-        return "Erreur DNS"
-    if "très lente" in r or "slow" in r:
-        return "Site dégradé (lenteur)"
-    if "immat" in r or "décodage" in r:
-        return "Formulaire estimation inaccessible"
-    if "retour en ligne" in r or "rétabli" in r:
-        return "Rétabli"
+    if "timeout" in r or "pas de réponse" in r:
+        return "Site inaccessible (timeout)"
+    if "500" in r or "erreur serveur interne" in r:
+        return "Erreur serveur interne (500)"
+    if "502" in r: return "Passerelle incorrecte (502)"
+    if "503" in r: return "Service indisponible (503)"
+    if "504" in r: return "Délai passerelle dépassé (504)"
+    if "403" in r or "waf" in r: return "Accès refusé (403)"
+    if "404" in r: return "Page introuvable (404)"
+    if "dns" in r: return "Erreur DNS"
+    if "très lente" in r or "slow" in r: return "Site dégradé — réponse lente"
+    if "immat" in r or "décodage" in r: return "Formulaire estimation inaccessible"
+    if "retour en ligne" in r or "rétabli" in r: return "Rétabli"
+    if "redirect" in r: return "Redirection incorrecte"
     return reason
 
 def send_teams_alert(brand, page, url, reason, is_recovery=False, details=None, screenshot_url=None):
     now_str = datetime.now(TZ_PARIS).strftime("%d/%m/%Y %H:%M:%S")
-    emoji = "✅" if is_recovery else "🚨"
-    label = normalize_reason(reason) if not is_recovery else "Rétabli"
-    title = f"{emoji} {brand} — {page} {'est de nouveau en ligne' if is_recovery else 'est KO'}"
+    if is_recovery:
+        emoji = "✅"
+        level = "RÉTABLI"
+        label = "Retour en ligne"
+    else:
+        level = get_incident_level(reason, details.get("error_type") if details else None)
+        label = normalize_reason(reason, details.get("error_type") if details else None)
+        emoji = "🚨" if level == "KO" else "⚠️" if level == "INACCESSIBLE" else "🐢"
+    title = f"{emoji} {brand} — {page} · {level}"
 
     lines = [
         f"🌐 **URL** : {url}",
