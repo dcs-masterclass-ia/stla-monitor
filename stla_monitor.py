@@ -819,9 +819,7 @@ def check_url(brand, page, url):
 
 IMMAT_FR = "GJ100ZP"  # Immat FR valide pour décodage
 
-FR_BRANDS = {
-    "Opel FR", "Citroen FR", "DS FR", "Peugeot FR"
-}
+FR_BRANDS = set()  # Check immat FR désactivé — cause blacklisting IP
 
 # Pages de succès après décodage immat
 IMMAT_SUCCESS_SLUGS = [
