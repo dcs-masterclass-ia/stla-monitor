@@ -1246,25 +1246,7 @@
                 if(aKO&&!bKO) return -1; if(!aKO&&bKO) return 1;
                 return (incPerBrand[b]||0)-(incPerBrand[a]||0);
             });
-            const bc = document.getElementById("synth-brands-count");
-            if(bc) bc.textContent = `${koBrands.length} KO · ${okBrands.length} OK`;
-            document.getElementById("synth-brands").innerHTML = sortedBrands.map(b => {
-                const isKO = Object.values(statuses[b]||{}).some(s=>!s.ok);
-                const pages = Object.entries(statuses[b]||{});
-                const avgResp = pages.length ? (pages.reduce((s,[,v])=>s+(v.elapsed||0),0)/pages.length).toFixed(1) : null;
-                const inc = incPerBrand[b]||0;
-                return `<button onclick="selectBrand('${b}')" class="p-2.5 rounded-xl border-none text-left transition-all flex flex-col gap-1 ${isKO?'bg-red-50 hover:bg-red-100':'bg-slate-50 hover:bg-slate-100'}">
-                    <div class="flex items-center gap-1.5">
-                        <span class="w-1.5 h-1.5 rounded-full flex-shrink-0 ${isKO?'bg-red-500 animate-pulse':'bg-green-500'}"></span>
-                        <span class="text-[10px] font-black text-slate-900 truncate">${b}</span>
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <span class="text-[9px] font-semibold ${isKO?'text-red-400':'text-slate-400'}">${avgResp?avgResp+'s':'—'}</span>
-                        ${inc?`<span class="text-[8px] font-black text-orange-500">${inc}↑</span>`:''}
-                    </div>
-                </button>`;
-            }).join("");
-
+            
             // Macro chart
             const abs = new Array(24).fill(0);
             hist24.filter(h=>h.type==="ko").forEach(h=>{const t=parseDateStr(h.time);if(t)abs[t.getHours()]++;});
