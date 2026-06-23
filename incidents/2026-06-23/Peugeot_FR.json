@@ -58,5 +58,20 @@
     "type": "recovery",
     "detail": "Retour en ligne",
     "is_reference": true
+  },
+  {
+    "time": "23/06/2026 13:43:52",
+    "brand": "Peugeot FR",
+    "page": "Immat",
+    "type": "ko",
+    "detail": "Décodage immat KO — resté sur https://www.reprise.peugeot.fr/",
+    "diagnostics": {
+      "brand": "Peugeot FR",
+      "page": "Immat",
+      "error_type": "IMMAT_DECODE_FAILED",
+      "final_url": "https://www.reprise.peugeot.fr/",
+      "elapsed_http": 22.83
+    },
+    "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Peugeot_FR_Immat_20260623_134451.png"
   }
 ]
