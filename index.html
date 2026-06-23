@@ -1414,13 +1414,25 @@
                 <div class="flex flex-col gap-1">
                     <div class="w-8 h-1 rounded bg-slate-800 mb-2"></div>
                     <div class="text-2xl font-black text-slate-900">${fmt(mttrCount?mttrTotal/mttrCount:0)}</div>
-                    <div class="text-[10px] font-black text-slate-700 uppercase tracking-wider">MTTR</div>
+                    <div class="text-[10px] font-black text-slate-700 uppercase tracking-wider flex items-center gap-1">MTTR
+                        <span class="inline-flex items-center justify-center w-3.5 h-3.5 rounded-full bg-slate-200 text-slate-500 text-[8px] font-black cursor-help relative group">?
+                            <span class="hidden group-hover:block absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 bg-slate-900 text-white text-[10px] font-normal rounded-xl p-2.5 leading-relaxed z-50 shadow-lg">
+                                <b>Mean Time To Repair</b><br>Durée moyenne entre le début d'un incident et sa résolution. Plus c'est court, mieux c'est.
+                            </span>
+                        </span>
+                    </div>
                     <div class="text-[10px] text-slate-400 font-semibold">Temps moyen de résolution</div>
                 </div>
                 <div class="flex flex-col gap-1">
                     <div class="w-8 h-1 rounded bg-slate-800 mb-2"></div>
                     <div class="text-2xl font-black text-slate-900">${fmt(mtbfCount?mtbfTotal/mtbfCount:0)}</div>
-                    <div class="text-[10px] font-black text-slate-700 uppercase tracking-wider">MTBF</div>
+                    <div class="text-[10px] font-black text-slate-700 uppercase tracking-wider flex items-center gap-1">MTBF
+                        <span class="inline-flex items-center justify-center w-3.5 h-3.5 rounded-full bg-slate-200 text-slate-500 text-[8px] font-black cursor-help relative group">?
+                            <span class="hidden group-hover:block absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 bg-slate-900 text-white text-[10px] font-normal rounded-xl p-2.5 leading-relaxed z-50 shadow-lg">
+                                <b>Mean Time Between Failures</b><br>Durée moyenne entre deux incidents consécutifs. Plus c'est long, plus le site est stable.
+                            </span>
+                        </span>
+                    </div>
                     <div class="text-[10px] text-slate-400 font-semibold">Temps moyen entre incidents</div>
                 </div>
                 <div class="flex flex-col gap-1">
