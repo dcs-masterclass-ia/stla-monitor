@@ -445,7 +445,7 @@ def supabase_insert(incident):
         log.error(f"[Supabase] Exception : {e}")
 
 def archive_incident(incident):
-    """Archive un incident dans incidents/YYYY-MM-DD/Brand_Name.json sur GitHub avec déduplification."""
+    """Archive un incident dans incidents/YYYY-MM-DD/Brand_Name.json sur GitHub."""
     if not gh_repo:
         return
     try:
@@ -453,21 +453,48 @@ def archive_incident(incident):
         brand_slug = incident["brand"].replace(" ", "_")
         path = f"incidents/{date}/{brand_slug}.json"
         inc_key = f"{incident.get('time')}|{incident.get('page')}|{incident.get('type')}"
+
+        # Lire via raw URL (évite la limite 1MB et les erreurs encoding)
+        raw_url = f"https://raw.githubusercontent.com/{GITHUB_REPO}/main/{path}"
+        req = urllib.request.Request(raw_url, headers={"Authorization": f"token {GITHUB_TOKEN}"})
         try:
-            existing = gh_repo.get_contents(path)
-            data = json.loads(existing.decoded_content.decode("utf-8"))
+            with urllib.request.urlopen(req, timeout=10) as r:
+                existing_data = json.loads(r.read())
             # Dédupliquer
-            existing_keys = {f"{h.get('time')}|{h.get('page')}|{h.get('type')}" for h in data}
+            existing_keys = {f"{h.get('time')}|{h.get('page')}|{h.get('type')}" for h in existing_data}
             if inc_key in existing_keys:
                 log.info(f"[Archive] Doublon ignoré : {inc_key}")
                 return
-            data.append(incident)
-            gh_repo.update_file(path, f"incident {brand_slug} {date}",
-                                json.dumps(data, ensure_ascii=False, indent=2), existing.sha)
-        except Exception:
-            # Fichier n'existe pas — créer
-            gh_repo.create_file(path, f"incident {brand_slug} {date}",
-                                json.dumps([incident], ensure_ascii=False, indent=2))
+            existing_data.append(incident)
+            new_data = existing_data
+            # Récupérer le SHA via API
+            api_url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/{path}"
+            req2 = urllib.request.Request(api_url, headers={
+                "Authorization": f"token {GITHUB_TOKEN}",
+                "Accept": "application/vnd.github.v3+json"
+            })
+            with urllib.request.urlopen(req2, timeout=10) as r2:
+                meta = json.loads(r2.read())
+            sha = meta["sha"]
+            # Mettre à jour
+            import base64 as b64
+            encoded = b64.b64encode(json.dumps(new_data, ensure_ascii=False, indent=2).encode()).decode()
+            body = json.dumps({"message": f"incident {brand_slug} {date}", "content": encoded, "sha": sha}).encode()
+            req3 = urllib.request.Request(api_url, data=body, headers={
+                "Authorization": f"token {GITHUB_TOKEN}",
+                "Accept": "application/vnd.github.v3+json",
+                "Content-Type": "application/json"
+            }, method="PUT")
+            with urllib.request.urlopen(req3, timeout=15) as r3:
+                pass
+        except urllib.error.HTTPError as e:
+            if e.code == 404:
+                # Fichier n'existe pas — créer
+                gh_repo.create_file(path, f"incident {brand_slug} {date}",
+                                    json.dumps([incident], ensure_ascii=False, indent=2))
+            else:
+                raise
+
         log.info(f"[Archive] {incident['brand']} / {incident['page']} / {incident['type']} archivé")
     except Exception as e:
         log.error(f"[Archive] Erreur : {e}")
