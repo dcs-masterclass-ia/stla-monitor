@@ -136,7 +136,8 @@ BRANDS = {
 }
 
 REFERENCE_BRANDS = {
-    "Aramisauto",
+    "Aramisauto",   # Site de référence
+    "Ford FR PPR",  # PPR — pas d'alerte Teams
     # Sites bloqués par WAF — nécessitent Playwright
     "Abarth PT", "AlfaRomeo PT", "Citroen PT", "DS PT", "Fiat PT", "FiatPro PT", "Jeep PT", "Peugeot PT", "Opel PT",
     "Abarth ES", "AlfaRomeo ES", "Citroen ES", "DS ES", "Fiat ES", "FiatPro ES", "Jeep ES", "Opel ES", "Peugeot ES",
