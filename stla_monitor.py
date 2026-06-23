@@ -445,29 +445,32 @@ def supabase_insert(incident):
         log.error(f"[Supabase] Exception : {e}")
 
 def archive_incident(incident):
-    """Archive un incident dans incidents/YYYY-MM-DD/Brand_Name.json sur GitHub"""
+    """Archive un incident dans incidents/YYYY-MM-DD/Brand_Name.json sur GitHub avec déduplification."""
     if not gh_repo:
         return
     try:
         date = datetime.now(TZ_PARIS).strftime("%Y-%m-%d")
         brand_slug = incident["brand"].replace(" ", "_")
         path = f"incidents/{date}/{brand_slug}.json"
+        inc_key = f"{incident.get('time')}|{incident.get('page')}|{incident.get('type')}"
         try:
             existing = gh_repo.get_contents(path)
             data = json.loads(existing.decoded_content.decode("utf-8"))
+            # Dédupliquer
+            existing_keys = {f"{h.get('time')}|{h.get('page')}|{h.get('type')}" for h in data}
+            if inc_key in existing_keys:
+                log.info(f"[Archive] Doublon ignoré : {inc_key}")
+                return
             data.append(incident)
             gh_repo.update_file(path, f"incident {brand_slug} {date}",
                                 json.dumps(data, ensure_ascii=False, indent=2), existing.sha)
         except Exception:
+            # Fichier n'existe pas — créer
             gh_repo.create_file(path, f"incident {brand_slug} {date}",
                                 json.dumps([incident], ensure_ascii=False, indent=2))
-        log.info(f"[Archive] {incident['brand']} / {incident['page']} archivé")
+        log.info(f"[Archive] {incident['brand']} / {incident['page']} / {incident['type']} archivé")
     except Exception as e:
         log.error(f"[Archive] Erreur : {e}")
-    try:
-        requests.post(TEAMS_WEBHOOK_URL, json={"text": message}, timeout=10, verify=False)
-    except Exception as e:
-        log.error(f"[Teams] Erreur alerte raw : {e}")
 
 def push_status(statuses, retry=3):
     if not gh_repo:
