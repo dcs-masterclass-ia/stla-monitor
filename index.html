@@ -1127,6 +1127,9 @@
                 const rec = recs.find(r=>r.page===ko.page && parseDateStr(r.time)>parseDateStr(ko.time));
                 if(rec){ mttrTotal+=(parseDateStr(rec.time)-parseDateStr(ko.time))/60000; mttrCount++; }
             });
+            let mtbfTotal=0, mtbfCount=0;
+            const sortedKos=[...kos].sort((a,b)=>(parseDateStr(a.time)||0)-(parseDateStr(b.time)||0));
+            for(let i=1;i<sortedKos.length;i++){const diff=(parseDateStr(sortedKos[i].time)-parseDateStr(sortedKos[i-1].time))/60000;if(diff>0&&diff<10080){mtbfTotal+=diff;mtbfCount++;}}
             const fmt = m => !m?"—":m<60?Math.round(m)+"m":(m/60).toFixed(1)+"h";
             document.getElementById("analyse-mttr").innerHTML = `
                 <div class="flex flex-col gap-1">
