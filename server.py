@@ -125,9 +125,14 @@ app = FastAPI(lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "https://stla-monitor.vercel.app",
+        "https://stla-monitor-git-main-foureaumax-5051s-projects.vercel.app",
+        "http://localhost:3000",
+        "http://localhost:8000",
+    ],
     allow_credentials=False,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST"],
     allow_headers=["*"],
 )
 
@@ -269,6 +274,9 @@ async def pause_brand(request: Request):
     """Met une brand en pause dans Supabase."""
     try:
         body = await request.json()
+        # Vérification token secret
+        if body.get("secret") != "uas-pause-2026-autobiz":
+            return {"ok": False, "error": "Non autorisé"}
         brand_name = body.get("brand")
         duration = body.get("duration")  # "1h", "2h", "permanent"
         reason = body.get("reason", "Manuel")
@@ -309,6 +317,9 @@ async def resume_brand(request: Request):
     """Réactive une brand en pause."""
     try:
         body = await request.json()
+        # Vérification token secret
+        if body.get("secret") != "uas-pause-2026-autobiz":
+            return {"ok": False, "error": "Non autorisé"}
         brand_name = body.get("brand")
         if not brand_name:
             return {"ok": False, "error": "brand manquant"}
