@@ -1771,7 +1771,7 @@ function normalizeReason(reason, errorType) {
                 const r = await fetch(`${RENDER_BASE}/pause-brand`, {
                     method: "POST",
                     headers: {"Content-Type": "application/json"},
-                    body: JSON.stringify({brand, duration, reason: "Manuel depuis dashboard"})
+                    body: JSON.stringify({brand, duration, reason: "Manuel depuis dashboard", secret: "uas-pause-2026-autobiz"})
                 });
                 const d = await r.json();
                 if(d.ok) {
@@ -1790,7 +1790,7 @@ function normalizeReason(reason, errorType) {
                 const r = await fetch(`${RENDER_BASE}/resume-brand`, {
                     method: "POST",
                     headers: {"Content-Type": "application/json"},
-                    body: JSON.stringify({brand})
+                    body: JSON.stringify({brand, secret: "uas-pause-2026-autobiz"})
                 });
                 const d = await r.json();
                 if(d.ok) {
