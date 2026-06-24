@@ -499,15 +499,22 @@
     "is_reference": true
   },
   {
-    "time": "24/06/2026 12:37:57",
+    "time": "24/06/2026 12:39:03",
     "brand": "Ford FR PPR",
     "page": "Homepage",
     "type": "ko",
-    "detail": "Erreur : HTTPSConnectionPool(host='test-ppr-oem-site-factory.shakazoola.com', port=443): ",
+    "detail": "HTTP 502",
     "diagnostics": {
       "brand": "Ford FR PPR",
       "page": "Homepage",
-      "error_type": "UNKNOWN"
+      "http_status": 502,
+      "elapsed_http": 0.1,
+      "ip": [
+        "3.121.134.128",
+        0.001,
+        null
+      ],
+      "error_type": "HTTP_502"
     },
     "screenshot": null,
     "is_reference": true
