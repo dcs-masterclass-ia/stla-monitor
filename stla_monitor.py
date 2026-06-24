@@ -573,6 +573,10 @@ def push_status(statuses, retry=3):
             time.sleep(5)
     send_teams_alert_raw("🚨 ERREUR CRITIQUE : impossible de pusher status.json sur GitHub après 3 tentatives. Le dashboard ne reflète plus la réalité.")
 
+# Points envoyés via SSE/Render : 2h de données (720 pts à 10s)
+# Le reste est dans GitHub chart_data.json — chargé au démarrage du browser
+SSE_CHART_POINTS = 720  # 2h
+
 def build_payload(statuses, now):
     with history_lock:
         hist_snapshot = list(history[-MAX_HISTORY:])
@@ -580,7 +584,7 @@ def build_payload(statuses, now):
         "updated_at": now,
         "statuses": statuses,
         "history": hist_snapshot,
-        "chart_data": {k: v[-MAX_CHART:] for k, v in chart_data.items()},
+        "chart_data": {k: v[-SSE_CHART_POINTS:] for k, v in chart_data.items()},
         "avg_response": {
             k: round(sum(p["elapsed"] for p in v[-20:]) / len(v[-20:]), 2) if v else 0
             for k, v in chart_data.items()
