@@ -927,27 +927,27 @@
                 return "#ef4444";
             }
 
-            // Map timestamp → couleur pour lookup rapide
-            const koColorMap = new Map();
-            koH.forEach(ko => {
-                const t = parseDateStr(ko.time);
-                if(t) koColorMap.set(t.getTime(), getIncidentColor(ko));
-            });
-            const koTimestamps = Array.from(koColorMap.keys());
-
             const meta = getBrandMeta(brand);
             const rawDs = pages.map(([page]) => filterPts((data.chart_data||{})[brand+":"+page]||[]));
             const datasets = pages.map(([page], i) => {
                 const pts = rawDs[i]||[];
+                // Filtrer les KO uniquement pour cette page
+                const pageKoH = koH.filter(ko => ko.page === page);
+                const pageKoColorMap = new Map();
+                pageKoH.forEach(ko => {
+                    const t = parseDateStr(ko.time);
+                    if(t) pageKoColorMap.set(t.getTime(), getIncidentColor(ko));
+                });
+                const pageKoTimestamps = Array.from(pageKoColorMap.keys());
+
                 const koR = [], koC = [], koB = [];
                 pts.forEach(p => {
                     const ptMs = parseDateStr(p.time)?.getTime();
-                    const isKO = ptMs && koTimestamps.some(k => Math.abs(ptMs - k) <= 300000);
-                    // Trouver la couleur du point selon le type d'incident le plus proche
+                    const isKO = ptMs && pageKoTimestamps.some(k => Math.abs(ptMs - k) <= 300000);
                     let pointColor = "transparent";
                     if(isKO) {
                         let minDiff = Infinity, bestColor = "#ef4444";
-                        koColorMap.forEach((color, ts) => {
+                        pageKoColorMap.forEach((color, ts) => {
                             const diff = Math.abs(ptMs - ts);
                             if(diff < minDiff) { minDiff = diff; bestColor = color; }
                         });
