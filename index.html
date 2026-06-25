@@ -941,25 +941,46 @@
                 const pageKoTimestamps = Array.from(pageKoColorMap.keys());
 
                 const koR = [], koC = [], koB = [];
-                // Marquer uniquement le point chart le plus proche de chaque incident
-                // avec une tolérance large (10 min) — on prend le plus proche unique
-                const usedPtIdx = new Map();
-                pageKoColorMap.forEach((color, koTs) => {
+
+                // KO rouges (5XX, DNS, TCP) — via historique, tolérance 30s stricte
+                const redKoIdx = new Map();
+                pageKoH.forEach(ko => {
+                    const et = (ko.diagnostics?.error_type || "").toLowerCase();
+                    const detail = (ko.detail || "").toLowerCase();
+                    const isHardKO = et.includes("http_5") || et.includes("http_4") ||
+                                     et === "dns_error" || et === "tcp_timeout" ||
+                                     detail.includes("500") || detail.includes("503") ||
+                                     detail.includes("403") || detail.includes("dns");
+                    if(!isHardKO) return;
+                    const koTs = parseDateStr(ko.time)?.getTime();
+                    if(!koTs) return;
                     let bestIdx = -1, bestDiff = Infinity;
                     pts.forEach((p, idx) => {
-                        if(usedPtIdx.has(idx)) return;
                         const ptMs = parseDateStr(p.time)?.getTime();
                         if(!ptMs) return;
                         const diff = Math.abs(ptMs - koTs);
                         if(diff < bestDiff) { bestDiff = diff; bestIdx = idx; }
                     });
-                    if(bestIdx >= 0 && bestDiff <= 600000) usedPtIdx.set(bestIdx, color);
+                    if(bestIdx >= 0 && bestDiff <= 30000) redKoIdx.set(bestIdx, "#ef4444");
                 });
+
                 pts.forEach((p, idx) => {
-                    const color = usedPtIdx.get(idx);
-                    koR.push(color ? 9 : 0);
-                    koC.push(color || "transparent");
-                    koB.push(color ? "#fff" : "transparent");
+                    // Priorité 1 : KO rouge dur (5XX, DNS)
+                    if(redKoIdx.has(idx)) {
+                        koR.push(9); koC.push("#ef4444"); koB.push("#fff");
+                    }
+                    // Priorité 2 : TIMEOUT (elapsed >= 8s) → orange grand
+                    else if(p.elapsed >= 8) {
+                        koR.push(8); koC.push("#f97316"); koB.push("#fff");
+                    }
+                    // Priorité 3 : SLOW (elapsed >= 4s) → orange petit
+                    else if(p.elapsed >= 4) {
+                        koR.push(5); koC.push("#f97316"); koB.push("#fff");
+                    }
+                    // OK — pas de bille
+                    else {
+                        koR.push(0); koC.push("transparent"); koB.push("transparent");
+                    }
                 });
                 return {
                     label: page, data: pts.map(p=>p.elapsed), _t: pts.map(p=>p.time),
