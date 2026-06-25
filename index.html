@@ -941,21 +941,23 @@
                 const pageKoTimestamps = Array.from(pageKoColorMap.keys());
 
                 const koR = [], koC = [], koB = [];
-                // Pour chaque incident, trouver le point chart le plus proche (unique)
+                // Marquer uniquement le point chart le plus proche de chaque incident
+                // avec une tolérance large (10 min) — on prend le plus proche unique
                 const usedPtIdx = new Map();
                 pageKoColorMap.forEach((color, koTs) => {
                     let bestIdx = -1, bestDiff = Infinity;
                     pts.forEach((p, idx) => {
+                        if(usedPtIdx.has(idx)) return;
                         const ptMs = parseDateStr(p.time)?.getTime();
-                        if(!ptMs || usedPtIdx.has(idx)) return;
+                        if(!ptMs) return;
                         const diff = Math.abs(ptMs - koTs);
                         if(diff < bestDiff) { bestDiff = diff; bestIdx = idx; }
                     });
-                    if(bestIdx >= 0 && bestDiff <= 120000) usedPtIdx.set(bestIdx, color);
+                    if(bestIdx >= 0 && bestDiff <= 600000) usedPtIdx.set(bestIdx, color);
                 });
                 pts.forEach((p, idx) => {
                     const color = usedPtIdx.get(idx);
-                    koR.push(color ? 8 : 0);
+                    koR.push(color ? 9 : 0);
                     koC.push(color || "transparent");
                     koB.push(color ? "#fff" : "transparent");
                 });
