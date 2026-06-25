@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UAS Monitoring Platform</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%23111827'/><circle cx='16' cy='16' r='4' fill='%2322c55e'/><circle cx='16' cy='16' r='8' fill='none' stroke='%2322c55e' stroke-width='1.5' opacity='0.5'/><circle cx='16' cy='16' r='12' fill='none' stroke='%2322c55e' stroke-width='1' opacity='0.25'/></svg>">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -1613,13 +1614,20 @@
 function normalizeReason(reason, errorType) {
   if(!reason) return "Erreur inconnue";
   const r = reason.toLowerCase();
-  if(r.includes("timeout") || r.includes("pas de réponse") || r.includes("inaccessible")) return "Site inaccessible";
+  const et = (errorType||"").toLowerCase();
+  // TIMEOUT = dégradé (page répond mais trop lentement)
+  if(r.includes("timeout") || r.includes("pas de réponse") || et === "timeout") return "Réponse trop lente";
+  // DNS/TCP = vraiment inaccessible
+  if(r.includes("dns") || et === "dns_error") return "Erreur DNS — site inaccessible";
+  if(et === "tcp_timeout") return "Port inaccessible (TCP)";
+  // Erreurs serveur = KO
   if(r.includes("500") || r.includes("erreur serveur")) return "Erreur serveur interne";
-  if(r.includes("502") || r.includes("503") || r.includes("504")) return "Service indisponible";
+  if(r.includes("502")) return "Passerelle incorrecte (502)";
+  if(r.includes("503") || r.includes("service indisponible")) return "Service indisponible (503)";
+  if(r.includes("504")) return "Délai passerelle dépassé (504)";
   if(r.includes("403") || r.includes("waf") || r.includes("filtrage")) return "Accès refusé";
   if(r.includes("404")) return "Page introuvable";
-  if(r.includes("dns")) return "Erreur DNS";
-  if(r.includes("lente") || r.includes("slow")) return "Site dégradé";
+  if(r.includes("lente") || r.includes("slow") || et === "very_slow") return "Réponse trop lente";
   if(r.includes("immat") || r.includes("décodage")) return "Estimation inaccessible";
   if(r.includes("retour") || r.includes("rétabli") || r.includes("ok (")) return "Rétabli";
   return reason.length > 40 ? reason.substring(0,40)+"…" : reason;
