@@ -657,18 +657,21 @@ def take_screenshot(brand, page, url):
 
 # ── NORMALISATION DES LABELS D'INCIDENT ──
 def get_incident_level(reason: str, error_type: str = None) -> str:
-    """Retourne le niveau d'incident : KO, INACCESSIBLE, DÉGRADÉ."""
+    """Retourne le niveau d'incident : KO, DÉGRADÉ, INACCESSIBLE."""
     r = (reason or "").lower()
     et = (error_type or "").lower()
-    if "timeout" in r or "pas de réponse" in r or "tcp" in et or "inaccessible" in r:
-        return "INACCESSIBLE"
+    # Erreurs serveur = KO critique
     if any(x in r for x in ["500","502","503","504","erreur serveur","service indisponible"]):
         return "KO"
     if any(x in r for x in ["404","403","400","401"]):
         return "KO"
-    if "lente" in r or "slow" in et:
+    # TIMEOUT = site répond mais trop lentement (Playwright arrive à charger) = DÉGRADÉ
+    if "timeout" in r or "pas de réponse" in r or "very_slow" in et or "lente" in r or "slow" in et:
         return "DÉGRADÉ"
-    if "dns" in r or "dns" in et:
+    # DNS/TCP = vraiment inaccessible
+    if "dns" in r or "dns" in et or "tcp" in et:
+        return "INACCESSIBLE"
+    if "inaccessible" in r:
         return "INACCESSIBLE"
     return "KO"
 
@@ -678,7 +681,7 @@ def normalize_reason(reason: str, error_type: str = None) -> str:
         return "Erreur inconnue"
     r = reason.lower()
     if "timeout" in r or "pas de réponse" in r:
-        return "Site inaccessible (timeout)"
+        return "Réponse trop lente — timeout après 8s"
     if "500" in r or "erreur serveur interne" in r:
         return "Erreur serveur interne (500)"
     if "502" in r: return "Passerelle incorrecte (502)"
@@ -702,25 +705,57 @@ def send_teams_alert(brand, page, url, reason, is_recovery=False, details=None, 
     else:
         level = get_incident_level(reason, details.get("error_type") if details else None)
         label = normalize_reason(reason, details.get("error_type") if details else None)
-        emoji = "🚨" if level == "KO" else "⚠️" if level == "INACCESSIBLE" else "🐢"
+        emoji = "🚨" if level == "KO" else "🔴" if level == "INACCESSIBLE" else "⚠️"
     title = f"{emoji} {brand} — {page} · {level}"
+
+    # Stats 24h pour enrichir la card
+    now_paris = datetime.now(TZ_PARIS)
+    cutoff_24h = now_paris.timestamp() - 86400
+    inc_today = [h for h in history if h.get("brand") == brand and h.get("page") == page
+                 and h.get("type") == "ko"]
+    # Compter les incidents des dernières 24h
+    inc_24h = 0
+    for h in inc_today:
+        try:
+            t = datetime.strptime(h["time"], "%d/%m/%Y %H:%M:%S").replace(tzinfo=TZ_PARIS)
+            if t.timestamp() >= cutoff_24h:
+                inc_24h += 1
+        except: pass
+    # Uptime approximatif depuis chart_data
+    key = f"{brand}:{page}"
+    pts = chart_data.get(key, [])
+    pts_24h = []
+    for p in pts:
+        try:
+            t = datetime.strptime(p["time"], "%d/%m/%Y %H:%M:%S").replace(tzinfo=TZ_PARIS)
+            if t.timestamp() >= cutoff_24h:
+                pts_24h.append(p)
+        except: pass
+    uptime_str = "—"
+    if pts_24h:
+        ok_pts = len([p for p in pts_24h if p.get("elapsed", 0) < 8])
+        uptime_str = f"{round(ok_pts/len(pts_24h)*100, 1)}%"
 
     lines = [
         f"🌐 **URL** : {url}",
         f"⚠️ **Statut** : {label}",
         f"🕐 **Heure** : {now_str}",
+        f"📊 **Incidents 24h** : {inc_24h} · **Uptime** : {uptime_str}",
     ]
 
     if details and not is_recovery:
+        elapsed_total = details.get("elapsed_total") or details.get("elapsed_http")
         lines.append("")
         lines.append("**── Diagnostic ──**")
         lines.append(f"🔴 **Type** : {details.get('error_type', '—')}")
+        if elapsed_total:
+            lines.append(f"⏱ **Temps de réponse** : {elapsed_total}s")
         lines.append(f"🔍 **IP** : {details.get('ip', '—')}")
         lines.append(f"⏱ **DNS** : {details.get('dns_elapsed', '—')}s")
         if details.get("elapsed_http") is not None:
             lines.append(f"⏱ **HTTP** : {details.get('elapsed_http')}s")
         if details.get("http_status"):
-            lines.append(f"📡 **Status** : {details.get('http_status')}")
+            lines.append(f"📡 **Status HTTP** : {details.get('http_status')}")
         if details.get("headers"):
             h = details["headers"]
             if h.get("server") and h["server"] != "—":
