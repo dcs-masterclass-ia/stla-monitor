@@ -1718,30 +1718,26 @@ function normalizeReason(reason, errorType) {
             if(!data || !brand) return;
             const hist = filterHist((data.history||[]).filter(h=>h.brand===brand));
             if(!hist.length) { alert("Aucun incident à exporter sur cette période."); return; }
-
-            // En-têtes CSV
-            const cols = ["Date","Heure","Brand","Page","Type","Détail","Durée (s)","Type erreur","IP","DNS (s)","HTTP (s)","Status HTTP","Screenshot"];
+            const cols = ["Date","Heure","Brand","Page","Type","Detail","Duree_s","Type_erreur","IP","DNS_s","HTTP_s","Status_HTTP","Screenshot"];
             const rows = [cols];
-
-            hist.forEach((h, i) => {
-                const isKO = h.type === "ko";
-                // Calculer la durée de résolution
-                let dureeS = "";
+            hist.forEach(function(h, i) {
+                var isKO = h.type === "ko";
+                var dureeS = "";
                 if(isKO) {
-                    const rec = hist.slice(i+1).find(r => r.type==="recovery" && r.page===h.page);
+                    var rec = hist.slice(i+1).find(function(r){ return r.type==="recovery" && r.page===h.page; });
                     if(rec) {
-                        const t1 = parseDateStr(h.time), t2 = parseDateStr(rec.time);
+                        var t1 = parseDateStr(h.time), t2 = parseDateStr(rec.time);
                         if(t1 && t2) dureeS = Math.round((t2-t1)/1000);
                     }
                 }
-                const d = h.diagnostics || {};
+                var d = h.diagnostics || {};
                 rows.push([
                     (h.time||"").substring(0,10),
                     (h.time||"").substring(11,19),
                     h.brand || "",
                     h.page || "",
                     h.type === "ko" ? "KO" : "RECOVERY",
-                    h.detail || "",
+                    (h.detail || "").replace(/"/g, "'"),
                     dureeS,
                     d.error_type || "",
                     d.ip || "",
@@ -1751,21 +1747,15 @@ function normalizeReason(reason, errorType) {
                     h.screenshot || ""
                 ]);
             });
-
-            // Générer le CSV
-            const csv = rows.map(r =>
-                r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(",")
-            ).join("
-");
-
-            const bom = "﻿"; // UTF-8 BOM pour Excel
-            const blob = new Blob([bom + csv], { type: "text/csv;charset=utf-8;" });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            const period = currentPeriod === "live" ? "2h" : currentPeriod;
-            const date = new Date().toISOString().slice(0,10);
+            var csv = rows.map(function(r){ return r.map(function(v){ return '"'+String(v).replace(/"/g,'""')+'"'; }).join(","); }).join("\n");
+            var bom = "\uFEFF";
+            var blob = new Blob([bom + csv], { type: "text/csv;charset=utf-8;" });
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement("a");
+            var period = currentPeriod === "live" ? "2h" : currentPeriod;
+            var date = new Date().toISOString().slice(0,10);
             a.href = url;
-            a.download = `UAS_${brand.replace(/ /g,"_")}_${period}_${date}.csv`;
+            a.download = "UAS_" + brand.replace(/ /g,"_") + "_" + period + "_" + date + ".csv";
             a.click();
             URL.revokeObjectURL(url);
         }
