@@ -1714,7 +1714,61 @@ function normalizeReason(reason, errorType) {
   setTimeout(() => selectBrand(b), 100);
 }
 
-        function downloadReport() { alert('Export PDF — fonctionnalité à venir'); }
+        function downloadReport() {
+            if(!data || !brand) return;
+            const hist = filterHist((data.history||[]).filter(h=>h.brand===brand));
+            if(!hist.length) { alert("Aucun incident à exporter sur cette période."); return; }
+
+            // En-têtes CSV
+            const cols = ["Date","Heure","Brand","Page","Type","Détail","Durée (s)","Type erreur","IP","DNS (s)","HTTP (s)","Status HTTP","Screenshot"];
+            const rows = [cols];
+
+            hist.forEach((h, i) => {
+                const isKO = h.type === "ko";
+                // Calculer la durée de résolution
+                let dureeS = "";
+                if(isKO) {
+                    const rec = hist.slice(i+1).find(r => r.type==="recovery" && r.page===h.page);
+                    if(rec) {
+                        const t1 = parseDateStr(h.time), t2 = parseDateStr(rec.time);
+                        if(t1 && t2) dureeS = Math.round((t2-t1)/1000);
+                    }
+                }
+                const d = h.diagnostics || {};
+                rows.push([
+                    (h.time||"").substring(0,10),
+                    (h.time||"").substring(11,19),
+                    h.brand || "",
+                    h.page || "",
+                    h.type === "ko" ? "KO" : "RECOVERY",
+                    h.detail || "",
+                    dureeS,
+                    d.error_type || "",
+                    d.ip || "",
+                    d.dns_elapsed || "",
+                    d.elapsed_http || "",
+                    d.http_status || "",
+                    h.screenshot || ""
+                ]);
+            });
+
+            // Générer le CSV
+            const csv = rows.map(r =>
+                r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(",")
+            ).join("
+");
+
+            const bom = "﻿"; // UTF-8 BOM pour Excel
+            const blob = new Blob([bom + csv], { type: "text/csv;charset=utf-8;" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            const period = currentPeriod === "live" ? "2h" : currentPeriod;
+            const date = new Date().toISOString().slice(0,10);
+            a.href = url;
+            a.download = `UAS_${brand.replace(/\s/g,"_")}_${period}_${date}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
 
         // ── PAUSE / RESUME SCAN ──
         const RENDER_BASE = "https://stla-monitor.onrender.com";
