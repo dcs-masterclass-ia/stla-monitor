@@ -940,32 +940,38 @@
                 });
                 const pageKoTimestamps = Array.from(pageKoColorMap.keys());
 
-                // Construire un Set des index de points à marquer
-                // Pour chaque incident KO, trouver le point chart le plus proche
-                const koIdxMap = new Map(); // idx → couleur
-                pageKoH.forEach(ko => {
-                    const koTs = parseDateStr(ko.time)?.getTime();
+                // Pour chaque incident KO → trouver le point chart le plus proche
+                // Logique simple et robuste : un point par incident, tolérance 5min
+                const koIdxMap = new Map();
+                pageKoH.forEach(function(ko) {
+                    var koTs = parseDateStr(ko.time);
                     if(!koTs) return;
-                    const color = getIncidentColor(ko);
-                    let bestIdx = -1, bestDiff = Infinity;
-                    pts.forEach((p, idx) => {
-                        const ptMs = parseDateStr(p.time)?.getTime();
-                        if(!ptMs) return;
-                        const diff = Math.abs(ptMs - koTs);
+                    var koMs = koTs.getTime();
+                    var et = (ko.diagnostics && ko.diagnostics.error_type || "").toLowerCase();
+                    var detail = (ko.detail || "").toLowerCase();
+                    // Couleur selon type
+                    var color = "#ef4444"; // rouge par défaut (KO dur)
+                    if(et === "very_slow" || detail.includes("lente") || detail.includes("slow")) color = "#f97316";
+                    else if(et === "timeout" || detail.includes("timeout") || detail.includes("réponse")) color = "#f97316";
+                    else if(et === "dns_error" || et === "tcp_timeout") color = "#94a3b8";
+
+                    var bestIdx = -1, bestDiff = Infinity;
+                    pts.forEach(function(p, idx) {
+                        var ptTs = parseDateStr(p.time);
+                        if(!ptTs) return;
+                        var diff = Math.abs(ptTs.getTime() - koMs);
                         if(diff < bestDiff) { bestDiff = diff; bestIdx = idx; }
                     });
-                    // Tolérance 5 min — largement suffisant pour 10s de cycle
                     if(bestIdx >= 0 && bestDiff <= 300000) {
-                        // Si déjà marqué, garder le rouge (priorité)
                         if(!koIdxMap.has(bestIdx) || color === "#ef4444") {
                             koIdxMap.set(bestIdx, color);
                         }
                     }
                 });
 
-                const koR = [], koC = [], koB = [];
-                pts.forEach((p, idx) => {
-                    const color = koIdxMap.get(idx);
+                var koR = [], koC = [], koB = [];
+                pts.forEach(function(p, idx) {
+                    var color = koIdxMap.get(idx);
                     koR.push(color ? 8 : 0);
                     koC.push(color || "transparent");
                     koB.push(color ? "#fff" : "transparent");
