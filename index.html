@@ -941,21 +941,23 @@
                 const pageKoTimestamps = Array.from(pageKoColorMap.keys());
 
                 const koR = [], koC = [], koB = [];
-                pts.forEach(p => {
-                    const ptMs = parseDateStr(p.time)?.getTime();
-                    const isKO = ptMs && pageKoTimestamps.some(k => Math.abs(ptMs - k) <= 300000);
-                    let pointColor = "transparent";
-                    if(isKO) {
-                        let minDiff = Infinity, bestColor = "#ef4444";
-                        pageKoColorMap.forEach((color, ts) => {
-                            const diff = Math.abs(ptMs - ts);
-                            if(diff < minDiff) { minDiff = diff; bestColor = color; }
-                        });
-                        pointColor = bestColor;
-                    }
-                    koR.push(isKO ? 7 : 0);
-                    koC.push(pointColor);
-                    koB.push(isKO ? "#fff" : "transparent");
+                // Pour chaque incident, trouver le point chart le plus proche (unique)
+                const usedPtIdx = new Set();
+                pageKoColorMap.forEach((color, koTs) => {
+                    let bestIdx = -1, bestDiff = Infinity;
+                    pts.forEach((p, idx) => {
+                        const ptMs = parseDateStr(p.time)?.getTime();
+                        if(!ptMs || usedPtIdx.has(idx)) return;
+                        const diff = Math.abs(ptMs - koTs);
+                        if(diff < bestDiff) { bestDiff = diff; bestIdx = idx; }
+                    });
+                    if(bestIdx >= 0 && bestDiff <= 120000) usedPtIdx.set(bestIdx, color);
+                });
+                pts.forEach((p, idx) => {
+                    const color = usedPtIdx.get(idx);
+                    koR.push(color ? 8 : 0);
+                    koC.push(color || "transparent");
+                    koB.push(color ? "#fff" : "transparent");
                 });
                 return {
                     label: page, data: pts.map(p=>p.elapsed), _t: pts.map(p=>p.time),
