@@ -942,7 +942,7 @@
 
                 const koR = [], koC = [], koB = [];
                 // Pour chaque incident, trouver le point chart le plus proche (unique)
-                const usedPtIdx = new Set();
+                const usedPtIdx = new Map();
                 pageKoColorMap.forEach((color, koTs) => {
                     let bestIdx = -1, bestDiff = Infinity;
                     pts.forEach((p, idx) => {
