@@ -1765,7 +1765,7 @@ function normalizeReason(reason, errorType) {
             const period = currentPeriod === "live" ? "2h" : currentPeriod;
             const date = new Date().toISOString().slice(0,10);
             a.href = url;
-            a.download = `UAS_${brand.replace(/\s/g,"_")}_${period}_${date}.csv`;
+            a.download = `UAS_${brand.replace(/ /g,"_")}_${period}_${date}.csv`;
             a.click();
             URL.revokeObjectURL(url);
         }
