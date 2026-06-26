@@ -680,8 +680,13 @@
             document.getElementById("dash").classList.remove("hidden");
             document.getElementById("dash").classList.add("flex");
             
-            buildNav(); 
+            buildNav();
             resetCharts();
+            // Invalider le cache render pour forcer le re-render de la nouvelle brand
+            delete _renderCache[brand + ":live"];
+            delete _renderCache[brand + ":24h"];
+            delete _renderCache[brand + ":7j"];
+            delete _renderCache[brand + ":30j"];
             if (data) render();
         }
 
