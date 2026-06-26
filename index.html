@@ -1059,8 +1059,10 @@
                         callbacks: {
                             label: function(ctx) {
                                 const ds = ctx.dataset;
+                                // Masquer les datasets overlay timeout dans le tooltip
+                                if(ds.label && ds.label.startsWith("__timeout_")) return null;
                                 const pts = ds._rawPts;
-                                if(!pts) return ctx.dataset.label+": "+ctx.parsed.y+"s";
+                                if(!pts) return ds.label+": "+ctx.parsed.y+"s";
                                 const p = pts[ctx.dataIndex];
                                 if(p && p.is_timeout) {
                                     const real = (p.elapsed_real && p.elapsed_real >= 1) ? p.elapsed_real :
@@ -1068,7 +1070,7 @@
                                               (p.elapsed && p.elapsed >= 1) ? p.elapsed : null;
                                     return "⏱ TIMEOUT — "+(real ? real+"s" : "≥15s");
                                 }
-                                return ctx.dataset.label+": "+ctx.parsed.y+"s";
+                                return ds.label+": "+ctx.parsed.y+"s";
                             }
                         }
                     }
@@ -1082,10 +1084,10 @@
             const lCanvas = container.querySelector("canvas");
             if(lineChart && lineChart.canvas !== lCanvas) { lineChart.destroy(); lineChart=null; }
             if(!lineChart) {
-                lineChart = new Chart(lCanvas, {type:"line", data:{labels:labelsFmt, datasets}, options:mOpts});
+                lineChart = new Chart(lCanvas, {type:"line", data:{labels:labelsFmt, datasets:allDatasets}, options:mOpts});
                 setTimeout(()=>scroll.scrollLeft=scroll.scrollWidth, 100);
             } else {
-                lineChart.data.labels = labelsFmt; lineChart.data.datasets = datasets; lineChart.options = mOpts; lineChart.update("none");
+                lineChart.data.labels = labelsFmt; lineChart.data.datasets = allDatasets; lineChart.options = mOpts; lineChart.update("none");
                 if(isEnd) setTimeout(()=>scroll.scrollLeft=scroll.scrollWidth, 50);
             }
 
