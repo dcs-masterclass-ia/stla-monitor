@@ -722,7 +722,7 @@ def take_screenshot(brand, page, url, body_html=None):
 
 # ── NORMALISATION DES LABELS D'INCIDENT ──
 def get_incident_level(reason: str, error_type: str = None) -> str:
-    """Retourne le niveau d'incident : KO, DÉGRADÉ, INACCESSIBLE."""
+    """Retourne le niveau d'incident : KO, LENT, TIMEOUT."""
     r = (reason or "").lower()
     et = (error_type or "").lower()
     # Erreurs serveur = KO critique
@@ -732,15 +732,15 @@ def get_incident_level(reason: str, error_type: str = None) -> str:
         return "KO"
     # TIMEOUT / pas de réponse = INACCESSIBLE
     if "timeout" in et or "tcp" in et or "pas de réponse" in r:
-        return "INACCESSIBLE"
+        return "TIMEOUT"
     # DNS = INACCESSIBLE
     if "dns" in r or "dns" in et:
-        return "INACCESSIBLE"
+        return "TIMEOUT"
     if "inaccessible" in r:
-        return "INACCESSIBLE"
+        return "TIMEOUT"
     # VERY_SLOW / lente = DÉGRADÉ
     if "very_slow" in et or "lente" in r or "slow" in et or "timeout" in r:
-        return "DÉGRADÉ"
+        return "LENT"
     return "KO"
 
 def normalize_reason(reason: str, error_type: str = None) -> str:
@@ -773,7 +773,7 @@ def send_teams_alert(brand, page, url, reason, is_recovery=False, details=None, 
     else:
         level = get_incident_level(reason, details.get("error_type") if details else None)
         label = normalize_reason(reason, details.get("error_type") if details else None)
-        emoji = "🚨" if level == "KO" else "🔴" if level == "INACCESSIBLE" else "⚠️"
+        emoji = "🚨" if level == "KO" else "🟠" if level == "TIMEOUT" else "⚠️"
     title = f"{emoji} {brand} — {page} · {level}"
 
     # Stats 24h pour enrichir la card
