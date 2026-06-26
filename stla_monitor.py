@@ -861,7 +861,7 @@ def check_url_playwright(brand, page, url):
             details["error_type"] = f"HTTP_{r.status_code}"
             return False, f"HTTP {r.status_code}", elapsed, details
 
-        very_slow_threshold = 4 if brand not in BRAND_TIMEOUT else BRAND_TIMEOUT[brand] * 0.5
+        very_slow_threshold = BRAND_TIMEOUT.get(brand, VERY_SLOW_THRESHOLD_SECONDS)
         if elapsed > very_slow_threshold:
             details["error_type"] = "VERY_SLOW"
             return False, f"Très lent ({elapsed}s)", elapsed, details
