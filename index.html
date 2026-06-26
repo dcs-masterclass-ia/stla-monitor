@@ -682,19 +682,7 @@
             
             buildNav(); 
             resetCharts();
-            if (data) {
-                // Vider chart_data de la brand précédente et charger la nouvelle
-                data.chart_data = {};
-                fetch("https://stla-monitor.onrender.com/chart-data?brand=" + encodeURIComponent(b))
-                    .then(res => res.json())
-                    .then(cd => {
-                        if (cd && cd.chart_data) {
-                            data.chart_data = cd.chart_data;
-                        }
-                        render();
-                    })
-                    .catch(() => render());
-            }
+            if (data) render();
         }
 
         function setPeriod(btn, p) {
