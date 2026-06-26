@@ -1690,6 +1690,19 @@
                 _sseSource.onmessage = (e) => {
                     try {
                         data = JSON.parse(e.data);
+                        // Charger chart_data depuis GitHub si absent du payload SSE
+                        if (!data.chart_data && !window._chartDataLoaded) {
+                            window._chartDataLoaded = true;
+                            fetch("https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/chart_data.json?t=" + Date.now())
+                                .then(r => r.json())
+                                .then(cd => {
+                                    if (cd && cd.chart_data) {
+                                        data.chart_data = cd.chart_data;
+                                        renderCurrentBrand();
+                                    }
+                                })
+                                .catch(() => {});
+                        }
                         // Mettre en cache les données dans sessionStorage
                         try {
                             sessionStorage.setItem("uas_data_cache", e.data);
