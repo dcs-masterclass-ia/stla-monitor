@@ -730,14 +730,17 @@ def get_incident_level(reason: str, error_type: str = None) -> str:
         return "KO"
     if any(x in r for x in ["404","403","400","401"]):
         return "KO"
-    # TIMEOUT = site répond mais trop lentement (Playwright arrive à charger) = DÉGRADÉ
-    if "timeout" in r or "pas de réponse" in r or "very_slow" in et or "lente" in r or "slow" in et:
-        return "DÉGRADÉ"
-    # DNS/TCP = vraiment inaccessible
-    if "dns" in r or "dns" in et or "tcp" in et:
+    # TIMEOUT / pas de réponse = INACCESSIBLE
+    if "timeout" in et or "tcp" in et or "pas de réponse" in r:
+        return "INACCESSIBLE"
+    # DNS = INACCESSIBLE
+    if "dns" in r or "dns" in et:
         return "INACCESSIBLE"
     if "inaccessible" in r:
         return "INACCESSIBLE"
+    # VERY_SLOW / lente = DÉGRADÉ
+    if "very_slow" in et or "lente" in r or "slow" in et or "timeout" in r:
+        return "DÉGRADÉ"
     return "KO"
 
 def normalize_reason(reason: str, error_type: str = None) -> str:
@@ -809,7 +812,12 @@ def send_teams_alert(brand, page, url, reason, is_recovery=False, details=None, 
     ]
 
     if details and not is_recovery:
-        elapsed_total = details.get("elapsed_real") or details.get("elapsed_total") or details.get("elapsed_http")
+        # elapsed_real peut valoir 0.0 (faux négatif avec `or`), utiliser is not None
+        _er = details.get("elapsed_real")
+        _et = details.get("elapsed_total")
+        _eh = details.get("elapsed_http")
+        _el = details.get("elapsed_limit")  # timeout du 1er scan (ex: 15s)
+        elapsed_total = (_er if _er is not None and _er >= 1 else None) or                         (_et if _et is not None else None) or                         (_eh if _eh is not None else None) or                         (_el if _el is not None else None)
         lines.append("")
         lines.append("**── Diagnostic ──**")
         lines.append(f"🔴 **Type** : {details.get('error_type', '—')}")
