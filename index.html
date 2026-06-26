@@ -967,7 +967,11 @@
                     // Couleur selon type
                     var color = "#ef4444"; // rouge par défaut (KO dur)
                     if(et === "very_slow" || detail.includes("lente") || detail.includes("slow")) color = "#f97316";
-                    else if(et === "timeout" || detail.includes("timeout") || detail.includes("réponse")) color = "#f97316";
+                    else if(et === "timeout" || et === "tcp_timeout" || detail.includes("timeout") || detail.includes("réponse")) {
+                        color = "#f97316";
+                        ko._isTimeout = true;
+                        ko._elapsedReal = ko.diagnostics && ko.diagnostics.elapsed_real ? ko.diagnostics.elapsed_real : null;
+                    }
                     else if(et === "dns_error" || et === "tcp_timeout") color = "#94a3b8";
 
                     var bestIdx = -1, bestDiff = Infinity;
@@ -981,6 +985,10 @@
                         if(!koIdxMap.has(bestIdx) || color === "#ef4444") {
                             koIdxMap.set(bestIdx, color);
                         }
+                        if(ko._isTimeout && bestIdx >= 0) {
+                            if(!koIdxMap._timeouts) koIdxMap._timeouts = new Map();
+                            koIdxMap._timeouts.set(bestIdx, ko._elapsedReal);
+                        }
                     }
                 });
 
@@ -992,7 +1000,10 @@
                     koB.push(color ? "#fff" : "transparent");
                 });
                 return {
-                    label: page, data: pts.map(p=>p.elapsed), _t: pts.map(p=>p.time),
+                    label: page, data: pts.map((p,idx) => {
+                        if(koIdxMap._timeouts && koIdxMap._timeouts.has(idx)) return null;
+                        return p.elapsed;
+                    }), _t: pts.map(p=>p.time),
                     borderColor: meta.colors[i%meta.colors.length], backgroundColor: "transparent",
                     tension: 0.35, borderWidth: 2,
                     pointRadius: koR,
@@ -1020,7 +1031,7 @@
                 },
                 scales: {
                     x: { grid: {display:false}, border: {display:false}, ticks: {font:{family:"Plus Jakarta Sans", size:10, weight:"600"}, color:"#94a3b8", maxTicksLimit:8, maxRotation:0, minRotation:0} },
-                    y: { position: "left", min:0, suggestedMax:9, grid: {color:"#f1f5f9"}, border: {display:false}, ticks: {font:{family:"Plus Jakarta Sans", size:10}, color:"#94a3b8", stepSize:2, callback: v=>v+"s"} }
+                    y: { position: "left", min:0, suggestedMax:9, grid: {color:"#f1f5f9"}, border: {display:false}, ticks: {callback: v => v+"s", font:{family:"Plus Jakarta Sans", size:10}, color:"#94a3b8", stepSize:2, callback: v=>v+"s"} }
                 }
             };
 
