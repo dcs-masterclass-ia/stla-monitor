@@ -687,7 +687,7 @@ def normalize_reason(reason: str, error_type: str = None) -> str:
         return "Erreur inconnue"
     r = reason.lower()
     if "timeout" in r or "pas de réponse" in r:
-        return "Réponse trop lente — timeout après 8s"
+        return "Réponse trop lente — timeout"
     if "500" in r or "erreur serveur interne" in r:
         return "Erreur serveur interne (500)"
     if "502" in r: return "Passerelle incorrecte (502)"
