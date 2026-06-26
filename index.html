@@ -1026,6 +1026,26 @@
             const mOpts = {
                 responsive: true, maintainAspectRatio: false, animation: false, interaction: {mode:"index", intersect:false},
                 plugins: {
+                    annotation: { annotations: (function() {
+                        var ann = {};
+                        if(koIdxMap._timeouts) {
+                            var i = 0;
+                            koIdxMap._timeouts.forEach(function(elapsed_real, idx) {
+                                ann["to_"+i++] = {
+                                    type: "line", scaleID: "x", value: idx,
+                                    borderColor: "#f97316", borderWidth: 2, borderDash: [4,2],
+                                    label: {
+                                        display: true,
+                                        content: elapsed_real ? ">"+elapsed_real+"s" : ">15s",
+                                        position: "start", yAdjust: -8,
+                                        backgroundColor: "#f97316", color: "#fff",
+                                        font: {size: 9, family: "Plus Jakarta Sans"}
+                                    }
+                                };
+                            });
+                        }
+                        return ann;
+                    })() },
                     legend: {display:false},
                     tooltip: { backgroundColor:"#ffffff", titleColor:"#0f172a", bodyColor:"#475569", borderColor:"#e2e8f0", borderWidth:1, padding:12, titleFont:{family:"Plus Jakarta Sans", size:11}, bodyFont:{family:"Plus Jakarta Sans", size:11, weight:"bold"}, boxPadding:6 }
                 },
