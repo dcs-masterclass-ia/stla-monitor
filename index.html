@@ -1007,12 +1007,12 @@
                     borderColor: meta.colors[i%meta.colors.length], backgroundColor: "transparent",
                     tension: 0.35, borderWidth: 2,
                     pointRadius: pts.map((p,i) => p.is_timeout ? 10 : koR[i]),
-                    pointBackgroundColor: pts.map((p,i) => p.is_timeout ? "#ef4444" : koC[i]),
+                    pointBackgroundColor: pts.map((p,i) => p.is_timeout ? "#f97316" : koC[i]),
                     pointBorderColor: pts.map((p,i) => p.is_timeout ? "#fff" : koB[i]),
                     pointStyle: pts.map(p => p.is_timeout ? "circle" : "circle"),
                     pointBorderWidth: pts.map((p,i) => p.is_timeout ? 2 : 2),
                     pointHoverRadius: pts.map((p,i) => p.is_timeout ? 12 : 4),
-                    pointHoverBackgroundColor: pts.map((p,i) => p.is_timeout ? "#ef4444" : "#cbd5e1"),
+                    pointHoverBackgroundColor: pts.map((p,i) => p.is_timeout ? "#f97316" : "#cbd5e1"),
                     pointHoverBorderColor: pts.map((p,i) => p.is_timeout ? "#fff" : "#94a3b8"),
                     pointHoverBorderWidth: 2
                 };
