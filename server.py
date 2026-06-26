@@ -151,10 +151,8 @@ async def stream(request: Request):
         try:
             # Envoyer immédiatement les données actuelles — sans chart_data (chargé depuis GitHub)
             def sse_payload():
-                # chart_data limité à 720 pts par clé (2h) pour le SSE
-                cd = latest_data.get("chart_data", {})
-                cd_light = {k: v[-720:] for k, v in cd.items()}
-                return {**{k: v for k, v in latest_data.items() if k != "chart_data"}, "chart_data": cd_light}
+                # chart_data exclu du SSE — chargé à la demande via /chart-data?brand=...
+                return {k: v for k, v in latest_data.items() if k != "chart_data"}
             data_str = json.dumps(sse_payload(), ensure_ascii=False)
             yield f"data: {data_str}\n\n"
 
