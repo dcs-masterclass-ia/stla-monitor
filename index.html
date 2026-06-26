@@ -918,9 +918,6 @@
         function renderChart() {
             const pages = Object.entries((data.statuses||{})[brand]||{});
             if(!pages.length) return;
-            // Si pas encore de chart_data, réessayer dans 1s
-            const hasData = pages.some(([page]) => ((data.chart_data||{})[brand+":"+page]||[]).length > 0);
-            if(!hasData) { setTimeout(renderChart, 1000); return; }
             const scroll = document.getElementById("chart-scroll");
             const container = document.getElementById("chart-container");
             if(!scroll || !container) return;
@@ -1693,7 +1690,20 @@
                 _sseSource.onmessage = (e) => {
                     try {
                         data = JSON.parse(e.data);
-                        // chart_data chargé à la demande via /chart-data?brand= au clic
+                        // Merger chart_data GitHub (historique long) avec SSE (720pts récents)
+                        if (window._chartDataCache) {
+                            const sseCD = data.chart_data || {};
+                            const merged = {};
+                            const allKeys = new Set([...Object.keys(window._chartDataCache), ...Object.keys(sseCD)]);
+                            allKeys.forEach(k => {
+                                const ghPts = window._chartDataCache[k] || [];
+                                const ssePts = sseCD[k] || [];
+                                const times = new Set(ghPts.map(p => p.time));
+                                const extra = ssePts.filter(p => !times.has(p.time));
+                                merged[k] = [...ghPts, ...extra].slice(-2160);
+                            });
+                            data.chart_data = merged;
+                        }
                         // Mettre en cache les données dans sessionStorage
                         try {
                             sessionStorage.setItem("uas_data_cache", e.data);
@@ -1998,7 +2008,22 @@ function normalizeReason(reason, errorType) {
             } catch(e) {}
             lucide.createIcons();
             buildNav();
-            initSSE();
+            // Charger chart_data depuis GitHub en arrière-plan au démarrage
+        window._chartDataCache = null;
+        fetch("https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/chart_data.json")
+            .then(r => r.json())
+            .then(cd => {
+                if (cd && cd.chart_data) {
+                    window._chartDataCache = cd.chart_data;
+                    if (data) {
+                        data.chart_data = cd.chart_data;
+                        if(brand && currentGroup==="dash") render();
+                        if(currentGroup==="synth") renderSynth();
+                    }
+                }
+            })
+            .catch(e => console.warn("chart_data fetch failed:", e));
+        initSSE();
         });
     </script>
 </body>
