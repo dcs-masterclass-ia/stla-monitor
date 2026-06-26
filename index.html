@@ -1698,7 +1698,8 @@
                                 .then(cd => {
                                     if (cd && cd.chart_data) {
                                         data.chart_data = cd.chart_data;
-                                        renderCurrentBrand();
+                                        if(brand && currentGroup==="dash") render();
+                                        if(currentGroup==="synth") renderSynth();
                                     }
                                 })
                                 .catch(() => {});
