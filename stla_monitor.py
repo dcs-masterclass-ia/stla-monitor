@@ -1204,7 +1204,14 @@ def run():
                         brand, page, url, (ok, reason, elapsed, details) = future.result(timeout=20)
                         key = f"{brand}:{page}"
     
-                        chart_data[key].append({"time": now, "elapsed": elapsed})
+                        # Pour les TIMEOUT, stocker elapsed_real si disponible + flag is_timeout
+                        is_timeout = details.get("error_type") in ("TIMEOUT", "TCP_TIMEOUT") if details else False
+                        elapsed_real = details.get("elapsed_real") if details else None
+                        chart_entry = {"time": now, "elapsed": elapsed_real if (is_timeout and elapsed_real) else elapsed}
+                        if is_timeout:
+                            chart_entry["is_timeout"] = True
+                            chart_entry["elapsed_limit"] = elapsed  # temps du seuil (15s)
+                        chart_data[key].append(chart_entry)
                         if len(chart_data[key]) > MAX_CHART:
                             chart_data[key].pop(0)
     
@@ -1248,7 +1255,7 @@ def run():
                         log.error(f"[{brand}][{page}] TIMEOUT — check bloqué >20s, marqué KO")
                         key = f"{brand}:{page}"
                         now_t = datetime.now(TZ_PARIS).strftime("%d/%m/%Y %H:%M:%S")
-                        chart_data[key].append({"time": now_t, "elapsed": 8.0})
+                        chart_data[key].append({"time": now_t, "elapsed": None, "is_timeout": True})
                         if len(chart_data[key]) > MAX_CHART:
                             chart_data[key].pop(0)
                         if not incident_active.get(key):
