@@ -615,7 +615,7 @@ def push_to_render(statuses):
 # SCREENSHOT
 # ─────────────────────────────────────────────
 
-def take_screenshot(brand, page, url):
+def take_screenshot(brand, page, url, body_html=None):
     if not gh_repo:
         return None
     try:
@@ -638,8 +638,13 @@ def take_screenshot(brand, page, url):
                 user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36")
             pg = ctx.new_page()
             try:
-                pg.goto(url, timeout=15000, wait_until="domcontentloaded")
-                pg.wait_for_timeout(2000)
+                if body_html:
+                    # Injecter le HTML capturé au moment du KO — pas de rechargement
+                    pg.set_content(body_html, timeout=5000)
+                    pg.wait_for_timeout(500)
+                else:
+                    pg.goto(url, timeout=15000, wait_until="domcontentloaded")
+                    pg.wait_for_timeout(2000)
             except Exception:
                 pass
             screenshot_bytes = pg.screenshot(full_page=False)
@@ -852,7 +857,8 @@ def check_url_playwright(brand, page, url):
         details["elapsed_http"] = elapsed
         details["ip"] = resolve_dns(url.split("/")[2])
 
-        body = r.text[:500].lower()
+        body_full = r.text[:5000]  # Garder 5000 chars pour le screenshot
+        body = body_full[:500].lower()
         ACCESS_DENIED = ["access denied", "403 forbidden", "cloudflare", "just a moment", "enable javascript"]
         if any(k in body for k in ACCESS_DENIED):
             details["error_type"] = "WAF_BLOCK"
@@ -861,6 +867,7 @@ def check_url_playwright(brand, page, url):
 
         if r.status_code >= 400:
             details["error_type"] = f"HTTP_{r.status_code}"
+            details["body_preview"] = body_full
             return False, f"HTTP {r.status_code}", elapsed, details
 
         very_slow_threshold = BRAND_TIMEOUT.get(brand, VERY_SLOW_THRESHOLD_SECONDS)
@@ -1205,7 +1212,8 @@ def run():
                                 incident_active[key] = True
                                 screenshot_url = None
                                 if brand not in REFERENCE_BRANDS:
-                                    screenshot_url = take_screenshot(brand, page, url)
+                                    body_html = details.get("body_preview") or None
+                                    screenshot_url = take_screenshot(brand, page, url, body_html=body_html)
                                     send_teams_alert(brand, page, url, reason, details=details, screenshot_url=screenshot_url)
                                 inc = {"time": now, "brand": brand, "page": page,
                                     "type": "ko", "detail": reason, "diagnostics": details,
