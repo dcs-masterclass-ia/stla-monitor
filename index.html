@@ -404,13 +404,13 @@
                                 </div>
                                 <div class="relative group flex items-center gap-1.5 cursor-help">
                                     <span class="w-2 h-2 rounded-full bg-orange-400 flex-shrink-0"></span>
-                                    <span class="text-[9px] font-bold text-slate-400">DÉGRADÉ</span>
-                                    <div class="hidden group-hover:block absolute top-full left-0 mt-1 w-56 bg-slate-900 text-white text-[10px] rounded-xl p-2.5 z-50 leading-relaxed shadow-xl pointer-events-none"><b class="text-orange-400">DÉGRADÉ — Lenteur</b><br/>Le site répond mais dépasse 4s ou 8s (TIMEOUT). Risque d'impact utilisateur.</div>
+                                    <span class="text-[9px] font-bold text-slate-400">LENT</span>
+                                    <div class="hidden group-hover:block absolute top-full left-0 mt-1 w-56 bg-slate-900 text-white text-[10px] rounded-xl p-2.5 z-50 leading-relaxed shadow-xl pointer-events-none"><b class="text-orange-400">LENT</b><br/>Le site répond mais dépasse le seuil de temps. Risque d'impact utilisateur.</div>
                                 </div>
                                 <div class="relative group flex items-center gap-1.5 cursor-help">
                                     <span class="w-2 h-2 rounded-full bg-slate-400 flex-shrink-0"></span>
                                     <span class="text-[9px] font-bold text-slate-400">INACC.</span>
-                                    <div class="hidden group-hover:block absolute top-full left-0 mt-1 w-56 bg-slate-900 text-white text-[10px] rounded-xl p-2.5 z-50 leading-relaxed shadow-xl pointer-events-none"><b class="text-slate-300">INACCESSIBLE — Réseau</b><br/>Erreur DNS ou TCP — connexion impossible au serveur.</div>
+                                    <div class="hidden group-hover:block absolute top-full left-0 mt-1 w-56 bg-slate-900 text-white text-[10px] rounded-xl p-2.5 z-50 leading-relaxed shadow-xl pointer-events-none"><b class="text-slate-300">TIMEOUT</b><br/>Erreur DNS ou TCP — connexion impossible au serveur.</div>
                                 </div>
                             </div>
                         </div>
@@ -934,9 +934,9 @@
             function getIncidentColor(ko) {
                 const et = (ko.diagnostics?.error_type || ko.detail || "").toLowerCase();
                 const r = (ko.detail || "").toLowerCase();
-                // INACCESSIBLE — DNS/TCP
+                // TIMEOUT — DNS/TCP
                 if(et === "dns_error" || et === "tcp_timeout" || r.includes("dns")) return "#94a3b8";
-                // DÉGRADÉ — TIMEOUT/SLOW
+                // LENT — TIMEOUT/SLOW
                 if(et === "timeout" || et === "very_slow" || r.includes("timeout") || r.includes("lente")) return "#f97316";
                 // KO — 5XX/4XX par défaut
                 return "#ef4444";
