@@ -39,7 +39,7 @@ def notify_clients():
     for q in dead:
         sse_clients.remove(q)
 
-def merge_chart_data(old_cd: dict, new_cd: dict, max_pts: int = 10080) -> dict:
+def merge_chart_data(old_cd: dict, new_cd: dict, max_pts: int = 2160) -> dict:
     """Merge deux chart_data en dédupliquant par time."""
     merged = {}
     for key in set(list(old_cd.keys()) + list(new_cd.keys())):
