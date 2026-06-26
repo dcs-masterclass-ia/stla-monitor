@@ -136,11 +136,19 @@
     "is_reference": false
   },
   {
-    "time": "26/06/2026 08:28:56",
+    "time": "26/06/2026 08:32:53",
     "brand": "Ford FR",
     "page": "Homepage",
-    "type": "recovery",
-    "detail": "Retour en ligne",
+    "type": "ko",
+    "detail": "Pas de réponse après 8s",
+    "diagnostics": {
+      "brand": "Ford FR",
+      "page": "Homepage",
+      "dns_elapsed": 0.011,
+      "ip": "63.180.121.144",
+      "error_type": "TIMEOUT"
+    },
+    "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260626_083314.png",
     "is_reference": false
   }
 ]
