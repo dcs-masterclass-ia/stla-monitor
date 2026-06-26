@@ -1690,19 +1690,9 @@
                 _sseSource.onmessage = (e) => {
                     try {
                         data = JSON.parse(e.data);
-                        // Charger chart_data depuis GitHub si absent du payload SSE
-                        if (!data.chart_data && !window._chartDataLoaded) {
-                            window._chartDataLoaded = true;
-                            fetch("https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/chart_data.json?t=" + Date.now())
-                                .then(r => r.json())
-                                .then(cd => {
-                                    if (cd && cd.chart_data) {
-                                        data.chart_data = cd.chart_data;
-                                        if(brand && currentGroup==="dash") render();
-                                        if(currentGroup==="synth") renderSynth();
-                                    }
-                                })
-                                .catch(() => {});
+                        // Merger chart_data du cache global si absent du SSE
+                        if (!data.chart_data && window._chartDataCache) {
+                            data.chart_data = window._chartDataCache;
                         }
                         // Mettre en cache les données dans sessionStorage
                         try {
@@ -2008,7 +1998,22 @@ function normalizeReason(reason, errorType) {
             } catch(e) {}
             lucide.createIcons();
             buildNav();
-            initSSE();
+            // Charger chart_data depuis GitHub en arrière-plan au démarrage
+        window._chartDataCache = null;
+        fetch("https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/chart_data.json")
+            .then(r => r.json())
+            .then(cd => {
+                if (cd && cd.chart_data) {
+                    window._chartDataCache = cd.chart_data;
+                    if (data) {
+                        data.chart_data = cd.chart_data;
+                        if(brand && currentGroup==="dash") render();
+                        if(currentGroup==="synth") renderSynth();
+                    }
+                }
+            })
+            .catch(e => console.warn("chart_data fetch failed:", e));
+        initSSE();
         });
     </script>
 </body>
