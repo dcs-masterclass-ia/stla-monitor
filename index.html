@@ -1023,6 +1023,26 @@
             container.style.width = w+"px";
             const isEnd = scroll.scrollLeft + scroll.clientWidth >= scroll.scrollWidth - 30;
 
+            // Construire les annotations timeout depuis les datasets
+            const timeoutAnnotations = {};
+            rawDs.forEach(function(pts) {
+                pts.forEach(function(p, idx) {
+                    if(p.is_timeout) {
+                        timeoutAnnotations["to_"+idx] = {
+                            type: "line", scaleID: "x", value: idx,
+                            borderColor: "#f97316", borderWidth: 2, borderDash: [4,2],
+                            label: {
+                                display: true,
+                                content: p.elapsed ? ">"+p.elapsed+"s" : ">15s",
+                                position: "start", yAdjust: -8,
+                                backgroundColor: "#f97316", color: "#fff",
+                                font: {size: 9, family: "Plus Jakarta Sans"}
+                            }
+                        };
+                    }
+                });
+            });
+
             const mOpts = {
                 responsive: true, maintainAspectRatio: false, animation: false, interaction: {mode:"index", intersect:false},
                 plugins: {
