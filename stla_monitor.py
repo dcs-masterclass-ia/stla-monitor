@@ -1240,7 +1240,9 @@ def run():
                     except Exception as e:
                         log.error(f"Erreur task : {e}")
     
-            push_status(statuses)
+            # Push status toutes les 6 cycles (60s) — le dashboard reçoit les données via SSE
+            if _cycle_counter[0] % 6 == 0:
+                threading.Thread(target=push_status, args=(statuses,), daemon=True).start()
             threading.Thread(target=push_to_render, args=(statuses,), daemon=True).start()
             # Backup chart_data toutes les 20 cycles (~60min)
             _cycle_counter[0] = _cycle_counter[0] + 1
