@@ -1690,6 +1690,12 @@
                 _sseSource.onmessage = (e) => {
                     try {
                         data = JSON.parse(e.data);
+                        // Mettre en cache les données dans sessionStorage
+                        try {
+                            sessionStorage.setItem("uas_data_cache", e.data);
+                            sessionStorage.setItem("uas_data_ts", Date.now().toString());
+                            if(brand) sessionStorage.setItem("uas_last_brand", brand);
+                        } catch(ce) {}
                         const t = data.server_time || data.updated_at || "";
                         document.getElementById("ts-label").textContent = toParisTime(t);
                         const tlm = document.getElementById("ts-label-main");
@@ -1968,6 +1974,24 @@ function normalizeReason(reason, errorType) {
         }
 
         window.addEventListener("load", () => {
+            // Charger le cache immédiatement si disponible (< 2 min)
+            try {
+                const cached = sessionStorage.getItem("uas_data_cache");
+                const cachedTs = sessionStorage.getItem("uas_data_ts");
+                if(cached && cachedTs && (Date.now() - parseInt(cachedTs)) < 120000) {
+                    data = JSON.parse(cached);
+                    const t = data.server_time || data.updated_at || "";
+                    const tsLabel = document.getElementById("ts-label");
+                    if(tsLabel) tsLabel.textContent = toParisTime(t) + " (cache)";
+                    // Restaurer la dernière brand vue
+                    const lastBrand = sessionStorage.getItem("uas_last_brand");
+                    if(lastBrand && data.statuses && data.statuses[lastBrand]) {
+                        selectBrand(lastBrand);
+                    } else {
+                        switchGroup("synth");
+                    }
+                }
+            } catch(e) {}
             lucide.createIcons();
             buildNav();
             initSSE();
