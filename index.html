@@ -683,13 +683,13 @@
             buildNav(); 
             resetCharts();
             if (data) {
-                // Charger chart_data pour cette brand depuis le Web Service
-                data.chart_data = data.chart_data || {};
+                // Vider chart_data de la brand précédente et charger la nouvelle
+                data.chart_data = {};
                 fetch("https://stla-monitor.onrender.com/chart-data?brand=" + encodeURIComponent(b))
                     .then(res => res.json())
                     .then(cd => {
                         if (cd && cd.chart_data) {
-                            Object.assign(data.chart_data, cd.chart_data);
+                            data.chart_data = cd.chart_data;
                         }
                         render();
                     })
