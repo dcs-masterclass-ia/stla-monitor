@@ -1137,8 +1137,26 @@
 
                 // Détails expandables
                 const details = [];
-                if(code) details.push(`<span class="font-mono font-black text-slate-600">HTTP ${code}</span>`);
-                if(h.diagnostics?.elapsed_http) details.push(`<span class="text-slate-400">${h.diagnostics.elapsed_http}s</span>`);
+                const diag = h.diagnostics || {};
+                // Type d'erreur
+                if(diag.error_type) details.push(`<div class="flex gap-2"><span class="text-slate-400 w-24 flex-shrink-0">Type</span><span class="font-bold text-slate-700">${diag.error_type}</span></div>`);
+                // HTTP status
+                if(code) details.push(`<div class="flex gap-2"><span class="text-slate-400 w-24 flex-shrink-0">HTTP Status</span><span class="font-mono font-black ${parseInt(code)>=500?'text-red-600':parseInt(code)>=400?'text-orange-600':'text-slate-700'}">${code}</span></div>`);
+                // Temps de réponse
+                if(diag.elapsed_http) details.push(`<div class="flex gap-2"><span class="text-slate-400 w-24 flex-shrink-0">Réponse HTTP</span><span class="font-bold text-slate-700">${diag.elapsed_http}s</span></div>`);
+                if(diag.elapsed_total && diag.elapsed_total !== diag.elapsed_http) details.push(`<div class="flex gap-2"><span class="text-slate-400 w-24 flex-shrink-0">Réponse totale</span><span class="font-bold text-slate-700">${diag.elapsed_total}s</span></div>`);
+                // DNS
+                if(diag.dns_elapsed) details.push(`<div class="flex gap-2"><span class="text-slate-400 w-24 flex-shrink-0">DNS</span><span class="font-bold text-slate-700">${diag.dns_elapsed}s</span></div>`);
+                // IP
+                if(diag.ip && diag.ip !== '—') details.push(`<div class="flex gap-2"><span class="text-slate-400 w-24 flex-shrink-0">IP serveur</span><span class="font-mono text-slate-700">${diag.ip}</span></div>`);
+                // Serveur
+                if(diag.headers?.server && diag.headers.server !== '—') details.push(`<div class="flex gap-2"><span class="text-slate-400 w-24 flex-shrink-0">Serveur</span><span class="font-bold text-slate-700">${diag.headers.server}</span></div>`);
+                // Détail technique
+                if(h.detail && h.detail !== normalizeReason(h.detail, diag.error_type)) details.push(`<div class="flex gap-2"><span class="text-slate-400 w-24 flex-shrink-0">Détail</span><span class="text-slate-600">${h.detail.substring(0,80)}</span></div>`);
+                // Screenshot
+                if(h.screenshot) details.push(`<div class="flex gap-2"><span class="text-slate-400 w-24 flex-shrink-0">Screenshot</span><a href="${h.screenshot}" target="_blank" class="text-brandBlue font-bold hover:underline">Voir →</a></div>`);
+                // Toujours au moins l'heure exacte
+                details.push(`<div class="flex gap-2"><span class="text-slate-400 w-24 flex-shrink-0">Heure exacte</span><span class="font-bold text-slate-700">${h.time||'—'}</span></div>`);
                 const detailHtml = details.length ? `
                     <div id="${uid}_d" class="hidden flex-wrap gap-2 mt-2 pt-2 border-t border-slate-100 text-[10px]">${details.join("")}</div>
                     <button onclick="event.stopPropagation();const e=document.getElementById('${uid}_d');e.classList.toggle('hidden');this.textContent=e.classList.contains('hidden')?'+ détails':'− moins'" class="text-[9px] text-slate-400 hover:text-slate-600 font-bold mt-1.5 text-left border-none bg-transparent cursor-pointer transition-colors">+ détails</button>` : "";
