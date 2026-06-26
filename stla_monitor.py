@@ -730,15 +730,15 @@ def get_incident_level(reason: str, error_type: str = None) -> str:
         return "KO"
     if any(x in r for x in ["404","403","400","401"]):
         return "KO"
-    # TIMEOUT / pas de réponse = INACCESSIBLE
+    # TIMEOUT / pas de réponse
     if "timeout" in et or "tcp" in et or "pas de réponse" in r:
         return "TIMEOUT"
-    # DNS = INACCESSIBLE
+    # DNS = TIMEOUT
     if "dns" in r or "dns" in et:
         return "TIMEOUT"
     if "inaccessible" in r:
         return "TIMEOUT"
-    # VERY_SLOW / lente = DÉGRADÉ
+    # VERY_SLOW / lente = LENT
     if "very_slow" in et or "lente" in r or "slow" in et or "timeout" in r:
         return "LENT"
     return "KO"
