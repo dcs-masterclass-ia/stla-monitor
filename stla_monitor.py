@@ -169,7 +169,7 @@ SLOW_THRESHOLD_SECONDS      = 2
 VERY_SLOW_THRESHOLD_SECONDS = 4
 LOG_FILE    = "stla_monitor.log"
 MAX_HISTORY = 1000
-MAX_CHART   = 10080  # 7 jours de checks toutes les 10s
+MAX_CHART   = 2160   # 6h de checks toutes les 10s — réduit pour limiter la RAM
 
 ERROR_SIGNATURES = [
     "<Code>AccessDenied</Code>", "<Message>Access Denied</Message>",
