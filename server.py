@@ -149,8 +149,10 @@ async def stream(request: Request):
 
     async def event_generator():
         try:
-            # Envoyer immédiatement les données actuelles
-            data_str = json.dumps(latest_data, ensure_ascii=False)
+            # Envoyer immédiatement les données actuelles — sans chart_data (chargé depuis GitHub)
+            def sse_payload():
+                return {k: v for k, v in latest_data.items() if k != "chart_data"}
+            data_str = json.dumps(sse_payload(), ensure_ascii=False)
             yield f"data: {data_str}\n\n"
 
             while True:
@@ -159,7 +161,7 @@ async def stream(request: Request):
                     await asyncio.wait_for(queue.get(), timeout=30)
                     if await request.is_disconnected():
                         break
-                    data_str = json.dumps(latest_data, ensure_ascii=False)
+                    data_str = json.dumps(sse_payload(), ensure_ascii=False)
                     yield f"data: {data_str}\n\n"
                 except asyncio.TimeoutError:
                     # Heartbeat pour garder la connexion ouverte
