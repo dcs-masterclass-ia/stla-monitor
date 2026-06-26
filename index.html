@@ -1690,7 +1690,7 @@
                 _sseSource.onmessage = (e) => {
                     try {
                         data = JSON.parse(e.data);
-                        // Merger chart_data GitHub (historique complet) par-dessus le SSE (100pts récents)
+                        // Merger chart_data GitHub (historique long) avec SSE (720pts récents)
                         if (window._chartDataCache) {
                             const sseCD = data.chart_data || {};
                             const merged = {};
@@ -1698,10 +1698,9 @@
                             allKeys.forEach(k => {
                                 const ghPts = window._chartDataCache[k] || [];
                                 const ssePts = sseCD[k] || [];
-                                // Fusionner: GitHub + SSE récents (dédupliqués par time)
                                 const times = new Set(ghPts.map(p => p.time));
                                 const extra = ssePts.filter(p => !times.has(p.time));
-                                merged[k] = [...ghPts, ...extra].slice(-720);
+                                merged[k] = [...ghPts, ...extra].slice(-2160);
                             });
                             data.chart_data = merged;
                         }
