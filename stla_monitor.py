@@ -885,9 +885,12 @@ def check_url_playwright(brand, page, url):
                 s2.headers.update(headers)
                 s2.get(url, timeout=120, verify=False, allow_redirects=True)
             elapsed_real = round(time.time() - t_real, 2)
-        except Exception:
+        except Exception as e2:
             elapsed_real = round(time.time() - t_real, 2)
+            logging.warning(f"[Double scan ConnectTimeout] {type(e2).__name__}: {e2}")
         elapsed = round(time.time() - t0, 2)
+        if elapsed_real < 1:
+            elapsed_real = elapsed
         details["error_type"] = "TCP_TIMEOUT"
         details["elapsed_real"] = elapsed_real
         return False, f"Pas de réponse après {elapsed_real}s (TIMEOUT)", elapsed_real, details
@@ -985,8 +988,11 @@ def check_url(brand, page, url):
                 s2.headers.update(headers)
                 s2.get(url, timeout=120, verify=False, allow_redirects=True)
             elapsed_real = round(time.time() - t_real, 2)
-        except Exception:
+        except Exception as e2:
             elapsed_real = round(time.time() - t_real, 2)
+            logging.warning(f"[Double scan Timeout] {type(e2).__name__}: {e2}")
+        if elapsed_real < 1:
+            elapsed_real = elapsed
         details["error_type"] = "TIMEOUT"
         details["elapsed_real"] = elapsed_real
         return False, f"Pas de réponse après {elapsed_real}s", elapsed_real, details
