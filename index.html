@@ -1001,15 +1001,15 @@
                 });
                 return {
                     label: page, data: pts.map((p,idx) => {
-                        if(p.is_timeout) return null;
-                        return p.elapsed;
+                        return p.elapsed;  // timeouts affichés à leur vraie valeur
                     }), _t: pts.map(p=>p.time),
                     borderColor: meta.colors[i%meta.colors.length], backgroundColor: "transparent",
                     tension: 0.35, borderWidth: 2,
-                    pointRadius: koR,
-                    pointBackgroundColor: koC,
-                    pointBorderColor: koB,
-                    pointBorderWidth: 2,
+                    pointRadius: pts.map((p,i) => p.is_timeout ? 8 : koR[i]),
+                    pointBackgroundColor: pts.map((p,i) => p.is_timeout ? "#f97316" : koC[i]),
+                    pointBorderColor: pts.map((p,i) => p.is_timeout ? "#fff" : koB[i]),
+                    pointStyle: pts.map(p => p.is_timeout ? "rectRot" : "circle"),
+                    pointBorderWidth: pts.map((p,i) => p.is_timeout ? 2 : 2),
                     pointHoverRadius: 4,
                     pointHoverBackgroundColor: "#cbd5e1",
                     pointHoverBorderColor: "#94a3b8",
@@ -1030,10 +1030,10 @@
                     if(p.is_timeout) {
                         timeoutAnnotations["to_"+idx] = {
                             type: "line", scaleID: "x", value: idx,
-                            borderColor: "#f97316", borderWidth: 2, borderDash: [4,2],
+                            borderColor: "rgba(249,115,22,0.4)", borderWidth: 1, borderDash: [3,3],
                             label: {
                                 display: true,
-                                content: p.elapsed ? ">"+p.elapsed+"s" : ">15s",
+                                content: (p.elapsed_real ? p.elapsed_real+"s" : (p.elapsed ? p.elapsed+"s" : "?s"))+" TIMEOUT",
                                 position: "start", yAdjust: -8,
                                 backgroundColor: "#f97316", color: "#fff",
                                 font: {size: 9, family: "Plus Jakarta Sans"}
