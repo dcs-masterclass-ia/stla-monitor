@@ -191,11 +191,12 @@ async def receive_update(request: Request):
         new_data = await request.json()
         new_data["server_time"] = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
 
-        # Merger chart_data en mémoire
+        # Merger chart_data en mémoire — limité à 2160 pts (6h) par clé
         if latest_data and latest_data.get("chart_data") and new_data.get("chart_data"):
             new_data["chart_data"] = merge_chart_data(
                 latest_data["chart_data"],
-                new_data["chart_data"]
+                new_data["chart_data"],
+                max_pts=2160
             )
 
         # Merger history — garder tout, dédupliquer
