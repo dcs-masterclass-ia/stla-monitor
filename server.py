@@ -39,7 +39,7 @@ def notify_clients():
     for q in dead:
         sse_clients.remove(q)
 
-def merge_chart_data(old_cd: dict, new_cd: dict, max_pts: int = 2160) -> dict:
+def merge_chart_data(old_cd: dict, new_cd: dict, max_pts: int = 720) -> dict:
     """Merge deux chart_data en dédupliquant par time."""
     merged = {}
     for key in set(list(old_cd.keys()) + list(new_cd.keys())):
@@ -76,7 +76,7 @@ def load_from_github():
                 backup = json.loads(r2.read())
             # Limiter le backup à 2160 pts par clé avant merge (évite OOM)
             backup_cd = backup.get("chart_data", {})
-            backup_cd_limited = {k: v[-2160:] for k, v in backup_cd.items()}
+            backup_cd_limited = {k: v[-720:] for k, v in backup_cd.items()}
             merged = merge_chart_data(
                 backup_cd_limited,
                 latest_data.get("chart_data", {})
@@ -196,7 +196,7 @@ async def receive_update(request: Request):
             new_data["chart_data"] = merge_chart_data(
                 latest_data["chart_data"],
                 new_data["chart_data"],
-                max_pts=2160
+                max_pts=720
             )
 
         # Merger history — garder tout, dédupliquer
