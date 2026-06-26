@@ -1690,9 +1690,20 @@
                 _sseSource.onmessage = (e) => {
                     try {
                         data = JSON.parse(e.data);
-                        // Merger chart_data du cache global si absent du SSE
-                        if (!data.chart_data && window._chartDataCache) {
-                            data.chart_data = window._chartDataCache;
+                        // Merger chart_data GitHub (historique complet) par-dessus le SSE (100pts récents)
+                        if (window._chartDataCache) {
+                            const sseCD = data.chart_data || {};
+                            const merged = {};
+                            const allKeys = new Set([...Object.keys(window._chartDataCache), ...Object.keys(sseCD)]);
+                            allKeys.forEach(k => {
+                                const ghPts = window._chartDataCache[k] || [];
+                                const ssePts = sseCD[k] || [];
+                                // Fusionner: GitHub + SSE récents (dédupliqués par time)
+                                const times = new Set(ghPts.map(p => p.time));
+                                const extra = ssePts.filter(p => !times.has(p.time));
+                                merged[k] = [...ghPts, ...extra].slice(-720);
+                            });
+                            data.chart_data = merged;
                         }
                         // Mettre en cache les données dans sessionStorage
                         try {
