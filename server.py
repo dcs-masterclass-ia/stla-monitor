@@ -356,6 +356,15 @@ async def get_pauses():
     except Exception as e:
         return {"error": str(e)}
 
+@app.get("/chart-data")
+async def get_chart_data(brand: str):
+    """Retourne chart_data pour une brand — appelé par le browser au clic"""
+    cd = latest_data.get("chart_data", {})
+    brand_cd = {k: v[-720:] for k, v in cd.items() if k.startswith(brand + ":")}
+    avg = latest_data.get("avg_response", {})
+    brand_avg = {k: v for k, v in avg.items() if k.startswith(brand + ":")}
+    return {"chart_data": brand_cd, "avg_response": brand_avg}
+
 @app.get("/")
 async def root():
     return {"service": "STLA Monitor", "status": "running", "sse_clients": len(sse_clients)}
