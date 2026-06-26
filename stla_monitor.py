@@ -932,9 +932,10 @@ def check_url(brand, page, url):
             details["error_type"] = f"HTTP_{response.status_code}"
             details["body_preview"] = response.text[:300].strip()
             return False, f"Erreur serveur HTTP {response.status_code}", elapsed_total, details
-        if elapsed_http > VERY_SLOW_THRESHOLD_SECONDS:
+        very_slow_threshold = BRAND_TIMEOUT.get(brand, VERY_SLOW_THRESHOLD_SECONDS)
+        if elapsed_http > very_slow_threshold:
             details["error_type"] = "VERY_SLOW"
-            return False, f"Réponse très lente : {elapsed_http}s", elapsed_total, details
+            return False, f"Réponse très lente : {elapsed_http}s (seuil {very_slow_threshold}s)", elapsed_total, details
         body = response.text[:3000]
         for sig in ERROR_SIGNATURES:
             if sig.lower() in body.lower():
