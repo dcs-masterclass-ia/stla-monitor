@@ -681,9 +681,7 @@
             document.getElementById("dash").classList.add("flex");
             
             buildNav(); 
-            // Vider les datasets du chart sans le détruire — évite le flash blanc
-            if (lineChart) { lineChart.data.datasets = []; lineChart.data.labels = []; lineChart.update("none"); }
-            if (gaugeChart) { gaugeChart.data.datasets = []; gaugeChart.update("none"); }
+            resetCharts();
             if (data) render();
         }
 
