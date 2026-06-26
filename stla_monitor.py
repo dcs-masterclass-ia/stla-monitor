@@ -878,9 +878,19 @@ def check_url_playwright(brand, page, url):
         return True, f"OK ({r.status_code}) en {elapsed}s", elapsed, details
 
     except requests.exceptions.ConnectTimeout:
+        # Double check sans limite pour mesurer la vraie durée du timeout
+        t_real = time.time()
+        try:
+            with requests.Session() as s2:
+                s2.headers.update(headers)
+                s2.get(url, timeout=120, verify=False, allow_redirects=True)
+            elapsed_real = round(time.time() - t_real, 2)
+        except Exception:
+            elapsed_real = round(time.time() - t_real, 2)
         elapsed = round(time.time() - t0, 2)
         details["error_type"] = "TCP_TIMEOUT"
-        return False, f"Pas de réponse après {BRAND_TIMEOUT.get(brand, RESPONSE_TIME_LIMIT_SECONDS)}s (TIMEOUT)", elapsed, details
+        details["elapsed_real"] = elapsed_real
+        return False, f"Pas de réponse après {elapsed_real}s (TIMEOUT)", elapsed_real, details
     except requests.exceptions.ConnectionError as e:
         elapsed = round(time.time() - t0, 2)
         err = str(e)
@@ -968,8 +978,18 @@ def check_url(brand, page, url):
         details["error_detail"] = err[:300]
         return False, f"Erreur connexion ({details['error_type']})", elapsed, details
     except requests.exceptions.Timeout:
+        # Double check sans limite pour mesurer la vraie durée
+        t_real = time.time()
+        try:
+            with requests.Session() as s2:
+                s2.headers.update(headers)
+                s2.get(url, timeout=120, verify=False, allow_redirects=True)
+            elapsed_real = round(time.time() - t_real, 2)
+        except Exception:
+            elapsed_real = round(time.time() - t_real, 2)
         details["error_type"] = "TIMEOUT"
-        return False, f"Pas de réponse après {RESPONSE_TIME_LIMIT_SECONDS}s", round(time.time()-t1, 2), details
+        details["elapsed_real"] = elapsed_real
+        return False, f"Pas de réponse après {elapsed_real}s", elapsed_real, details
     except Exception as e:
         details["error_type"] = "UNKNOWN"
         details["error_detail"] = str(e)[:300]
