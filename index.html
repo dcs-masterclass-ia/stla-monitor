@@ -918,6 +918,9 @@
         function renderChart() {
             const pages = Object.entries((data.statuses||{})[brand]||{});
             if(!pages.length) return;
+            // Si pas encore de chart_data, réessayer dans 1s
+            const hasData = pages.some(([page]) => ((data.chart_data||{})[brand+":"+page]||[]).length > 0);
+            if(!hasData) { setTimeout(renderChart, 1000); return; }
             const scroll = document.getElementById("chart-scroll");
             const container = document.getElementById("chart-container");
             if(!scroll || !container) return;
