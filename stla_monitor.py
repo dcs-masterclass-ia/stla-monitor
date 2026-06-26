@@ -280,6 +280,60 @@ def init_github():
                 except Exception as e:
                     log.info(f"[GitHub] Pas de backup chart_data : {e}")
 
+            # Enrichissement rétroactif : marquer is_timeout sur les points qui correspondent
+            # à des incidents TIMEOUT dans les fichiers incidents des 2 derniers jours
+            try:
+                import datetime as _dt
+                TZ_P = ZoneInfo("Europe/Paris")
+                today = _dt.datetime.now(TZ_P)
+                for delta in range(2):
+                    day = (today - _dt.timedelta(days=delta)).strftime("%Y-%m-%d")
+                    inc_url = f"https://raw.githubusercontent.com/{GITHUB_REPO}/main/incidents/{day}"
+                    # Lister les fichiers du dossier via API
+                    api_inc = urllib.request.Request(
+                        f"https://api.github.com/repos/{GITHUB_REPO}/contents/incidents/{day}",
+                        headers={"Authorization": f"token {GITHUB_TOKEN}", "Accept": "application/vnd.github.v3+json"}
+                    )
+                    try:
+                        with urllib.request.urlopen(api_inc, timeout=10) as resp:
+                            inc_files = json.loads(resp.read())
+                    except Exception:
+                        continue
+                    for f in inc_files:
+                        brand_name = f["name"].replace(".json","").replace("_"," ")
+                        inc_req = urllib.request.Request(f["download_url"], headers={"Authorization": f"token {GITHUB_TOKEN}"})
+                        try:
+                            with urllib.request.urlopen(inc_req, timeout=10) as resp:
+                                incidents_day = json.loads(resp.read())
+                        except Exception:
+                            continue
+                        # Construire un dict time -> elapsed_real pour les KO TIMEOUT
+                        timeout_map = {}
+                        for inc in incidents_day:
+                            if inc.get("type") == "ko" and inc.get("diagnostics",{}).get("error_type") in ("TIMEOUT","TCP_TIMEOUT"):
+                                t = inc.get("time","")
+                                er = inc.get("diagnostics",{}).get("elapsed_real")
+                                timeout_map[t[:16]] = er  # clé = "DD/MM/YYYY HH:MM"
+                        if not timeout_map:
+                            continue
+                        # Enrichir les points chart_data correspondants
+                        for key, pts in chart_data.items():
+                            if not key.startswith(brand_name+":"):
+                                continue
+                            enriched = 0
+                            for p in pts:
+                                t16 = p.get("time","")[:16]
+                                if t16 in timeout_map and not p.get("is_timeout"):
+                                    p["is_timeout"] = True
+                                    er = timeout_map[t16]
+                                    if er and er >= 1:
+                                        p["elapsed_real"] = er
+                                    enriched += 1
+                            if enriched:
+                                log.info(f"[GitHub] {key}: {enriched} points enrichis is_timeout")
+            except Exception as e:
+                log.info(f"[GitHub] Enrichissement timeout ignoré: {e}")
+
             # Charger history depuis status.json
             status_hist = data.get("history", [])
 
