@@ -151,7 +151,7 @@ async def stream(request: Request):
         try:
             # Envoyer immédiatement les données actuelles — sans chart_data (chargé depuis GitHub)
             def sse_payload():
-                # chart_data 720pts dans le SSE (~3.7MB) — données complètes Direct
+                # chart_data limité à 720 pts par clé (2h) pour le SSE
                 cd = latest_data.get("chart_data", {})
                 cd_light = {k: v[-720:] for k, v in cd.items()}
                 return {**{k: v for k, v in latest_data.items() if k != "chart_data"}, "chart_data": cd_light}
@@ -357,15 +357,6 @@ async def get_pauses():
         return r.json()
     except Exception as e:
         return {"error": str(e)}
-
-@app.get("/chart-data")
-async def get_chart_data(brand: str):
-    """Retourne chart_data pour une brand — appelé par le browser au clic"""
-    cd = latest_data.get("chart_data", {})
-    brand_cd = {k: v[-720:] for k, v in cd.items() if k.startswith(brand + ":")}
-    avg = latest_data.get("avg_response", {})
-    brand_avg = {k: v for k, v in avg.items() if k.startswith(brand + ":")}
-    return {"chart_data": brand_cd, "avg_response": brand_avg}
 
 @app.get("/")
 async def root():
