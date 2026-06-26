@@ -1001,7 +1001,7 @@
                 });
                 return {
                     label: page, data: pts.map((p,idx) => {
-                        if(koIdxMap._timeouts && koIdxMap._timeouts.has(idx)) return null;
+                        if(p.is_timeout) return null;
                         return p.elapsed;
                     }), _t: pts.map(p=>p.time),
                     borderColor: meta.colors[i%meta.colors.length], backgroundColor: "transparent",
@@ -1028,22 +1028,21 @@
                 plugins: {
                     annotation: { annotations: (function() {
                         var ann = {};
-                        if(koIdxMap._timeouts) {
-                            var i = 0;
-                            koIdxMap._timeouts.forEach(function(elapsed_real, idx) {
-                                ann["to_"+i++] = {
+                        pts.forEach(function(p, idx) {
+                            if(p.is_timeout) {
+                                ann["to_"+idx] = {
                                     type: "line", scaleID: "x", value: idx,
                                     borderColor: "#f97316", borderWidth: 2, borderDash: [4,2],
                                     label: {
                                         display: true,
-                                        content: elapsed_real ? ">"+elapsed_real+"s" : ">15s",
+                                        content: p.elapsed ? ">"+p.elapsed+"s" : ">15s",
                                         position: "start", yAdjust: -8,
                                         backgroundColor: "#f97316", color: "#fff",
                                         font: {size: 9, family: "Plus Jakarta Sans"}
                                     }
                                 };
-                            });
-                        }
+                            }
+                        });
                         return ann;
                     })() },
                     legend: {display:false},
