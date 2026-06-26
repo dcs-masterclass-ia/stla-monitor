@@ -1210,6 +1210,7 @@ def run():
                         chart_entry = {"time": now, "elapsed": elapsed_real if (is_timeout and elapsed_real) else elapsed}
                         if is_timeout:
                             chart_entry["is_timeout"] = True
+                            chart_entry["elapsed_real"] = elapsed_real  # vraie durée mesurée
                             chart_entry["elapsed_limit"] = elapsed  # temps du seuil (15s)
                         chart_data[key].append(chart_entry)
                         if len(chart_data[key]) > MAX_CHART:
