@@ -1001,19 +1001,20 @@
                 });
                 return {
                     label: page, data: pts.map((p,idx) => {
-                        return p.elapsed;  // timeouts affichés à leur vraie valeur
-                    }), _t: pts.map(p=>p.time),
+                        if(p.is_timeout) return 9;  // clampé au max de l'axe Y
+                        return p.elapsed;
+                    }), _t: pts.map(p=>p.time), _rawPts: pts,
                     borderColor: meta.colors[i%meta.colors.length], backgroundColor: "transparent",
                     tension: 0.35, borderWidth: 2,
-                    pointRadius: pts.map((p,i) => p.is_timeout ? 8 : koR[i]),
-                    pointBackgroundColor: pts.map((p,i) => p.is_timeout ? "#f97316" : koC[i]),
+                    pointRadius: pts.map((p,i) => p.is_timeout ? 10 : koR[i]),
+                    pointBackgroundColor: pts.map((p,i) => p.is_timeout ? "#ef4444" : koC[i]),
                     pointBorderColor: pts.map((p,i) => p.is_timeout ? "#fff" : koB[i]),
-                    pointStyle: pts.map(p => p.is_timeout ? "rectRot" : "circle"),
+                    pointStyle: pts.map(p => p.is_timeout ? "circle" : "circle"),
                     pointBorderWidth: pts.map((p,i) => p.is_timeout ? 2 : 2),
-                    pointHoverRadius: 4,
-                    pointHoverBackgroundColor: "#cbd5e1",
-                    pointHoverBorderColor: "#94a3b8",
-                    pointHoverBorderWidth: 1
+                    pointHoverRadius: pts.map((p,i) => p.is_timeout ? 12 : 4),
+                    pointHoverBackgroundColor: pts.map((p,i) => p.is_timeout ? "#ef4444" : "#cbd5e1"),
+                    pointHoverBorderColor: pts.map((p,i) => p.is_timeout ? "#fff" : "#94a3b8"),
+                    pointHoverBorderWidth: 2
                 };
             });
 
@@ -1023,32 +1024,29 @@
             container.style.width = w+"px";
             const isEnd = scroll.scrollLeft + scroll.clientWidth >= scroll.scrollWidth - 30;
 
-            // Construire les annotations timeout depuis les datasets
+            // Pas d'annotations — les timeouts sont rendus via les points eux-mêmes
             const timeoutAnnotations = {};
-            rawDs.forEach(function(pts) {
-                pts.forEach(function(p, idx) {
-                    if(p.is_timeout) {
-                        timeoutAnnotations["to_"+idx] = {
-                            type: "line", scaleID: "x", value: idx,
-                            borderColor: "rgba(249,115,22,0.4)", borderWidth: 1, borderDash: [3,3],
-                            label: {
-                                display: true,
-                                content: (p.elapsed_real ? p.elapsed_real+"s" : (p.elapsed ? p.elapsed+"s" : "?s"))+" TIMEOUT",
-                                position: "start", yAdjust: -8,
-                                backgroundColor: "#f97316", color: "#fff",
-                                font: {size: 9, family: "Plus Jakarta Sans"}
-                            }
-                        };
-                    }
-                });
-            });
 
             const mOpts = {
                 responsive: true, maintainAspectRatio: false, animation: false, interaction: {mode:"index", intersect:false},
                 plugins: {
                     annotation: { annotations: timeoutAnnotations },
                     legend: {display:false},
-                    tooltip: { backgroundColor:"#ffffff", titleColor:"#0f172a", bodyColor:"#475569", borderColor:"#e2e8f0", borderWidth:1, padding:12, titleFont:{family:"Plus Jakarta Sans", size:11}, bodyFont:{family:"Plus Jakarta Sans", size:11, weight:"bold"}, boxPadding:6 }
+                    tooltip: { backgroundColor:"#ffffff", titleColor:"#0f172a", bodyColor:"#475569", borderColor:"#e2e8f0", borderWidth:1, padding:12, titleFont:{family:"Plus Jakarta Sans", size:11}, bodyFont:{family:"Plus Jakarta Sans", size:11, weight:"bold"}, boxPadding:6,
+                        callbacks: {
+                            label: function(ctx) {
+                                const ds = ctx.dataset;
+                                const pts = ds._rawPts;
+                                if(!pts) return ctx.dataset.label+": "+ctx.parsed.y+"s";
+                                const p = pts[ctx.dataIndex];
+                                if(p && p.is_timeout) {
+                                    const real = p.elapsed_real || p.elapsed_limit || p.elapsed;
+                                    return "⏱ TIMEOUT — "+(real ? real+"s" : "durée inconnue");
+                                }
+                                return ctx.dataset.label+": "+ctx.parsed.y+"s";
+                            }
+                        }
+                    }
                 },
                 scales: {
                     x: { grid: {display:false}, border: {display:false}, ticks: {font:{family:"Plus Jakarta Sans", size:10, weight:"600"}, color:"#94a3b8", maxTicksLimit:8, maxRotation:0, minRotation:0} },
