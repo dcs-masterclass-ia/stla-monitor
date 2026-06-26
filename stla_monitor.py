@@ -873,7 +873,7 @@ def check_url_playwright(brand, page, url):
     except requests.exceptions.ConnectTimeout:
         elapsed = round(time.time() - t0, 2)
         details["error_type"] = "TCP_TIMEOUT"
-        return False, "Pas de réponse après 8s (TIMEOUT)", elapsed, details
+        return False, f"Pas de réponse après {BRAND_TIMEOUT.get(brand, RESPONSE_TIME_LIMIT_SECONDS)}s (TIMEOUT)", elapsed, details
     except requests.exceptions.ConnectionError as e:
         elapsed = round(time.time() - t0, 2)
         err = str(e)
@@ -900,7 +900,9 @@ def check_url(brand, page, url):
         return False, f"Erreur DNS : {dns_error}", round(time.time()-t0, 2), details
     t1 = time.time()
     try:
-        response = requests.get(url, timeout=RESPONSE_TIME_LIMIT_SECONDS,
+        brand_timeout = BRAND_TIMEOUT.get(brand, RESPONSE_TIME_LIMIT_SECONDS)
+        log.info(f"[{brand}][{page}] timeout={brand_timeout}s")
+        response = requests.get(url, timeout=brand_timeout,
             allow_redirects=True, verify=False,
             headers={"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
                      "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"})
