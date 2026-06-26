@@ -844,6 +844,8 @@ def check_url_playwright(brand, page, url):
         session = requests.Session()
         session.headers.update(headers)
         brand_timeout = BRAND_TIMEOUT.get(brand, DEFAULT_TIMEOUT)
+        if brand in BRAND_TIMEOUT:
+            log.info(f"[{brand}] Timeout personnalisé: {brand_timeout}s")
         r = session.get(url, timeout=brand_timeout, verify=False, allow_redirects=True)
         elapsed = round(time.time() - t0, 2)
         details["http_status"] = r.status_code
