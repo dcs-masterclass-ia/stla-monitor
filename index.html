@@ -665,6 +665,8 @@
         }
 
         function selectBrand(b) {
+            // Invalider le cache pour forcer un premier render sur la nouvelle brand
+            // mais garder le cache des autres brands
             brand = b;
             currentGroup = "dash";
             const meta = getBrandMeta(b);
@@ -685,6 +687,8 @@
 
         function setPeriod(btn, p) {
             currentPeriod = p;
+            // Invalider le cache pour la brand courante sur cette période
+            delete _renderCache[brand + ":" + p];
             document.querySelectorAll(".period-btn").forEach(b => {
                 b.classList.remove("bg-slate-900", "text-white", "shadow-md");
                 b.classList.add("text-slate-500", "hover:text-slate-900");
