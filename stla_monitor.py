@@ -167,6 +167,12 @@ CHECK_INTERVAL_SECONDS      = 10
 RESPONSE_TIME_LIMIT_SECONDS = 8
 SLOW_THRESHOLD_SECONDS      = 2
 VERY_SLOW_THRESHOLD_SECONDS = 4
+
+# Timeout personnalisé par brand (en secondes)
+BRAND_TIMEOUT = {
+    "Ford FR": 15,  # API autobiz référentiel ralentit la réponse
+}
+DEFAULT_TIMEOUT = RESPONSE_TIME_LIMIT_SECONDS  # 8s
 LOG_FILE    = "stla_monitor.log"
 MAX_HISTORY = 1000
 MAX_CHART   = 2160   # 6h de checks toutes les 10s — réduit pour limiter la RAM
@@ -878,12 +884,6 @@ def check_url_playwright(brand, page, url):
         elapsed = round(time.time() - t0, 2)
         details["error_type"] = "UNKNOWN"
         return False, f"Erreur : {str(e)[:80]}", elapsed, details
-
-# Timeout personnalisé par brand (en secondes)
-BRAND_TIMEOUT = {
-    "Ford FR": 15,  # API autobiz référentiel ralentit la réponse
-}
-DEFAULT_TIMEOUT = RESPONSE_TIME_LIMIT_SECONDS  # 8s
 
 def check_url(brand, page, url):
     hostname = urlparse(url).hostname
