@@ -74,8 +74,11 @@ def load_from_github():
             req2 = urllib.request.Request(cd_url, headers=headers)
             with urllib.request.urlopen(req2, timeout=15) as r2:
                 backup = json.loads(r2.read())
+            # Limiter le backup à 2160 pts par clé avant merge (évite OOM)
+            backup_cd = backup.get("chart_data", {})
+            backup_cd_limited = {k: v[-2160:] for k, v in backup_cd.items()}
             merged = merge_chart_data(
-                backup.get("chart_data", {}),
+                backup_cd_limited,
                 latest_data.get("chart_data", {})
             )
             latest_data["chart_data"] = merged
