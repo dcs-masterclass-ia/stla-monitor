@@ -837,7 +837,8 @@ def check_url_playwright(brand, page, url):
     try:
         session = requests.Session()
         session.headers.update(headers)
-        r = session.get(url, timeout=8, verify=False, allow_redirects=True)
+        brand_timeout = BRAND_TIMEOUT.get(brand, DEFAULT_TIMEOUT)
+        r = session.get(url, timeout=brand_timeout, verify=False, allow_redirects=True)
         elapsed = round(time.time() - t0, 2)
         details["http_status"] = r.status_code
         details["elapsed_http"] = elapsed
@@ -854,7 +855,8 @@ def check_url_playwright(brand, page, url):
             details["error_type"] = f"HTTP_{r.status_code}"
             return False, f"HTTP {r.status_code}", elapsed, details
 
-        if elapsed > 4:
+        very_slow_threshold = 4 if brand not in BRAND_TIMEOUT else BRAND_TIMEOUT[brand] * 0.5
+        if elapsed > very_slow_threshold:
             details["error_type"] = "VERY_SLOW"
             return False, f"Très lent ({elapsed}s)", elapsed, details
 
@@ -876,6 +878,12 @@ def check_url_playwright(brand, page, url):
         elapsed = round(time.time() - t0, 2)
         details["error_type"] = "UNKNOWN"
         return False, f"Erreur : {str(e)[:80]}", elapsed, details
+
+# Timeout personnalisé par brand (en secondes)
+BRAND_TIMEOUT = {
+    "Ford FR": 15,  # API autobiz référentiel ralentit la réponse
+}
+DEFAULT_TIMEOUT = RESPONSE_TIME_LIMIT_SECONDS  # 8s
 
 def check_url(brand, page, url):
     hostname = urlparse(url).hostname
