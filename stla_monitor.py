@@ -755,7 +755,7 @@ def send_teams_alert(brand, page, url, reason, is_recovery=False, details=None, 
     ]
 
     if details and not is_recovery:
-        elapsed_total = details.get("elapsed_total") or details.get("elapsed_http")
+        elapsed_total = details.get("elapsed_real") or details.get("elapsed_total") or details.get("elapsed_http")
         lines.append("")
         lines.append("**── Diagnostic ──**")
         lines.append(f"🔴 **Type** : {details.get('error_type', '—')}")
