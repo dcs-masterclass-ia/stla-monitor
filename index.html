@@ -811,8 +811,14 @@
         }
 
         // ── RENDER CORE ──
+        // Cache par brand — évite de re-render si les données n'ont pas changé
+        const _renderCache = {};
+
         function render() {
             if (!brand || !data) return;
+            const cacheKey = brand + ":" + currentPeriod;
+            if(_renderCache[cacheKey] && _renderCache[cacheKey] === data.updated_at) return;
+            _renderCache[cacheKey] = data.updated_at;
             const pages = Object.entries((data.statuses || {})[brand] || {});
             const masterRow = document.getElementById("master-row");
             if(!pages.length) {
