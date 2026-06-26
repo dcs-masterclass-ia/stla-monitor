@@ -1162,6 +1162,8 @@ def run():
                 if brand in REFERENCE_BRANDS:
                     return brand, page, url, check_url_playwright(brand, page, url)
                 else:
+                    if brand in BRAND_TIMEOUT:
+                        log.info(f"[{brand}] check_url avec timeout {BRAND_TIMEOUT[brand]}s")
                     return brand, page, url, check_url(brand, page, url)
     
             # Exécuter en parallèle — max 10 workers simultanés
