@@ -1689,7 +1689,16 @@
                 _sseSource.onopen = () => { document.getElementById("pulse").classList.remove("bg-red-500"); document.getElementById("pulse").classList.add("bg-green-500"); };
                 _sseSource.onmessage = (e) => {
                     try {
-                        data = JSON.parse(e.data);
+                        const newData = JSON.parse(e.data);
+                        // Merger proprement — ne jamais perdre chart_data entre les cycles SSE
+                        if (data && data.chart_data && newData.chart_data) {
+                            // Merger les nouveaux points dans l'existant
+                            Object.keys(newData.chart_data).forEach(k => {
+                                data.chart_data[k] = newData.chart_data[k];
+                            });
+                            newData.chart_data = data.chart_data;
+                        }
+                        data = newData;
                         // Merger chart_data GitHub (historique long) avec SSE (720pts récents)
                         if (window._chartDataCache) {
                             const sseCD = data.chart_data || {};
