@@ -1001,7 +1001,7 @@
                 });
                 return {
                     label: page, data: pts.map((p,idx) => {
-                        if(p.is_timeout) return null;  // null = pas de ligne
+                        if(p.is_timeout) return 9;  // clampé au max axe Y
                         return p.elapsed;
                     }), _t: pts.map(p=>p.time), _rawPts: pts,
                     borderColor: meta.colors[i%meta.colors.length], backgroundColor: "transparent",
@@ -1011,35 +1011,13 @@
                     pointBorderColor: pts.map((p,i) => p.is_timeout ? "#fff" : koB[i]),
                     pointStyle: pts.map(p => p.is_timeout ? "circle" : "circle"),
                     pointBorderWidth: pts.map((p,i) => p.is_timeout ? 2 : 2),
-                    spanGaps: false,
+
                     pointHoverRadius: pts.map((p,i) => p.is_timeout ? 12 : 4),
                     pointHoverBackgroundColor: pts.map((p,i) => p.is_timeout ? "#f97316" : "#cbd5e1"),
                     pointHoverBorderColor: pts.map((p,i) => p.is_timeout ? "#fff" : "#94a3b8"),
                     pointHoverBorderWidth: 2
                 };
             });
-
-            // Datasets overlay pour les points timeout (point seul, pas de ligne)
-            const timeoutOverlays = pages.map(([page], i) => {
-                const pts = rawDs[i]||[];
-                const colors = meta.colors;
-                return {
-                    label: "__timeout_"+page,
-                    data: pts.map(p => p.is_timeout ? 9 : null),
-                    _t: pts.map(p=>p.time), _rawPts: pts,
-                    borderColor: "transparent", backgroundColor: "transparent",
-                    pointRadius: pts.map(p => p.is_timeout ? 9 : 0),
-                    pointBackgroundColor: pts.map(p => p.is_timeout ? "#f97316" : "transparent"),
-                    pointBorderColor: pts.map(p => p.is_timeout ? "#fff" : "transparent"),
-                    pointBorderWidth: 2,
-                    pointHoverRadius: pts.map(p => p.is_timeout ? 11 : 0),
-                    pointHoverBackgroundColor: pts.map(p => p.is_timeout ? "#f97316" : "transparent"),
-                    pointHoverBorderColor: pts.map(p => p.is_timeout ? "#fff" : "transparent"),
-                    pointHoverBorderWidth: 2,
-                    spanGaps: false, tension: 0, showLine: false,
-                };
-            });
-            const allDatasets = [...datasets, ...timeoutOverlays];
 
             if(!datasets[0] || !datasets[0].data.length) return;
             const labelsFmt = datasets[0]._t.map(t => t ? t.substring(11,16) : "");
@@ -1059,8 +1037,6 @@
                         callbacks: {
                             label: function(ctx) {
                                 const ds = ctx.dataset;
-                                // Masquer les datasets overlay timeout dans le tooltip
-                                if(ds.label && ds.label.startsWith("__timeout_")) return null;
                                 const pts = ds._rawPts;
                                 if(!pts) return ds.label+": "+ctx.parsed.y+"s";
                                 const p = pts[ctx.dataIndex];
@@ -1084,10 +1060,10 @@
             const lCanvas = container.querySelector("canvas");
             if(lineChart && lineChart.canvas !== lCanvas) { lineChart.destroy(); lineChart=null; }
             if(!lineChart) {
-                lineChart = new Chart(lCanvas, {type:"line", data:{labels:labelsFmt, datasets:allDatasets}, options:mOpts});
+                lineChart = new Chart(lCanvas, {type:"line", data:{labels:labelsFmt, datasets}, options:mOpts});
                 setTimeout(()=>scroll.scrollLeft=scroll.scrollWidth, 100);
             } else {
-                lineChart.data.labels = labelsFmt; lineChart.data.datasets = allDatasets; lineChart.options = mOpts; lineChart.update("none");
+                lineChart.data.labels = labelsFmt; lineChart.data.datasets = datasets; lineChart.options = mOpts; lineChart.update("none");
                 if(isEnd) setTimeout(()=>scroll.scrollLeft=scroll.scrollWidth, 50);
             }
 
