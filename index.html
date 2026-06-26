@@ -1046,25 +1046,7 @@
             const mOpts = {
                 responsive: true, maintainAspectRatio: false, animation: false, interaction: {mode:"index", intersect:false},
                 plugins: {
-                    annotation: { annotations: (function() {
-                        var ann = {};
-                        pts.forEach(function(p, idx) {
-                            if(p.is_timeout) {
-                                ann["to_"+idx] = {
-                                    type: "line", scaleID: "x", value: idx,
-                                    borderColor: "#f97316", borderWidth: 2, borderDash: [4,2],
-                                    label: {
-                                        display: true,
-                                        content: p.elapsed ? ">"+p.elapsed+"s" : ">15s",
-                                        position: "start", yAdjust: -8,
-                                        backgroundColor: "#f97316", color: "#fff",
-                                        font: {size: 9, family: "Plus Jakarta Sans"}
-                                    }
-                                };
-                            }
-                        });
-                        return ann;
-                    })() },
+                    annotation: { annotations: timeoutAnnotations },
                     legend: {display:false},
                     tooltip: { backgroundColor:"#ffffff", titleColor:"#0f172a", bodyColor:"#475569", borderColor:"#e2e8f0", borderWidth:1, padding:12, titleFont:{family:"Plus Jakarta Sans", size:11}, bodyFont:{family:"Plus Jakarta Sans", size:11, weight:"bold"}, boxPadding:6 }
                 },
