@@ -255,6 +255,7 @@
 
 
         <div id="dash" class="flex-1 flex-col overflow-hidden hidden">
+            <div id="nuit-banner" class="hidden w-full flex-shrink-0"></div>
             <div id="incident-banner" class="hidden w-full flex-col flex-shrink-0"></div>
 
             <header class="px-8 py-6 flex items-center justify-between flex-shrink-0">
@@ -830,9 +831,88 @@
                 if(masterRow) masterRow.innerHTML = `<div class="w-full text-center p-8 text-slate-400 font-bold">En attente des données...</div>`;
                 return;
             }
-            renderBanner(); renderEP(); renderKPIs(); renderGauge(); renderChart(); renderMacro(); detectTrend(); renderHistory();
+            renderNuitBanner(); renderBanner(); renderEP(); renderKPIs(); renderGauge(); renderChart(); renderMacro(); detectTrend(); renderHistory();
             renderAnalyse();
             lucide.createIcons();
+        }
+
+        // ── Rapport Nuit ──
+        let _rapportNuit = null;
+        let _rapportNuitLoaded = false;
+
+        async function loadRapportNuit() {
+            if(_rapportNuitLoaded) return;
+            try {
+                const url = "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/rapport_nuit.json?t="+Date.now();
+                const r = await fetch(url);
+                if(r.ok) _rapportNuit = await r.json();
+            } catch(e) {}
+            _rapportNuitLoaded = true;
+        }
+
+        function renderNuitBanner() {
+            const el = document.getElementById("nuit-banner");
+            if(!el) return;
+
+            // Afficher uniquement entre 8h et 12h
+            const now = new Date();
+            const h = now.getHours();
+            if(h < 8 || h >= 12) { el.classList.add("hidden"); el.innerHTML = ""; return; }
+
+            if(!_rapportNuit) {
+                loadRapportNuit().then(() => renderNuitBanner());
+                return;
+            }
+
+            const bd = (_rapportNuit.brands || {})[brand];
+            if(!bd) { el.classList.add("hidden"); return; }
+
+            const nb = bd.nb_incidents || 0;
+            const avg = bd.avg_elapsed ? bd.avg_elapsed+"s" : "—";
+            const fib = bd.fiabilite !== null && bd.fiabilite !== undefined ? bd.fiabilite+"%" : "—";
+            const shots = bd.screenshots || [];
+            const incs = bd.incidents || [];
+
+            let html = "";
+            if(nb === 0) {
+                html = `
+                <div class="mx-4 mt-3 rounded-xl border border-emerald-200 bg-emerald-50/80 backdrop-blur px-4 py-3 flex items-center gap-3">
+                    <span class="text-xl">🌙</span>
+                    <div class="flex-1">
+                        <p class="text-sm font-bold text-emerald-700">Nuit sans incident</p>
+                        <p class="text-xs text-emerald-600">${_rapportNuit.window_start?.substring(11,16)} → ${_rapportNuit.window_end?.substring(11,16)} · Rép. moy. ${avg} · Fiabilité ${fib}</p>
+                    </div>
+                    <button onclick="document.getElementById('nuit-banner').classList.add('hidden')" class="text-emerald-400 hover:text-emerald-600 text-lg leading-none">&times;</button>
+                </div>`;
+            } else {
+                const incLines = incs.slice(0,5).map(i => {
+                    const dur = i.duration ? ` · ${Math.floor(i.duration/60)}m${String(i.duration%60).padStart(2,'0')}s` : "";
+                    const badge = i.detail?.toLowerCase().includes("timeout") ? "🟠" : "🔴";
+                    return `<span class="inline-flex items-center gap-1 bg-white/60 rounded px-2 py-0.5 text-xs text-slate-700">${badge} ${i.time?.substring(11,16)} <span class="font-semibold">${i.page}</span> — ${i.detail||"KO"}${dur}</span>`;
+                }).join(" ");
+
+                const screenshotsHtml = shots.slice(0,3).map(s =>
+                    `<a href="${s}" target="_blank"><img src="${s}" class="h-14 rounded border border-slate-200 shadow-sm hover:scale-105 transition-transform object-cover" /></a>`
+                ).join("");
+
+                html = `
+                <div class="mx-4 mt-3 rounded-xl border border-amber-200 bg-amber-50/80 backdrop-blur px-4 py-3">
+                    <div class="flex items-start justify-between gap-3">
+                        <div class="flex items-center gap-2 flex-shrink-0">
+                            <span class="text-xl">🌙</span>
+                            <div>
+                                <p class="text-sm font-bold text-amber-800">Cette nuit — ${nb} incident${nb>1?'s':''}</p>
+                                <p class="text-xs text-amber-700">${_rapportNuit.window_start?.substring(11,16)} → ${_rapportNuit.window_end?.substring(11,16)} · Rép. moy. ${avg} · Fiabilité ${fib}</p>
+                            </div>
+                        </div>
+                        <button onclick="document.getElementById('nuit-banner').classList.add('hidden')" class="text-amber-400 hover:text-amber-600 text-lg leading-none flex-shrink-0">&times;</button>
+                    </div>
+                    <div class="mt-2 flex flex-wrap gap-1.5">${incLines}</div>
+                    ${screenshotsHtml ? `<div class="mt-2 flex gap-2">${screenshotsHtml}</div>` : ""}
+                </div>`;
+            }
+            el.innerHTML = html;
+            el.classList.remove("hidden");
         }
 
         function renderBanner() {
