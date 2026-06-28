@@ -400,6 +400,151 @@ def init_github():
     except Exception as e:
         log.error(f"[GitHub] Connexion impossible : {e}")
 
+
+# ─────────────────────────────────────────────
+# RAPPORT NUIT (20h → 8h)
+# ─────────────────────────────────────────────
+
+_rapport_nuit_sent = [False]  # flag pour n'envoyer qu'une fois par matin
+
+def generate_nuit_rapport():
+    """Compile les incidents de la nuit (20h → 8h) par brand et pousse rapport_nuit.json sur GitHub."""
+    import datetime as _dt
+    now = _dt.datetime.now(TZ_PARIS)
+    today_8h  = now.replace(hour=8,  minute=0, second=0, microsecond=0)
+    yest_20h  = (now - _dt.timedelta(days=1)).replace(hour=20, minute=0, second=0, microsecond=0)
+
+    rapport = {
+        "generated_at": now.strftime("%d/%m/%Y %H:%M:%S"),
+        "window_start": yest_20h.strftime("%d/%m/%Y %H:%M:%S"),
+        "window_end":   today_8h.strftime("%d/%m/%Y %H:%M:%S"),
+        "brands": {}
+    }
+
+    for brand in BRANDS:
+        key_prefix = brand + ":"
+        brand_incidents = []
+        screenshots = []
+
+        for h in history:
+            if h.get("brand") != brand: continue
+            if h.get("type") != "ko": continue
+            try:
+                t = datetime.strptime(h["time"], "%d/%m/%Y %H:%M:%S").replace(tzinfo=TZ_PARIS)
+            except: continue
+            if not (yest_20h <= t <= today_8h): continue
+            duration = None
+            for r2 in history:
+                if r2.get("brand") != brand or r2.get("page") != h.get("page"): continue
+                if r2.get("type") != "recovery": continue
+                try:
+                    t2 = datetime.strptime(r2["time"], "%d/%m/%Y %H:%M:%S").replace(tzinfo=TZ_PARIS)
+                except: continue
+                if t2 > t:
+                    duration = int((t2 - t).total_seconds())
+                    break
+            inc_entry = {
+                "time": h["time"],
+                "page": h.get("page", ""),
+                "type": h.get("type", "ko"),
+                "detail": h.get("detail", ""),
+                "duration": duration,
+            }
+            if h.get("screenshot"):
+                inc_entry["screenshot"] = h["screenshot"]
+                screenshots.append(h["screenshot"])
+            brand_incidents.append(inc_entry)
+
+        avg_elapsed = None
+        fiabilite = None
+        all_pts = []
+        for page in BRANDS[brand]:
+            key = f"{brand}:{page}"
+            if page == "Immat": continue
+            for p in chart_data.get(key, []):
+                try:
+                    t = datetime.strptime(p["time"], "%d/%m/%Y %H:%M:%S").replace(tzinfo=TZ_PARIS)
+                except: continue
+                if yest_20h <= t <= today_8h:
+                    all_pts.append(p)
+
+        if all_pts:
+            elapsed_vals = [p["elapsed"] for p in all_pts if p.get("elapsed") is not None and not p.get("is_timeout")]
+            avg_elapsed = round(sum(elapsed_vals)/len(elapsed_vals), 2) if elapsed_vals else None
+            ko_pts = len([p for p in all_pts if p.get("elapsed", 0) >= 4 or p.get("is_timeout")])
+            fiabilite = round((1 - ko_pts / len(all_pts)) * 100, 1) if all_pts else None
+
+        rapport["brands"][brand] = {
+            "incidents": brand_incidents,
+            "nb_incidents": len(brand_incidents),
+            "avg_elapsed": avg_elapsed,
+            "fiabilite": fiabilite,
+            "screenshots": screenshots,
+            "ok_nuit": len(brand_incidents) == 0,
+        }
+
+    return rapport
+
+
+def push_nuit_rapport(rapport):
+    """Pousse rapport_nuit.json sur GitHub."""
+    if not gh_repo:
+        return
+    try:
+        path = "rapport_nuit.json"
+        content_str = json.dumps(rapport, ensure_ascii=False, indent=2)
+        try:
+            existing = gh_repo.get_contents(path)
+            gh_repo.update_file(path, "rapport nuit automatique", content_str, existing.sha)
+        except Exception:
+            gh_repo.create_file(path, "rapport nuit automatique", content_str)
+        log.info("[Rapport Nuit] Poussé sur GitHub")
+    except Exception as e:
+        log.error(f"[Rapport Nuit] Erreur push : {e}")
+
+
+def send_teams_rapport_nuit(rapport):
+    """Envoie un récap nocturne sur Teams."""
+    brands_ko = [(b, d) for b, d in rapport["brands"].items() if d["nb_incidents"] > 0]
+    brands_ok = [b for b, d in rapport["brands"].items() if d["nb_incidents"] == 0]
+
+    lines = [
+        f"🌙 **Rapport Nuit** — {rapport['window_start']} → {rapport['window_end']}",
+        f"",
+        f"📋 **{len(brands_ko)} brand(s) avec incidents · {len(brands_ok)} brand(s) OK**",
+        f"",
+    ]
+
+    for brand, d in brands_ko[:15]:
+        avg = f"{d['avg_elapsed']}s" if d['avg_elapsed'] else "—"
+        fib = f"{d['fiabilite']}%" if d['fiabilite'] is not None else "—"
+        lines.append(f"🔴 **{brand}** — {d['nb_incidents']} incident(s) · Rép. moy. {avg} · Fiabilité {fib}")
+        for inc in d["incidents"][:3]:
+            dur = f" ({inc['duration']//60}m{inc['duration']%60:02d}s)" if inc.get("duration") else ""
+            lines.append(f"   {inc['time'][11:16]} {inc['page']} — {inc['detail']}{dur}")
+
+    if brands_ok:
+        lines.append(f"")
+        lines.append(f"✅ **Nuit sans incident** : {', '.join(brands_ok[:20])}")
+
+    body = {
+        "type": "message",
+        "attachments": [{
+            "contentType": "application/vnd.microsoft.card.adaptive",
+            "content": {
+                "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                "type": "AdaptiveCard", "version": "1.4",
+                "body": [{"type": "TextBlock", "text": "\n".join(lines), "wrap": True,
+                           "fontType": "Monospace", "size": "Small"}]
+            }
+        }]
+    }
+    try:
+        resp = requests.post(TEAMS_WEBHOOK_URL, json=body, timeout=15)
+        log.info(f"[Rapport Nuit] Teams : {resp.status_code}")
+    except Exception as e:
+        log.error(f"[Rapport Nuit] Erreur Teams : {e}")
+
 _cycle_counter = [0]
 
 def push_chart_backup():
@@ -1344,6 +1489,21 @@ def run():
             _cycle_counter[0] = _cycle_counter[0] + 1
             if _cycle_counter[0] % 180 == 0:  # toutes les 30 min au lieu de 50s
                 threading.Thread(target=push_chart_backup, daemon=True).start()
+            # Rapport nuit : déclencher à 8h00 (une seule fois par matin)
+            _now = datetime.now(TZ_PARIS)
+            if _now.hour == 8 and _now.minute == 0 and not _rapport_nuit_sent[0]:
+                _rapport_nuit_sent[0] = True
+                def _run_rapport():
+                    try:
+                        rp = generate_nuit_rapport()
+                        push_nuit_rapport(rp)
+                        send_teams_rapport_nuit(rp)
+                    except Exception as e:
+                        log.error(f"[Rapport Nuit] Erreur : {e}")
+                threading.Thread(target=_run_rapport, daemon=True).start()
+            elif _now.hour != 8:
+                _rapport_nuit_sent[0] = False  # reset pour le lendemain
+
             time.sleep(CHECK_INTERVAL_SECONDS)
         except Exception as _cycle_err:
             log.error(f"[Cycle] Erreur non catchée — script continue : {_cycle_err}")
