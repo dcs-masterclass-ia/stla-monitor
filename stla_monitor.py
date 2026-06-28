@@ -706,26 +706,44 @@ def archive_incident(incident):
                 return
             existing_data.append(incident)
             new_data = existing_data
-            # Récupérer le SHA via API
-            api_url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/{path}"
-            req2 = urllib.request.Request(api_url, headers={
-                "Authorization": f"token {GITHUB_TOKEN}",
-                "Accept": "application/vnd.github.v3+json"
-            })
-            with urllib.request.urlopen(req2, timeout=10) as r2:
-                meta = json.loads(r2.read())
-            sha = meta["sha"]
-            # Mettre à jour
+            # Récupérer le SHA frais et mettre à jour — retry sur 409 (SHA périmé)
             import base64 as b64
-            encoded = b64.b64encode(json.dumps(new_data, ensure_ascii=False, indent=2).encode()).decode()
-            body = json.dumps({"message": f"incident {brand_slug} {date}", "content": encoded, "sha": sha}).encode()
-            req3 = urllib.request.Request(api_url, data=body, headers={
-                "Authorization": f"token {GITHUB_TOKEN}",
-                "Accept": "application/vnd.github.v3+json",
-                "Content-Type": "application/json"
-            }, method="PUT")
-            with urllib.request.urlopen(req3, timeout=15) as r3:
-                pass
+            api_url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/{path}"
+            for _attempt in range(3):
+                req2 = urllib.request.Request(api_url, headers={
+                    "Authorization": f"token {GITHUB_TOKEN}",
+                    "Accept": "application/vnd.github.v3+json"
+                })
+                with urllib.request.urlopen(req2, timeout=10) as r2:
+                    meta = json.loads(r2.read())
+                fresh_sha = meta["sha"]
+                # Relire le contenu le plus récent pour éviter d'écraser un incident concurrent
+                try:
+                    fresh_data = json.loads(b64.b64decode(meta["content"]).decode())
+                    fresh_keys = {f"{h.get('time')}|{h.get('page')}|{h.get('type')}" for h in fresh_data}
+                    if inc_key in fresh_keys:
+                        log.info(f"[Archive] Doublon détecté après relecture : {inc_key}")
+                        break
+                    fresh_data.append(incident)
+                except Exception:
+                    fresh_data = new_data
+                encoded = b64.b64encode(json.dumps(fresh_data, ensure_ascii=False, indent=2).encode()).decode()
+                body = json.dumps({"message": f"incident {brand_slug} {date}", "content": encoded, "sha": fresh_sha}).encode()
+                req3 = urllib.request.Request(api_url, data=body, headers={
+                    "Authorization": f"token {GITHUB_TOKEN}",
+                    "Accept": "application/vnd.github.v3+json",
+                    "Content-Type": "application/json"
+                }, method="PUT")
+                try:
+                    with urllib.request.urlopen(req3, timeout=15) as r3:
+                        pass
+                    break  # succès
+                except urllib.error.HTTPError as _e409:
+                    if _e409.code == 409 and _attempt < 2:
+                        log.warning(f"[Archive] 409 SHA périmé — retry {_attempt+1}/3")
+                        time.sleep(0.5)
+                        continue
+                    raise
         except urllib.error.HTTPError as e:
             if e.code == 404:
                 # Fichier n'existe pas — créer
