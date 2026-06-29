@@ -165,13 +165,11 @@ RENDER_URL = "https://stla-monitor.onrender.com/update"
 
 CHECK_INTERVAL_SECONDS      = 10
 RESPONSE_TIME_LIMIT_SECONDS = 8
-SLOW_THRESHOLD_SECONDS      = 2
-VERY_SLOW_THRESHOLD_SECONDS = 4
+SLOW_THRESHOLD_SECONDS      = 4   # SLOW  : > 4s
+VERY_SLOW_THRESHOLD_SECONDS = 8   # VERY_SLOW : > 8s (= timeout)
 
-# Timeout personnalisé par brand (en secondes)
-BRAND_TIMEOUT = {
-    "Ford FR": 15,  # API autobiz référentiel ralentit la réponse
-}
+# Timeout personnalisé par brand (en secondes) — Ford FR revient au défaut
+BRAND_TIMEOUT = {}
 DEFAULT_TIMEOUT = RESPONSE_TIME_LIMIT_SECONDS  # 8s
 LOG_FILE    = "stla_monitor.log"
 MAX_HISTORY = 1000
@@ -885,25 +883,25 @@ def take_screenshot(brand, page, url, body_html=None):
 
 # ── NORMALISATION DES LABELS D'INCIDENT ──
 def get_incident_level(reason: str, error_type: str = None) -> str:
-    """Retourne le niveau d'incident : KO, LENT, TIMEOUT."""
+    """Retourne le niveau d'incident : KO, SLOW, VERY_SLOW."""
     r = (reason or "").lower()
     et = (error_type or "").lower()
-    # Erreurs serveur = KO critique
+    # Erreurs serveur/client = KO
     if any(x in r for x in ["500","502","503","504","erreur serveur","service indisponible"]):
         return "KO"
     if any(x in r for x in ["404","403","400","401"]):
         return "KO"
-    # TIMEOUT / pas de réponse
-    if "timeout" in et or "tcp" in et or "pas de réponse" in r:
-        return "TIMEOUT"
-    # DNS = TIMEOUT
+    # DNS / inaccessible = KO
     if "dns" in r or "dns" in et:
-        return "TIMEOUT"
+        return "KO"
     if "inaccessible" in r:
-        return "TIMEOUT"
-    # VERY_SLOW / lente = LENT
-    if "very_slow" in et or "lente" in r or "slow" in et or "timeout" in r:
-        return "LENT"
+        return "KO"
+    # > 8s = VERY_SLOW
+    if "very_slow" in et or "pas de réponse" in r or "timeout" in r:
+        return "VERY_SLOW"
+    # > 4s = SLOW
+    if "slow" in et or "lente" in r or "lent" in r:
+        return "SLOW"
     return "KO"
 
 def normalize_reason(reason: str, error_type: str = None) -> str:
@@ -911,8 +909,10 @@ def normalize_reason(reason: str, error_type: str = None) -> str:
     if not reason:
         return "Erreur inconnue"
     r = reason.lower()
-    if "timeout" in r or "pas de réponse" in r:
-        return "Réponse trop lente — timeout"
+    if "very_slow" in (error_type or "").lower() or "pas de réponse" in r:
+        return "Très lente — VERY SLOW (>8s)"
+    if "timeout" in r:
+        return "Très lente — VERY SLOW (>8s)"
     if "500" in r or "erreur serveur interne" in r:
         return "Erreur serveur interne (500)"
     if "502" in r: return "Passerelle incorrecte (502)"
@@ -936,7 +936,7 @@ def send_teams_alert(brand, page, url, reason, is_recovery=False, details=None, 
     else:
         level = get_incident_level(reason, details.get("error_type") if details else None)
         label = normalize_reason(reason, details.get("error_type") if details else None)
-        emoji = "🚨" if level == "KO" else "🟠" if level == "TIMEOUT" else "⚠️"
+        emoji = "🚨" if level == "KO" else "🟠" if level == "VERY_SLOW" else "⚠️"
     title = f"{emoji} {brand} — {page} · {level}"
 
     # Stats 24h pour enrichir la card
@@ -1097,7 +1097,7 @@ def check_url_playwright(brand, page, url):
 
         very_slow_threshold = BRAND_TIMEOUT.get(brand, VERY_SLOW_THRESHOLD_SECONDS)
         if elapsed > very_slow_threshold:
-            details["error_type"] = "VERY_SLOW"
+            details["error_type"] = "SLOW"
             return False, f"Très lent ({elapsed}s)", elapsed, details
 
         return True, f"OK ({r.status_code}) en {elapsed}s", elapsed, details
@@ -1116,7 +1116,7 @@ def check_url_playwright(brand, page, url):
         elapsed = round(time.time() - t0, 2)
         if elapsed_real < 1:
             elapsed_real = elapsed
-        details["error_type"] = "TCP_TIMEOUT"
+        details["error_type"] = "VERY_SLOW"
         details["elapsed_real"] = elapsed_real
         return False, f"Pas de réponse après {elapsed_real}s (TIMEOUT)", elapsed_real, details
     except requests.exceptions.ConnectionError as e:
@@ -1179,7 +1179,7 @@ def check_url(brand, page, url):
             return False, f"Erreur serveur HTTP {response.status_code}", elapsed_total, details
         very_slow_threshold = BRAND_TIMEOUT.get(brand, VERY_SLOW_THRESHOLD_SECONDS)
         if elapsed_http > very_slow_threshold:
-            details["error_type"] = "VERY_SLOW"
+            details["error_type"] = "SLOW"
             return False, f"Réponse très lente : {elapsed_http}s (seuil {very_slow_threshold}s)", elapsed_total, details
         body = response.text[:3000]
         for sig in ERROR_SIGNATURES:
@@ -1218,7 +1218,7 @@ def check_url(brand, page, url):
             logging.warning(f"[Double scan Timeout] {type(e2).__name__}: {e2}")
         if elapsed_real < 1:
             elapsed_real = elapsed
-        details["error_type"] = "TIMEOUT"
+        details["error_type"] = "VERY_SLOW"
         details["elapsed_real"] = elapsed_real
         return False, f"Pas de réponse après {elapsed_real}s", elapsed_real, details
     except Exception as e:
