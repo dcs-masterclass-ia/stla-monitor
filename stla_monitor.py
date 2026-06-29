@@ -308,7 +308,7 @@ def init_github():
                         # Construire un dict time -> elapsed_real pour les KO TIMEOUT
                         timeout_map = {}
                         for inc in incidents_day:
-                            if inc.get("type") == "ko" and inc.get("diagnostics",{}).get("error_type") in ("TIMEOUT","TCP_TIMEOUT"):
+                            if inc.get("type") == "ko" and inc.get("diagnostics",{}).get("error_type") in ("VERY_SLOW","TIMEOUT","TCP_TIMEOUT"):
                                 t = inc.get("time","")
                                 er = inc.get("diagnostics",{}).get("elapsed_real")
                                 timeout_map[t[:16]] = er  # clé = "DD/MM/YYYY HH:MM"
@@ -1436,7 +1436,7 @@ def run():
                         key = f"{brand}:{page}"
     
                         # Pour les TIMEOUT, stocker elapsed_real si disponible + flag is_timeout
-                        is_timeout = details.get("error_type") in ("TIMEOUT", "TCP_TIMEOUT") if details else False
+                        is_timeout = details.get("error_type") in ("VERY_SLOW", "TIMEOUT", "TCP_TIMEOUT") if details else False
                         elapsed_real = details.get("elapsed_real") if details else None
                         chart_entry = {"time": now, "elapsed": elapsed_real if (is_timeout and elapsed_real) else elapsed}
                         if is_timeout:
