@@ -35,5 +35,26 @@
     "type": "recovery",
     "detail": "Retour en ligne",
     "is_reference": true
+  },
+  {
+    "time": "29/06/2026 11:11:15",
+    "brand": "FiatPro FR",
+    "page": "Homepage",
+    "type": "ko",
+    "detail": "Très lent (6.11s)",
+    "diagnostics": {
+      "brand": "FiatPro FR",
+      "page": "Homepage",
+      "http_status": 200,
+      "elapsed_http": 6.11,
+      "ip": [
+        "135.125.7.226",
+        0.003,
+        null
+      ],
+      "error_type": "VERY_SLOW"
+    },
+    "screenshot": null,
+    "is_reference": true
   }
 ]
