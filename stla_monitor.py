@@ -1096,9 +1096,13 @@ def check_url_playwright(brand, page, url):
             return False, f"HTTP {r.status_code}", elapsed, details
 
         very_slow_threshold = BRAND_TIMEOUT.get(brand, VERY_SLOW_THRESHOLD_SECONDS)
+        slow_threshold = SLOW_THRESHOLD_SECONDS
         if elapsed > very_slow_threshold:
-            details["error_type"] = "SLOW"
+            details["error_type"] = "VERY_SLOW"
             return False, f"Très lent ({elapsed}s)", elapsed, details
+        if elapsed > slow_threshold:
+            details["error_type"] = "SLOW"
+            return False, f"Lent ({elapsed}s)", elapsed, details
 
         return True, f"OK ({r.status_code}) en {elapsed}s", elapsed, details
 
@@ -1178,9 +1182,13 @@ def check_url(brand, page, url):
             details["body_preview"] = response.text[:300].strip()
             return False, f"Erreur serveur HTTP {response.status_code}", elapsed_total, details
         very_slow_threshold = BRAND_TIMEOUT.get(brand, VERY_SLOW_THRESHOLD_SECONDS)
+        slow_threshold = SLOW_THRESHOLD_SECONDS
         if elapsed_http > very_slow_threshold:
-            details["error_type"] = "SLOW"
+            details["error_type"] = "VERY_SLOW"
             return False, f"Réponse très lente : {elapsed_http}s (seuil {very_slow_threshold}s)", elapsed_total, details
+        if elapsed_http > slow_threshold:
+            details["error_type"] = "SLOW"
+            return False, f"Réponse lente : {elapsed_http}s (seuil {slow_threshold}s)", elapsed_total, details
         body = response.text[:3000]
         for sig in ERROR_SIGNATURES:
             if sig.lower() in body.lower():
