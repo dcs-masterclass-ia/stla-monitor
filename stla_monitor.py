@@ -760,7 +760,7 @@ def push_status(statuses, retry=3):
         send_teams_alert_raw("🚨 ERREUR : gh_repo est None — token GitHub manquant ou révoqué. Le dashboard ne se met plus à jour.")
         return
     now = datetime.now(TZ_PARIS).strftime("%d/%m/%Y %H:%M:%S")
-    payload = build_payload(statuses, now)
+    payload = build_payload_github(statuses, now)
 
     # Si history vide en mémoire, charger depuis incidents/ comme source de vérité
     if not payload["history"]:
@@ -799,6 +799,7 @@ def push_status(statuses, retry=3):
 SSE_CHART_POINTS = 720  # 2h
 
 def build_payload(statuses, now):
+    """Payload complet — utilisé pour le SSE vers le browser (chart_data inclus)."""
     with history_lock:
         hist_snapshot = list(history[-MAX_HISTORY:])
     return {
@@ -806,6 +807,20 @@ def build_payload(statuses, now):
         "statuses": statuses,
         "history": hist_snapshot,
         "chart_data": {k: v[-SSE_CHART_POINTS:] for k, v in chart_data.items()},
+        "avg_response": {
+            k: round(sum(p["elapsed"] for p in v[-20:]) / len(v[-20:]), 2) if v else 0
+            for k, v in chart_data.items()
+        }
+    }
+
+def build_payload_github(statuses, now):
+    """Payload allégé pour GitHub — sans chart_data (déjà dans chart_data.json)."""
+    with history_lock:
+        hist_snapshot = list(history[-MAX_HISTORY:])
+    return {
+        "updated_at": now,
+        "statuses": statuses,
+        "history": hist_snapshot,
         "avg_response": {
             k: round(sum(p["elapsed"] for p in v[-20:]) / len(v[-20:]), 2) if v else 0
             for k, v in chart_data.items()
