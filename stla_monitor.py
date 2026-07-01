@@ -1529,7 +1529,7 @@ def run():
             threading.Thread(target=push_to_render, args=(statuses,), daemon=True).start()
             # Backup chart_data toutes les 20 cycles (~60min)
             _cycle_counter[0] = _cycle_counter[0] + 1
-            if _cycle_counter[0] % 180 == 0:  # toutes les 30 min au lieu de 50s
+            if _cycle_counter[0] % 180 == 0 or _cycle_counter[0] == 5:  # toutes les 30 min + 1 push rapide au démarrage
                 threading.Thread(target=push_chart_backup, daemon=True).start()
             # Rapport nuit : déclencher à 8h00 (une seule fois par matin)
             _now = datetime.now(TZ_PARIS)
