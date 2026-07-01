@@ -853,11 +853,8 @@
         function renderNuitBanner() {
             const el = document.getElementById("nuit-banner");
             if(!el) return;
-
-            // Afficher uniquement entre 8h et 12h
-            const now = new Date();
-            const h = now.getHours();
-            if(h < 8 || h >= 12) { el.classList.add("hidden"); el.innerHTML = ""; return; }
+            // Bannière désactivée temporairement
+            el.classList.add("hidden"); el.innerHTML = ""; return;
 
             if(!_rapportNuit) {
                 loadRapportNuit().then(() => renderNuitBanner());
