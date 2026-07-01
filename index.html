@@ -256,6 +256,14 @@
 
         <div id="dash" class="flex-1 flex-col overflow-hidden hidden">
             <div id="nuit-banner" class="hidden w-full flex-shrink-0"></div>
+            <div id="incident-notice" class="w-full flex-shrink-0 mx-4 mt-3 rounded-xl border border-red-200 bg-red-50/90 backdrop-blur px-4 py-3 flex items-start gap-3">
+                <span class="text-xl flex-shrink-0">🛠️</span>
+                <div class="flex-1">
+                    <p class="text-sm font-bold text-red-700">Anomalie technique — Données de courbe manquantes (nuit du 30/06 au 01/07)</p>
+                    <p class="text-xs text-red-600 mt-0.5">Suite à un incident technique, les courbes de télémétrie n'affichent aucune donnée entre 00h00 et 09h42 le 01/07/2026. Les incidents et alertes Teams ont fonctionné normalement durant cette période — seul l'affichage graphique est concerné. Le problème est corrigé, l'historique de cette fenêtre ne peut pas être récupéré.</p>
+                </div>
+                <button onclick="document.getElementById('incident-notice').remove()" class="text-red-400 hover:text-red-600 text-lg leading-none flex-shrink-0">&times;</button>
+            </div>
             <div id="incident-banner" class="hidden w-full flex-col flex-shrink-0"></div>
 
             <header class="px-8 py-6 flex items-center justify-between flex-shrink-0">
