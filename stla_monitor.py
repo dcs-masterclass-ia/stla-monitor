@@ -1230,6 +1230,7 @@ def check_url(brand, page, url):
         return False, f"Erreur connexion ({details['error_type']})", elapsed, details
     except requests.exceptions.Timeout:
         # Double check sans limite pour mesurer la vraie durée
+        elapsed = round(time.time() - t0, 2)
         t_real = time.time()
         try:
             with requests.Session() as s2:
