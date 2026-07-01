@@ -347,7 +347,7 @@ def init_github():
                     seen.add(key)
                     merged.append(h)
 
-            merged.sort(key=lambda h: h.get("time", ""))
+            merged.sort(key=_time_sort_key)
 
             if merged:
                 history.clear()
@@ -371,7 +371,7 @@ def init_github():
                     req2 = urllib.request.Request(raw_url, headers={"Authorization": f"token {GITHUB_TOKEN}"})
                     with urllib.request.urlopen(req2, timeout=10) as r2:
                         all_today.extend(json.loads(r2.read()))
-                all_today.sort(key=lambda h: h.get("time",""))
+                all_today.sort(key=_time_sort_key)
                 # Trouver le dernier événement par brand:page
                 last_event = {}
                 for h in all_today:
@@ -545,6 +545,14 @@ def send_teams_rapport_nuit(rapport):
 
 _cycle_counter = [0]
 
+
+def _time_sort_key(item):
+    """Clé de tri robuste sur le champ 'time' (dd/mm/yyyy HH:MM:SS) — évite les bugs de tri string au changement de mois."""
+    try:
+        return datetime.strptime(item.get("time", ""), "%d/%m/%Y %H:%M:%S")
+    except Exception:
+        return datetime.min
+
 def push_chart_backup():
     """Sauvegarde chart_data dans chart_data.json sur GitHub — merge avec l'existant."""
     if not gh_repo:
@@ -570,12 +578,7 @@ def push_chart_backup():
                     if p["time"] not in seen:
                         seen.add(p["time"])
                         all_pts.append(p)
-                def _sort_key(p):
-                    try:
-                        return datetime.strptime(p["time"], "%d/%m/%Y %H:%M:%S")
-                    except Exception:
-                        return datetime.min
-                all_pts.sort(key=_sort_key)
+                all_pts.sort(key=_time_sort_key)
                 merged[key] = all_pts[-MAX_CHART:]
 
             # Récupérer le SHA via API (fichier peut être >1MB, on ne lit que le SHA)
