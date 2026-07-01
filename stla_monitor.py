@@ -570,7 +570,12 @@ def push_chart_backup():
                     if p["time"] not in seen:
                         seen.add(p["time"])
                         all_pts.append(p)
-                all_pts.sort(key=lambda p: p["time"])
+                def _sort_key(p):
+                    try:
+                        return datetime.strptime(p["time"], "%d/%m/%Y %H:%M:%S")
+                    except Exception:
+                        return datetime.min
+                all_pts.sort(key=_sort_key)
                 merged[key] = all_pts[-MAX_CHART:]
 
             # Récupérer le SHA via API (fichier peut être >1MB, on ne lit que le SHA)
