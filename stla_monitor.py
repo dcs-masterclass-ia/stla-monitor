@@ -33,7 +33,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 BRANDS = {
     # ── PORTUGAL ──
     "Opel PT":      {"Homepage": "https://www.retoma.opel.pt",             "Parcours": "https://www.retoma.opel.pt/pagina-modelo"},
-    "Abarth PT":    {"Homepage": "https://www.retoma.abarth.pt",           "Parcours": "https://www.retoma.abarth.pt/modelo"},
+    "Abarth PT":    {"Homepage": "https://www.retoma.abarth.pt",           "Parcours": "https://www.retoma.abarth.pt/pagina-modelo"},
     "AlfaRomeo PT": {"Homepage": "https://www.retoma.alfaromeo.pt",        "Parcours": "https://www.retoma.alfaromeo.pt/modelo"},
     "Citroen PT":   {"Homepage": "https://www.retoma-citroen.pt",          "Parcours": "https://www.retoma-citroen.pt/pagina-modelo"},
     "DS PT":        {"Homepage": "https://retoma.dsautomobiles.pt",        "Parcours": "https://retoma.dsautomobiles.pt/pagina-modelo"},
