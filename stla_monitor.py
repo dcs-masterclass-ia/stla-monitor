@@ -1135,7 +1135,7 @@ def check_url_playwright(brand, page, url):
         double_scan_error = None
         try:
             with requests.Session() as s2:
-                s2.headers.update(headers)
+                s2.headers.update(HEADERS_UA)
                 s2.get(url, timeout=120, verify=False, allow_redirects=True)
             elapsed_real = round(time.time() - t_real, 2)
         except Exception as e2:
@@ -1180,10 +1180,11 @@ def check_url(brand, page, url):
     try:
         brand_timeout = BRAND_TIMEOUT.get(brand, RESPONSE_TIME_LIMIT_SECONDS)
         log.info(f"[{brand}][{page}] timeout={brand_timeout}s")
+        HEADERS_UA = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+                     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"}
         response = requests.get(url, timeout=brand_timeout,
             allow_redirects=True, verify=False,
-            headers={"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
-                     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"})
+            headers=HEADERS_UA)
         elapsed_http = round(time.time()-t1, 2)
         elapsed_total = round(time.time()-t0, 2)
         details.update({
@@ -1249,7 +1250,7 @@ def check_url(brand, page, url):
         double_scan_error = None
         try:
             with requests.Session() as s2:
-                s2.headers.update(headers)
+                s2.headers.update(HEADERS_UA)
                 s2.get(url, timeout=120, verify=False, allow_redirects=True)
             elapsed_real = round(time.time() - t_real, 2)
         except Exception as e2:
