@@ -20975,5 +20975,24 @@
     "type": "recovery",
     "detail": "Retour en ligne",
     "is_reference": false
+  },
+  {
+    "time": "04/07/2026 14:09:11",
+    "brand": "Ford FR",
+    "page": "Formulaire",
+    "type": "ko",
+    "detail": "Pas de réponse après 8.17s",
+    "diagnostics": {
+      "brand": "Ford FR",
+      "page": "Formulaire",
+      "dns_elapsed": 0.098,
+      "ip": "63.186.28.171",
+      "error_type": "VERY_SLOW",
+      "double_scan_failed": true,
+      "double_scan_error": "NameError: name 'headers' is not defined",
+      "elapsed_real": 8.17
+    },
+    "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Formulaire_20260704_140932.png",
+    "is_reference": false
   }
 ]
