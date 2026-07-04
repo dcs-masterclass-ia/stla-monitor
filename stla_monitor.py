@@ -1132,6 +1132,7 @@ def check_url_playwright(brand, page, url):
     except requests.exceptions.ConnectTimeout:
         # Double check sans limite pour mesurer la vraie durée du timeout
         t_real = time.time()
+        double_scan_error = None
         try:
             with requests.Session() as s2:
                 s2.headers.update(headers)
@@ -1139,11 +1140,16 @@ def check_url_playwright(brand, page, url):
             elapsed_real = round(time.time() - t_real, 2)
         except Exception as e2:
             elapsed_real = round(time.time() - t_real, 2)
-            logging.warning(f"[Double scan ConnectTimeout] {type(e2).__name__}: {e2}")
+            double_scan_error = f"{type(e2).__name__}: {str(e2)[:150]}"
+            logging.warning(f"[Double scan ConnectTimeout] {double_scan_error}")
         elapsed = round(time.time() - t0, 2)
-        if elapsed_real < 1:
+        was_fallback = elapsed_real < 1
+        if was_fallback:
             elapsed_real = elapsed
         details["error_type"] = "VERY_SLOW"
+        details["double_scan_failed"] = was_fallback
+        if double_scan_error:
+            details["double_scan_error"] = double_scan_error
         details["elapsed_real"] = elapsed_real
         return False, f"Pas de réponse après {elapsed_real}s (TIMEOUT)", elapsed_real, details
     except requests.exceptions.ConnectionError as e:
@@ -1240,6 +1246,7 @@ def check_url(brand, page, url):
         # Double check sans limite pour mesurer la vraie durée
         elapsed = round(time.time() - t0, 2)
         t_real = time.time()
+        double_scan_error = None
         try:
             with requests.Session() as s2:
                 s2.headers.update(headers)
@@ -1247,10 +1254,15 @@ def check_url(brand, page, url):
             elapsed_real = round(time.time() - t_real, 2)
         except Exception as e2:
             elapsed_real = round(time.time() - t_real, 2)
-            logging.warning(f"[Double scan Timeout] {type(e2).__name__}: {e2}")
-        if elapsed_real < 1:
+            double_scan_error = f"{type(e2).__name__}: {str(e2)[:150]}"
+            logging.warning(f"[Double scan Timeout] {double_scan_error}")
+        was_fallback = elapsed_real < 1
+        if was_fallback:
             elapsed_real = elapsed
         details["error_type"] = "VERY_SLOW"
+        details["double_scan_failed"] = was_fallback
+        if double_scan_error:
+            details["double_scan_error"] = double_scan_error
         details["elapsed_real"] = elapsed_real
         return False, f"Pas de réponse après {elapsed_real}s", elapsed_real, details
     except Exception as e:
