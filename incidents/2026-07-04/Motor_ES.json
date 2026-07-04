@@ -10204,5 +10204,24 @@
     "type": "recovery",
     "detail": "Retour en ligne",
     "is_reference": false
+  },
+  {
+    "time": "04/07/2026 14:13:13",
+    "brand": "Motor ES",
+    "page": "Homepage",
+    "type": "ko",
+    "detail": "Pas de réponse après 8.06s",
+    "diagnostics": {
+      "brand": "Motor ES",
+      "page": "Homepage",
+      "dns_elapsed": 0.006,
+      "ip": "104.19.164.59",
+      "error_type": "VERY_SLOW",
+      "double_scan_failed": true,
+      "double_scan_error": "NameError: name 'headers' is not defined",
+      "elapsed_real": 8.06
+    },
+    "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Motor_ES_Homepage_20260704_141349.png",
+    "is_reference": false
   }
 ]
