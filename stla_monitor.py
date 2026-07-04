@@ -804,7 +804,7 @@ def push_status(statuses, retry=3):
 
 # Points envoyés via SSE/Render : 2h de données (720 pts à 10s)
 # Le reste est dans GitHub chart_data.json — chargé au démarrage du browser
-SSE_CHART_POINTS = 8  # ~1min de marge — le frontend merge avec chart_data.json (GitHub) pour l'historique complet
+SSE_CHART_POINTS = 720  # 2h — REVERT: le frontend re-merge avec un cache GitHub statique à chaque tick, réduire ce nombre fait perdre l'historique live
 
 def build_payload(statuses, now):
     """Payload complet — utilisé pour le SSE vers le browser (chart_data inclus)."""
