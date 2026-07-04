@@ -1534,7 +1534,8 @@ def run():
             # Push status toutes les 6 cycles (60s) — le dashboard reçoit les données via SSE
             if _cycle_counter[0] % 6 == 0:
                 threading.Thread(target=push_status, args=(statuses,), daemon=True).start()
-            threading.Thread(target=push_to_render, args=(statuses,), daemon=True).start()
+            if _cycle_counter[0] % 2 == 0:  # SSE toutes les 20s au lieu de 10s — réduit la bandwidth de moitié
+                threading.Thread(target=push_to_render, args=(statuses,), daemon=True).start()
             # Backup chart_data toutes les 20 cycles (~60min)
             _cycle_counter[0] = _cycle_counter[0] + 1
             if _cycle_counter[0] % 180 == 0 or _cycle_counter[0] == 5:  # toutes les 30 min + 1 push rapide au démarrage
