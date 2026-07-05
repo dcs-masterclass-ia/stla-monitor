@@ -1302,5 +1302,23 @@
     "type": "recovery",
     "detail": "Retour en ligne",
     "is_reference": false
+  },
+  {
+    "time": "06/07/2026 01:40:45",
+    "brand": "Motor ES",
+    "page": "Homepage",
+    "type": "ko",
+    "detail": "Pas de réponse après 4.32s",
+    "diagnostics": {
+      "brand": "Motor ES",
+      "page": "Homepage",
+      "dns_elapsed": 0.005,
+      "ip": "104.19.165.59",
+      "error_type": "VERY_SLOW",
+      "double_scan_failed": false,
+      "elapsed_real": 4.32
+    },
+    "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Motor_ES_Homepage_20260706_014109.png",
+    "is_reference": false
   }
 ]
