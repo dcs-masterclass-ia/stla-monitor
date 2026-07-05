@@ -33311,5 +33311,32 @@
     },
     "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Formulaire_20260705_214142.png",
     "is_reference": false
+  },
+  {
+    "time": "05/07/2026 21:41:22",
+    "brand": "Ford FR",
+    "page": "Homepage",
+    "type": "ko",
+    "detail": "Réponse lente : 7.39s (seuil 4s)",
+    "diagnostics": {
+      "brand": "Ford FR",
+      "page": "Homepage",
+      "dns_elapsed": 0.012,
+      "ip": "63.186.28.171",
+      "http_status": 200,
+      "elapsed_http": 7.39,
+      "elapsed_total": 7.41,
+      "redirect_count": 0,
+      "final_url": "https://www.ford-reprise.fr/",
+      "headers": {
+        "server": "—",
+        "content-type": "text/html; charset=UTF-8",
+        "x-cache": "—",
+        "cf-ray": "—"
+      },
+      "error_type": "SLOW"
+    },
+    "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260705_214153.png",
+    "is_reference": false
   }
 ]
