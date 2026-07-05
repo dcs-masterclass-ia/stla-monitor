@@ -7367,5 +7367,32 @@
     "type": "recovery",
     "detail": "Retour en ligne",
     "is_reference": false
+  },
+  {
+    "time": "05/07/2026 09:37:06",
+    "brand": "Motor ES",
+    "page": "Homepage",
+    "type": "ko",
+    "detail": "Réponse lente : 7.88s (seuil 4s)",
+    "diagnostics": {
+      "brand": "Motor ES",
+      "page": "Homepage",
+      "dns_elapsed": 0.003,
+      "ip": "104.19.165.59",
+      "http_status": 200,
+      "elapsed_http": 7.88,
+      "elapsed_total": 7.89,
+      "redirect_count": 0,
+      "final_url": "https://tax.motor.es/?layout=iframe",
+      "headers": {
+        "server": "cloudflare",
+        "content-type": "text/html; charset=UTF-8",
+        "x-cache": "—",
+        "cf-ray": "a164b426ebc4af69-FRA"
+      },
+      "error_type": "SLOW"
+    },
+    "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Motor_ES_Homepage_20260705_093733.png",
+    "is_reference": false
   }
 ]
