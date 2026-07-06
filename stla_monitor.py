@@ -1154,7 +1154,7 @@ def check_url_playwright(brand, page, url):
         if double_scan_error:
             details["double_scan_error"] = double_scan_error
         details["elapsed_real"] = elapsed_real
-        return False, f"Pas de réponse après {elapsed_real}s (TIMEOUT)", elapsed_real, details
+        return False, f"Pas de réponse après {elapsed}s (TIMEOUT)", elapsed_real, details
     except requests.exceptions.ConnectionError as e:
         elapsed = round(time.time() - t0, 2)
         err = str(e)
@@ -1266,7 +1266,7 @@ def check_url(brand, page, url):
         if double_scan_error:
             details["double_scan_error"] = double_scan_error
         details["elapsed_real"] = elapsed_real
-        return False, f"Pas de réponse après {elapsed_real}s", elapsed_real, details
+        return False, f"Pas de réponse après {elapsed}s", elapsed_real, details
     except Exception as e:
         details["error_type"] = "UNKNOWN"
         details["error_detail"] = str(e)[:300]
