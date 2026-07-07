@@ -684,5 +684,32 @@
     "type": "recovery",
     "detail": "Retour en ligne",
     "is_reference": false
+  },
+  {
+    "time": "07/07/2026 11:14:11",
+    "brand": "Ford FR",
+    "page": "Homepage",
+    "type": "ko",
+    "detail": "Réponse lente : 4.46s (seuil 4s)",
+    "diagnostics": {
+      "brand": "Ford FR",
+      "page": "Homepage",
+      "dns_elapsed": 0.021,
+      "ip": "52.57.149.77",
+      "http_status": 200,
+      "elapsed_http": 4.46,
+      "elapsed_total": 4.48,
+      "redirect_count": 0,
+      "final_url": "https://www.ford-reprise.fr/",
+      "headers": {
+        "server": "—",
+        "content-type": "text/html; charset=UTF-8",
+        "x-cache": "—",
+        "cf-ray": "—"
+      },
+      "error_type": "SLOW"
+    },
+    "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260707_111429.png",
+    "is_reference": false
   }
 ]
