@@ -1,20 +1,35 @@
 {
-  "generated_at": "07/07/2026 08:00:20",
-  "window_start": "06/07/2026 20:00:00",
-  "window_end": "07/07/2026 08:00:00",
+  "generated_at": "08/07/2026 08:00:04",
+  "window_start": "07/07/2026 20:00:00",
+  "window_end": "08/07/2026 08:00:00",
   "brands": {
     "Opel PT": {
-      "incidents": [],
-      "nb_incidents": 0,
-      "avg_elapsed": 0.22,
-      "fiabilite": 100.0,
+      "incidents": [
+        {
+          "time": "08/07/2026 04:20:34",
+          "page": "Homepage",
+          "type": "ko",
+          "detail": "Lent (4.02s)",
+          "duration": 27
+        },
+        {
+          "time": "08/07/2026 04:20:34",
+          "page": "Parcours",
+          "type": "ko",
+          "detail": "Lent (4.07s)",
+          "duration": 27
+        }
+      ],
+      "nb_incidents": 2,
+      "avg_elapsed": 0.21,
+      "fiabilite": 99.9,
       "screenshots": [],
-      "ok_nuit": true
+      "ok_nuit": false
     },
     "Abarth PT": {
       "incidents": [],
       "nb_incidents": 0,
-      "avg_elapsed": 0.24,
+      "avg_elapsed": 0.23,
       "fiabilite": 100.0,
       "screenshots": [],
       "ok_nuit": true
@@ -36,20 +51,12 @@
       "ok_nuit": true
     },
     "DS PT": {
-      "incidents": [
-        {
-          "time": "07/07/2026 05:39:50",
-          "page": "Parcours",
-          "type": "ko",
-          "detail": "Erreur connexion : ('Connection aborted.', RemoteDisconnected('Remote end closed connection without",
-          "duration": 25
-        }
-      ],
-      "nb_incidents": 1,
-      "avg_elapsed": 0.21,
+      "incidents": [],
+      "nb_incidents": 0,
+      "avg_elapsed": 0.2,
       "fiabilite": 100.0,
       "screenshots": [],
-      "ok_nuit": false
+      "ok_nuit": true
     },
     "Fiat PT": {
       "incidents": [],
@@ -110,7 +117,7 @@
     "DS FR": {
       "incidents": [],
       "nb_incidents": 0,
-      "avg_elapsed": 0.23,
+      "avg_elapsed": 0.22,
       "fiabilite": 100.0,
       "screenshots": [],
       "ok_nuit": true
@@ -134,7 +141,7 @@
     "Jeep FR": {
       "incidents": [],
       "nb_incidents": 0,
-      "avg_elapsed": 0.2,
+      "avg_elapsed": 0.19,
       "fiabilite": 100.0,
       "screenshots": [],
       "ok_nuit": true
@@ -148,25 +155,17 @@
       "ok_nuit": true
     },
     "Peugeot FR": {
-      "incidents": [
-        {
-          "time": "07/07/2026 05:39:50",
-          "page": "Parcours",
-          "type": "ko",
-          "detail": "Erreur connexion : ('Connection aborted.', RemoteDisconnected('Remote end closed connection without",
-          "duration": 25
-        }
-      ],
-      "nb_incidents": 1,
-      "avg_elapsed": 0.27,
+      "incidents": [],
+      "nb_incidents": 0,
+      "avg_elapsed": 0.26,
       "fiabilite": 100.0,
       "screenshots": [],
-      "ok_nuit": false
+      "ok_nuit": true
     },
     "Abarth ES": {
       "incidents": [],
       "nb_incidents": 0,
-      "avg_elapsed": 0.21,
+      "avg_elapsed": 0.2,
       "fiabilite": 100.0,
       "screenshots": [],
       "ok_nuit": true
@@ -174,7 +173,7 @@
     "AlfaRomeo ES": {
       "incidents": [],
       "nb_incidents": 0,
-      "avg_elapsed": 0.22,
+      "avg_elapsed": 0.21,
       "fiabilite": 100.0,
       "screenshots": [],
       "ok_nuit": true
@@ -190,26 +189,18 @@
     "DS ES": {
       "incidents": [],
       "nb_incidents": 0,
-      "avg_elapsed": 0.23,
+      "avg_elapsed": 0.22,
       "fiabilite": 100.0,
       "screenshots": [],
       "ok_nuit": true
     },
     "Fiat ES": {
-      "incidents": [
-        {
-          "time": "07/07/2026 05:39:50",
-          "page": "Parcours",
-          "type": "ko",
-          "detail": "Erreur connexion : ('Connection aborted.', RemoteDisconnected('Remote end closed connection without",
-          "duration": 25
-        }
-      ],
-      "nb_incidents": 1,
+      "incidents": [],
+      "nb_incidents": 0,
       "avg_elapsed": 0.21,
       "fiabilite": 100.0,
       "screenshots": [],
-      "ok_nuit": false
+      "ok_nuit": true
     },
     "FiatPro ES": {
       "incidents": [],
@@ -230,7 +221,7 @@
     "Opel ES": {
       "incidents": [],
       "nb_incidents": 0,
-      "avg_elapsed": 0.22,
+      "avg_elapsed": 0.21,
       "fiabilite": 100.0,
       "screenshots": [],
       "ok_nuit": true
@@ -238,7 +229,7 @@
     "Peugeot ES": {
       "incidents": [],
       "nb_incidents": 0,
-      "avg_elapsed": 0.24,
+      "avg_elapsed": 0.23,
       "fiabilite": 100.0,
       "screenshots": [],
       "ok_nuit": true
@@ -254,7 +245,7 @@
     "AlfaRomeo IT": {
       "incidents": [],
       "nb_incidents": 0,
-      "avg_elapsed": 0.22,
+      "avg_elapsed": 0.21,
       "fiabilite": 100.0,
       "screenshots": [],
       "ok_nuit": true
@@ -270,7 +261,7 @@
     "DS IT": {
       "incidents": [],
       "nb_incidents": 0,
-      "avg_elapsed": 0.21,
+      "avg_elapsed": 0.2,
       "fiabilite": 100.0,
       "screenshots": [],
       "ok_nuit": true
@@ -278,7 +269,7 @@
     "Fiat IT": {
       "incidents": [],
       "nb_incidents": 0,
-      "avg_elapsed": 0.22,
+      "avg_elapsed": 0.21,
       "fiabilite": 100.0,
       "screenshots": [],
       "ok_nuit": true
@@ -302,7 +293,7 @@
     "Opel IT": {
       "incidents": [],
       "nb_incidents": 0,
-      "avg_elapsed": 0.22,
+      "avg_elapsed": 0.21,
       "fiabilite": 100.0,
       "screenshots": [],
       "ok_nuit": true
@@ -332,25 +323,17 @@
       "ok_nuit": true
     },
     "DS DE": {
-      "incidents": [
-        {
-          "time": "07/07/2026 05:39:50",
-          "page": "Parcours",
-          "type": "ko",
-          "detail": "Erreur connexion : ('Connection aborted.', RemoteDisconnected('Remote end closed connection without",
-          "duration": 25
-        }
-      ],
-      "nb_incidents": 1,
+      "incidents": [],
+      "nb_incidents": 0,
       "avg_elapsed": 0.2,
       "fiabilite": 100.0,
       "screenshots": [],
-      "ok_nuit": false
+      "ok_nuit": true
     },
     "Opel DE": {
       "incidents": [],
       "nb_incidents": 0,
-      "avg_elapsed": 0.26,
+      "avg_elapsed": 0.25,
       "fiabilite": 100.0,
       "screenshots": [],
       "ok_nuit": true
@@ -364,41 +347,25 @@
       "ok_nuit": true
     },
     "Spoticar DE": {
-      "incidents": [
-        {
-          "time": "07/07/2026 05:39:25",
-          "page": "Homepage",
-          "type": "ko",
-          "detail": "Erreur connexion : ('Connection aborted.', RemoteDisconnected('Remote end closed connection without",
-          "duration": 25
-        }
-      ],
-      "nb_incidents": 1,
-      "avg_elapsed": 0.19,
+      "incidents": [],
+      "nb_incidents": 0,
+      "avg_elapsed": 0.18,
       "fiabilite": 100.0,
       "screenshots": [],
-      "ok_nuit": false
+      "ok_nuit": true
     },
     "Citroen AT": {
-      "incidents": [
-        {
-          "time": "07/07/2026 05:39:25",
-          "page": "Parcours",
-          "type": "ko",
-          "detail": "Erreur connexion : ('Connection aborted.', RemoteDisconnected('Remote end closed connection without",
-          "duration": 25
-        }
-      ],
-      "nb_incidents": 1,
+      "incidents": [],
+      "nb_incidents": 0,
       "avg_elapsed": 0.25,
       "fiabilite": 100.0,
       "screenshots": [],
-      "ok_nuit": false
+      "ok_nuit": true
     },
     "Opel AT": {
       "incidents": [],
       "nb_incidents": 0,
-      "avg_elapsed": 0.22,
+      "avg_elapsed": 0.21,
       "fiabilite": 100.0,
       "screenshots": [],
       "ok_nuit": true
@@ -414,26 +381,18 @@
     "Abarth BE": {
       "incidents": [],
       "nb_incidents": 0,
-      "avg_elapsed": 0.23,
+      "avg_elapsed": 0.22,
       "fiabilite": 100.0,
       "screenshots": [],
       "ok_nuit": true
     },
     "AlfaRomeo BE": {
-      "incidents": [
-        {
-          "time": "07/07/2026 05:39:50",
-          "page": "Parcours",
-          "type": "ko",
-          "detail": "Erreur connexion : ('Connection aborted.', RemoteDisconnected('Remote end closed connection without",
-          "duration": 25
-        }
-      ],
-      "nb_incidents": 1,
+      "incidents": [],
+      "nb_incidents": 0,
       "avg_elapsed": 0.22,
       "fiabilite": 100.0,
       "screenshots": [],
-      "ok_nuit": false
+      "ok_nuit": true
     },
     "Citroen BE": {
       "incidents": [],
@@ -486,31 +445,23 @@
     "Opel BE": {
       "incidents": [],
       "nb_incidents": 0,
-      "avg_elapsed": 0.23,
+      "avg_elapsed": 0.22,
       "fiabilite": 100.0,
       "screenshots": [],
       "ok_nuit": true
     },
     "Peugeot BE": {
-      "incidents": [
-        {
-          "time": "07/07/2026 05:39:25",
-          "page": "Parcours",
-          "type": "ko",
-          "detail": "Erreur connexion : ('Connection aborted.', RemoteDisconnected('Remote end closed connection without",
-          "duration": 25
-        }
-      ],
-      "nb_incidents": 1,
+      "incidents": [],
+      "nb_incidents": 0,
       "avg_elapsed": 0.12,
       "fiabilite": 100.0,
       "screenshots": [],
-      "ok_nuit": false
+      "ok_nuit": true
     },
     "Leapmotor BE": {
       "incidents": [],
       "nb_incidents": 0,
-      "avg_elapsed": 0.21,
+      "avg_elapsed": 0.2,
       "fiabilite": 100.0,
       "screenshots": [],
       "ok_nuit": true
@@ -534,7 +485,7 @@
     "Citroen BE-NL": {
       "incidents": [],
       "nb_incidents": 0,
-      "avg_elapsed": 0.23,
+      "avg_elapsed": 0.22,
       "fiabilite": 100.0,
       "screenshots": [],
       "ok_nuit": true
@@ -558,7 +509,7 @@
     "FiatPro BE-NL": {
       "incidents": [],
       "nb_incidents": 0,
-      "avg_elapsed": 0.22,
+      "avg_elapsed": 0.21,
       "fiabilite": 100.0,
       "screenshots": [],
       "ok_nuit": true
@@ -566,7 +517,7 @@
     "Jeep BE-NL": {
       "incidents": [],
       "nb_incidents": 0,
-      "avg_elapsed": 0.23,
+      "avg_elapsed": 0.22,
       "fiabilite": 100.0,
       "screenshots": [],
       "ok_nuit": true
@@ -614,7 +565,7 @@
     "Citroen PL": {
       "incidents": [],
       "nb_incidents": 0,
-      "avg_elapsed": 0.2,
+      "avg_elapsed": 0.19,
       "fiabilite": 100.0,
       "screenshots": [],
       "ok_nuit": true
@@ -622,7 +573,7 @@
     "Fiat PL": {
       "incidents": [],
       "nb_incidents": 0,
-      "avg_elapsed": 0.19,
+      "avg_elapsed": 0.18,
       "fiabilite": 100.0,
       "screenshots": [],
       "ok_nuit": true
@@ -638,7 +589,7 @@
     "Opel PL": {
       "incidents": [],
       "nb_incidents": 0,
-      "avg_elapsed": 0.2,
+      "avg_elapsed": 0.19,
       "fiabilite": 100.0,
       "screenshots": [],
       "ok_nuit": true
@@ -654,26 +605,18 @@
     "Abarth LU": {
       "incidents": [],
       "nb_incidents": 0,
-      "avg_elapsed": 0.22,
+      "avg_elapsed": 0.21,
       "fiabilite": 100.0,
       "screenshots": [],
       "ok_nuit": true
     },
     "AlfaRomeo LU": {
-      "incidents": [
-        {
-          "time": "07/07/2026 05:39:25",
-          "page": "Parcours",
-          "type": "ko",
-          "detail": "Erreur connexion : ('Connection aborted.', RemoteDisconnected('Remote end closed connection without",
-          "duration": 25
-        }
-      ],
-      "nb_incidents": 1,
-      "avg_elapsed": 0.22,
+      "incidents": [],
+      "nb_incidents": 0,
+      "avg_elapsed": 0.21,
       "fiabilite": 100.0,
       "screenshots": [],
-      "ok_nuit": false
+      "ok_nuit": true
     },
     "Citroen LU": {
       "incidents": [],
@@ -718,7 +661,7 @@
     "Lancia LU": {
       "incidents": [],
       "nb_incidents": 0,
-      "avg_elapsed": 0.23,
+      "avg_elapsed": 0.22,
       "fiabilite": 100.0,
       "screenshots": [],
       "ok_nuit": true
@@ -732,48 +675,25 @@
       "ok_nuit": true
     },
     "Peugeot LU": {
-      "incidents": [
-        {
-          "time": "07/07/2026 04:20:19",
-          "page": "Parcours",
-          "type": "ko",
-          "detail": "Lent (4.35s)",
-          "duration": 29
-        }
-      ],
-      "nb_incidents": 1,
-      "avg_elapsed": 0.24,
+      "incidents": [],
+      "nb_incidents": 0,
+      "avg_elapsed": 0.23,
       "fiabilite": 100.0,
       "screenshots": [],
-      "ok_nuit": false
+      "ok_nuit": true
     },
     "Leapmotor LU": {
-      "incidents": [
-        {
-          "time": "07/07/2026 04:20:19",
-          "page": "Homepage",
-          "type": "ko",
-          "detail": "Lent (4.25s)",
-          "duration": 29
-        },
-        {
-          "time": "07/07/2026 04:20:19",
-          "page": "Parcours",
-          "type": "ko",
-          "detail": "Lent (4.18s)",
-          "duration": 29
-        }
-      ],
-      "nb_incidents": 2,
+      "incidents": [],
+      "nb_incidents": 0,
       "avg_elapsed": 0.2,
-      "fiabilite": 99.9,
+      "fiabilite": 100.0,
       "screenshots": [],
-      "ok_nuit": false
+      "ok_nuit": true
     },
     "DS UK": {
       "incidents": [],
       "nb_incidents": 0,
-      "avg_elapsed": 0.18,
+      "avg_elapsed": 0.17,
       "fiabilite": 100.0,
       "screenshots": [],
       "ok_nuit": true
@@ -781,334 +701,271 @@
     "Ford FR": {
       "incidents": [
         {
-          "time": "06/07/2026 20:05:23",
-          "page": "Homepage",
-          "type": "ko",
-          "detail": "Pas de réponse après 8.08s",
-          "duration": 73,
-          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260706_200620.png"
-        },
-        {
-          "time": "06/07/2026 20:36:17",
-          "page": "Homepage",
-          "type": "ko",
-          "detail": "Pas de réponse après 8.07s",
-          "duration": 62,
-          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260706_203701.png"
-        },
-        {
-          "time": "06/07/2026 20:50:00",
-          "page": "Formulaire",
-          "type": "ko",
-          "detail": "Réponse lente : 4.52s (seuil 4s)",
-          "duration": 47,
-          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Formulaire_20260706_205018.png"
-        },
-        {
-          "time": "06/07/2026 20:50:00",
-          "page": "Homepage",
-          "type": "ko",
-          "detail": "Réponse lente : 4.76s (seuil 4s)",
-          "duration": 47,
-          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260706_205030.png"
-        },
-        {
-          "time": "06/07/2026 21:07:05",
-          "page": "Homepage",
-          "type": "ko",
-          "detail": "Pas de réponse après 8.09s",
-          "duration": 68,
-          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260706_210756.png"
-        },
-        {
-          "time": "06/07/2026 21:37:53",
-          "page": "Homepage",
-          "type": "ko",
-          "detail": "Pas de réponse après 8.08s",
-          "duration": 39,
-          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260706_213815.png"
-        },
-        {
-          "time": "06/07/2026 22:05:15",
-          "page": "Homepage",
-          "type": "ko",
-          "detail": "Réponse lente : 4.69s (seuil 4s)",
-          "duration": 33,
-          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260706_220532.png"
-        },
-        {
-          "time": "06/07/2026 22:08:11",
-          "page": "Formulaire",
-          "type": "ko",
-          "detail": "Pas de réponse après 8.05s",
-          "duration": 51,
-          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Formulaire_20260706_220832.png"
-        },
-        {
-          "time": "06/07/2026 22:08:11",
+          "time": "07/07/2026 20:02:23",
           "page": "Homepage",
           "type": "ko",
           "detail": "Pas de réponse après 8.06s",
-          "duration": 51,
-          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260706_220845.png"
+          "duration": 72,
+          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260707_200312.png"
         },
         {
-          "time": "06/07/2026 22:38:50",
-          "page": "Formulaire",
-          "type": "ko",
-          "detail": "Pas de réponse après 8.1s",
-          "duration": 45,
-          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Formulaire_20260706_223912.png"
-        },
-        {
-          "time": "06/07/2026 22:38:50",
+          "time": "07/07/2026 20:33:14",
           "page": "Homepage",
           "type": "ko",
-          "detail": "Pas de réponse après 8.1s",
-          "duration": 45,
-          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260706_223917.png"
+          "detail": "Pas de réponse après 8.06s",
+          "duration": 61,
+          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260707_203357.png"
         },
         {
-          "time": "06/07/2026 22:53:06",
-          "page": "Formulaire",
-          "type": "ko",
-          "detail": "Pas de réponse après 8.1s",
-          "duration": 66,
-          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Formulaire_20260706_225347.png"
-        },
-        {
-          "time": "06/07/2026 22:53:06",
-          "page": "Homepage",
-          "type": "ko",
-          "detail": "Pas de réponse après 8.13s",
-          "duration": 66,
-          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260706_225354.png"
-        },
-        {
-          "time": "06/07/2026 23:09:25",
-          "page": "Formulaire",
-          "type": "ko",
-          "detail": "Pas de réponse après 8.09s",
-          "duration": 69,
-          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Formulaire_20260706_231007.png"
-        },
-        {
-          "time": "06/07/2026 23:09:25",
+          "time": "07/07/2026 21:03:59",
           "page": "Homepage",
           "type": "ko",
           "detail": "Pas de réponse après 8.07s",
-          "duration": 69,
-          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260706_231017.png"
+          "duration": 48,
+          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260707_210429.png"
         },
         {
-          "time": "06/07/2026 23:14:34",
+          "time": "07/07/2026 21:34:25",
+          "page": "Homepage",
+          "type": "ko",
+          "detail": "Pas de réponse après 8.06s",
+          "duration": 67,
+          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260707_213515.png"
+        },
+        {
+          "time": "07/07/2026 22:05:21",
+          "page": "Homepage",
+          "type": "ko",
+          "detail": "Pas de réponse après 8.06s",
+          "duration": 68,
+          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260707_220612.png"
+        },
+        {
+          "time": "07/07/2026 23:17:29",
+          "page": "Homepage",
+          "type": "ko",
+          "detail": "Pas de réponse après 8.06s",
+          "duration": 70,
+          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260707_231810.png"
+        },
+        {
+          "time": "07/07/2026 23:17:29",
           "page": "Formulaire",
           "type": "ko",
-          "detail": "Réponse lente : 6.66s (seuil 4s)",
-          "duration": 49,
-          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Formulaire_20260706_231500.png"
+          "detail": "Pas de réponse après 8.06s",
+          "duration": 70,
+          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Formulaire_20260707_231823.png"
         },
         {
-          "time": "06/07/2026 23:14:34",
+          "time": "07/07/2026 23:37:09",
           "page": "Homepage",
           "type": "ko",
-          "detail": "Réponse lente : 6.98s (seuil 4s)",
-          "duration": 49,
-          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260706_231506.png"
+          "detail": "Pas de réponse après 8.2s",
+          "duration": 54,
+          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260707_233746.png"
         },
         {
-          "time": "06/07/2026 23:40:11",
-          "page": "Homepage",
-          "type": "ko",
-          "detail": "Pas de réponse après 8.05s",
-          "duration": 66,
-          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260706_234059.png"
-        },
-        {
-          "time": "07/07/2026 00:11:08",
-          "page": "Homepage",
-          "type": "ko",
-          "detail": "Pas de réponse après 8.07s",
-          "duration": 40,
-          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260707_001132.png"
-        },
-        {
-          "time": "07/07/2026 01:11:53",
-          "page": "Homepage",
-          "type": "ko",
-          "detail": "Pas de réponse après 8.08s",
-          "duration": 42,
-          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260707_011218.png"
-        },
-        {
-          "time": "07/07/2026 01:42:18",
+          "time": "08/07/2026 00:07:47",
           "page": "Homepage",
           "type": "ko",
           "detail": "Pas de réponse après 8.09s",
-          "duration": 75,
-          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260707_014316.png"
+          "duration": 76,
+          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260708_000848.png"
         },
         {
-          "time": "07/07/2026 02:13:18",
-          "page": "Formulaire",
-          "type": "ko",
-          "detail": "Pas de réponse après 8.07s",
-          "duration": 65,
-          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Formulaire_20260707_021340.png"
-        },
-        {
-          "time": "07/07/2026 02:13:18",
+          "time": "08/07/2026 00:38:48",
           "page": "Homepage",
           "type": "ko",
-          "detail": "Pas de réponse après 8.15s",
-          "duration": 65,
-          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260707_021407.png"
+          "detail": "Pas de réponse après 8.06s",
+          "duration": 76,
+          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260708_003946.png"
         },
         {
-          "time": "07/07/2026 02:19:58",
+          "time": "08/07/2026 01:09:47",
           "page": "Homepage",
-          "type": "ko",
-          "detail": "Réponse lente : 4.99s (seuil 4s)",
-          "duration": 34,
-          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260707_022016.png"
-        },
-        {
-          "time": "07/07/2026 02:39:58",
-          "page": "Homepage",
-          "type": "ko",
-          "detail": "Réponse lente : 5.47s (seuil 4s)",
-          "duration": 35,
-          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260707_024016.png"
-        },
-        {
-          "time": "07/07/2026 03:14:14",
-          "page": "Homepage",
-          "type": "ko",
-          "detail": "Pas de réponse après 8.07s",
-          "duration": 77,
-          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260707_031515.png"
-        },
-        {
-          "time": "07/07/2026 04:45:19",
-          "page": "Formulaire",
           "type": "ko",
           "detail": "Pas de réponse après 8.09s",
           "duration": 67,
-          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Formulaire_20260707_044547.png"
+          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260708_011037.png"
         },
         {
-          "time": "07/07/2026 04:45:19",
+          "time": "08/07/2026 01:40:52",
+          "page": "Formulaire",
+          "type": "ko",
+          "detail": "Pas de réponse après 8.05s",
+          "duration": 57,
+          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Formulaire_20260708_014113.png"
+        },
+        {
+          "time": "08/07/2026 01:40:52",
+          "page": "Homepage",
+          "type": "ko",
+          "detail": "Pas de réponse après 8.07s",
+          "duration": 57,
+          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260708_014132.png"
+        },
+        {
+          "time": "08/07/2026 02:11:24",
+          "page": "Homepage",
+          "type": "ko",
+          "detail": "Pas de réponse après 8.05s",
+          "duration": 78,
+          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260708_021224.png"
+        },
+        {
+          "time": "08/07/2026 02:42:33",
           "page": "Homepage",
           "type": "ko",
           "detail": "Pas de réponse après 8.11s",
-          "duration": 67,
-          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260707_044609.png"
+          "duration": 61,
+          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260708_024317.png"
         },
         {
-          "time": "07/07/2026 05:16:23",
+          "time": "08/07/2026 03:13:17",
+          "page": "Formulaire",
+          "type": "ko",
+          "detail": "Pas de réponse après 8.04s",
+          "duration": 58,
+          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Formulaire_20260708_031338.png"
+        },
+        {
+          "time": "08/07/2026 03:13:17",
+          "page": "Homepage",
+          "type": "ko",
+          "detail": "Pas de réponse après 8.07s",
+          "duration": 58,
+          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260708_031357.png"
+        },
+        {
+          "time": "08/07/2026 03:43:52",
+          "page": "Homepage",
+          "type": "ko",
+          "detail": "Pas de réponse après 8.06s",
+          "duration": 75,
+          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260708_034450.png"
+        },
+        {
+          "time": "08/07/2026 04:45:05",
+          "page": "Homepage",
+          "type": "ko",
+          "detail": "Pas de réponse après 8.11s",
+          "duration": 55,
+          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260708_044543.png"
+        },
+        {
+          "time": "08/07/2026 05:15:36",
+          "page": "Homepage",
+          "type": "ko",
+          "detail": "Pas de réponse après 8.06s",
+          "duration": 77,
+          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260708_051637.png"
+        },
+        {
+          "time": "08/07/2026 05:46:51",
+          "page": "Formulaire",
+          "type": "ko",
+          "detail": "Pas de réponse après 8.06s",
+          "duration": 64,
+          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Formulaire_20260708_054731.png"
+        },
+        {
+          "time": "08/07/2026 05:46:51",
+          "page": "Homepage",
+          "type": "ko",
+          "detail": "Pas de réponse après 8.06s",
+          "duration": 64,
+          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260708_054737.png"
+        },
+        {
+          "time": "08/07/2026 06:17:37",
+          "page": "Homepage",
+          "type": "ko",
+          "detail": "Pas de réponse après 8.07s",
+          "duration": 65,
+          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260708_061826.png"
+        },
+        {
+          "time": "08/07/2026 06:23:47",
+          "page": "Formulaire",
+          "type": "ko",
+          "detail": "Pas de réponse après 8.15s",
+          "duration": 86,
+          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Formulaire_20260708_062449.png"
+        },
+        {
+          "time": "08/07/2026 06:23:47",
           "page": "Homepage",
           "type": "ko",
           "detail": "Pas de réponse après 8.12s",
-          "duration": 51,
-          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260707_051658.png"
+          "duration": 86,
+          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260708_062455.png"
         },
         {
-          "time": "07/07/2026 05:46:59",
+          "time": "08/07/2026 06:48:39",
           "page": "Homepage",
           "type": "ko",
-          "detail": "Pas de réponse après 8.09s",
-          "duration": 72,
-          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260707_054754.png"
-        },
-        {
-          "time": "07/07/2026 06:17:56",
-          "page": "Homepage",
-          "type": "ko",
-          "detail": "Pas de réponse après 8.06s",
-          "duration": 68,
-          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260707_061846.png"
-        },
-        {
-          "time": "07/07/2026 06:48:54",
-          "page": "Homepage",
-          "type": "ko",
-          "detail": "Pas de réponse après 8.08s",
-          "duration": 59,
-          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260707_064937.png"
-        },
-        {
-          "time": "07/07/2026 07:19:35",
-          "page": "Homepage",
-          "type": "ko",
-          "detail": "Pas de réponse après 8.07s",
+          "detail": "Pas de réponse après 8.05s",
           "duration": 55,
-          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260707_072012.png"
+          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260708_064918.png"
         },
         {
-          "time": "07/07/2026 07:50:23",
-          "page": "Homepage",
-          "type": "ko",
-          "detail": "Pas de réponse après 8.06s",
-          "duration": 54,
-          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260707_075100.png"
-        },
-        {
-          "time": "07/07/2026 07:54:05",
+          "time": "08/07/2026 07:19:18",
           "page": "Formulaire",
           "type": "ko",
           "detail": "Pas de réponse après 8.05s",
-          "duration": 75,
-          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Formulaire_20260707_075456.png"
+          "duration": 51,
+          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Formulaire_20260708_071939.png"
         },
         {
-          "time": "07/07/2026 07:54:05",
+          "time": "08/07/2026 07:19:18",
           "page": "Homepage",
           "type": "ko",
-          "detail": "Pas de réponse après 8.07s",
-          "duration": 75,
-          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260707_075503.png"
+          "detail": "Pas de réponse après 8.08s",
+          "duration": 51,
+          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260708_071952.png"
+        },
+        {
+          "time": "08/07/2026 07:49:52",
+          "page": "Homepage",
+          "type": "ko",
+          "detail": "Pas de réponse après 8.06s",
+          "duration": 58,
+          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260708_075033.png"
         }
       ],
-      "nb_incidents": 36,
-      "avg_elapsed": 1.0,
-      "fiabilite": 99.0,
+      "nb_incidents": 29,
+      "avg_elapsed": 0.98,
+      "fiabilite": 99.2,
       "screenshots": [
-        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260706_200620.png",
-        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260706_203701.png",
-        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Formulaire_20260706_205018.png",
-        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260706_205030.png",
-        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260706_210756.png",
-        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260706_213815.png",
-        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260706_220532.png",
-        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Formulaire_20260706_220832.png",
-        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260706_220845.png",
-        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Formulaire_20260706_223912.png",
-        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260706_223917.png",
-        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Formulaire_20260706_225347.png",
-        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260706_225354.png",
-        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Formulaire_20260706_231007.png",
-        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260706_231017.png",
-        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Formulaire_20260706_231500.png",
-        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260706_231506.png",
-        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260706_234059.png",
-        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260707_001132.png",
-        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260707_011218.png",
-        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260707_014316.png",
-        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Formulaire_20260707_021340.png",
-        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260707_021407.png",
-        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260707_022016.png",
-        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260707_024016.png",
-        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260707_031515.png",
-        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Formulaire_20260707_044547.png",
-        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260707_044609.png",
-        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260707_051658.png",
-        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260707_054754.png",
-        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260707_061846.png",
-        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260707_064937.png",
-        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260707_072012.png",
-        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260707_075100.png",
-        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Formulaire_20260707_075456.png",
-        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260707_075503.png"
+        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260707_200312.png",
+        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260707_203357.png",
+        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260707_210429.png",
+        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260707_213515.png",
+        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260707_220612.png",
+        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260707_231810.png",
+        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Formulaire_20260707_231823.png",
+        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260707_233746.png",
+        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260708_000848.png",
+        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260708_003946.png",
+        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260708_011037.png",
+        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Formulaire_20260708_014113.png",
+        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260708_014132.png",
+        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260708_021224.png",
+        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260708_024317.png",
+        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Formulaire_20260708_031338.png",
+        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260708_031357.png",
+        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260708_034450.png",
+        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260708_044543.png",
+        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260708_051637.png",
+        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Formulaire_20260708_054731.png",
+        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260708_054737.png",
+        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260708_061826.png",
+        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Formulaire_20260708_062449.png",
+        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260708_062455.png",
+        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260708_064918.png",
+        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Formulaire_20260708_071939.png",
+        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260708_071952.png",
+        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Homepage_20260708_075033.png"
       ],
       "ok_nuit": false
     },
@@ -1123,118 +980,83 @@
     "Motor ES": {
       "incidents": [
         {
-          "time": "06/07/2026 20:05:23",
+          "time": "07/07/2026 20:02:23",
           "page": "Homepage",
           "type": "ko",
-          "detail": "Pas de réponse après 8.08s",
-          "duration": 73,
-          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Motor_ES_Homepage_20260706_200613.png"
+          "detail": "Pas de réponse après 8.06s",
+          "duration": 72,
+          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Motor_ES_Homepage_20260707_200245.png"
         },
         {
-          "time": "06/07/2026 20:50:00",
-          "page": "Homepage",
-          "type": "ko",
-          "detail": "Réponse lente : 4.61s (seuil 4s)",
-          "duration": 47,
-          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Motor_ES_Homepage_20260706_205024.png"
-        },
-        {
-          "time": "06/07/2026 21:07:05",
+          "time": "07/07/2026 21:03:59",
           "page": "Homepage",
           "type": "ko",
           "detail": "Pas de réponse après 8.07s",
-          "duration": 68,
-          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Motor_ES_Homepage_20260706_210749.png"
+          "duration": 48,
+          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Motor_ES_Homepage_20260707_210421.png"
         },
         {
-          "time": "06/07/2026 22:26:03",
+          "time": "07/07/2026 23:17:29",
           "page": "Homepage",
           "type": "ko",
-          "detail": "Réponse lente : 5.75s (seuil 4s)",
-          "duration": 36,
-          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Motor_ES_Homepage_20260706_222621.png"
+          "detail": "Pas de réponse après 8.07s",
+          "duration": 70,
+          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Motor_ES_Homepage_20260707_231817.png"
         },
         {
-          "time": "06/07/2026 22:53:06",
+          "time": "08/07/2026 02:42:33",
           "page": "Homepage",
           "type": "ko",
-          "detail": "Pas de réponse après 8.12s",
-          "duration": 66,
-          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Motor_ES_Homepage_20260706_225340.png"
+          "detail": "Pas de réponse après 8.06s",
+          "duration": 61,
+          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Motor_ES_Homepage_20260708_024255.png"
         },
         {
-          "time": "06/07/2026 23:14:34",
+          "time": "08/07/2026 06:23:47",
           "page": "Homepage",
           "type": "ko",
-          "detail": "Réponse lente : 6.59s (seuil 4s)",
-          "duration": 49,
-          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Motor_ES_Homepage_20260706_231453.png"
+          "detail": "Pas de réponse après 8.11s",
+          "duration": 86,
+          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Motor_ES_Homepage_20260708_062442.png"
         },
         {
-          "time": "07/07/2026 04:45:19",
+          "time": "08/07/2026 07:19:18",
           "page": "Homepage",
           "type": "ko",
-          "detail": "Pas de réponse après 8.09s",
-          "duration": 67,
-          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Motor_ES_Homepage_20260707_044540.png"
-        },
-        {
-          "time": "07/07/2026 05:16:23",
-          "page": "Homepage",
-          "type": "ko",
-          "detail": "Pas de réponse après 8.1s",
+          "detail": "Pas de réponse après 8.06s",
           "duration": 51,
-          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Motor_ES_Homepage_20260707_051643.png"
+          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Motor_ES_Homepage_20260708_071945.png"
         },
         {
-          "time": "07/07/2026 07:19:35",
+          "time": "08/07/2026 07:49:52",
           "page": "Homepage",
           "type": "ko",
-          "detail": "Pas de réponse après 8.09s",
-          "duration": 55,
-          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Motor_ES_Homepage_20260707_071956.png"
-        },
-        {
-          "time": "07/07/2026 07:54:05",
-          "page": "Homepage",
-          "type": "ko",
-          "detail": "Pas de réponse après 8.08s",
-          "duration": 75,
-          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Motor_ES_Homepage_20260707_075450.png"
+          "detail": "Pas de réponse après 8.06s",
+          "duration": 58,
+          "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Motor_ES_Homepage_20260708_075015.png"
         }
       ],
-      "nb_incidents": 10,
-      "avg_elapsed": 0.8,
-      "fiabilite": 99.4,
+      "nb_incidents": 7,
+      "avg_elapsed": 0.78,
+      "fiabilite": 99.6,
       "screenshots": [
-        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Motor_ES_Homepage_20260706_200613.png",
-        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Motor_ES_Homepage_20260706_205024.png",
-        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Motor_ES_Homepage_20260706_210749.png",
-        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Motor_ES_Homepage_20260706_222621.png",
-        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Motor_ES_Homepage_20260706_225340.png",
-        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Motor_ES_Homepage_20260706_231453.png",
-        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Motor_ES_Homepage_20260707_044540.png",
-        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Motor_ES_Homepage_20260707_051643.png",
-        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Motor_ES_Homepage_20260707_071956.png",
-        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Motor_ES_Homepage_20260707_075450.png"
+        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Motor_ES_Homepage_20260707_200245.png",
+        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Motor_ES_Homepage_20260707_210421.png",
+        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Motor_ES_Homepage_20260707_231817.png",
+        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Motor_ES_Homepage_20260708_024255.png",
+        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Motor_ES_Homepage_20260708_062442.png",
+        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Motor_ES_Homepage_20260708_071945.png",
+        "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Motor_ES_Homepage_20260708_075015.png"
       ],
       "ok_nuit": false
     },
     "Aramisauto": {
-      "incidents": [
-        {
-          "time": "07/07/2026 05:06:21",
-          "page": "Homepage",
-          "type": "ko",
-          "detail": "Erreur : HTTPSConnectionPool(host='www.aramisauto.com', port=443): Read timed out. (read ",
-          "duration": 32
-        }
-      ],
-      "nb_incidents": 1,
-      "avg_elapsed": 0.12,
-      "fiabilite": 99.9,
+      "incidents": [],
+      "nb_incidents": 0,
+      "avg_elapsed": 0.11,
+      "fiabilite": 100.0,
       "screenshots": [],
-      "ok_nuit": false
+      "ok_nuit": true
     }
   }
 }
