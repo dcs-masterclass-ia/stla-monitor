@@ -42,7 +42,7 @@ BRANDS = {
     "Jeep PT":      {"Homepage": "https://www.retoma.jeep.pt",             "Parcours": "https://www.retoma.jeep.pt/modelo"},
     "Peugeot PT":   {"Homepage": "https://www.retoma.peugeot.pt",          "Parcours": "https://www.retoma.peugeot.pt/pagina-modelo"},
     # ── FRANCE ──
-    "Opel FR":      {"Homepage": "https://www.reprise.opel.fr",            "Parcours": "https://www.reprise.opel.fr/page-modele"},
+    "Opel FR":      {"Homepage": "https://www.reprise.opel.fr",            "Parcours": "https://www.reprise.opel.fr/estimation"},
     "AlfaRomeo FR": {"Homepage": "https://reprise.alfaromeo.fr",           "Parcours": "https://reprise.alfaromeo.fr/page-modele"},
     "Citroen FR":   {"Homepage": "https://www.reprise.citroen.fr",         "Parcours": "https://www.reprise.citroen.fr/page-modele"},
     "DS FR":        {"Homepage": "https://www.reprise.dsautomobiles.fr",   "Parcours": "https://www.reprise.dsautomobiles.fr/page-modele"},
