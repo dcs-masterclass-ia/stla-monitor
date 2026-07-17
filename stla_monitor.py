@@ -807,7 +807,7 @@ def push_status(statuses, retry=3):
 HEADERS_UA = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
               "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"}  # constante globale — évite les NameError de scope entre check_url() et check_url_playwright()
 
-SSE_CHART_POINTS = 720  # 2h — REVERT: le frontend re-merge avec un cache GitHub statique à chaque tick, réduire ce nombre fait perdre l'historique live
+SSE_CHART_POINTS = 10  # marge de sécurité — le frontend accumule désormais le cache au fil des ticks (fix du 17/07), donc plus besoin de renvoyer tout l'historique à chaque fois
 
 def build_payload(statuses, now):
     """Payload complet — utilisé pour le SSE vers le browser (chart_data inclus)."""
