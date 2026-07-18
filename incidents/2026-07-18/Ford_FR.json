@@ -1091,5 +1091,23 @@
     "type": "recovery",
     "detail": "Retour en ligne",
     "is_reference": false
+  },
+  {
+    "time": "18/07/2026 15:45:38",
+    "brand": "Ford FR",
+    "page": "Formulaire",
+    "type": "ko",
+    "detail": "Pas de réponse après 8.08s",
+    "diagnostics": {
+      "brand": "Ford FR",
+      "page": "Formulaire",
+      "dns_elapsed": 0.002,
+      "ip": "63.178.58.87",
+      "error_type": "VERY_SLOW",
+      "double_scan_failed": true,
+      "elapsed_real": 8.08
+    },
+    "screenshot": "https://raw.githubusercontent.com/dcs-masterclass-ia/stla-monitor/main/screenshots/Ford_FR_Formulaire_20260718_154559.png",
+    "is_reference": false
   }
 ]
