@@ -1576,21 +1576,23 @@
             
             const cp = Object.entries(data.chart_data||{}).filter(([k])=>k.startsWith(brand+":") && !k.endsWith(":Immat")).map(([,v])=>filterPts(v));
             const total = cp.reduce((a,pts)=>a+pts.length,0);
-            const lent = cp.flatMap(pts=>pts).filter(p=>p.elapsed>=4).length;
-            const koCount = hist.filter(h=>h.type==="ko").length;
-            const ok = Math.max(0, total - lent - koCount);
+            const allPtsFlat = cp.flatMap(pts=>pts);
+            const lent = allPtsFlat.filter(p=>p.elapsed>=4 && p.elapsed<8 && !p.is_timeout).length;
+            const tresLent = allPtsFlat.filter(p=>p.is_timeout || p.elapsed>=8).length;
+            const koCount = hist.filter(h=>h.type==="ko" && !["SLOW","VERY_SLOW","TIMEOUT","TCP_TIMEOUT"].includes(h.diagnostics?.error_type)).length;
+            const ok = Math.max(0, total - lent - tresLent - koCount);
             
             if(!pieStatusInst) {
                 pieStatusInst = new Chart(document.getElementById("pieStatusChart"), {
                     type:"doughnut",
-                    data:{labels:["OK","Lent (≥4s)","KO"], datasets:[{data:[ok,lent,koCount], backgroundColor:["#22c55e","#f59e0b","#ef4444"], borderWidth:0}]},
+                    data:{labels:["OK","Lent","Très lent","KO"], datasets:[{data:[ok,lent,tresLent,koCount], backgroundColor:["#22c55e","#f59e0b","#f97316","#ef4444"], borderWidth:0}]},
                     options:{responsive:true, maintainAspectRatio:false, cutout:"60%", animation:{duration:300}, plugins:{legend:{display:false}}}
                 });
             } else {
-                pieStatusInst.data.datasets[0].data = [ok,lent,koCount];
+                pieStatusInst.data.datasets[0].data = [ok,lent,tresLent,koCount];
                 pieStatusInst.update("none");
             }
-            document.getElementById("pie-status-legend").innerHTML = ["OK","Lent","KO"].map((l,i) => `<div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full" style="background:${["#22c55e","#f59e0b","#ef4444"][i]}"></span>${l}: ${[ok,lent,koCount][i]}</div>`).join("");
+            document.getElementById("pie-status-legend").innerHTML = ["OK","Lent","Très lent","KO"].map((l,i) => `<div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full" style="background:${["#22c55e","#f59e0b","#f97316","#ef4444"][i]}"></span>${l}: ${[ok,lent,tresLent,koCount][i]}</div>`).join("");
 
             const koByPage = {}; hist.filter(h=>h.type==="ko").forEach(h=>{koByPage[h.page]=(koByPage[h.page]||0)+1;});
             const pLabels = Object.keys(koByPage); const pVals = Object.values(koByPage);
