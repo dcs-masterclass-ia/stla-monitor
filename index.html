@@ -1533,13 +1533,13 @@
                 if(window._synthDonutChart){window._synthDonutChart.destroy();window._synthDonutChart=null;}
                 window._synthDonutChart = new Chart(donutCanvas, {
                     type:"doughnut",
-                    data:{labels:["OK","Lent (≥4s)","KO"],datasets:[{data:[okPts,lentPts,koPts],backgroundColor:["#22c55e","#f59e0b","#ef4444"],borderWidth:0}]},
+                    data:{labels:["OK","SLOW","VERY_SLOW"],datasets:[{data:[okPts,lentPts,koPts],backgroundColor:["#22c55e","#f59e0b","#ef4444"],borderWidth:0}]},
                     options:{responsive:false,maintainAspectRatio:false,cutout:"65%",animation:false,plugins:{legend:{display:false}}}
                 });
                 document.getElementById("synth-donut-legend").innerHTML = [
                     {label:"OK",val:okPts,color:"#22c55e"},
-                    {label:"Lent ≥4s",val:lentPts,color:"#f59e0b"},
-                    {label:"KO",val:koPts,color:"#ef4444"}
+                    {label:"SLOW",val:lentPts,color:"#f59e0b"},
+                    {label:"VERY_SLOW",val:koPts,color:"#ef4444"}
                 ].map(i=>`<div class="flex items-center gap-2">
                     <span class="w-2.5 h-2.5 rounded-full flex-shrink-0" style="background:${i.color}"></span>
                     <span class="text-xs font-bold text-slate-600">${i.label}</span>
