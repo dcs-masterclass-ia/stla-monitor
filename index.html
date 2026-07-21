@@ -1525,21 +1525,23 @@
                 })
             );
             const totalPts = allPts.length;
-            const lentPts = allPts.filter(p=>p.elapsed>=4).length;
-            const koPts = hist24.filter(h=>h.type==="ko").length;
-            const okPts = Math.max(0, totalPts - lentPts - koPts);
+            const lentPts = allPts.filter(p=>p.elapsed>=4 && p.elapsed<8 && !p.is_timeout).length;
+            const tresLentPts = allPts.filter(p=>p.is_timeout || p.elapsed>=8).length;
+            const koPts = hist24.filter(h=>h.type==="ko" && !["SLOW","VERY_SLOW","TIMEOUT","TCP_TIMEOUT"].includes(h.diagnostics?.error_type)).length;
+            const okPts = Math.max(0, totalPts - lentPts - tresLentPts - koPts);
             const donutCanvas = document.getElementById("synth-donut-chart");
             if(donutCanvas) {
                 if(window._synthDonutChart){window._synthDonutChart.destroy();window._synthDonutChart=null;}
                 window._synthDonutChart = new Chart(donutCanvas, {
                     type:"doughnut",
-                    data:{labels:["OK","SLOW","VERY_SLOW"],datasets:[{data:[okPts,lentPts,koPts],backgroundColor:["#22c55e","#f59e0b","#ef4444"],borderWidth:0}]},
+                    data:{labels:["OK","Lent","Très lent","KO"],datasets:[{data:[okPts,lentPts,tresLentPts,koPts],backgroundColor:["#22c55e","#f59e0b","#f97316","#ef4444"],borderWidth:0}]},
                     options:{responsive:false,maintainAspectRatio:false,cutout:"65%",animation:false,plugins:{legend:{display:false}}}
                 });
                 document.getElementById("synth-donut-legend").innerHTML = [
                     {label:"OK",val:okPts,color:"#22c55e"},
-                    {label:"SLOW",val:lentPts,color:"#f59e0b"},
-                    {label:"VERY_SLOW",val:koPts,color:"#ef4444"}
+                    {label:"Lent",val:lentPts,color:"#f59e0b"},
+                    {label:"Très lent",val:tresLentPts,color:"#f97316"},
+                    {label:"KO",val:koPts,color:"#ef4444"}
                 ].map(i=>`<div class="flex items-center gap-2">
                     <span class="w-2.5 h-2.5 rounded-full flex-shrink-0" style="background:${i.color}"></span>
                     <span class="text-xs font-bold text-slate-600">${i.label}</span>
